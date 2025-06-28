@@ -1,0 +1,249 @@
+SAID Configuration Commands
+
+    Command Support
+    display said-node brief
+    set said-node disable
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display said-node brief
+Function
+
+The display said-node brief command displays brief information about SAID nodes.
+Format
+
+display said-node { all | said-name } brief [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Indicates all SAID nodes.
+	
+
+-
+
+said-name
+	
+
+Specifies an SAID node.
+	
+
+The value depends on the device configuration.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If no slot ID is specified, this command displays brief information about SAID nodes on the active MPU.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display said-node brief command to view brief information about all supported SAID nodes for fault location.
+Example
+
+# Display brief information about the SAID node named mac in slot 2.
+
+<HUAWEI> display said-node mac brief slot 2
+--------------------------------------------------------------------------------------------
+Node  Node             Type    Cycle  Enable   Active      Inactive Reason
+ID    Name                     (s)    Status   Status
+--------------------------------------------------------------------------------------------
+2     mac              Restore 1      Enable   Active      -
+--------------------------------------------------------------------------------------------
+
+Table 3-168 Description of the display said-node brief command output
+
+Item
+	
+
+Description
+
+Node ID
+	
+
+ID of an SAID node.
+
+Node Name
+	
+
+Name of the SAID node.
+
+Type
+	
+Type of the SAID node:
+
+    Detect: diagnostic node
+    Restore: self-healing node
+
+Cycle(s)
+	
+
+Detection period of the SAID node, in seconds.
+
+Enable Status
+	
+Whether the SAID node is enabled:
+
+    Enable: The SAID node is enabled.
+    Disable: The SAID node is disabled.
+
+Active Status
+	
+Running status of the SAID node:
+
+    Active: The SAID node is running.
+    Inactive: The SAID node is not running.
+
+Inactive Reason
+	
+Whether the SAID node is activated:
+
+    -: The SAID node is enabled and activated.
+    Node disabled: The SAID node is not activated.
+
+set said-node disable
+Function
+
+The set said-node disable command disables SAID nodes.
+
+The undo set said-node disable command enables SAID nodes.
+
+By default, all SAID nodes are enabled.
+Format
+
+set said-node { all | said-name &<1-6> } disable
+
+undo set said-node { all | said-name &<1-6> } disable
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Indicates all SAID nodes.
+	
+
+-
+
+said-name
+	
+
+Specifies an SAID node.
+	
+
+The value depends on the device configuration.
+
+A maximum of six SAID nodes can be configured at a time. If you need to configure more than six SAID nodes, run the set said-node disable command multiple times.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The System of Active Immunization and Diagnosis (SAID) is an intelligent fault diagnosis system that automatically diagnoses and rectifies some faults by simulating human operations in troubleshooting. The SAID system has multiple SAID nodes, which detect, diagnose, and rectify faults of multiple modules. However, if a node processes a large number of services, the processing efficiency of other nodes is affected. In this case, run this command disable this node.
+Currently, the switch supports the following SAID nodes listed in Table 3-169.
+Table 3-169 Supported SAID nodes
+
+Node Name
+	
+
+Node Type
+
+FLASH-WRITE
+	
+
+Diagnostic node
+
+MAC
+	
+
+Self-healing node
+
+STG
+	
+
+Self-healing node
+
+PORT
+	
+
+Self-healing node
+
+VLAN
+	
+
+Self-healing node
+
+SE-REG
+NOTE:
+
+Only the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, support this node.
+	
+
+Self-healing node
+
+SE-TABLE
+NOTE:
+
+Only the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, support this node.
+	
+
+Self-healing node
+
+CONFD-MEMORY
+	
+
+Self-healing node
+
+PING
+	
+
+Diagnostic node
+
+After this node is enabled, the device periodically sends ICMP ping packets.
+
+Precautions
+
+If some cards do not support a specific SAID node and no cards that support this SAID node are installed on the device, the device displays a message, indicating that the device does not support this SAID node.
+Example
+
+# Disable the SAID nodes mac and stg.
+
+<HUAWEI> system-view
+[HUAWEI] set said-node mac stg disable
+
+# Disable all SAID nodes.
+
+<HUAWEI> system-view
+[HUAWEI] set said-node all disable
+
