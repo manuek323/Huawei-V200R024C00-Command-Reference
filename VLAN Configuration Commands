@@ -1,0 +1,5123 @@
+VLAN Configuration Commands
+
+    Command Support
+    damping time
+    description (VLAN view)
+    description (VLANIF interface view)
+    display default-parameter vlan
+    display interface vlanif
+    display ip-subnet-vlan vlan
+    display lnp
+    display mac-vlan
+    display policy-vlan
+    display port vlan
+    display protocol-vlan interface
+    display protocol-vlan vlan
+    display vlan
+    interface vlanif
+    ip-subnet-vlan
+    ip-subnet-vlan enable
+    lnp disable
+    mac-learning smart vlan enable
+    mac-vlan enable
+    mac-vlan mac-address
+    management-vlan
+    name (VLAN view)
+    ping mac
+    ping mac enable
+    policy-vlan
+    port
+    port default vlan
+    port discard tagged-packet
+    port hybrid pvid vlan
+    port hybrid tagged vlan
+    port hybrid untagged vlan
+    port hybrid vlan 1
+    port link-type
+    port negotiation disable
+    port trunk allow-pass vlan
+    port trunk allow-pass only-vlan
+    port trunk pvid vlan
+    protocol-transparent
+    protocol-vlan
+    protocol-vlan vlan
+    reset lnp statistics
+    reset vlan statistics
+    shutdown (VLANIF interface view)
+    statistic enable (VLAN view)
+    statistic enable (VLANIF interface view)
+    trace mac
+    trace mac enable
+    unknown-flow drop
+    vlan
+    vlan configuration
+    vlan precedence
+    vlan range
+    vlan statistics
+    vlan statistics interval
+    vlan vlan-name
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+damping time
+Function
+
+The damping time command sets the VLAN damping time on a VLANIF interface, that is, the delay before reporting a VLAN Down event to the VLANIF interface.
+
+The undo damping time command restores the default damping time.
+
+The default damping time on a VLANIF interface is 0 seconds. That is, the VLANIF interface is notified immediately after the VLAN becomes Down.
+Format
+
+damping time delay-time
+
+undo damping time
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+delay-time
+	
+
+Specifies the delay before reporting the VLAN Down event to a VLANIF interface.
+	
+
+The value ranges from 0 to 20, in seconds. The default value is 0.
+Views
+
+VLANIF interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Software upgrade or active/standby switchover on the switch may cause frequent status changes on VLANIF interfaces. To prevent network flapping, run the damping time command on VLANIF interfaces to configure the VLAN damping function.
+
+When all interfaces in a VLAN become Down, the switch waits for a period specified by delay-time and then reports the VLAN Down event to the VLANIF interface.
+
+Precautions
+
+If any interface in the VLAN becomes Up within the delay time, the VLANIF interface remains Up.
+
+You can use the display interface vlanif command to view the VLAN damping time.
+
+If you run the damping time command multiple times in the same VLANIF interface view, only the latest configuration takes effect.
+Example
+
+# Set the VLAN damping time on VLANIF 10 to 10 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 10
+[HUAWEI-vlan10] quit
+[HUAWEI] interface vlanif 10
+[HUAWEI-Vlanif10] damping time 10
+
+description (VLAN view)
+Function
+
+The description command sets the description of a VLAN.
+
+The undo description command restores the default description of a VLAN.
+
+By default, the description of a VLAN shows the VLAN ID. For example, the description of VLAN 2 is "VLAN 0002".
+Format
+
+description description
+
+undo description
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+description
+	
+
+Specifies the description of a VLAN.
+	
+
+It is a string of 1 to 80 characters. The characters are case sensitive. It can contain blanks but cannot contain the question mark (?).
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The description command is used to set the description of a VLAN, which is convenient for identifying, memorizing, and maintaining the VLAN.
+
+The display vlan vlan-id verbose command can display the description of a specified VLAN.
+
+Precautions
+
+Set different descriptions for VLANs to distinguish.
+
+If you run the description command multiple times in the same VLAN view, only the last configuration takes effect.
+Example
+
+# Set the description of VLAN 2 as "huawei".
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] description huawei
+
+description (VLANIF interface view)
+Function
+
+The description command set the description of a VLANIF interface.
+
+The undo description command restores the default description of a VLANIF interface.
+Format
+
+description description
+
+undo description
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+description
+	
+
+Specifies the description of a VLANIF interface.
+	
+
+The value is a string of 1 to 242 characters. The character string is case sensitive. It can contain blanks but cannot contain the question mark (?).
+Views
+
+VLANIF interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To manage VLANIF interfaces conveniently, use the description command to set VLANIF interface descriptions. The description of a VLANIF interface helps you identify the VLANIF interface and know its functions.
+
+You can use the display interface vlanif command to view the description of a VLANIF interface.
+
+Precautions
+
+The description of a VLANIF interface should provide useful information.
+
+Set different descriptions for VLANIF interfaces to distinguish VLANIF interfaces.
+
+If you run the description command multiple times in the same VLANIF interface view, only the latest configuration takes effect.
+Example
+
+# Set the description of VLANIF 2 to huawei.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] quit
+[HUAWEI] interface vlanif 2
+[HUAWEI-Vlanif2] description huawei
+
+display default-parameter vlan
+Function
+
+The display default-parameter vlan command displays the default parameters of a VLAN.
+Format
+
+display default-parameter vlan vlan-id
+Parameters
+Parameter 	Description 	Value
+vlan-id 	Displays the default parameters of a specified VLAN. 	The value is an integer ranging from 1 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+A great number of VLANs are created on a device, and different features are configured for every VLAN. To know the default parameters of a VLAN, run the display default-parameter vlan command to specify the VLAN and view its default parameters.
+
+Prerequisites
+
+The specified VLAN has been created.
+
+Precautions
+
+The default parameters of a VLAN do not change with the VLAN configuration.
+Example
+
+# Display the default parameters of VLAN 10.
+
+<HUAWEI> display default-parameter vlan 10
+  VLAN ID             : 10
+  Type                : Common
+  Status              : undo shutdown
+  Broadcast           : Forward
+  Unknown-Multicast   : Forward
+  Unknown-Unicast     : Forward
+  Statistics          : Disable
+  MAC learning        : Enable
+  Property            : Default
+  Description         : VLAN 0010
+
+Table 5-34 Description of the display default-parameter vlan command output
+
+Item
+	
+
+Description
+
+VLAN ID
+	
+
+VLAN ID.
+
+Type
+	
+
+VLAN type. The value can be:
+
+Common: indicates an ordinary VLAN.
+
+Status
+	
+
+VLAN status. The value can be:
+
+undo shutdown: The VLAN is enabled.
+
+Broadcast
+	
+
+Method to deal with broadcast packets.
+
+Forward: forwards broadcast packets.
+
+Unknown-Multicast
+	
+
+Method to deal with unknown multicast packets.
+
+Forward: forwards unknown multicast packets.
+
+Unknown-Unicast
+	
+
+Method to deal with unknown unicast packets.
+
+Forward: forwards unknown unicast packets.
+
+Statistics
+	
+
+Whether collecting statistics about VLAN packets is enabled. The value can be:
+
+Disable: Collecting statistics about VLAN packets is disabled.
+
+MAC learning
+	
+
+Whether MAC address learning is enabled. The value can be:
+
+Enable: MAC address learning is enabled.
+
+Property
+	
+
+VLAN attribute. The value can be:
+
+Default: indicates an ordinary VLAN.
+
+Description
+	
+
+Description of a VLAN.
+display interface vlanif
+Function
+
+The display interface vlanif command displays the status and configuration of a VLANIF interface.
+Format
+
+display interface vlanif [ vlan-id | main ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of a VLAN.
+	
+
+The value is an integer and the value range depends on the range of existing VLANIF interfaces. You can enter the question mark (?) to obtain the range of VLAN IDs.
+
+main
+	
+
+Displays status and traffic statistics about a VLANIF interface.
+
+A VLANIF interface has no sub-interfaces. Status and traffic statistics about a VLANIF interface are displayed whether you specify the main parameter or not.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+To monitor an interface or locate an interface fault, you can use the display interface vlanif command to view the interface status, interface configuration, and traffic statistics on the interface.
+
+Prerequisites
+
+The specified VLANIF interface has been created.
+
+Precautions
+
+If vlan-id is not specified, the display interface vlanif command displays information about all VLANIF interfaces in the system.
+Example
+
+# Display the status and configuration of VLANIF 3.
+
+<HUAWEI> display interface vlanif 3
+Vlanif3 current state : UP
+Line protocol current state : UP
+Last line protocol up time : 2012-08-03 03:54:16
+Description: 
+Route Port,The Maximum Transmit Unit is 1500
+Internet Address is 192.168.1.1/24 
+IP Sending Frames' Format is PKTFMT_ETHNT_2, Hardware address is 00e0-fc12-3456
+Current system time: 2012-02-10 11:24:14 
+Last 300 seconds input rate 0 bits/sec, 0 packets/sec                           
+Last 300 seconds output rate 0 bits/sec, 0 packets/sec                          
+Input:  0 packets, 0 bytes                                                      
+Output:  0 packets, 0 bytes
+    Input bandwidth utilization  : --                                           
+    Output bandwidth utilization : --                                                     
+                             
+
+Table 5-35 Description of the display interface vlanif command output
+
+Item
+	
+
+Description
+
+current state
+	
+
+Status of a VLANIF interface. The value is UP or Down.
+
+Line protocol current state
+	
+
+Status of the link-layer protocol on a VLANIF interface. The value is UP or Down.
+
+Last line protocol up time
+	
+
+The last time the line protocol is up.
+
+Description
+	
+
+Description of a VLANIF interface.
+
+To specify the parameter, run the description command.
+
+Route Port
+	
+
+Indicates that the interface is a Layer 3 interface.
+
+The Maximum Transmit Unit
+	
+
+Specifies the MTU of a VLANIF interface.
+
+To specify the parameter, run the mtu command.
+
+Internet Address
+	
+
+IP address of a VLANIF interface. If the VLANIF interface does not have an IP address, the system displays "Internet protocol processing: disabled."
+
+To specify the parameter, run the ip address command.
+
+IP Sending Frames' Format
+	
+
+Encapsulation format of IP packets, which can be PKTFMT_ETHNT_2, Ethernet_802.3, or Ethernet_SNAP.
+
+Hardware address
+	
+
+MAC address of the VLANIF interface.
+
+Last 300 seconds input/output rate
+	
+
+Rates of incoming and outgoing packets in the last 300 seconds, expressed in bytes per second and packets per second.
+NOTE:
+
+On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, and S6720S- this field is displayed only when the traffic statistics function is enabled on the VLAN view using the statistic enable command. On other models, this field is displayed only when the traffic statistics function is enabled on the VLANIF interface using the statistic enable command.
+
+Current system time
+	
+
+Indicates the current system time.
+
+If the system is configured with a time zone and is in the summer time, the time is displayed in the format of YYYY/MM/DD HH:MM:SS±HH:MM.
+
+Input/Output
+	
+
+Number of bytes and packets sent and received by the VLANIF interface.
+NOTE:
+
+On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, and S6720S- this field is displayed only when the traffic statistics function is enabled on the VLAN view using the statistic enable command. On other models, this field is displayed only when the traffic statistics function is enabled on the VLANIF interface using the statistic enable command.
+
+Input/Output bandwidth utilization
+	
+
+Inbound/outbound bandwidth utilization on an interface.
+display ip-subnet-vlan vlan
+Function
+
+The display ip-subnet-vlan vlan command displays information about IP subnets associated with VLANs.
+Format
+
+display ip-subnet-vlan vlan { all | vlan-id1 [ to vlan-id2 ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays IP subnets associated with all VLANs.
+	
+
+-
+
+vlan-id1 [ to vlan-id2 ]
+	
+Displays IP subnets associated with specified VLANs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1. If to vlan-id2 is not specified, only the IP subnet associated with vlan-id1 is displayed.
+
+	
+
+    The value of vlan-id1 is an integer that ranges from 1 to 4094.
+    The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After configuring IP subnet-based VLAN assignment, you can run the display ip-subnet-vlan vlan command to verify the configuration.
+
+This command displays the VLAN ID, IP subnet index, IP subnet address, IP subnet mask, and 802.1p priority of the VLAN mapping an IP subnet.
+
+When using the display ip-subnet-vlan vlan command, pay attention to the following points:
+
+    If all is specified, IP subnets associated with all VLANs are displayed.
+    If vlan vlan-id is specified, the IP subnet associated with the specified VLAN is displayed.
+    If vlan-id1 to vlan-id2 is specified, IP subnets associated with the specified VLANs are displayed.
+
+Precautions
+
+If no VLAN is associated with any IP subnet by using the ip-subnet-vlan command, the display ip-subnet-vlan vlan command does not display any information.
+Example
+
+# Display information about IP subnets associated with all VLANs.
+
+<HUAWEI> display ip-subnet-vlan vlan all
+----------------------------------------------------------------
+ Vlan    Index   IpAddress           SubnetMask          Priority
+ ----------------------------------------------------------------
+ 2       12      192.168.1.1         255.255.255.0       3
+ ----------------------------------------------------------------
+ ip-subnet-vlan count: 1                  total count: 1
+
+Table 5-36 Description of the display ip-subnet-vlan vlan command output
+
+Item
+	
+
+Description
+
+Vlan
+	
+
+ID of an IP subnet-based VLAN.
+
+To specify the parameter, run the ip-subnet-vlan command.
+
+Index
+	
+
+Index of an IP subnet.
+
+To specify the parameter, run the ip-subnet-vlan command.
+
+IpAddress
+	
+
+IP subnet address.
+
+To specify the parameter, run the ip-subnet-vlan command.
+
+SubnetMask
+	
+
+IP subnet mask.
+
+To specify the parameter, run the ip-subnet-vlan command.
+
+Priority
+	
+
+802.1p priority of the VLAN associated with an IP address or subnet.
+
+To specify the parameter, run the ip-subnet-vlan command.
+display lnp
+Function
+
+The display lnp interface command displays LNP negotiation information on a Layer 2 Ethernet interface.
+Format
+
+display lnp { interface interface-type interface-number | summary }
+Parameters
+Parameter 	Description 	Value
+
+interface interface-type interface-number
+	
+
+Displays LNP negotiation information on a specified Layer 2 Ethernet interface.
+	
+
+-
+
+summary
+	
+
+Displays LNP negotiation information on all Ethernet interfaces of a Layer 2 device.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+If you want to check the link type and traffic statistics of a Layer 2 Ethernet interface after enabling LNP negotiation, run the display lnp command.
+
+To monitor the status of or locate the fault on an LNP-enabled Layer 2 Ethernet interface, run the display lnp command to obtain the status information and statistics about user packets. This information provides a basis for fault locating.
+Example
+
+# Display LNP negotiation information on a specified Layer 2 Ethernet interface.
+
+<HUAWEI> display lnp interface gigabitethernet0/0/1
+
+LNP information for GigabitEthernet0/0/1:
+  Port link type: trunk
+  Negotiation mode: desirable
+  Hello timer expiration(s): 19
+  Negotiation timer expiration(s): 0
+  Trunk timer expiration(s): 289
+  FSM state: trunk
+
+  Packets statistics
+  4 packets received
+    0 packets dropped
+      bad version: 0, bad TLV(s): 0, bad port link type: 0,
+      bad negotiation state: 0, other: 0
+  5 packets output
+    0 packets dropped
+      other: 0
+
+Table 5-37 Description of the display lnp interface command output
+
+Item
+	
+
+Description
+
+LNP information for
+	
+
+Layer 2 Ethernet interface on which LNP negotiation information is displayed
+
+Port link type
+	
+Link-type of the Layer 2 Ethernet interface
+
+    Trunk
+    Access
+    Hybrid
+    dot1q-tunnel
+
+Negotiation mode
+	
+Negotiation mode on the Layer 2 Ethernet interface, which can be configured using the port link-type command
+
+    desirable
+    auto
+    on
+    off
+
+Hello timer expiration(s)
+	
+
+Timeout period for the Hello timer
+
+Negotiation timer expiration(s)
+	
+
+Timeout period for the negotiation timer
+
+Trunk timer expiration(s)
+	
+
+Timeout period for the Trunk timer
+
+FSM state
+	
+
+Status of the LNP state machine
+
+Packets statistics
+	
+
+Statistics about LNP packets
+
+packets received
+	
+
+Number of received LNP packets
+
+packets dropped
+	
+
+Number of dropped LNP packets
+
+bad version
+	
+
+Number of LNP packets dropped due to incorrect versions
+
+bad TLV(s)
+	
+
+Number of LNP packets dropped due to incorrect TLVs
+
+bad port link type
+	
+
+Number of LNP packets dropped due to incorrect negotiation results
+
+bad negotiation state
+	
+
+Number of LNP packets dropped due to incorrect negotiation states
+
+other
+	
+
+Number of LNP packets dropped due to other causes
+
+packets output
+	
+
+Number of sent LNP packets
+
+# Display LNP negotiation information on all Ethernet interfaces of a Layer 2 device.
+
+<HUAWEI> display lnp summary
+
+Global LNP : Negotiation enable
+-------------------------------------------------------------------------------
+C: Configured; N: Negotiated; *: Negotiation disable;
+Port         link-type(C)   link-type(N)   InDropped   OutDropped  FSM
+-------------------------------------------------------------------------------
+GE0/0/1      access         access                 0            0  off
+GE0/0/2      desirable      access                 0            0  off
+GE0/0/3      desirable      access                 0            0  off
+GE0/0/4      desirable      access                 0            0  off
+GE0/0/6      desirable      access                 0            0  off
+GE0/0/7      desirable      access                 0            0  off
+GE0/0/8      desirable      access                 0            0  off
+GE0/0/9      desirable      access                 0            0  off
+GE0/0/10     desirable      access                 0            0  off
+
+Table 5-38 Description of the display lnp summary command output
+
+Item
+	
+
+Description
+
+Global LNP
+	
+
+Whether LNP is enabled globally, which can be configured using the lnp disable command
+
+Port
+	
+
+Layer 2 Ethernet interface on which LNP negotiation information is displayed
+
+link-type(C)
+	
+
+Negotiation mode on the Layer 2 Ethernet interface, which can be configured using the port link-type command
+
+link-type(N)
+	
+
+Negotiation result on the Layer 2 Ethernet interface
+
+InDropped
+	
+
+Number of incoming LNP packets that are dropped on the Layer 2 Ethernet interface
+
+OutDropped
+	
+
+Number of outgoing LNP packets that are dropped on the Layer 2 Ethernet interface
+
+FSM
+	
+Status of the LNP state machine
+
+    access
+    trunk
+    on
+    off
+
+display mac-vlan
+Function
+
+Using the display mac-vlan command, you can view the configuration of MAC address-based VLAN assignment.
+Format
+
+display mac-vlan { mac-address { all | mac-address [ mac-address-mask | mac-address-mask-length ] } | vlan vlan-id }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays VLANs associated with all MAC addresses.
+	
+
+-
+
+mac-address mac-address
+	
+
+Displays the VLAN associated with a specified MAC address.
+	
+
+The value is in H-H-H format. H is a hexadecimal number of 1 to 4 digits.
+
+mac-address-mask
+	
+
+Specifies the mask of a MAC address.
+	
+
+The value is in H-H-H format. H is a hexadecimal number of 1 to 4 digits. The default value is FFFF-FFFF-FFFF.
+
+mac-address-mask-length
+	
+
+Specifies the mask length of a MAC address.
+	
+
+The value is an integer that ranges from 1 to 48. The default value is 48.
+
+vlan vlan-id
+	
+
+Displays the configuration of a specified MAC address-based VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After configuring MAC address-based VLAN assignment, you can run the display mac-vlan command to verify the configuration.
+
+When using the display mac-vlan command, pay attention to the following points:
+
+    If mac-address mac-address is specified, the VLAN associated with the specified MAC address is displayed.
+    If mac-address all is specified, all VLANs associated with MAC addresses are displayed.
+    If vlan vlan-id is specified, configuration of the specified MAC address-based VLAN is displayed.
+
+Example
+
+# Display the configuration of all MAC address-based VLANs.
+
+<HUAWEI> display mac-vlan mac-address all
+---------------------------------------------------------------
+MAC Address     MASK            VLAN    Priority
+---------------------------------------------------------------
+00e0-fc12-0006  ffff-ffff-ffff  200     0
+
+Total MAC VLAN address count: 1
+
+Table 5-39 Description of the display mac-vlan command output
+
+Item
+	
+
+Description
+
+MAC Address
+	
+
+MAC address associated with a VLAN.
+
+To specify the parameter, run the mac-vlan mac-address command.
+
+MASK
+	
+
+Mask of a MAC address.
+
+To specify the parameter, run the mac-vlan mac-address command.
+
+VLAN
+	
+
+ID of the VLAN associated with a MAC address.
+
+To specify the parameter, run the mac-vlan mac-address command.
+
+Priority
+	
+
+802.1p priority of the VLAN associated with the MAC address.
+
+To specify the parameter, run the mac-vlan mac-address command.
+display policy-vlan
+Function
+
+Using the display policy-vlan command, you can view the configuration of policy-based VLAN assignment.
+Format
+
+display policy-vlan { all | vlan vlan-id }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays the configuration of all policy-based VLANs.
+	
+
+-
+
+vlan vlan-id
+	
+
+Displays the configuration of a specified policy-based VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After associating MAC address and IP address binding policies to VLANs, you can use the display policy-vlan command to verify the configuration. The command displays the source MAC address, source IP address, interface where a policy-based VLAN is configured, VLAN ID, and VLAN priority.
+
+When using the display policy-vlan command, pay attention to the following points:
+
+    If all is specified, configuration of all policy-based VLANs is displayed.
+    If vlan vlan-id is specified, configuration of the specified policy-based VLAN is displayed.
+
+Precautions
+
+If no policy-based VLAN is configured by using the policy-vlan command, the display policy-vlan does not display any information.
+Example
+
+# Display configuration of policy-based VLAN assignment.
+
+<HUAWEI> display policy-vlan all
+ ------------------------------------------------------------------------
+ MacAddress      IPAddress         Port                  Vlan    Priority
+ ------------------------------------------------------------------------
+ 00e0-fc03-0003  10.2.2.2          GigabitEthernet0/0/1  6       4
+ 00e0-fc02-0002  10.1.1.1          NA                    8       6
+ ------------------------------------------------------------------------
+Total Policy-VLAN count: 2 
+
+Table 5-40 Description of the display policy-vlan command output
+
+Item
+	
+
+Description
+
+MacAddress
+	
+
+Source MAC address bound to a policy-based VLAN.
+
+To specify the parameter, run the policy-vlan command.
+
+IPAddress
+	
+
+Source IP address bound to a policy-based VLAN.
+
+To specify the parameter, run the policy-vlan command.
+
+Port
+	
+
+Interface where the MAC address and IP address are bound.
+
+To specify the parameter, run the policy-vlan command.
+
+Vlan
+	
+
+ID of a policy-based VLAN.
+
+To specify the parameter, run the policy-vlan command.
+
+Priority
+	
+
+802.1p priority of a policy-based VLAN.
+
+To specify the parameter, run the policy-vlan command.
+display port vlan
+Function
+
+The display port vlan command displays information about interfaces of the VLAN.
+Format
+
+display port vlan [ interface-type interface-number | active ] *
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface in the VLAN.
+
+If this parameter is not specified, information about all interfaces in the VLAN is displayed.
+	
+
+-
+
+active
+	
+
+Indicates the interface information of dynamic entries in the VLAN.
+
+The dynamic mappings between VLANs and ports are identified by services such as voice VLAN service or protocols such as GARP VLAN registration protocol (GVRP).
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run the display port vlan command to view information about interfaces of the VLAN and check whether the VLAN is assigned by the command, protocols, or services. If a fault occurs on an interface, you can locate the fault based on the information about the interface and VLAN.
+
+Prerequisite
+
+A VLAN has been created and the Layer 2 interface has joined the VLAN.
+
+Precautions
+If a large number of mappings between interfaces and VLANs exist on the device, you are advised to specify the interface or active to filter the command output. Otherwise, the following problems may occur due to excessive output information:
+
+    The displayed information is repeatedly refreshed, causing required information to fail to be obtained.
+    The system does not respond because of long-time information traverse and search.
+
+Example
+
+# Display information about interfaces that belong to each VLAN on the device.
+
+<HUAWEI> display port vlan
+
+Port                           Link Type    PVID  Trunk VLAN List
+-------------------------------------------------------------------------------
+GigabitEthernet0/0/1           hybrid       1     -
+GigabitEthernet0/0/2           hybrid       1     -
+
+# Display information about all dynamic entries.
+
+<HUAWEI> display port vlan active
+
+T=TAG U=UNTAG 
+-------------------------------------------------------------------------------
+Port             Link Type    PVID    VLAN List
+-------------------------------------------------------------------------------
+GE0/0/3          hybrid       2        T: 10
+GE0/0/4          trunk        10       T: 100
+
+When the stack is set up through service interfaces and service interfaces are configured as physical member interfaces, the physical member interfaces are not displayed in display port vlan and display port vlan active command outputs.
+Table 5-41 Description of the display port vlan command output
+
+Item
+	
+
+Description
+
+Port
+	
+
+Indicates the type and number of the interface.
+
+Link Type
+	
+Types of the interface link:
+
+    access
+    trunk
+    hybrid
+    dot1q-tunnel
+    desirable
+    auto
+
+To specify the parameter, run the port link-type command.
+NOTE:
+
+For the Eth-Trunk member interface, the value is displayed as -.
+
+PVID
+	
+
+Indicates the default VLAN ID of the interface. By default, VLAN 1 is the default VLAN of all interfaces.
+
+For interfaces of the access and dot1q types and those interfaces negotiated as the access type, you can run the port default vlan command to configure the default VLAN. For interfaces of the hybrid type, you can run the port hybrid pvid vlan command to configure the default VLAN. For interfaces of the trunk type and those interfaces negotiated as the trunk type, you can run the port trunk pvid vlan command to configure the default VLAN.
+NOTE:
+
+For the Eth-Trunk member interface, the value is displayed as 0.
+
+Trunk VLAN List
+	
+
+Indicates the VLAN IDs of packets that are statically configured to pass through an interface.
+
+VLAN List
+	
+
+    Indicates the VLAN IDs that are dynamically added by an interface.
+    Indicates the VLAN IDs of packets that are statically configured to pass through an interface.
+
+display protocol-vlan interface
+Function
+
+The display protocol-vlan interface command displays the protocol-based VLAN configuration on a specified interface or all interfaces.
+Format
+
+display protocol-vlan interface { all | interface-type interface-number }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays the protocol-based VLANs configured on all interfaces.
+	
+
+-
+
+interface-type interface-number
+	
+Displays the protocol-based VLAN configured on a specified interface.
+
+    interface-type specifies the type of an interface.
+    interface-number specifies the number of an interface.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After associating an interface with a protocol-based VLAN, you can use the display protocol-vlan interface command to verify the configuration.
+
+Precautions
+
+If no protocol-based VLAN is configured by using the protocol-vlan vlan command, the display protocol-vlan interface command displays no information.
+Example
+
+# Display the protocol-based VLAN associated with GE0/0/1.
+
+<HUAWEI> display protocol-vlan interface gigabitethernet 0/0/1
+-------------------------------------------------------------------------------
+ Interface                VLAN    Index        Protocol Type           Priority
+-------------------------------------------------------------------------------
+ GigabitEthernet0/0/1     2       2            ipv4                    4   
+
+Table 5-42 Description of the display protocol-vlan interface command output
+
+Item
+	
+
+Description
+
+Interface
+	
+
+Interface associated with a protocol-based VLAN.
+
+To specify the parameter, run the protocol-vlan vlan command.
+
+VLAN
+	
+
+ID of a protocol-based VLAN.
+
+To specify the parameter, run the protocol-vlan vlan command.
+
+Index
+	
+
+Index of a protocol.
+
+To specify the parameter, run the protocol-vlan vlan command.
+
+Protocol Type
+	
+
+Type of a protocol.
+
+To specify the parameter, run the protocol-vlan command.
+
+Priority
+	
+
+802.1p priority of the VLAN associated with a protocol.
+
+To specify the parameter, run the protocol-vlan command.
+display protocol-vlan vlan
+Function
+
+The display protocol-vlan vlan command displays the types and indexes of the protocols associated with VLANs.
+Format
+
+display protocol-vlan vlan { all | vlan-id1 [ to vlan-id2 ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays the protocols associated with all VLANs.
+	
+
+-
+
+vlan-id1 [ to vlan-id2 ]
+	
+Displays the protocols associated with specified VLANs.
+
+    vlan-id1 specifies the start VLAN ID.
+    vlan-id2 specifies the end VLAN ID.
+
+	
+
+The value of vlan-id1 is an integer that ranges from 1 to 4094.
+
+vlan-id2 is an integer that ranges from 1 to 4094. The value of vlan-id2 must be greater than or equal to the value of vlan-id1.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring protocol-based VLANs, you can use the display protocol-vlan vlan command to verify the configuration.
+Example
+
+# Display types and indexes of protocols associated with VLANs.
+
+<HUAWEI> display protocol-vlan vlan all
+----------------------------------------------------------------
+ VLAN           Protocol Index    Protocol Type
+----------------------------------------------------------------
+ 2              2                 ipv4                              
+
+Table 5-43 Description of the display protocol-vlan vlan command output
+
+Item
+	
+
+Description
+
+VLAN
+	
+
+ID of a protocol-based VLAN.
+
+To specify the parameter, run the protocol-vlan command.
+
+Protocol Index
+	
+
+Index of a protocol.
+
+To specify the parameter, run the protocol-vlan command.
+
+Protocol Type
+	
+
+Type of a protocol.
+
+To specify the parameter, run the protocol-vlan command.
+display vlan
+Function
+
+The display vlan command displays information about VLANs.
+Format
+
+display vlan [ vlan-id [ verbose | statistics [ slot slot-id ] | port-info ] ]
+
+display vlan [ vlan-id1 [ to vlan-id2 ] ]
+
+display vlan summary [ slot slot-id ]
+
+display vlan vlan-name vlan-name [ statistics | verbose ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of a VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+vlan-id1 [ to vlan-id2 ]
+	
+Specifies a range of VLAN IDs.
+
+    vlan-id1 specifies the first VLAN ID.
+    to vlan-id2 specifies the last VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1. If to vlan-id2 is not specified, only information about the VLAN specified by vlan-id1 is displayed.
+
+	
+
+    The value of vlan-id1 is an integer that ranges from 1 to 4094.
+    The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+statistics
+	
+
+Displays traffic statistics on interfaces in a specified VLAN.
+
+If traffic statistics is enabled in the VLAN view, the display vlan vlan-id statistics command can be used to view VLAN traffic statistics.
+	
+
+-
+
+slot slot-id
+	
+
+Displays VLAN traffic statistics or summary in a specified slot.
+	
+
+The value is an integer and must be the slot ID of a running card.
+
+summary
+	
+
+Displays summary of all VLANs.
+	
+
+-
+
+verbose
+	
+
+Displays detailed information about a specified VLAN.
+
+If verbose is not specified, only brief information about the VLAN is displayed.
+	
+
+-
+
+vlan-name vlan-name
+	
+
+Specifies a VLAN name.
+	
+
+The name is a string of 1 to 31 case-sensitive characters, spaces not supported.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+
+port-info
+	
+
+Displays information about all interfaces in a specified VLAN.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+The display vlan command displays VLAN configuration or packet statistics on interfaces in a VLAN.
+
+The display vlan vlan-id command displays the ports that actually take effect, and the display vlan vlan-id verbose command displays the configured ports.
+
+Prerequisites
+
+Before using the display vlan vlan-id statistics command, run the statistic enable (vlan view) command in the corresponding VLAN view to enable the traffic statistics function in the VLAN.
+
+Precautions
+
+If no parameter is specified, brief information about all VLANs is displayed.
+Example
+
+# Display brief information about all VLANs.
+
+<HUAWEI> display vlan
+The total number of VLANs is : 3                                              
+--------------------------------------------------------------------------------
+U: Up;         D: Down;         TG: Tagged;         UT: Untagged;               
+MP: Vlan-mapping;               ST: Vlan-stacking;                              
+#: ProtocolTransparent-vlan;    *: Management-vlan;                             
+--------------------------------------------------------------------------------
+                                                                                
+VID  Type    Ports                                                              
+--------------------------------------------------------------------------------
+1    common  UT:GE0/0/1(D)            
+9    common  TG:GE0/0/2(D)      Eth-Trunk1(D)   
+40   common                                                                     
+
+VID  Status  Property      MAC-LRN Statistics Description                       
+--------------------------------------------------------------------------------
+1    enable  default       enable  disable    VLAN 0001                         
+9    enable  default       enable  disable    VLAN 0009                  
+40   enable  default       enable  disable    VLAN 0040                         
+
+# Display detailed information about VLAN 100.
+
+<HUAWEI> display vlan 100 verbose
+* : Management-VLAN
+---------------------
+  VLAN ID                     : 100
+  VLAN Name                   :
+  VLAN Type                   : Common
+  Description                 : VLAN 0100
+  Status                      : Enable
+  Broadcast                   : Enable
+  MAC Learning                : Enable
+  Smart MAC Learning          : Disable
+  Current MAC Learning Result : Enable
+  Statistics                  : Disable
+  Property                    : Default
+  VLAN State                  : Down
+  ----------------
+  Tagged        Port: GigabitEthernet0/0/1
+  ----------------
+  Active  Tag   Port: GigabitEthernet0/0/1
+-------------------
+Interface            Physical
+GigabitEthernet0/0/1                   DOWN
+
+# Display interface traffic statistics in VLAN 10 on S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S. If no interface is added to VLAN 10, Slot information is not displayed.
+
+<HUAWEI> display vlan 10 statistics
+ Total                                                                                                                              
+ VLAN : 10                                                                                                                          
+ ---------------------------------------------------------------------------------                                                  
+ Item                                          Packets                       Bytes                                                  
+                                                   pps                         bps                                                  
+ ---------------------------------------------------------------------------------                                                  
+ Inbound                                             0                           0                                                  
+                                                     0                           0                                                  
+ Outbound                                            0                           0                                                  
+                                                     0                           0                                                  
+ ---------------------------------------------------------------------------------                                                  
+ Slot : 0                                                                                                                             VLAN : 10                                                                                                                            ---------------------------------------------------------------------------------                                                    Item                                          Packets                       Bytes                                                                                                      pps                         bps                                                    ---------------------------------------------------------------------------------                                                    Inbound                                             0                           0                                                                                                        0                           0                                                    Outbound                                            0                           0                                                                                                        0                           0                                                    ---------------------------------------------------------------------------------
+
+# Display interface traffic statistics in VLAN 10 on other devices except the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S. If no interface is added to VLAN 10, Slot information is not displayed.
+
+<HUAWEI> display vlan 10 statistics
+ Total                                                                                                                              
+ VLAN : 10                                                                                                                          
+ ---------------------------------------------------------------------------------                                                  
+ Item                                          Packets                       Bytes                                                  
+                                                   pps                         bps                                                  
+ ---------------------------------------------------------------------------------                                                  
+ Inbound                                             0                           -                                                  
+                                                     0                           -                                                  
+ Outbound                                            0                           -                                                  
+                                                     0                           -                                                  
+ Inbound unknown-unicast                             -                           -                                                  
+                                                     -                           -                                                  
+ Inbound multicast                                   0                           -                                                  
+                                                     0                           -                                                  
+ Inbound broadcast                                   0                           -                                                  
+                                                     0                           -                                                  
+ Inbound drop                                        -                           -                                                  
+                                                     -                           -                                                  
+ ---------------------------------------------------------------------------------                                                  
+ Inbound drop-percentage                             -                           -                                                  
+ ---------------------------------------------------------------------------------                                                  
+ Slot : 0                                                                                                                             VLAN : 10                                                                                                                            ---------------------------------------------------------------------------------                                                    Item                                          Packets                       Bytes                                                                                                      pps                         bps                                                    ---------------------------------------------------------------------------------                                                    Inbound                                             0                           -                                                                                                        0                           -                                                    Outbound                                            0                           -                                                                                                        0                           -                                                    Inbound unknown-unicast                             -                           -                                                                                                        -                           -                                                    Inbound multicast                                   0                           -                                                                                                        0                           -                                                    Inbound broadcast                                   0                           -                                                                                                        0                           -                                                    Inbound drop                                        -                           -                                                                                                        -                           -                                                    ---------------------------------------------------------------------------------                                                    Inbound drop-percentage                             -                           -                                                    ---------------------------------------------------------------------------------
+
+# Display summary of all VLANs.
+
+<HUAWEI> display vlan summary
+Static VLAN:                                                                    
+Total 3 static VLAN.                                                            
+  1 9 to 10                                                                     
+                                                                                
+Dynamic VLAN:                                                                   
+Total 0 dynamic VLAN.                                                           
+                                                                                
+Reserved VLAN:
+Total 5 reserved VLAN.
+  Rrpp reserved:
+  3000 to 3001
+  Sep reserved:
+  3100
+  
+Stack-VLAN:   212 to 213  
+
+# Display interface information of a specific VLAN.
+
+<HUAWEI> display vlan 1 port-info
+VLAN  Interface              PHY      Auto-Neg   Duplex  Bandwidth 
+1     GigabitEthernet0/0/1   UP       enable     full    1000M 
+1     GigabitEthernet0/0/2   DOWN     enable     full    1000M 
+1     GigabitEthernet0/0/3   DOWN     disable    full    1000M 
+
+Table 5-44 Description of the display vlan command output
+
+Item
+	
+
+Description
+
+VID, VLAN, or VLAN ID
+	
+
+ID of a VLAN.
+
+Type or VLAN Type
+	
+Type of a VLAN:
+
+    mux: principal VLAN used in the MUX VLAN function
+
+    mux-sub: subordinate VLAN used in the MUX VLAN function
+
+    super: super-VLAN used for VLAN aggregation
+
+    sub: sub-VLAN used for VLAN aggregation
+
+    Common: common VLAN
+
+    *Common: management VLAN
+
+    dynamic: dynamic VLAN
+
+Ports
+	
+
+Interfaces in a VLAN.
+
+VLAN Name
+	
+
+Name of a VLAN.
+
+Description
+	
+
+Description of a VLAN.
+
+Status
+	
+
+Status of a VLAN. The value is always Enable.
+
+Broadcast
+	
+
+Whether the broadcast function is enabled in a VLAN:
+
+    Disable: The broadcast function is disabled.
+    Enable: The broadcast function is enabled.
+
+MAC Learning/MAC-LRN
+	
+Whether MAC address learning is enabled:
+
+    Disable: MAC address learning is disabled.
+
+    Enable: MAC addresses learning is enabled.
+
+Smart MAC Learning
+	
+Whether smart MAC address learning is enabled:
+
+    Disable: Smart MAC address learning is disabled.
+
+    Enable: Smart MAC addresses learning is enabled.
+
+Current MAC Learning Result
+	
+
+MAC address learning result.
+
+Statistics
+	
+
+Whether the traffic statistics function is enabled in a VLAN:
+
+    Disable: Traffic statistics function is disabled.
+    Enable: Traffic statistics function is enabled.
+
+Property
+	
+Property of a VLAN:
+
+    Default: default VLAN
+    MulticastVlan: multicast VLAN
+    UserVlan: user VLAN
+
+VLAN State
+	
+Status of the VLAN:
+
+    Up
+    Down
+
+The status of a VLAN is determined by the status of member interfaces in the VLAN. A VLAN is Up only when at least one member interface in the VLAN is Up.
+
+Tagged/Untagged Port
+	
+
+Interfaces that are manually added to a VLAN in tagged or untagged mode.
+
+Active Tag/Active Untag Port
+	
+
+Active interfaces that join a VLAN in tagged or untagged mode.
+
+Inbound
+	
+
+Total incoming traffic volume.
+
+Outbound
+	
+
+Total outgoing traffic volume.
+
+Inbound unknown-unicast
+	
+
+Number of incoming unknown unicast packets.
+
+Inbound multicast
+	
+
+Number of incoming multicast packets.
+
+Inbound broadcast
+	
+
+Number of incoming broadcast packets.
+
+Inbound drop
+	
+
+Number of discarded incoming packets.
+NOTE:
+
+For the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, if the statistic enable command is configured in a VLAN and the port discard tagged-packet command is configured on an interface and the interface is configured to allow packets from the specified VLAN to pass through, this item does not take effect.
+
+Inbound drop-percentage
+	
+
+Percentage of discarded incoming packets.
+NOTE:
+
+For the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, if the statistic enable command is configured in a VLAN and the port discard tagged-packet command is configured on an interface and the interface is configured to allow packets from the specified VLAN to pass through, this item does not take effect.
+
+Static VLAN
+	
+
+VLANs that are created manually.
+
+Dynamic VLAN
+	
+
+VLANs that are learned dynamically.
+
+Reserved VLAN
+	
+
+VLANs that are reserved for certain functions.
+
+Rrpp reserved
+	
+
+VLANs used by the Rapid Ring Protection Protocol (RRPP). This field is displayed only when RRPP is configured on the switch.
+
+Sep reserved
+	
+
+VLANs used by the Smart Ethernet Protocol (SEP). This field is displayed only when SEP is configured on the switch.
+
+Stack-VLAN
+	
+
+VLANs configured in a stack. This field is displayed only when the switch is in a stack.
+
+Interface
+	
+
+The name and number of an interface. All interfaces are displayed in the alphabetical order.
+
+PHY
+	
+The physical status of the interface, including:
+
+    UP: The physical layer of this interface works properly.
+
+    DOWN: The physical layer of this interface becomes faulty.
+
+Auto-Neg
+	
+Indicates whether auto-negotiation is enabled on the interface. The value can be:
+
+    enable: indicates that the interface is enabled with auto-negotiation.
+
+    disable: indicates that the interface is disabled with auto-negotiation.
+
+Duplex
+	
+Duplex mode of the interface:
+
+    half: The interface works in half-duplex mode.
+
+    full: The interface works in full-duplex mode.
+
+    auto: The interface works in auto-negotiation mode.
+
+Bandwidth
+	
+
+Indicates the bandwidth of the interface.
+interface vlanif
+Function
+
+The interface vlanif command creates a VLANIF interface and displays the VLANIF interface view.
+
+The undo interface vlanif command deletes a VLANIF interface.
+
+By default, VLANIF interfaces are not created.
+Format
+
+interface vlanif vlan-id
+
+undo interface vlanif vlan-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of the VLAN that a VLANIF interface belongs to.
+	
+
+    S2710-SI/S5710-C-LI: 1
+    S2700-SI/S2700-EI/S5710-X-LI: 8
+    S2720-EI (V200R006C10, V200R009C00, V200R010C00): 8
+    S2720-EI (V200R011C10, V200R012C00, V200R013C00, V200R019C00, V200R019C10): 1024
+    S2730S-S: 1024
+    S3700-SI/S3700-EI/S3700-HI/S5700-SI/S5700-EI: 256
+    S5700-HI/S5730-SI/S5735S-H/S5736-S/S5730S-EI/S5720-EI/S5731-S/S5731S-S/S5710-HI/S5720I-SI/S5720-SI/S5720S-SI/S5720-LI/S5720S-LI/S6730-S/S6730S-S/S6720-LI/S6720S-LI/S6720-SI/S6720S-S/S6720S-SI/S6735-S: 1024
+    S5720-HI/S5730-HI/S5731-H/S5731S-H/S5732-H/S6720-HI/S6730-H/S6730S-H: 1024 in versions earlier than V200R019C10 and 4096 in V200R019C10 and later versions
+    S5735-L/S5735-S/S5735-S-I:
+
+    1019 in versions earlier than V200R019C10 and 1024 in V200R019C10 and later versions
+    S5735-L-I/S5735-L1/S5735S-L1/S500/S300: 1024
+    NOTE:
+
+    On the S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L1, S5735-L-I and S5735S-L1 running V200R020C10 or a later version, if the resource allocation mode is set to enhanced-mac, a maximum of eight VLANIF interfaces can be configured.
+
+    S2750-EI/S5700-LI/S5700S-LI: 1 in versions earlier than V200R005 and 8 in V200R005 and later versions
+    S5710-EI/S6700-EI: 256 in versions earlier than V200R005 and 1024 in V200R005
+
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a device needs to communicate with devices at the network layer, you can create a logical interface based on a VLAN on the device, namely, a VLANIF interface. A VLANIF interface is a network layer interface and can be configured with an IP address. The device then users the VLANIF interface to communicate with devices at the network layer.
+
+Follow-up Procedure
+
+Run the ip address to assign an IP address to the VLANIF interface.
+
+Precautions
+
+    A VLANIF interface goes Up only after the following conditions are met:
+        The corresponding VLAN must have been created.
+        A physical interface or Eth-Trunk in Up state has been added to the corresponding VLAN.
+
+    After a VLANIF interface is configured, the corresponding VLAN cannot be configured as a VLAN for Dot1q termination sub-interfaces or an outer VLAN for QinQ termination sub-interfaces.
+    If the specified VLANIF interface exists, the interface vlanif command displays the VLANIF interface view directly.
+    When a VLANIF interface is used as a management VLANIF interface where you can telnet to the device, the user VLAN ID cannot be the same as the management VLAN ID; otherwise, you will fail to telnet to the device.
+    For the S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1,and S5735S-L1, if the resource allocation mode is set to enhanced-mac using the assign resource-mode enhanced-mac global command, a maximum of eight VLANIF interfaces can be created; if the device has already more than eight VLANIF interfaces configured, after the enhanced-mac resource allocation mode is configured, only the eight VLANIF interfaces with the smallest VLAN IDs are reserved.
+
+Example
+
+# Create VLANIF 2 and enter the VLANIF interface view.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] quit 
+[HUAWEI] interface vlanif 2
+[HUAWEI-Vlanif2]
+
+ip-subnet-vlan
+Function
+
+Using the ip-subnet-vlan command, you can associate an IP subnet with a VLAN.
+
+Using the undo ip-subnet-vlan command, you can disassociate an IP subnet from a VLAN.
+
+By default, a VLAN is not associated with any IP subnet.
+Format
+
+ip-subnet-vlan [ ip-subnet-index ] ip ip-address { mask | mask-length } [ priority priority ]
+
+undo ip-subnet-vlan { ip-subnet-index [ to ip-subnet-end ] | all }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-subnet-index
+	
+
+Specifies the index of an IP subnet. It can be set manually or automatically generated by the system according to the order in which IP subnets were associated with a VLAN.
+	
+
+The value is an integer that ranges from 1 to 12.
+
+ip ip-address { mask | mask-length }
+	
+Specifies the source IP address or network segment associated with a VLAN.
+
+    ip-address specifies the source IP address or IP subnet.
+
+    mask specifies the subnet mask.
+
+    mask-length specifies the mask length.
+
+	
+
+    ip-address is in dotted decimal notation.
+
+    mask is in dotted decimal notation.
+
+    mask-length is an integer that ranges from 0 to 32.
+
+priority priority
+	
+
+Specifies the 802.1p priority of the VLAN associated with an IP address or subnet.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority. The default value is 0.
+
+to ip-subnet-end
+	
+
+Specifies the end subnet index.
+	
+
+The value is an integer that ranges from 1 to 12 and must be greater than or equal to ip-subnet-index.
+
+all
+	
+
+Disassociates all the IP subnets from a VLAN.
+	
+
+-
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The ip-subnet-vlan command associates IP subnets with VLANs so that packets from different subnets are transmitted in different VLANs. On a network, if only one service is deployed on each subnet, you can associate IP subnets with VLANs to simplify VLAN configuration. In addition, you can add, modify, and move users on subnets without changing the VLAN configuration.
+
+Follow-up Procedure
+
+Add an interface to the VLAN and enable IP subnet-based VLAN assignment on the interface.
+
+Precautions
+
+On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, and S5720S-LI, when the ip error-packet-check disable command is used to disable IP packet check, IP subnet-based VLAN assignment and policy-based VLAN assignment do not take effect.
+
+If you run the ip-subnet-vlan command multiple times in the same VLAN view, all the specified IP subnets are associated with the VLAN.
+
+    The control VLAN of an RRPP ring cannot be associated with IP subnets.
+
+    The IP subnet or the IP address associated with a VLAN cannot be a multicast network segment or multicast address.
+
+Example
+
+# Associate VLAN 3 with network segment 10.10.10.0/24 so that the packets originated from this segment can be transmitted in VLAN 3.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 3
+[HUAWEI-vlan3] ip-subnet-vlan ip 10.10.10.0 255.255.255.0
+
+ip-subnet-vlan enable
+Function
+
+The ip-subnet-vlan enable command enables IP subnet-based VLAN assignment on an interface.
+
+The undo ip-subnet-vlan enable command disables IP subnet-based VLAN assignment on an interface.
+
+By default, IP subnet-based VLAN assignment is disabled on an interface.
+Format
+
+ip-subnet-vlan enable
+
+undo ip-subnet-vlan enable
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, port group view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+IP subnets can be associated with VLANs so that packets from different subnets are transmitted in different VLANs. On a network, if only one service is deployed on each subnet, you can associate IP subnets with VLANs to simplify VLAN configuration. In addition, you can add, modify, and move users on subnets without changing the VLAN configuration.
+If IP subnet-based VLAN assignment is enabled on an interface:
+
+    When receiving an untagged packet, the interface searches for the VLAN entry matching the source IP address of the packet. If a matching entry is found, the interface forwards the packet based on the matching VLAN ID and priority. If no matching entry is found, the interface uses other matching rules to forward the packet.
+    When receiving a tagged packet, the interface forwards the packet based on the port-based VLAN configuration.
+
+Precautions
+
+On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, and S5720S-LI, when the ip error-packet-check disable command is used to disable IP packet check, IP subnet-based VLAN assignment and policy-based VLAN assignment do not take effect.
+
+On access and trunk interfaces, IP subnet-based VLAN assignment can be used only when the IP subnet-based VLAN is the same as the PVID. It is recommended that IP subnet-based VLAN assignment be configured on hybrid interfaces.
+
+When multiple VLAN assignment methods are configured on the device, the device assigns VLANs based on priorities of these methods.
+Example
+
+# Enable IP subnet-based VLAN assignment.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] ip-subnet-vlan enable
+
+lnp disable
+Function
+
+The lnp disable command disables LNP negotiation on a device.
+
+The undo lnp disable command enables LNP negotiation on a device.
+
+By default, LNP negotiation is enabled on all interfaces of a device.
+Format
+
+lnp disable
+
+undo lnp disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, LNP negotiation is enabled for all interfaces on a Layer 2 device. If an LNP-capable Layer 2 device is connected to an LNP-incapable Layer 2 device, the LNP-capable device keeps sending LNP packets, wasting bandwidth resources. To disable LNP negotiation on all interfaces of a Layer 2 device, run the lnp disable or undo lnp enable command.
+
+To disable LNP negotiation on a Layer 2 Ethernet interface, run the port negotiation disable command in the interface view.
+
+Precautions
+
+    When the switch is upgraded from an earlier version of V200R005C00 to V200R005C00 or later, the link type auto-negotiation function is automatically disabled globally.
+
+    By default, LNP negotiation is enabled for all interfaces on a Layer 2 device. If you run the lnp disable command in the system view to disable LNP negotiation on all interfaces of a Layer 2 device. LNP negotiation cannot be enabled on a Layer 2 Ethernet interface by running the undo port negotiation disable command in the interface view.
+
+    The lnp disable command has no impact on services before the device restarts. However, after the device restarts, Layer 2 forwarding can be performed only for the manually configured VLANs. The port default vlan 1 command is configured by default, so only packets of VLAN 1 can be forwarded at Layer 2.
+
+    For LNP negotiation to take effect, LNP negotiation must be enabled on both the device and Layer 2 Ethernet interfaces.
+    This command is not supported in NETCONF mode.
+
+Example
+
+# Disable LNP negotiation on a device.
+
+<HUAWEI> system-view
+
+[HUAWEI] lnp disable
+
+mac-learning smart vlan enable
+Function
+
+The mac-learning smart vlan enable command enables flexible MAC address learning in a specified VLAN.
+
+The undo mac-learning smart vlan enable command disables flexible MAC address learning in a specified VLAN.
+
+By default, flexible MAC address learning is disabled in a VLAN.
+Format
+
+mac-learning smart vlan { vlan-id1 [ to vlan-id2 ] } &<1-10> enable
+
+undo mac-learning smart vlan { vlan-id1 [ to vlan-id2 ] } &<1-10> enable
+Parameters
+Parameter 	Description 	Value
+vlan-id1 	Specifies the start VLAN ID. 	The value is an integer ranging from 1 to 4094.
+to vlan-id2 	Specifies the end VLAN ID. 	The value is an integer ranging from 1 to 4094. The value of vlan-id2 must be greater than the value of vlan-id1.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Enterprises usually adopt the ring or tree network topology to construct enterprise networks. Both network topologies require that devices at the convergence layer be able to learn a large number of MAC addresses in the case of enormous number of attached users.
+
+As the number of attached users keeps growing, the specification of MAC entries supported by the devices cannot meet the need. As a result, MAC addresses of some users cannot be learned, and the packets of these users are broadcast in the VLAN, wasting network bandwidth and affecting the network performance.
+
+To prevent the preceding problem, you can run the mac-learning smart vlan enable command in the system view to enable flexible MAC address learning in a VLAN. When less than three interfaces in the VLAN are Up, the system automatically disables MAC address learning in the VLAN, avoiding unnecessary resource consumption due to MAC address learning.
+
+Prerequisites
+The command takes effect only when the following operations are complete.
+
+    Run the vlan command to create a VLAN. If the device supports the dynamic VLAN function, you do not need to run the vlan command to create the VLAN.
+    Run the undo mac-address learning disable command in the VLAN view to enable MAC address learning.
+
+Precautions
+
+The system will delete the MAC entries after enabling flexible MAC address learning in the specified VLAN. When the number of Up interfaces in the VLAN exceeds 2, the system automatically enables MAC address learning in the VLAN. If a VLAN is configured as a MUX VLAN or is used as the outer VLAN in VLAN stacking or VLAN mapping configuration, flexible MAC address learning does not take effect in the VLAN.
+
+If the mac-learning smart vlan command is run more than once, all configurations take effect.
+Example
+
+# Configure the system to automatically disable MAC address learning in VLAN 10.
+
+<HUAWEI> system-view
+[HUAWEI] undo mac-learning smart vlan 10 enable
+
+mac-vlan enable
+Function
+
+The mac-vlan enable command enables MAC address-based VLAN assignment on an interface.
+
+The undo mac-vlan enable command disables MAC address-based VLAN assignment on an interface.
+
+By default, MAC address-based VLAN assignment is disabled on an interface.
+Format
+
+mac-vlan enable
+
+undo mac-vlan enable
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, port group view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If user devices move frequently on a network, you can use the mac-vlan mac-address command to associate MAC addresses with VLANs. When a user moves, you do not need to assign a VLAN to the user again. This improves security and access flexibility on the network. To enable an interface to forward packets based on associations between MAC addresses and VLANs, you must run the mac-vlan enable command to enable MAC address-based assignment on the interface.
+If MAC address-based assignment is enabled on an interface:
+
+    When receiving an untagged packet, the interface searches for the VLAN entry matching the source MAC address of the packet. If a matching entry is found, the interface forwards the packet using the VLAN ID and priority in the entry. If no matching entry is found, the interface uses other matching rules to forward the packet.
+    When receiving a tagged packet, the interface forwards the packet based on the port-based VLAN configuration.
+
+Precautions
+
+On access and trunk interfaces, MAC address-based VLAN assignment can be used only when the MAC address-based VLAN is the same as the PVID. It is recommended that MAC address-based VLAN assignment be configured on hybrid interfaces.
+
+The MUX VLAN function and MAC address-based VLAN assignment cannot be enabled on the same interface.
+
+MAC address-based VLAN assignment and MAC address authentication cannot be enabled on the same interface.
+
+When multiple VLAN assignment methods are configured on the switch, the switch assigns VLANs based on priorities of these methods.
+
+MAC address-based VLAN assignment on an interface and NAC conflict on an interface; therefore, the mac-vlan enable and mac-authen, dot1x enable, web-auth-server or authentication-profile commands cannot be used on the same interface.
+Example
+
+# Enable MAC address-based VLAN assignment on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] mac-vlan enable
+
+mac-vlan mac-address
+Function
+
+The mac-vlan mac-address command associates a MAC address with a VLAN.
+
+The undo mac-vlan mac-address command cancels the association between MAC addresses and VLANs.
+
+By default, the MAC addresses are not associated with VLANs.
+Format
+
+mac-vlan mac-address mac-address [ mac-address-mask | mac-address-mask-length ] [ priority priority ]
+
+undo mac-vlan mac-address { all | mac-address [ mac-address-mask | mac-address-mask-length ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+mac-address
+	
+
+Specifies the MAC address to be associated with a VLAN.
+	
+
+The value is in H-H-H format. H is a hexadecimal number of 4 digits, for example, 00e0 and fc01. If you enter less than four digits, 0s are prefixed to the input digits. For example, if you enter e0, the system changes e0 to 00e0. The MAC address cannot be 0000-0000-0000, FFFF-FFFF-FFFF, or a multicast MAC address.
+
+mac-address-mask
+	
+
+Specifies the mask of a MAC address.
+	
+
+The value is in H-H-H format. H is a hexadecimal number of 1 to 4 digits. The default value is FFFF-FFFF-FFFF.
+
+mac-address-mask-length
+	
+
+Specifies the length of a MAC address mask.
+	
+
+The value is an integer that ranges from 1 to 48. The default value is 48.
+
+priority priority
+	
+
+Specifies the 802.1p priority of the VLAN to be associated with a MAC address.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority. The default value is 0.
+
+all
+	
+
+Specifies all the MAC addresses associated with a VLAN.
+	
+
+-
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If user devices move frequently on a network, you can use the mac-vlan mac-address command to associate MAC addresses with VLANs. The switch then assigns VLANs to packets based on source MAC addresses of packets. Before forwarding a packet, the switch tags the packet with the VLAN associated with the source MAC address. When a user device moves, you do not need to assign a VLAN to the user device again. This improves security and access flexibility on the network.
+
+You can specify the 802.1p priority of the VLAN to be associated with the specific MAC address. In this manner, when the switching device is congested, the switching device preferentially sends frames with high priorities.
+
+Follow-up Procedure
+
+Add an interface to the VLAN and enable MAC address-based VLAN assignment on the interface.
+
+Precautions
+
+    When the mac-vlan mac-address command with the same MAC address specified is executed multiple times, MAC-VLAN entries take effect according to the longest match principle. On the S6735-S, MAC-VLAN entries take effect according to the longest match principle only when the subnet mask has 47 bits or less than 47 bits. A MAC-VLAN entry with a 48-bit subnet mask has the lowest priority.
+
+    After a MAC address is associated with a VLAN, it cannot be associated with other VLANs.
+
+    If you run the mac-vlan mac-address command multiple times in the same VLAN view, all the specified MAC addresses are associated with the VLAN.
+    The total number of MAC-VLAN entries is the number of configured MAC-VLAN entries multiplied by the number of interfaces where MAC-VLAN entries are delivered. On different models, the number of MAC-VLAN entries is different:
+        The S5720I-SI, S5735-S, S5735-S-I, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support a maximum of 1024 MAC-VLAN entries and a maximum of 64 MAC-VLAN entries with the mask.
+        The SS1720GW-E, S1720GWR-E, S500S5720S-LI, S5735S-H, S5736-S, S6720S-S, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1 support a maximum of 512 MAC-VLAN entries and a maximum of 64 MAC-VLAN entries with the mask.
+        Other models support a maximum of 512 MAC-VLAN entries and a maximum of 32 MAC-VLAN entries with the mask.
+
+Example
+
+# Associate MAC address 22-33-44 with VLAN 100.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] mac-vlan mac-address 22-33-44
+
+management-vlan
+Function
+
+Using the management-vlan command, you can configure a VLAN as a management VLAN.
+
+Using the undo management-vlan command, you can cancel the configuration.
+
+By default, no VLAN is configured as a management VLAN.
+Format
+
+management-vlan
+
+undo management-vlan
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To use a network management system to manage multiple devices, create a VLANIF interface on each device and configure a management IP address for the VLANIF interface. You can then log in to a device and manage it using its management IP address. If a user-side interface is added to the VLAN, users connected to the interface can also log in to the device. This brings security risks to the device.
+
+After a VLAN is configured as a management VLAN, no access interface or dot1q-tunnel interface can be added to the VLAN. An access interface or a dot1q-tunnel interface is connected to users. The management VLAN forbids users connected to access and dot1q-tunnel interfaces to log in to the device, improving device performance.
+
+Follow-up Procedure
+
+Create a VLANIF interface corresponding to the VLAN and configure a management IP address on the VLANIF interface.
+
+Precautions
+
+VLAN 1 cannot be configured as a management VLAN.
+
+You can run the display vlan command to view the management VLAN configuration. In the command output, the VLAN marked with a * is the management VLAN.
+
+After a VLAN is configured as a management VLAN, only trunk and hybrid interfaces can be added to the VLAN.
+
+VCMP will be disabled if a managedment VLAN is configured.
+Example
+
+# Configure VLAN 100 as a management VLAN.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] management-vlan
+
+name (VLAN view)
+Function
+
+The name command configures a name for a VLAN.
+
+The undo name command deletes a configured VLAN name.
+
+By default, a VLAN does not have a name.
+Format
+
+name vlan-name
+
+undo name
+Parameters
+Parameter 	Description 	Value
+vlan-name 	Specifies the VLAN name. 	The name is a string of 1 to 31 case-sensitive characters, spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If a device is configured with multiple VLANs for transmitting different services, you can name the VLANs in their corresponding VLAN views to facilitate service management. In this manner, you can check the deployed services of a VLAN by the VLAN name.
+
+After VLANs are named, you can run the vlan vlan-name command in the system view to enter the view of a specific VLAN, and then check or modify the configuration of the VLAN.
+Example
+
+# Create VLAN 2, which is used to transmit voice services, and name it as voice.
+
+<HUAWEI> system-view
+
+[HUAWEI] vlan 2
+
+[HUAWEI-vlan2] name voice
+
+ping mac
+
+Function
+
+The ping mac command enables the system to monitor connectivity between the local device and the destination device. This detection is called GMAC ping.
+Format
+
+ping mac mac-address vlan vlan-id [ interface interface-type interface-number | -c count | -s packetsize | -t timeout | -p priority-value ] *
+Parameters
+Parameter 	Description 	Value
+
+mac-address
+	
+
+Specifies the MAC address of the destination node.
+An MP's MAC address can be a bridge MAC address or the MAC address of the interface where the MP is configured. The MAC address depends on the configured MP address model:
+
+    If the shared MP address model is configured, an MP uses a bridge MAC address as its own MAC address.
+
+    If the independent MP address model is configured, an MP uses the MAC address of the interface where the MP is configured.
+
+	
+
+The destination node can be a MEP or a MIP. The value is in H-H-H format. An H is a hexadecimal number of 1 to 4 digits. The value cannot be a broadcast or multicast MAC address.
+
+vlan vlan-id
+	
+
+Specifies the ID of a VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+interface interface-type interface-number
+	
+
+Specifies the outbound interface on the local device for sending ping packets.
+
+    interface-type specifies the interface type.
+
+    interface-number specifies the interface number.
+
+If this parameter is specified and the interface is in the specified VLAN, the device sends ping packets through the interface.
+
+If this parameter is not specified, the device searches the MAC address table based on the specified destination MAC address and VLAN ID.
+
+    If the forwarding entry is found, the device sends ping packets according to the entry.
+
+    If the forwarding entry is not found, the device broadcasts ping packets in the VLAN.
+
+	
+
+-
+
+-c count
+	
+
+Specifies the number of ping attempts.
+	
+
+The value is an integer that ranges from 1 to 4294967295. The default value is 5.
+
+-s packetsize
+	
+
+Specifies the size of a ping packet. On the device running IEEE 802.1ag Draft 7, the value does not contain the length of the Layer 2 packet header. On the device running IEEE Standard 802.1ag-2007, the value is the size of a ping packet.
+	
+
+The value is an integer that ranges from 95 to 9000, in bytes. The default value is 95.
+
+-t timeout
+	
+
+Specifies the timeout interval for waiting for a response packet.
+	
+
+The value is an integer that ranges from 1 to 65535, in milliseconds. The default value is 2000 ms.
+
+-p priority-value
+	
+
+Specifies the priority of ping packets.
+	
+
+The value is an integer that ranges from 0 to 7. The default value is 7.
+Views
+
+All views
+Default Level
+
+0: Visit level
+Usage Guidelines
+
+Usage Scenario
+
+To use GMAC ping to detect connectivity, use the ping mac command.
+
+Prerequisites
+
+GMAC ping has been enabled using the ping mac enable command.
+
+Precautions
+
+A MEP is not required to initiate GMAC ping. The destination node can be not a MEP or MIP. You can perform GMAC ping without configuring the MD, MA, or MEP on the source device, intermediate device, and destination device. You must specify the VLAN on which the destination node resides.
+
+The two devices must be configured with IEEE 802.1ag of the same version. If the local device is configured with IEEE 802.1ag Draft 7 and the peer device is configured with IEEE Standard 802.1ag-2007, the ping mac command does not take effect. That is, the local device cannot ping the peer device.
+Example
+
+# Ping the device with the MAC address of 00e0-fc00-0204. Send two ping packets with the size of 112 bytes each. The device is in VLAN 10.
+
+<HUAWEI> system-view
+[HUAWEI] ping mac enable
+[HUAWEI] ping mac 00e0-fc00-0204 vlan 10 -c 2 -s 112
+Pinging 00e0-fc00-0204 with 112 bytes of data:
+Reply from 00e0-fc00-0204: byte = 112 time = 9ms
+Reply from 00e0-fc00-0204: byte = 112 time = 11ms
+Packets: Sent = 2, Received = 2, Lost = 0 (0% Loss)
+Minimum = 9ms, Maximum = 11ms, Average = 10ms
+
+Table 5-45 Description of the ping mac command output
+
+Item
+	
+
+Description
+
+Reply from 00e0-fc00-0204: byte = 112 time = 9ms
+	
+
+Size and response time of ping packets returned from the destination device.
+
+When the response time is less than 1 ms, "time < 1ms" is displayed.
+
+Packets: Sent = 2, Received = 2, Lost = 0 (0% Loss)
+	
+
+Number of sent ping packets, number of received reply packets, and number and percentage of discarded packets.
+
+Minimum
+	
+
+Minimum round-trip time (RTT).
+
+Maximum
+	
+
+Maximum RTT.
+
+Average
+	
+
+Average RTT.
+ping mac enable
+
+Function
+
+The ping mac enable command enables GMAC ping.
+
+The undo ping mac enable command disables GMAC ping.
+
+By default, GMAC ping is disabled.
+Format
+
+ping mac enable
+
+undo ping mac enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To implement the following functions, use the ping mac enable command:
+
+    Implement GMAC ping.
+
+    Enable the device to respond to received GMAC ping packets.
+
+Example
+
+# Enable GMAC ping.
+
+<HUAWEI> system-view
+[HUAWEI] ping mac enable
+
+policy-vlan
+Function
+
+The policy-vlan command configures policy-based VLAN assignment by associating a MAC address and IP address binding policy to a VLAN and setting the 802.1p priority of the VLAN.
+
+The undo policy-vlan command disassociates a MAC address and IP address binding policy from a VLAN.
+
+By default, a VLAN is not associated with any MAC address and IP address binding policy.
+Format
+
+policy-vlan mac-address mac-address ip ip-address [ interface interface-type interface-number ] [ priority priority ]
+
+undo policy-vlan { all | mac-address mac-address ip ip-address [ interface interface-type interface-number ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+mac-address mac-address
+	
+
+Specifies the source MAC address associated with a VLAN.
+	
+
+The value is in H-H-H format. H is a hexadecimal number of 4 digits, for example, 00e0 and fc01. If you enter fewer than four digits, 0s are prefixed to the input digits. For example, if you enter e0, the system changes e0 to 00e0. The MAC address cannot be 0000-0000-0000, FFFF-FFFF-FFFF, or a multicast MAC address.
+
+ip ip-address
+	
+
+Specifies the IP address associated with a VLAN.
+	
+
+The value is in dotted decimal notation.
+
+interface interface-type interface-number
+	
+Specifies the interface where the MAC address and IP address binding policy is applied.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+If this parameter is not specified, the binding policy is applied to all the interfaces in the VLAN.
+
+If this parameter is specified, the binding policy is applied to the specified interface.
+	
+
+-
+
+priority priority
+	
+
+Specifies the 802.1p priority of the VLAN associated with the MAC address and IP address.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority. The default value is 0.
+
+all
+	
+
+Disassociates all MAC address and IP address binding policies from a VLAN.
+	
+
+-
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Policy-based VLAN assignment is a method to assign VLANs based on source MAC addresses and IP addresses of packets. This method is applicable to networks where high security is required and user devices move frequently.
+
+When receiving an untagged packet, an interface matches the source IP address and source MAC address of the packet with the entries in the policy-based VLAN table.
+
+    If a matching entry is found, the interface forwards the packet based on the matching VLAN ID and priority.
+    If no matching entry is found, the interface uses other matching rules to forward the packet.
+
+Policy-based VLAN assignment takes effect only for untagged packets, whereas tagged packets are forwarded based on port-based VLANs.
+
+Precautions
+
+On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, and S5720S-LI, when the ip error-packet-check disable command is used to disable IP packet check, IP subnet-based VLAN assignment and policy-based VLAN assignment do not take effect.
+
+After a MAC address or IP address is associated with a VLAN, it cannot be associated with other VLANs.
+
+If you run the policy-vlan command multiple times in the same VLAN view, all the specified IP addresses and MAC addresses are associated with the VLAN.
+Example
+
+# Bind MAC address 0-1-1 and IP address 10.1.1.1 to VLAN 2, and set the 802.1p priority of the VLAN to 7.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] policy-vlan mac-address 0-1-1 ip 10.1.1.1 priority 7
+
+port
+Function
+
+The port command configures a VLAN as the default VLAN of an interface and adds the interface to the VLAN.
+
+The undo port command restores the default VLAN of an interface to the default setting.
+
+By default, VLAN 1 is the default VLAN of all interfaces.
+Format
+
+port interface-type { interface-number1 [ to interface-number2 ] } &<1-10>
+
+undo port interface-type { interface-number1 [ to interface-number2 ] } &<1-10>
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type { interface-number1 [ to interface-number2 ] }
+	
+Configures the default VLAN for multiple interfaces.
+
+    interface-type specifies the type of interfaces.
+    interface-number1 specifies the number of the first interface.
+    interface-number2 specifies the number of the last interface. The value of interface-number2 must be greater than the value of interface-number1. The interface-number1 and interface-number2 parameters identify a range of interfaces.
+
+If to interface-number2 is not specified, only one interface is specified. You can specify 10 interface ranges at one time.
+	
+
+-
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All frames sent from a user device are untagged, and frames sent from a remote device may also be untagged. However, the device processes only tagged frames. Therefore, the device adds a tag to each untagged frame received by an interface. The default VLAN ID of the interface can be added to untagged frames so that these frames are forwarded in the default VLAN.
+After the default VLAN is specified for an access interface or a QinQ interface, packets passing through the interface are processed as follows:
+
+    When the interface receives an untagged frame, it tags the frame with the default VLAN ID.
+    When the interface receives a tagged packet:
+        If the interface is an access interface, it compares the VLAN ID of the packet with the default VLAN ID. If they are the same, the interface forwards the packets; otherwise, the interface discards the packets.
+        If the interface is a QinQ interface, it adds an outer tag with the default VLAN ID to the packet.
+    Before forwarding tagged packets, access and QinQ interfaces remove VLAN tags from the packets.
+
+Prerequisites
+
+The link-type of specified interfaces cannot be hybrid or trunk before you run the port command.
+
+Precautions
+
+A super VLAN cannot be configured as the default VLAN of interfaces.
+
+The undo port command deletes the default VLAN of the specified interfaces only if the current VLAN is the default VLAN of these interfaces.
+
+If you run the port command multiple times in the same VLAN view, the VLAN is configured as the default VLAN of all the specified interfaces.
+
+You can also run the port default vlan command in the interface view to configure the default VLAN for an interface. The two commands have the same function.
+Example
+# Configure VLAN 3 as the default VLAN of interfaces GE0/0/1 to GE0/0/4.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 3
+[HUAWEI-vlan3] port gigabitethernet 0/0/1 to 0/0/4
+
+port default vlan
+Function
+
+The port default vlan command configures the default VLAN of an interface and adds the interface to the VLAN.
+
+The undo port default vlan command restores the default VLAN of an interface to the default setting.
+
+By default, VLAN 1 is the default VLAN of all interfaces.
+Format
+
+port default vlan vlan-id [ step step-number [ increased | decreased ] ]
+
+undo port default vlan
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of the default VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+step step-number [ increased | decreased ]
+	
+
+Specifies that the interface added to an interface group can be bound to VLANs starting from the one identified by vlan-id in an ascending or descending order at a step specified by step-number.
+
+increased specifies an increase in the values of VLAN IDs starting from the one identified by vlan-id at a step specified by step-number to add the interfaces to the VLANs. Whereas decreased specifies a decrease in the values of VLAN IDs starting from the one identified by vlan-id at a step specified by step-number to add the interfaces to the VLANs.
+
+For example, you can configure increased, and set vlan-id to 10 and step-number to 20 in the port default vlan command. After this configuration, interface 1 joins VLAN 10; interface 2 joins VLAN 30... By analogy, interface 10 joins VLAN 190.
+NOTE:
+
+    This parameter can only be used in the port group view.
+
+    When using step and vlan-id in the command, ensure that all interfaces added to the VLAN are available.
+
+    If this parameter is not specified, all interfaces in an interface group are added into the same VLAN, that is, VLAN vlan-id.
+
+	
+
+The value is an integer that ranges from 1 to 4093.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All frames sent from a user device are untagged, and frames sent from a remote device may also be untagged. However, the device processes only tagged frames. Therefore, the device adds a tag to each untagged frame received by an interface. The default VLAN ID of the interface can be added to untagged frames so that these frames are forwarded in the default VLAN.
+After the default VLAN is specified for an access interface or a QinQ interface, packets passing through the interface are processed as follows:
+
+    When the interface receives an untagged frame, it tags the frame with the default VLAN tag.
+    When the interface receives a tagged packet:
+        If the interface is an access interface, it compares the VLAN ID of the packet with the default VLAN ID. If they are the same, the interface forwards the packet; otherwise, the interface discards the packet.
+        If the interface is a QinQ interface, it adds an outer tag with the default VLAN ID to the packet.
+    Before forwarding tagged packets, access and QinQ interfaces remove VLAN tags from the packets.
+
+Prerequisites
+
+The interface type is negotiation-desirable, negotiation-auto, access or QinQ. If not, run the port link-type command to change the interface type. The interface where negotiation-desirable or negotiation-auto is configured must be negotiated as an access interface so that the default VLAN configured by the port default vlan command takes effect.
+
+Precautions
+
+    If the ID of a nonexistent VLAN is configured as the PVID, VLAN 1 is added to the untagged packets. After the PVID is configured globally, the PVID of the interface is changed to the configured one.
+    You can also run the port command in the VLAN view to configure the default VLAN of an interface. The two commands have the same function.
+    A super VLAN cannot be configured as the default VLAN of interfaces.
+    This command is invalid on a member interface of an Eth-Trunk.
+    If you run the port default vlan command multiple times in the same interface view, only the latest configuration takes effect.
+
+Example
+
+# Configure VLAN 3 (an existing VLAN) as the default VLAN of GE0/0/1 (an access interface).
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type access
+[HUAWEI-GigabitEthernet0/0/1] port default vlan 3
+
+port discard tagged-packet
+Function
+
+The port discard tagged-packet command configures an interface to discard incoming tagged frames.
+
+The undo port discard tagged-packet command configures an interface not to discard incoming tagged frames.
+
+By default, an interface does not discard incoming tagged frames.
+Format
+
+port discard tagged-packet
+
+undo port discard tagged-packet
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All frames sent from user devices are untagged, so user-side interfaces on a switch should not receive tagged frames. If a user connects a switching device to a user-side interface without permission, the user-side interface may receive tagged frames. The port discard tagged-packet command enables the user-side interface to discard untagged frames, preventing unauthorized access.
+
+Precautions
+
+The port discard tagged-packet command cannot function when dot1q-tunnel interfaces are configured on switches except the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S.
+
+Use this command only on interfaces connected to user devices. If you run this command on a network-side interface, users in the same VLAN may fail to communicate.
+Example
+
+# Configure GE0/0/1 to discard incoming tagged frames.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port discard tagged-packet
+
+port hybrid pvid vlan
+Function
+
+The port hybrid pvid vlan command specifies the default VLAN ID of a hybrid interface.
+
+The undo port hybrid pvid vlan command restores the default VLAN ID of a hybrid interface to the default setting.
+
+By default, VLAN 1 is the default VLAN ID of all interfaces.
+Format
+
+port hybrid pvid vlan vlan-id
+
+undo port hybrid pvid vlan
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the default VLAN ID of a hybrid interface.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+An interface may receive untagged and tagged frames, but the device processes only tagged frames. Therefore, the device adds a tag to each untagged frame received by an interface. The default VLAN ID of the interface can be added to untagged frames so that these frames are forwarded in the default VLAN.
+A hybrid interface processes Ethernet frames as follows:
+
+    When the interface receives an untagged frame, it tags the frame with the default VLAN ID. If the default VLAN ID is allowed by the interface, the interface accepts the frame. Otherwise, the interface discards the frame.
+    When the interface receives a tagged frame, it accepts the frame if the VLAN ID of the frame is in the list of allowed VLAN IDs. Otherwise, the interface discards the frame.
+    If the VLAN ID of a frame is allowed by the interface, the interface forwards the frame.
+
+Prerequisites
+
+If an interface is not a hybrid interface, run the port link-type hybrid command to change the interface type to hybrid.
+
+Precautions
+
+    If the ID of a nonexistent VLAN is configured as the PVID, VLAN 1 is added to the untagged packets. After the PVID is configured globally, the PVID of the interface is changed to the configured one.
+
+    This command is invalid on a member interface of an Eth-Trunk.
+
+    The port hybrid pvid vlan command only specifies the default VLAN for an interface but does not add the interface to the default VLAN.
+
+    If you run the port hybrid pvid vlan command multiple times in the same interface view, only the latest configuration takes effect.
+
+Example
+
+# Specify VLAN 5 as the default VLAN of GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 5
+[HUAWEI-vlan5] quit
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] port hybrid pvid vlan 5
+
+port hybrid tagged vlan
+Function
+
+The port hybrid tagged vlan command adds a hybrid interface to the specified VLANs. Frames of the VLANs then pass through the hybrid interface in tagged mode.
+
+The undo port hybrid vlan command removes a hybrid interface from the specified VLANs.
+
+By default, a hybrid interface is added to VLAN 1 in untagged mode.
+Format
+
+port hybrid tagged vlan { { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+undo port hybrid [ tagged ] vlan { { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+(Port group view) port hybrid tagged vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+
+(Port group view) undo port hybrid vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Adds a hybrid interface to specified VLANs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1.
+
+	
+
+The value of vlan-id1 is an integer that ranges from 1 to 4094.
+
+The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+all
+	
+
+Adds a hybrid interface to all VLANs.
+	
+
+-
+
+vlan-id3
+	
+
+Specifies the ID of the start VLAN to be bound to the member port of a port group.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+step step-number
+	
+
+Specifies the step for the increase or decrease in the value of the VLAN ID.
+
+With this parameter specified, the member ports in a port group can be bound to VLANs starting from the one identified by vlan-id3 in an ascending or descending order at a step specified by step-number. This facilitates the subsequent user configuration. For example:
+
+A port group has 10 member ports. You can configure increased, and set vlan-id3 to 1 and step-number to 1 in the port hybrid tagged vlan command. After this configuration, member port 1 joins VLAN 1; member port 2 joins VLAN 2... By analogy, member port 10 joins VLAN 10.
+	
+
+The value is an integer that ranges from 1 to 4093.
+
+increased
+	
+
+Specifies an increase in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+	
+
+By default, Layer 2 ports are bound to the VLANs in an ascending order.
+
+decreased
+	
+
+Specifies a decrease in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+
+When setting decreased, ensure that the value of vlan-id3 is greater than or equal to the number of the member ports of the port group.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A hybrid interface can connect to either a user device or a switch. This command adds a hybrid interface to VLANs in tagged mode so that the hybrid interface allows frames from the VLANs to pass.
+
+After a hybrid interface is added to VLANs in tagged mode, the interface forwards frames without removing VLAN tags of frames.
+
+Prerequisites
+
+If an interface is not a hybrid interface, run the port link-type hybrid command to change the interface type to hybrid.
+
+Precautions
+
+    This command is invalid on a member interface of an Eth-Trunk.
+    A super VLAN cannot be specified in the command.
+    If you run the port hybrid tagged vlan command multiple times in the same interface view, the interface is added to all the specified VLANs.
+    Running the undo port hybrid tagged vlan command on a hybrid interface removes the interface from specific VLANs it joins using the port hybrid tagged vlan command.
+
+Example
+
+# Add GE0/0/1 to VLAN 3 to VLAN 5 in tagged mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] port hybrid tagged vlan 3 to 5
+
+port hybrid untagged vlan
+Function
+
+The port hybrid untagged vlan command adds a hybrid interface to the specified VLANs. Frames of the VLANs then pass through the hybrid interface in untagged mode.
+
+The undo port hybrid vlan command removes a hybrid interface from the specified VLANs.
+
+By default, a hybrid interface is added to VLAN 1 in untagged mode.
+Format
+
+port hybrid untagged vlan { { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+undo port hybrid [ untagged ] vlan{ { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+(Port group view) port hybrid untagged vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+
+(Port group view) undo port hybrid vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Adds a hybrid interface to specified VLANs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1.
+
+	
+
+The value of vlan-id1 is an integer that ranges from 1 to 4094.
+
+The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+all
+	
+
+Adds a hybrid interface to all VLANs.
+	
+
+-
+
+vlan-id3
+	
+
+Specifies the ID of the start VLAN to be bound to the member port of a port group.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+step step-number
+	
+
+Specifies the step for the increase or decrease in the value of the VLAN ID.
+
+With this parameter specified, the member ports in a port group can be bound to VLANs starting from the one identified by vlan-id3 in an ascending or descending order at a step specified by step-number. This facilitates the subsequent user configuration. For example:
+
+A port group has 10 member ports. You can configure increased, and set vlan-id3 to 1 and step-number to 1 in the port hybrid untagged vlan command. After this configuration, member port 1 joins VLAN 1; member port 2 joins VLAN 2... By analogy, member port 10 joins VLAN 10.
+	
+
+The value is an integer that ranges from 1 to 4093.
+
+increased
+	
+
+Specifies an increase in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+	
+
+By default, Layer 2 ports are bound to the VLANs in an ascending order.
+
+decreased
+	
+
+Specifies a decrease in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+
+When setting decreased, ensure that the value of vlan-id3 is greater than or equal to the number of the member ports of the port group.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A hybrid interface can connect to either a user device or a switch. When a hybrid interface is connected to a user device, it must be added to VLANs in untagged mode so that it sends untagged frames. When a hybrid interface is connected to a switch, it can receive and forward frames with the same VLAN tag (in the tagged VLAN or untagged VLAN list) from the switch.
+
+After a hybrid interface is added to VLANs in untagged mode, the interface removes VLAN tags of frames before sending frames.
+
+Prerequisites
+
+The link type of the interface has been changed to hybrid using the port link-type hybrid command.
+
+Precautions
+
+    This command is invalid on a member interface of an Eth-Trunk.
+    A super VLAN cannot be specified in the command.
+    If you run the port hybrid untagged vlan command multiple times in the same interface view, the interface is added to all the specified VLANs.
+    Running the undo port hybrid untagged vlan command on a hybrid interface removes the interface from specific VLANs it joins using the port hybrid untagged vlan command.
+
+Example
+
+# Add GE0/0/1 to VLAN 3 to VLAN 5 in untagged mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] port hybrid untagged vlan 3 to 5
+
+port hybrid vlan 1
+Function
+
+The port hybrid vlan 1 command adds a Hybrid port to VLAN 1 in untagged mode.
+
+The undo port hybrid vlan 1 command deletes a Hybrid port from VLAN 1.
+Format
+
+port hybrid vlan 1
+
+undo port hybrid vlan 1
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All interfaces on the device join VLAN 1 by default, and the hybrid interface joins VLAN 1 in untagged mode by default. When there are unknown unicast packets, multicast packets, or broadcast packets of VLAN 1, broadcast storms may occur. For the hybrid interface that does not need to join VLAN 1, you need to run the undo port hybrid vlan 1 command to delete the hybrid interface from VLAN 1 to prevent loops. When the network changes and the hybrid interface needs to join VLAN 1 in untagged mode, run the port hybrid vlan 1 command.
+
+Prerequisites
+
+If an interface is not a hybrid interface, run the port link-type hybrid command to change the interface type to hybrid.
+
+Precautions
+
+This command cannot be used for a physical interface that has been added to an Eth-Trunk interface.
+Example
+# Add GE 0/0/1 to VLAN 1 in Untagged mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] port hybrid vlan 1
+
+port link-type
+Function
+
+The port link-type command sets the link type of an interface.
+
+The undo port link-type command restores the default link type of an interface.
+
+By default, the link type of an interface on the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, and S5736-S, S6720S-S is negotiation-auto, and the link type of an interface on other models is negotiation-desirable.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S support VE interfaces. You can configure the link type for a VE interface only after the VE interface is switched to Layer 2 mode using the portswitch command. The default link type is hybrid.
+Format
+
+port link-type { access | dot1q-tunnel | hybrid | trunk | negotiation-desirable | negotiation-auto }
+
+undo port link-type
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+access
+	
+
+Sets the link type of an interface to access.
+	
+
+-
+
+dot1q-tunnel
+	
+
+Sets the link type of an interface to QinQ.
+	
+
+-
+
+hybrid
+	
+
+Sets the link type of an interface to hybrid.
+	
+
+-
+
+trunk
+	
+
+Sets the link type of an interface to trunk.
+	
+
+-
+
+negotiation-desirable
+	
+
+Sets LNP negotiation mode for a Layer 2 Ethernet interface to negotiation-desirable.
+NOTE:
+
+This parameter is not supported in the VE interface view.
+	
+
+-
+
+negotiation-auto
+	
+
+Sets the LNP negotiation mode for a Layer 2 Ethernet interface to negotiation-auto.
+NOTE:
+
+This parameter is not supported in the VE interface view.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Access, hybrid, trunk, and dot1q-tunnel link types are statically configured, and the LNP negotiation mode of negotiation-desirable or negotiation-auto is dynamically negotiated. The interface where negotiation-desirable or negotiation-auto is configured is negotiated as the access or trunk interface.
+Characteristics of different interfaces are:
+
+    An access interface connects to a user device. It can connect only to an access link, and Ethernet frames transmitted on the access link are untagged. If the default VLAN is configured for an access interface, the interface adds a VLAN tag to packets and sets the VID field in the VLAN tag to the default VLAN ID. The access link transmits only the packets with the default VLAN ID.
+    A trunk interface connects to a switch and can connect only to a trunk link. A trunk interface allows frames from multiple VLANs to pass.
+    A hybrid interface can connect to either a user device or a switch, and it can connect to an access link or a trunk link. A hybrid interface allows frames from multiple VLANs to pass and can remove VLAN tags of outgoing frames.
+    A QinQ interface connects to a switch and can process double-tagged frames.
+    The interface configured with negotiation-desirable can actively send negotiation packets, while the interface configured with negotiation-auto cannot actively send negotiation packets. The interface where negotiation-desirable or negotiation-auto is configured is negotiated as the access or trunk interface through LNP and added to a VLAN. Table 5-46 describes the negotiation result when the local and remote ends use different negotiation modes.
+    Table 5-46 LNP negotiation
+
+    Local LNP Negotiation Mode
+    	
+
+    Remote Link Type or LNP Negotiation Mode
+    	
+
+    Locally Negotiated Link Type
+    	
+
+    Remotely Negotiated Link Type
+    	
+
+    Link Type When Negotiation Fails
+
+    negotiation-desirable/negotiation-auto
+    	
+
+    Access (negotiate on)
+    	
+
+    Access
+    	
+
+    Access
+    	
+
+    Access
+
+    Hybrid (negotiate on)
+    	
+
+    Trunk
+    	
+
+    Hybrid
+    	
+
+    Access
+
+    Dot1q-tunnel (negotiate on)
+    	
+
+    Access
+    	
+
+    Dot1q-tunnel
+    	
+
+    Access
+
+    Trunk (negotiate on)
+    	
+
+    Trunk
+    	
+
+    Trunk
+    	
+
+    Access
+
+    LNP negotiation not supported or negotiate off
+    	
+
+    Access
+    	
+
+    N/A
+    	
+
+    Access
+
+    negotiation-desirable
+    	
+
+    negotiation-desirable
+    	
+
+    Trunk
+    	
+
+    Trunk
+    	
+
+    Access
+
+    negotiation-desirable
+    	
+
+    negotiation-desirable
+    	
+
+    Trunk
+    	
+
+    Trunk
+    	
+
+    Access
+
+    negotiation-auto
+    	
+
+    negotiation-desirable
+    	
+
+    Access
+    	
+
+    Access
+    	
+
+    Access
+
+    negotiate on: LNP negotiation is enabled. negotiate off: LNP negotiation is disabled. N/A: The link type is uncertain.
+
+Prerequisites
+
+LNP has been enabled.
+
+Follow-up Procedure
+
+Add the interface to VLANs.
+
+Precautions
+
+This command is invalid on a member interface of an Eth-Trunk.
+
+Starting from V200R005C00, the default link type of an interface is not hybrid. Before upgrading the device of an earlier version of V200R005C00 to V200R005C00 or later, the port link-type hybrid command configuration is generated.
+
+If you run the port link-type command multiple times in the same interface view, only the latest configuration takes effect.
+
+After VLAN-related configurations are configured on an interface, the [undo] port link-type command is an interactive command. You need to enter confirmation information.
+When using LNP negotiation, pay attention to the following points:
+
+    If a Layer 2 Ethernet interface is Down, it does not participate in LNP negotiation.
+
+    If the two ends of an Eth-Trunk link have different numbers of member interfaces, LNP negotiation may fail.
+    If the link type of the Layer 2 Ethernet interface is configured as access, hybrid, trunk, or dot1q-tunnel using the port link-type command, LNP does not take effect on the interface.
+    The interface configured with negotiation-desirable or negotiation-auto is negotiated as an access or trunk interface. By default, the negotiated access interface joins VLAN 1, and the negotiated trunk interface allows all VLANs and uses default VLAN 1. port default vlan and port trunk allow-pass only-vlan can be simultaneously used on the interface configured with negotiation-desirable or negotiation-auto. If the interface is negotiated as an access interface, port default vlan takes effect. If the interface is negotiated as a trunk interface, port trunk allow-pass only-vlan takes effect.
+
+Before changing the link type of an interface, you do not need to restore the default VLAN configuration. However, if the link type of the interface is changed, the VLAN configuration of the interface is deleted. Exercise caution when you perform this configuration.
+There are limitations on the interface where negotiation-desirable or negotiation-auto is configured:
+
+    The sub-interface cannot be created.
+    No MUX VLAN can be enabled.
+    No voice VLAN in auto mode can be configured.
+
+Dot1q-tunnel interfaces do not support the voice VLAN function.
+
+On the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, after the port link-type dot1q-tunnel command is run on an interface, IP packets cannot be forwarded on the interface.
+
+If the device works in VBST mode, changing the link type of an interface may cause a loop on the network, resulting in a traffic storm. If the link type of an interface must be changed, disable the interfaces on both ends and then change the link type of these interfaces.
+Example
+
+# Set the link type of GE0/0/1 to trunk.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+
+port negotiation disable
+Function
+
+The port negotiation disable command disables LNP negotiation on a Layer 2 Ethernet interface.
+
+The undo port negotiation disable command enables LNP negotiation on a Layer 2 Ethernet interface.
+
+By default, LNP negotiation is enabled on a Layer 2 Ethernet interface.
+Format
+
+port negotiation disable
+
+undo port negotiation disable
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, LNP negotiation is enabled for all interfaces on a Layer 2 device. If an LNP-capable Layer 2 device is connected to an LNP-incapable Layer 2 device, the LNP-capable device keeps sending LNP packets, wasting bandwidth resources. In this situation, you can run the port negotiation disable command to disable LNP negotiation on the Layer 2 Ethernet interface connected to the LNP-incapable Layer 2 device.
+
+To disable LNP negotiation on all interfaces of a Layer 2 device, run the lnp disable command in the system view.
+
+Prerequisites
+
+The interface must be a layer 2 interface before using the port negotiation disable command. Use the portswitch command to switch a layer 3 interface to a Layer 2 interface.
+
+Precautions
+
+By default, LNP negotiation is enabled for all interfaces on a Layer 2 device. If you run the lnp disable command in the system view to disable LNP negotiation on all interfaces of a Layer 2 device. LNP negotiation cannot be enabled on a Layer 2 Ethernet interface by running the undo port negotiation disable command in the interface view.
+
+For LNP negotiation to take effect, LNP negotiation must be enabled on both the device and Layer 2 Ethernet interfaces.
+Example
+
+# Disable LNP negotiation on a Layer 2 Ethernet interface.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] port negotiation disable
+
+port trunk allow-pass vlan
+Function
+
+The port trunk allow-pass vlan command adds a trunk interface to the specified VLANs.
+
+The undo port trunk allow-pass vlan command deletes a trunk interface from the specified VLANs.
+
+By default, a trunk interface is in VLAN 1.
+Format
+
+port trunk allow-pass vlan { { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+undo port trunk allow-pass vlan { { vlan-id1 [ to vlan-id2 ] }&<1-10> | all }
+
+(Port group view) port trunk allow-pass vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+
+(Port group view) undo port trunk allow-pass vlan vlan-id3 [ step step-number [ increased | decreased ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Adds a trunk interface to specified VLANs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1.
+
+	
+
+The value of vlan-id1 is an integer that ranges from 1 to 4094.
+
+The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+all
+	
+
+Adds a trunk interface to all VLANs.
+	
+
+-
+
+vlan-id3
+	
+
+Specifies the ID of the start VLAN to be bound to the member port of a port group.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+step step-number
+	
+
+Specifies the step for the increase or decrease in the value of the VLAN ID.
+
+With this parameter specified, the member ports in a port group can be bound to VLANs starting from the one identified by vlan-id3 in an ascending or descending order at a step specified by step-number. This facilitates the subsequent user configuration. For example:
+
+A port group has 10 member ports. You can configure increased, and set vlan-id3 to 1 and step-number to 1 in the port trunk allow-pass vlan command. After this configuration, member port 1 joins VLAN 1; member port 2 joins VLAN 2... By analogy, member port 10 joins VLAN 10.
+	
+
+The value is an integer that ranges from 1 to 4093.
+
+increased
+	
+
+Specifies an increase in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+	
+
+By default, Layer 2 ports are bound to the VLANs in an ascending order.
+
+decreased
+	
+
+Specifies a decrease in the values of VLAN IDs starting from the one identified by vlan-id3 at a step specified by step-number to bind the VLANs to the member ports of a port group.
+
+When setting decreased, ensure that the value of vlan-id3 is greater than or equal to the number of the member ports of the port group.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A trunk interface can join multiple VLANs and connects to a network device. To allow all packets from one or more VLANs to pass through a trunk interface, the trunk interface must be added to the VLANs using the port trunk allow-pass vlan command.
+
+Prerequisites
+
+The link type of the interface has been set to trunk or negotiation.
+
+Precautions
+
+If a specified VLAN does not exist, the configuration does not take effect.
+
+The command cannot be used on a member interface of an Eth-Trunk.
+
+If you run the port trunk allow-pass vlan command multiple times in the same interface view, the interface is added to all the specified VLANs.
+
+If a port is configured with a PVID VLAN, run the port trunk allow-pass vlan pvid-vlan command to add the PVID VLAN to the port.
+Example
+
+# Add GE0/0/1 to VLANs 10 to 30.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 10 to 30
+
+port trunk allow-pass only-vlan
+Function
+
+The port trunk allow-pass only-vlan command configures VLANs allowed by the interface that is configured as a trunk interface through LNP negotiation.
+
+The undo port trunk allow-pass only-vlan command restores the default VLANs allowed by the interface that is configured as a trunk interface through LNP negotiation.
+
+By default, if the Layer 2 Ethernet interface is negotiated as a trunk interface, the interface allows all VLANs.
+Format
+
+port trunk allow-pass only-vlan { { vlan-id1 [ to vlan-id2 ] } &<1-10> | none }
+
+undo port trunk allow-pass only-vlan
+Parameters
+Parameter 	Description 	Value
+vlan-id1 [ to vlan-id2 ] 	
+Specifies VLANs on a Layer 2 Ethernet interface so that the interface forwards only packets for these VLANs after LNP negotiation.
+
+    vlan-id1 specifies the first VLAN.
+    to vlan-id2 specifies the last VLAN. vlan-id2 must be greater than or equal to vlan-id1. vlan-id2 and vlan-id1 specify a VLAN range.
+    If to vlan-id2 is not specified, only the VLAN specified by vlan-id1 can be configured for the Layer 2 Ethernet interface.
+
+In one port trunk allow-pass only-vlan command, a maximum of 10 VLAN ranges can be specified using to.
+	The value is an integer ranging from 1 to 4094.
+none 	
+
+Specifies that the Layer 2 Ethernet interface cannot forward packets for any VLAN after the LNP negotiation.
+	-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Link-type Negotiation Protocol (LNP) dynamically negotiates the link type of an Ethernet interface. The negotiated link type can be access or trunk.
+
+In routine maintenance, if the network administrator wants to update the VLANs on a Layer 2 Ethernet interface so that the interface forwards only packets for these VLANs after LNP negotiation, perform the following operations in the corresponding interface view.
+
+    Run the port trunk allow-pass vlan all command to delete all VLANs from the Layer 2 Ethernet interface.
+    Run the port trunk allow-pass only-vlan { { vlan-id1 [ to vlan-id2 ] } &<1-10> | none } to update VLANs on the Layer 2 Ethernet interface so that the interface forwards only packets for these VLANs after LNP negotiation.
+
+Alternatively, to simplify configurations and reduce the network administrator's maintenance workload, run the port trunk allow-pass only-vlan to update VLANs on the Layer 2 Ethernet interface so that the interface forwards only packets for these VLANs after LNP negotiation.
+
+Prerequisites
+
+The LNP function is supported on the Layer 2 Ethernet interface, and the Layer 2 Ethernet interface is configured to work in auto-negotiation mode using the port link-type negotiation command.
+Example
+
+# Configure VLANs 10 to 20 on the interface so that the interface forwards only packets for these VLANs.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass only-vlan 10 to 20
+
+port trunk pvid vlan
+Function
+
+The port trunk pvid vlan command specifies the default VLAN for a trunk interface.
+
+The undo port trunk pvid vlan command restores the default VLAN of a trunk interface to the default setting.
+
+By default, VLAN 1 is the default VLAN of trunk interfaces.
+Format
+
+port trunk pvid vlan vlan-id
+
+undo port trunk pvid vlan
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the default VLAN ID of a trunk interface.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+An interface may receive untagged and tagged frames, but the device processes only tagged frames. Therefore, the device adds a tag to each untagged frame received by an interface. The default VLAN ID of the interface can be added to untagged frames so that these frames are forwarded in the default VLAN.
+
+Follow-up Procedure
+
+Add the trunk interface to the default VLAN.
+
+Precautions
+
+    If the ID of a nonexistent VLAN is configured as the PVID, VLAN 1 is added to the untagged packets. After the PVID is configured globally, the PVID of the interface is changed to the configured one.
+
+    The port trunk pvid vlan command only specifies the default VLAN of a trunk interface but does not add the trunk interface to the default VLAN. A trunk interface forwards frames with the default VLAN ID only after it is added to the default VLAN using the port trunk allow-pass vlan command.
+
+    If you run the port trunk pvid vlan command multiple times in the same interface view, only the latest configuration takes effect.
+
+Example
+
+# Specify VLAN 5 as the default VLAN of GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk pvid vlan 5
+
+protocol-transparent
+Function
+
+Using the protocol-transparent command, you can enable transparent transmission of protocol packets in a VLAN.
+
+Using the undo protocol-transparent command, you can disable transparent transmission of protocol packets in a VLAN.
+
+By default, transparent transmission of protocol packets is disabled in a VLAN.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+protocol-transparent
+
+undo protocol-transparent
+Parameters
+
+None
+Views
+
+VLAN view, VLAN-Range view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When the device used as the gateway or Layer 2 switches is enabled with snooping functions such as DHCP/IGMP/MLD snooping, the device needs to parse and process protocol packets such as ARP, DHCP, and IGMP packets. The interface sends protocol packets without differentiating VLANs. That is, if any of the preceding snooping functions are deployed, protocol packets from all VLANs are sent to the CPU for processing.
+
+If the device is a gateway of some VLANs or snooping functions is deployed in some VLANs, the device does not need to process protocol packets in other VLANs. After the protocol packets in other VLANs are sent to the CPU, the CPU needs to forward them to other devices. This mechanism is called software forwarding. Software forwarding affects the forwarding speed and efficiency of protocol packets because protocol packets need to be processed.
+
+To address this issue, deploy transparent transmission of protocol packets in VLANs where protocol packets do not need to be processed. This function enables the device to transparently transmit the protocol packets in the VLANs to other devices, which improves the forwarding speed and efficiency.
+
+The switch can transparently transmit the following protocol packets: CFM/ARP/BFD/DHCP/DHCPV6/HTTP/IGMP/MLD/ND/PIM/PIMv6/PPPoE/TACACS.
+
+Precautions
+
+    Before running the protocol-transparent command, ensure that IGMP snooping or MLD snooping has been disabled in the VLAN. Otherwise, the configuration fails.
+    After the protocol-transparent command is executed in a VLAN view, the switch does not participate in protocol calculation in this VLAN.
+
+Example
+
+# Enable transparent transmission of protocol packets in VLAN 100.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] protocol-transparent
+
+# Enable transparent transmission of protocol packets in VLAN 10 to 20.
+
+<HUAWEI> system-view
+[HUAWEI] vlan batch 10 to 20
+[HUAWEI] vlan range 10 to 20
+[HUAWEI-vlan-range] protocol-transparent
+
+protocol-vlan
+Function
+
+The protocol-vlan command associates a protocol with a VLAN.
+
+The undo protocol-vlan command disassociates a protocol from a VLAN.
+Format
+
+protocol-vlan [ protocol-index ] { at | ipv4 | ipv6 | ipx { ethernetii | llc | raw | snap } | mode { ethernetii-etype etype-id1 | llc dsap dsap-id ssap ssap-id | snap-etype etype-id2 } }
+
+undo protocol-vlan { all | protocol-index1 [ to protocol-index2 ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+protocol-index
+	
+
+Specifies the index of a protocol. If no protocol index is set, the switch generates an index based on the order in which protocols were associated with a VLAN.
+	
+
+The value is an integer that ranges from 0 to 15.
+The value range varies according to the device type.
+
+    S1720GW-E,S1720GWR-E,S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, and S6720S-S: 0 to 11
+    S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, : 0 to 7
+    other models: 0 to 15
+
+at
+	
+
+Associates the AppleTalk protocol with a VLAN.
+	
+
+-
+
+ipv4
+	
+
+Associates the IPv4 protocol with a VLAN.
+	
+
+-
+
+ipv6
+	
+
+Associates the IPv6 protocol with a VLAN.
+	
+
+-
+
+ipx
+	
+
+Associates the Internetwork Packet Exchange (IPX) protocol with a VLAN. The encapsulation type of IPX packets can be Ethernet II, Logical Link Control (LLC), raw, or Subnetwork Access Protocol (SNAP).
+	
+
+-
+
+ethernetii
+	
+
+Indicates that the encapsulation format of Ethernet frames is Ethernet II.
+	
+
+-
+
+llc
+	
+
+Indicates that the encapsulation format of Ethernet frames is LLC.
+	
+
+-
+
+raw
+	
+
+Indicates that the encapsulation format of Ethernet packets is raw.
+	
+
+-
+
+snap
+	
+
+Indicates that the encapsulation format of Ethernet packets is SNAP.
+	
+
+-
+
+mode
+	
+
+Indicates a user-defined protocol.
+	
+
+-
+
+ethernetii-etype etype-id1
+	
+
+Specifies the protocol type ID that matches the Ethernet II encapsulation format.
+	
+
+The value ranges from 0x600 to ffff, excluding 800, 809b, 8137, and 86dd.
+
+dsap dsap-id
+	
+
+Specifies the destination service access point.
+	
+
+The value ranges from 0x0 to ff.
+
+ssap ssap-id
+	
+
+Specifies the source service access point.
+	
+
+The value ranges from 0x0 to ff.
+
+snap-etype etype-id2
+	
+
+Specifies the protocol type ID that matches the SNAP encapsulation format.
+	
+
+The value ranges from 0x600 to ffff, excluding 800, 809b, 8137, and 86dd.
+
+all
+	
+
+Disassociates all protocols from a VLAN.
+	
+
+-
+
+protocol-index1
+	
+
+Specifies the start protocol index.
+	
+
+The value is an integer that ranges from 0 to 15.
+The value range varies according to the device type.
+
+    S1720GW-E,S1720GWR-E,S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, and S6720S-S: 0 to 11
+    S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, : 0 to 7
+    other models: 0 to 15
+
+protocol-index2
+	
+
+Specifies the end protocol index.
+	
+
+The value of protocol-index2 must be greater than or equal to the value of protocol-index1.
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Protocol-based VLAN assignment is a method to associate protocols with VLANs. After a protocol is associated with a VLAN, packets of this protocol are transmitted in the associated VLAN. This function allows different protocol packets to be transmitted on different paths.
+
+Follow-up Procedure
+
+Add interfaces to the VLAN associated with protocols, and then associate the interfaces with the VLAN.
+
+Precautions
+
+The control VLAN of an RRPPor ERPS ring cannot be associated with protocols.
+
+The AppleTalk, IPv4, and IPv6 protocols can be associated with VLANs directly. When associating other protocols with a VLAN, set the encapsulation format.
+
+When specifying the source and destination service access points, pay attention to the following points:
+
+    The dsap-id and ssap-id parameters cannot be set to 0xaa (indicating the SNAP encapsulation format) simultaneously.
+
+    The dsap-id and ssap-id parameters cannot be set to 0xe0 (indicating the LLC encapsulation format) simultaneously.
+
+    The dsap-id and ssap-id parameters cannot be set to 0xff (indicating the raw encapsulation format) simultaneously.
+
+If you run the protocol-vlan command multiple times in the same VLAN view, all the specified protocols are associated with the VLAN.
+Example
+
+# Associate IPv4 with VLAN 3.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 3
+[HUAWEI-vlan3] protocol-vlan ipv4
+
+protocol-vlan vlan
+Function
+
+The protocol-vlan vlan command associates an interface with a protocol-based VLAN.
+
+The undo protocol-vlan vlan command disassociates an interface from a VLAN.
+
+By default, an interface is not associated with any protocol-based VLAN.
+Format
+
+protocol-vlan vlan vlan-id { all | protocol-index1 [ to protocol-index2 ] } [ priority priority ]
+
+undo protocol-vlan { all | vlan vlan-id { all | protocol-index1 [ to protocol-index2 ] } }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+The all keywords in the command have different meanings:
+
+    The one followed by protocol-index1 indicates all protocols.
+    The one followed by vlan indicates all protocol-based VLANs.
+
+	
+
+-
+
+vlan vlan-id
+	
+
+Specifies the ID of a protocol-based VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+protocol-index1 [ to protocol-index2 ]
+	
+
+Specifies the start protocol index. If no protocol index is set, the switch generates an index based on the order in which protocols were associated with a VLAN.
+	
+
+The value is an integer that ranges from 0 to 15.
+The value range varies according to the device type.
+
+    S1720GW-E,S1720GWR-E,S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, and S6720S-S: 0 to 11
+    S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, : 0 to 7
+    other models: 0 to 15
+
+priority priority
+	
+
+Specifies the 802.1p priority of a VLAN.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority. The default value is 0.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, Eth-Trunk interface view, port group view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Protocol-based VLAN assignment is a method to associate protocols with VLANs. After a protocol is associated with a VLAN, packets of this protocol are transmitted in the associated VLAN. This function allows different protocol packets to be transmitted on different paths.
+
+After an interface is associated with a protocol-based VLAN:
+
+    When receiving an untagged packet, the interface searches for the VLAN entry matching the protocol type of the packet. If a matching entry is found, the interface forwards the packet based on the matching VLAN ID and priority. If no matching entry is found, the interface uses other matching rules to forward the packet.
+    When receiving a tagged packet, the interface forwards the packet based on the port-based VLAN configuration.
+
+Prerequisites
+
+The VLAN has been associated with a protocol using the protocol-vlan command.
+
+Precautions
+
+On access and trunk interfaces, protocol-based VLAN assignment can be used only when the protocol-based VLAN is the same as the PVID. It is recommended that protocol-based VLAN assignment be configured on hybrid interfaces.
+
+After an interface is associated with a protocol-based VLAN, the switch checks the protocol type of a received packet and forwards the packet in the VLAN associated with the protocol.
+Example
+
+# Associate GE0/0/1 with VLAN 2, which is associated with the protocol with index 0.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] protocol-vlan vlan 2 0
+
+reset lnp statistics
+Function
+
+The reset lnp statistics command clears statistics on LNP packets.
+Format
+
+reset lnp statistics [ interface interface-type interface-number ]
+Parameters
+Parameter 	Description 	Value
+interface interface-type interface-number 	
+
+Clears statistics on LNP packets on a specified interface.
+	-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To collect statistics about LNP packets for a specified period of time, run the reset lnp statistics command to clear existing statistics and allow the system to re-collect them.
+
+Configuration Note
+
+Cleared statistics on LNP packets cannot be restored. Exercise caution when running this command.
+Example
+
+# Clear statistics about LNP packets.
+
+<HUAWEI> reset lnp statistics interface gigabitethernet 0/0/1
+
+reset vlan statistics
+Function
+
+Using the reset vlan statistics command, you can clear traffic statistics in a specified VLAN.
+Format
+
+reset vlan vlan-id statistics
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of a VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+This command is used when you need to collect new packet statistics in a VLAN. After this command is executed, the packet count in the VLAN becomes 0.
+
+Prerequisites
+
+The traffic statistics function has been enabled in the VLAN by using the statistic enable (VLAN view) command.
+
+Precautions
+
+Traffic statistics cannot be restored after they are cleared. Exercise caution when you use the command.
+Example
+
+# Clear traffic statistics in VLAN 3.
+
+<HUAWEI> reset vlan 3 statistics
+
+shutdown (VLANIF interface view)
+Function
+
+Using the shutdown command, you can shut down a VLANIF interface.
+
+Using the undo shutdown command, you can enable a VLANIF interface.
+
+By default, a VLANIF interface is enabled.
+Format
+
+shutdown
+
+undo shutdown
+Parameters
+
+None
+Views
+
+VLANIF interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a VLANIF interface fails or is not needed, you can run the shutdown command on the VLANIF interface.
+
+Precautions
+
+A VLANIF interface is Up as long as an interface in the corresponding VLAN is Up.
+
+After the VLANIF interface is shut down, the interface status changes to Down even if physical interfaces in the corresponding VLAN are Up.
+
+After a VLANIF interface is shut down, none of the users who use the VLANIF interface address as the gateway address can communicate at Layer 3. In addition, the VLANIF interface address cannot be used in route calculation.
+
+After a VLANIF interface is shut down, the dynamic ARP entry corresponding to the VLANIF interface starts aging in the ARP table. If the VLANIF interface address is in a static ARP entry, the ARP entry is not deleted.
+Example
+
+# Enable VLANIF 2.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 2
+[HUAWEI-Vlanif2] undo shutdown
+
+statistic enable (VLAN view)
+Function
+
+The statistic enable command enables the traffic statistics function in a VLAN.
+
+The undo statistic enable command disables the traffic statistics function in a VLAN.
+
+By default, the traffic statistics function is disabled in a VLAN.
+Format
+
+statistic enable
+
+undo statistic enable
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To check the network status or locate network faults, you can use the statistic enable command to enable the traffic statistics function in a VLAN.
+
+After the traffic statistics function is enabled in a VLAN, the device collects statistics on unicast packets, broadcast packets, and broadcast packets transmitted in the VLAN.
+
+Precautions
+
+    On different models, the number of VLANs where the traffic statistics function can be configured is different:
+        S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S: 512
+        S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S: 64
+        Other models: 16
+
+    Traffic statistics are accumulative and cannot be cleared by the system. To clear traffic statistics in a VLAN, run the reset vlan statistics command in the VLAN.
+
+    The traffic statistics function occupies system resources. If system resources are insufficient, the configuration may fail. Disable this function when traffic statistics do not need to be collected.
+
+    After enabling the traffic statistics function in a VLAN, you can use the display vlan vlan-id statistics command to view traffic statistics in the VLAN.
+
+    On the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S if the traffic policy is bound to the traffic behavior containing traffic statistics and is applied to an interface in the inbound direction, and the statistic enable command is enabled in the VLAN that the interface joins, the statistic enable command cannot collect statistics on packets in the inbound direction of the interface.
+    For the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, configuring traffic statistics collection on VLANs and VLANIF interfaces may affect forwarding performance. For example, some packets may be discarded during line-rate forwarding on all ports. Configure this function if necessary.
+
+Example
+
+# Enable the traffic statistics function in VLAN 100.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] statistic enable
+
+statistic enable (VLANIF interface view)
+Function
+
+The statistic enable command enables the traffic statistics function on a VLANIF interface.
+
+The undo statistic enable command disables the traffic statistics function on a VLANIF interface.
+
+By default, the traffic statistics function is disabled on a VLANIF interface.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+[ ipv4 | ipv6 ] * statistic enable { both | inbound | outbound }
+
+undo [ ipv4 | ipv6 ] * statistic enable { both | inbound | outbound }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ipv4
+	
+
+Indicates IPv4 packet statistics collection.
+	
+
+-
+
+ipv6
+	
+
+Indicates IPv6 packet statistics collection.
+	
+
+-
+
+both
+	
+
+Enables the traffic statistics function for incoming and outgoing traffic.
+	
+
+-
+
+inbound
+	
+
+Enables the traffic statistics function for incoming traffic.
+	
+
+-
+
+outbound
+	
+
+Enables the traffic statistics function for outgoing traffic.
+	
+
+-
+Views
+
+VLANIF interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To check the network status or locate network faults, you can use the statistic enable command to enable the traffic statistics function on VLANIF interfaces. The switch then collects traffic statistics on the VLANIF interfaces.
+
+Precautions
+
+    On the S6735-S, if the traffic statistics function is enabled in the VLAN corresponding to the VLANIF interface, the traffic statistics function is invalid on the VLANIF interface in the outbound direction.
+
+    After you run the undo statistic enable command on a VLANIF interface, the switch stops collecting traffic statistics on the VLANIF interface, and the collected traffic statistics are deleted.
+
+    The switch uses ACL resources when collecting traffic statistics. If the traffic statistics function is enabled on too many VLANIF interfaces, other services may fail to obtain ACL resources. The device supports traffic statistics on a maximum of 100 VLANIF interface.
+
+    Traffic statistics on VLANIF interfaces is unavailable for error packets.
+
+    On the VLANIF interface enabled with the traffic statistics function, the packets such as ping packets sent from the device cannot be counted.
+
+    After enabling the traffic statistics function in a VLANIF, you can use the display interface vlanif command to view traffic statistics in the VLANIF.
+    The traffic statistics function on VLANIF interfaces is unavailable for MPLS packets.
+
+    A higher number of VLANIF interfaces configured with the traffic statistics function leads to higher CPU usage.
+    For the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, configuring traffic statistics collection on VLANs and VLANIF interfaces may affect forwarding performance. For example, some packets may be discarded during line-rate forwarding on all ports. Configure this function if necessary.
+
+Example
+
+# Enable the traffic statistics function for incoming and outgoing traffic on the VLANIF interface.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] statistic enable both
+
+trace mac
+
+Function
+
+The trace mac command locates a link connectivity fault between the local device and the destination device. The operation is called GMAC trace.
+Format
+
+trace mac mac-address vlan vlan-id [ interface interface-type interface-number | -t timeout | -h ]*
+Parameters
+Parameter 	Description 	Value
+
+mac-address
+	
+
+Specifies the MAC address of the destination node. The destination node can be a MEP or a MIP.
+An MP's MAC address can be a bridge MAC address or the MAC address of the interface where the MP is configured. The MAC address depends on the configured MP address model:
+
+    If the shared MP address model is configured, an MP uses a bridge MAC address as its own MAC address.
+
+    If the independent MP address model is configured, an MP uses the MAC address of the interface where the MP is configured.
+
+	
+
+The value is in H-H-H format. An H is a hexadecimal number of 1 to 4 digits. The value cannot be a broadcast or multicast MAC address.
+
+vlan vlan-id
+	
+
+Specifies the ID of a VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+interface interface-type interface-number
+	
+
+Specifies the outbound interface on the local device for sending trace packets.
+
+    interface-type specifies the interface type.
+
+    interface-number specifies the interface number.
+
+    If this parameter is specified, the device sends trace packets directly through the interface.
+
+    If this parameter is not specified, the device searches the MAC address table based on the specified destination MAC address and VLAN ID.
+
+    If the forwarding entry is found, the device sends trace packets according to the entry.
+
+    If the forwarding entry is not found but there is one interface in the VLAN, the device sends trace packets from this interface. If there is more than one interface in the VLAN, the device discards trace packets directly.
+
+	
+
+-
+
+-t timeout
+	
+
+Specifies the timeout interval for waiting for an LTR.
+	
+
+The value is an integer that ranges from 1 to 65535, in milliseconds. The default value is 2000 ms.
+
+-h
+	
+
+Specifies the host name and IP address of a device that an LTM passes through.
+	
+
+-
+Views
+
+All views
+Default Level
+
+0: Visit level
+Usage Guidelines
+
+Usage Scenario
+
+To perform GMAC trace, run this command.
+
+Prerequisites
+
+GMAC trace has been enabled using the trace mac enable command.
+
+Precautions
+
+A MEP is not required to initiate GMAC trace. The destination node can be not a MEP or MIP. That is, GMAC trace can be implemented without configuring the MD, MA, or MEP on the source device, intermediate device, and the destination device. All the intermediate devices can respond with an LTR.
+
+The two devices must be configured with IEEE 802.1ag of the same version. If the local device is configured with IEEE 802.1ag Draft 7 and the peer device is configured with IEEE Standard 802.1ag-2007, the trace mac command does not take effect. That is, the connectivity fault cannot be located.
+
+-h is only supported by the device running IEEE Standard 802.1ag-2007.
+Example
+
+# Trace the destination device with the MAC address as 00e0-fc12-3456. The device belongs to VLAN 2.
+
+<HUAWEI> system-view
+[HUAWEI] trace mac enable
+[HUAWEI] trace mac 00e0-fc12-3456 vlan 2
+
+Tracing the route to 00e0-fc12-3456 over a maximum of 255 hops:
+ Hops  Ingress MAC    Ingress Port                Ingress Action    Relay Action
+       Egress MAC     Egress Port                 Egress Action
+ 1     00e0-fc12-3456 GigabitEthernet0/0/1        IngOK             RlyHit
+       --             --                          --
+Info: Succeed in tracing the destination address 00e0-fc12-3456.   
+
+# Trace the destination device with the MAC address as 00e0-fc12-3455. The device belongs to VLAN 2.
+
+<HUAWEI> system-view
+[HUAWEI] trace mac enable
+[HUAWEI] trace mac 00e0-fc12-3455 vlan 2 -h
+
+Tracing the route to 00e0-fc12-3455 over a maximum of 255 hops:
+ Hops  Host Name (IP Address)
+       Ingress MAC    Ingress Port                Ingress Action    Relay Action
+       Egress MAC     Egress Port                 Egress Action
+ 1     173 (10.10.10.173)
+       00e0-fc12-3455 GigabitEthernet0/0/1        IngOK             RlyHit
+       --             --                          --
+Info: Succeed in tracing the destination address 00e0-fc12-3455.    
+
+Table 5-47 Description of the trace mac command output
+
+Item
+	
+
+Description
+
+Hops
+	
+
+Number of hops.
+
+Ingress Action
+	
+Action taken by the inbound interface to process LTMs:
+
+    IngOK: The inbound interface forwards LTMs successfully.
+
+    If this field is empty, the inbound interface fails to forward LTMs.
+
+Relay Action
+	
+Action taken by the device to process LTMs:
+
+    RlyFDB: The device forwards LTMs to the next hop device.
+
+    RlyHit: The device forwards LTMs to the destination device.
+
+Egress Action
+	
+Action taken by the outbound interface to process trace packets:
+
+    EgrOK: The outbound interface forwards LTMs successfully.
+
+    If this field is empty, the outbound interface does not or fails to forward LTMs.
+
+trace mac enable
+
+Function
+
+The trace mac enable command enables GMAC trace.
+
+The undo trace mac enable command disables GMAC trace.
+
+By default, GMAC trace is disabled (except the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S).
+Format
+
+trace mac enable
+
+undo trace mac enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To implement the following functions, use the trace mac enable command:
+
+    Implement GMAC trace.
+
+    Enable the device to respond to LTMs of MAC trace.
+
+Example
+
+# Enable GMAC trace.
+
+<HUAWEI> system-view
+[HUAWEI] trace mac enable
+
+unknown-flow drop
+Function
+
+The unknown-flow drop command configures unknown packet isolation in a VLAN.
+
+The undo unknown-flow drop command cancels unknown packet isolation in a VLAN.
+
+By default, unknown packet isolation is not configured in a VLAN.
+
+This function is supported only on the following models: S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S.
+Format
+
+unknown-flow drop
+
+undo unknown-flow drop
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To isolate unknown packets in a VLAN, run the unknown-flow drop command. This function applies to large- and medium-sized campus networks where aggregation and access switches go online through Option 148.
+Example
+
+# Configure unknown packet isolation in VLAN 100.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] unknown-flow drop
+
+vlan
+Function
+
+The vlan command creates a VLAN and displays the VLAN view. If the VLAN exists, the VLAN view is displayed.
+
+The undo vlan command deletes a VLAN.
+
+By default, all interfaces belong to the default VLAN, named VLAN 1.
+Format
+
+vlan vlan-id
+
+vlan batch { vlan-id1 [ to vlan-id2 ] } &<1-10>
+
+undo vlan vlan-id
+
+undo vlan batch { vlan-id1 [ to vlan-id2 ] } &<1-10>
+Parameters
+Parameter 	Description 	Value
+
+vlan-id
+	
+
+Specifies the VLAN ID.
+	
+
+The value is an integer ranging from 1 to 4094.
+
+batch
+	
+
+Configures VLANs in batches.
+	
+
+-
+
+vlan-id1 to vlan-id2
+	
+
+Specifies range of VLANs to be configured in batches:
+
+    vlan-id1 specifies the start VLAN ID.
+
+    vlan-id2 specifies the end VLAN ID.
+
+    vlan-id2 must be greater than or equal to vlan-id1. vlan-id1 and vlan-id2 define a range together.
+
+    If the parameter to vlan-id2 is not specified, only the VLAN specified by vlan-id1 is created.
+
+	
+
+The vlan-id1 and vlan-id2 are integers ranging from 1 to 4094.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To reduce broadcast domains and enhance security on a complex network, VLANs can be created on the network to isolate the hosts that do not need to communicate with each other. The vlan batch command creates multiple VLANs at one time, simplifying VLAN configuration.
+
+Follow-up Procedure
+
+Assign VLANs according to network requirements.
+
+Precautions
+
+    VLAN 1 is the default VLAN, which cannot be deleted and does not need to be created.
+    The vlan command can be used to create a VLAN and enter the VLAN view. If a VLAN has been created, the VLAN view is displayed after this command is used. You can repeat the vlan command for multiple times. If a VLAN has been created, this command cannot be used to create the same VLAN or modify the configurations of the VLAN.
+    The vlan batch command can be used to create multiple VLANs in batches. If a VLAN has been created, this command cannot be used to create the same VLAN or modify the configurations of the VLAN. If you run the vlan batch command multiple times, all the specified VLANs are created.
+    The allowed VLANs on a sub-interface cannot be created in the system view or be displayed by the display command.
+
+Example
+
+# Create VLAN 100 and enter the VLAN 100 view. If VLAN 100 exists, the VLAN 100 view is displayed directly.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100]
+
+vlan configuration
+Function
+
+The vlan configuration command creates and enters the configuration view of a VLAN. When the VLAN is not created, this command does not create the VLAN.
+
+The undo vlan vlan-id configuration command deletes the configuration view of a VLAN.
+
+By default, no VLAN configuration view is created.
+Format
+
+vlan vlan-id configuration
+
+undo vlan vlan-id configuration
+Parameters
+Parameter 	Description 	Value
+vlan-id 	Specifies the VLAN ID. 	The value is an integer ranging from 1 to 4094.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+This command applies to the following scenarios:
+
+    If you need to perform configurations in a VLAN without creating the VLAN on VCMP clients, create the VLAN on the VCMP server and run the vlan configuration command on VCMP clients to enter the VLAN configuration view.
+
+    After a VLAN is deleted on the VCMP server, VCMP clients delete the local VLAN but do not delete configurations in the VLAN. To delete or modify configurations in a VLAN without creating the VLAN, run the vlan configuration command to enter the VLAN configuration view to delete or modify configurations.
+
+The vlan vlan-id configuration command completes the VLAN configuration when the VLAN is not created.
+
+Precautions
+
+The vlan configuration command only enters the VLAN configuration view. Neither the corresponding VLAN or configurations in the VLAN take effect. To make configurations in the VLAN take effect, create the VLAN using the vlan command.
+The vlan vlan-id configuration command configuration is displayed in the following situations:
+
+    The vlan vlan-id configuration command displays the VLAN view and services are configured in the VLAN.
+    The VLAN is deleted using VCMP.
+
+Example
+
+# Enter the configuration view of VLAN 10.
+
+<HUAWEI> system-view
+
+[HUAWEI] vlan 10 configuration
+
+[HUAWEI-vlan10]
+
+vlan precedence
+Function
+
+The vlan precedence command configures the device to preferentially use a VLAN assignment mode when both MAC address-based and IP subnet-based VLAN assignment modes are matched.
+
+The undo vlan precedence command restores the default VLAN assignment mode on an interface when both MAC address-based and IP subnet-based VLAN assignment modes are matched.
+
+By default, MAC address-based VLAN assignment takes precedence over IP subnet-based VLAN assignment.
+
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S6735-S, and S6720S-S support this command.
+Format
+
+vlan precedence { ip-subnet-vlan | mac-vlan }
+
+undo vlan precedence
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-subnet-vlan
+	
+
+Indicates that IP subnet-based VLAN assignment takes precedence over MAC address-based VLAN assignment.
+	
+
+-
+
+mac-vlan
+	
+
+Indicates that MAC address-based VLAN assignment takes precedence over IP subnet-based VLAN assignment.
+	
+
+-
+Views
+
+system view, Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, Eth-Trunk interface view, MultiGE interface view, port group view
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, and S6720S-S support the vlan precedence command only in the system view. Other switches support the vlan precedence command only in the interface view.
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can configure all the VLAN assignment methods simultaneously on the switch. By default, the priority order of VLAN assignment methods is: policy-based VLAN > MAC address-based > IP subnet-based > protocol-based > port-based.
+
+The vlan precedence command changes the priority order of MAC address-based VLAN assignment and IP subnet-based VLAN assignment. For example, the vlan precedence ip-subnet-vlan command makes IP subnet-based VLAN assignment take precedence over MAC address-based VLAN assignment.
+
+Currently, port-based VLAN assignment is used most widely.
+
+Precautions
+
+This command does not change the priority order of the other VLAN assignment methods.
+
+Packets may be transmitted in a different VLAN after the priority order of MAC address-based VLAN assignment and IP subnet-based VLAN assignment changes. This may cause a traffic forwarding failure in the VLAN.
+
+When the command is used on the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, and S6720S-S to adjust the priority, the command is valid for MAC-VLAN entries with the mask and without the mask. The command is valid for only MAC-VLAN entries without the mask on other models.
+
+If you run the vlan precedence command multiple times in the same interface view, only the latest configuration takes effect.
+Example
+
+# Specify that IP subnet-based VLAN assignment takes precedence over MAC address-based VLAN assignment.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] vlan precedence ip-subnet-vlan
+
+vlan range
+Function
+
+The vlan range command creates a temporary VLAN range and displays the VLAN-Range view.
+
+By default, no temporary VLAN ranges are created.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+vlan range { vlan-id1 [ to vlan-id2 ] } &<1-10>
+Parameters
+Parameter 	Description 	Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Specifies VLAN IDs to be created in batches:
+
+    vlan-id1 specifies the start VLAN ID.
+
+    vlan-id2 specifies the end VLAN ID.
+
+    vlan-id2 must be greater than or equal to vlan-id1. vlan-id1 and to vlan-id2 specify a VLAN range.
+
+    If to vlan-id2 is not specified, only the VLAN specified by vlan-id1 is configured.
+
+	
+
+The value is an integer ranging from 1 to 4094.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Manually configuring and maintaining VLANs is challenging on a large Layer 2 network. Configuration inconsistency may also occur. To improve maintenance efficiency and simplify configurations, run the vlan range command to create a temporary VLAN range. You can then configure services in the VLAN-Range view. Configured services will be delivered in batches to all the VLANs in the VLAN range.
+
+Precautions
+
+The vlan range command configuration is not saved in the configuration file. If services are configured in the VLAN-Range view, the service configurations of all the VLANs in the VLAN range will be saved in the configuration file.
+
+A temporary VLAN range fails to be created if the specified VLAN is a dynamic VLAN or is not created. VLANs that have been added to a temporary VLAN range will automatically leave the VLAN range after being deleted.
+
+Configuration Impact
+
+If the vlan range command is run more than once, all configurations take effect.
+Example
+
+# Create a VLAN range 10 to 20 and enter the VLAN-Range view.
+
+<HUAWEI> system-view
+[HUAWEI] vlan batch 10 to 20
+[HUAWEI] vlan range 10 to 20
+[HUAWEI-vlan-range]
+
+vlan statistics
+Function
+
+The vlan statistics command configures the way to collect VLAN traffic statistics.
+
+The undo vlan statistics command restores the default way to collect VLAN traffic statistics.
+
+By default, VLAN traffic statistics are collected by packets.
+Format
+
+vlan statistics { by-bytes | by-packets }
+
+undo vlan statistics { by-bytes | by-packets }
+
+Only the S1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, and S6720S-S support this command.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+by-bytes
+	
+
+Collects VLAN traffic statistics by bytes.
+	
+
+-
+
+by-packets
+	
+
+Collects VLAN traffic statistics by packets.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To check the network status or locate network faults, you can use the statistic enable (VLAN view) command to enable traffic statistics collection in VLANs.
+
+After traffic statistics collection is enabled in a VLAN, the switch collects statistics on unicast packets, broadcast packets, and broadcast packets transmitted in the VLAN.
+
+The vlan statistics { by-bytes | by-packets } command configures whether traffic statistics are collected by packet s or bytes.
+Example
+
+# Configure the system to collect VLAN traffic statistics by bytes.
+
+<HUAWEI> system-view
+[HUAWEI] vlan statistics by-bytes
+
+vlan statistics interval
+Function
+
+The vlan statistics interval command sets the interval for collecting VLAN traffic statistics.
+
+The undo vlan statistics interval command restores the default interval for collecting VLAN traffic statistics.
+
+By default, VLAN traffic statistics are collected at an interval of 300 seconds.
+Format
+
+vlan statistics interval interval-time
+
+undo vlan statistics interval
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interval-time
+	
+
+Specifies the interval for collecting VLAN traffic statistics.
+	
+
+The value is an integer that ranges from 60 to 600, in seconds.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To check the network status or locate network faults, you can use the statistic enable (VLAN view) command to enable traffic statistics collection in VLANs.
+
+After traffic statistics collection is enabled in a VLAN, the switch collects statistics on unicast packets, broadcast packets, and broadcast packets transmitted in the VLAN.
+
+You can use the vlan statistics interval command to specify the interval at which traffic statistics are collected.
+Example
+
+# Set the interval for collecting VLAN traffic statistics to 500 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] vlan statistics interval 500
+
+vlan vlan-name
+Function
+
+The vlan vlan-name command displays the view of a VLAN with the specified VLAN name.
+
+The undo vlan vlan-name command deletes a VLAN with the specified VLAN name. After the command is used, the VLAN name is also deleted.
+Format
+
+vlan vlan-name vlan-name
+
+undo vlan vlan-name vlan-name
+Parameters
+Parameter 	Description 	Value
+vlan-name 	Specifies the VLAN name. 	The name is a string of 1 to 31 case-sensitive characters, spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After the name command is run to set a VLAN name, you can run the vlan vlan-name command in the system view to enter the corresponding VLAN view.
+
+Assume that a device has multiple VLANs and each VLAN has a name. If you need to delete the VLAN that is used to transmit voice services but cannot remember the ID of the VLAN, you can run the undo vlan vlan-name command to delete the VLAN by inputting the VLAN name.
+
+Prerequisites
+
+Before running the vlan vlan-name command, ensure that the name command is run to set the VLAN name.
+
+Precautions
+
+When you run the undo vlan vlan-name command to delete a VLAN, services configured for the VLAN are deleted at the same time. The deleted services cannot be restored even if you recreate the VLAN. Therefore, exercise caution when running the undo vlan vlan-name command.
+Example
+# Enter the view of the VLAN named user1.
+
+<HUAWEI> system-view
+[HUAWEI] vlan vlan-name user1
+[HUAWEI-vlan2]
+
