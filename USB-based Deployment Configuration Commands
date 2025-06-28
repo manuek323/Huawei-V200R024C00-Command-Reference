@@ -1,0 +1,298 @@
+USB-based Deployment Configuration Commands
+
+    Command Support
+    display device usb-deployment configuration
+    set device usb-deployment disable
+    set device usb-deployment config-file password
+    set device usb-deployment hmac-key
+    set device usb-deployment hmac
+    set device usb-deployment password
+
+Command Support
+
+Only the following switch models support USB-based deployment:
+
+S1730S-S1, S5720-LI, S5720S-LI, S5720I-SI, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, S5731S-H, S5732-H, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S6735-S, S6730-H, S6730S-H, S6730-S, S6730S-S.
+display device usb-deployment configuration
+Function
+
+The display device usb-deployment configuration command displays the configuration of USB-based deployment.
+Format
+
+display device usb-deployment configuration
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After the USB-based deployment configuration is completed, you can run this command to view related configuration information, including whether USB-based deployment is enabled, configuration file encryption password, HMAC key, and whether HMAC check is enabled.
+Example
+
+# Display the configuration of USB-based deployment.
+
+<HUAWEI> display device usb-deployment configuration
+USB-deployment: disable
+Config-file password: ******
+HMAC: enable
+Hmac-key: -- 
+
+Table 2-19 Description of the display device usb-deployment configuration command output
+
+Item
+	
+
+Description
+
+USB-deployment
+	
+Whether USB-based deployment is enabled.
+
+    disable: indicates that USB-based deployment is disabled on an interface.
+
+    enable: indicates that USB-based deployment is enabled on an interface.
+
+Config-file password
+	
+
+Configuration file encryption password. When no password is configured, "--" is displayed.
+
+HMAC
+	
+Whether HMAC check is enabled.
+
+    disable: indicates that HMAC check is disabled on an interface.
+
+    enable: indicates that HMAC check is enabled on an interface.
+
+Hmac-key
+	
+
+HMAC key for HMAC verification. When no HMAC key is configured, "--" is displayed.
+set device usb-deployment disable
+Function
+
+The set device usb-deployment disable command disables the USB-based deployment function.
+
+The undo set device usb-deployment disable command enables the USB-based deployment function.
+
+By default, the USB-based deployment function is disabled.
+Format
+
+set device usb-deployment disable
+
+undo set device usb-deployment disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+By default, the USB-based deployment function is disabled. However, if a device has no configuration, the USB-based deployment function is always enabled.
+
+On an unconfigured switch, both the configuration files for current startup and next startup are not specified. That is, the Startup saved-configuration file and Next startup saved-configuration file are NULL in the
+
+display startup command output.
+Example
+
+# Disable the USB-based deployment function.
+
+<HUAWEI> system-view
+[HUAWEI] set device usb-deployment disable
+
+# Enable the USB-based deployment function.
+
+<HUAWEI> system-view
+[HUAWEI] undo set device usb-deployment disable
+
+Warning: The function of USB deployment in this device will be enabled. Continue
+? [Y/N]:y                                                                       
+
+set device usb-deployment config-file password
+Function
+
+The set device usb-deployment config-file password command configures an encryption password for the configuration file used in USB-based deployment.
+
+The undo set device usb-deployment config-file password command deletes the encryption password for the configuration file used in USB-based deployment.
+
+By default, no encryption password is configured.
+
+If upgrade files for USB-based deployment include a configuration file, it is recommended that you run this command to configure an encryption password for the configuration file and compress the configuration file using the configured password before saving it in the USB flash drive. This configuration improves security.
+Format
+
+set device usb-deployment config-file password password
+
+undo set device usb-deployment config-file password
+Parameters
+Parameter 	Description 	Value
+
+password
+	
+
+Specifies the password used for encrypting the configuration file.
+	
+The value is a string of 8 to 64 characters or a string of 48 to 108 characters.
+
+    If the password is in plain text, it is a string of 8 to 64 case-sensitive characters and must be a combination of at least two of the following: letters, digits, and special characters.
+    If the password is in cipher text, it is a string of 48 to 108 characters.
+
+The password is displayed in cipher text in the configuration file regardless of whether you enter it in plain or cipher text.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If a password is configured using the set device usb-deployment config-file password password command, you need to compress and encrypt the configuration file (if any) with this password and save the compressed file to a specified directory in the USB flash drive. The device cannot compress a .zip configuration file. If such a configuration file is used, decompress the file, use the configured password to compress it, and save it in the USB flash drive.
+
+A user with a level lower than the management level cannot query the password configured using this command. If this user query the configuration file, the password is displayed as asterisks (******).
+Example
+
+# Set the encryption password for the configuration file used in USB-based deployment to Pwd123456.
+
+<HUAWEI> system-view
+[HUAWEI] set device usb-deployment config-file password Pwd123456
+
+set device usb-deployment hmac-key
+Function
+
+The set device usb-deployment hmac-key command configures an HMAC key for HMAC verification during USB-based deployment.
+
+The undo set device usb-deployment hmac-key command deletes the HMAC key used for HMAC verification during USB-based deployment.
+
+By default, no HMAC key is configured for HMAC verification.
+Format
+
+set device usb-deployment hmac-key hmac-key
+
+undo set device usb-deployment hmac-key
+Parameters
+Parameter 	Description 	Value
+
+hmac-key
+	
+
+Specifies an HMAC key for HMAC verification during USB-based deployment.
+	
+The value is a string of 8 to 64 or 68 to 108 characters.
+
+    A cleartext key is a string of 8 to 64 case-sensitive characters. It is recommended that the key be a combination of at least two of the following: uppercase letters A to Z, lowercase letters a to z, digits, and special characters.
+    A ciphertext key is a string of 68 to 108 characters.
+
+In the configuration file, a password is displayed in cipher text regardless of whether it is entered in clear text or cipher text.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If upgrade files include a configuration file, you can enable HMAC verification to ensure validity of the configuration file to be loaded. After the set device usb-deployment hmac command is run to enable HMAC verification for the configuration file during USB-based deployment, run the set device usb-deployment hmac-key command to configure an HMAC key for HMAC verification so that the device calculates the HMAC value of the configuration file and then compares the value with the HMAC field value in the index file. If the two values are the same, the configuration file is valid and loaded to the device for USB-based deployment. If the two values are different, the configuration file is invalid and cannot be loaded for USB-based deployment.
+
+A user at a level lower than the management level cannot check the HMAC key configured using this command. If this user checks the configuration file, the HMAC key is displayed as ******.
+Example
+
+# Configure an HMAC key for HMAC verification during USB-based deployment.
+
+<HUAWEI> system-view
+[HUAWEI] set device usb-deployment hmac-key huawei@123456852369741236553424654643213
+
+set device usb-deployment hmac
+Function
+
+The set device usb-deployment hmac command enables hashed message authentication code (HMAC) check for the configuration file used for USB-based deployment.
+
+The undo set device usb-deployment hmac command disables HMAC check for the configuration file used for USB-based deployment.
+
+By default, HMAC check is disabled.
+
+If upgrade files for USB-based deployment include a configuration file, it is recommended that you enable HMAC check to improve security of the configuration file.
+Format
+
+set device usb-deployment hmac
+
+undo set device usb-deployment hmac
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Prerequisites
+
+Before enabling the HMAC check function, run the set device usb-deployment config-file password command to configure an encryption password for the configuration file used for USB-based deployment.
+
+Applications
+
+If upgrade files for USB-based deployment include a configuration file, you can enable HMAC check to ensure validity of the configuration file to be loaded. After HMAC check is enabled on a device, the device uses the password configured by the set device usb-deployment config-file password command to calculate the HMAC for the configuration file, and compares the calculated value with the HMAC field value in the index file. If the two values are the same, the configuration file is considered valid and loaded to the device. If not, the configuration file is considered invalid and cannot be loaded.
+Example
+
+# Enable HMAC check for the configuration file used for USB-based deployment.
+
+<HUAWEI> system-view
+[HUAWEI] set device usb-deployment hmac
+
+set device usb-deployment password
+Function
+
+The set device usb-deployment password command sets an authentication password for USB-based deployment.
+
+The undo set device usb-deployment password command deletes the authentication password for USB-based deployment.
+Format
+
+set device usb-deployment password cipher password
+
+set device usb-deployment password password
+
+undo set device usb-deployment password
+Parameters
+Parameter 	Description 	Value
+
+cipher password
+	
+
+Specifies the authentication password for USB-based deployment.
+	
+
+The value is a cipher text string of 8 to 16 or 68 characters.
+
+password
+	
+
+Specifies the authentication password for USB-based deployment.
+	
+
+The value is a cipher text string of 8 to 16 or 68 characters.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+A user with a level lower than the management level cannot query the password configured using this command. If this user query the configuration file, the password is displayed as asterisks (******).
+Example
+
+# Delete the authentication password for USB-based deployment.
+
+<HUAWEI> system-view
+[HUAWEI] undo set device usb-deployment password
+
