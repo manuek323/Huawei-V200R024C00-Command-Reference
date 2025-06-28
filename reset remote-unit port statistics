@@ -1,0 +1,48 @@
+reset remote-unit port statistics
+Function
+
+The reset remote-unit port statistics command clears the statistics on interfaces of an RU.
+Format
+
+reset remote-unit port [ port-id ] statistics [ connect-interface interface-type interface-number | name remote-unit-name ]
+Parameters
+Parameter 	Description 	Value
+
+[ port-id ]
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 34.
+
+connect-interface interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value must be an existing RU alias.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Before collecting traffic statistics on an RU interface within a period of time, run this command to clear the existing traffic statistics.
+Example
+
+# Clear the statistics on all interfaces of an RU.
+
+<HUAWEI> reset remote-unit port statistics
+
