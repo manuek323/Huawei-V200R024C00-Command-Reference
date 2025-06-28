@@ -1,0 +1,2389 @@
+NTP Configuration Commands
+
+    Command Support
+    display ntp-service event clock-unsync
+    display ntp-service sessions
+    display ntp-service statistics packet
+    display ntp-service status
+    display ntp-service trace
+    display snmp-agent trap feature-name ntp all
+    ntp-service
+    ntp-service access
+    ntp-service authentication enable
+    ntp-service authentication-keyid
+    ntp-service broadcast-client
+    ntp-service broadcast-server
+    ntp-service disable
+    ntp-service discard
+    ntp-service in-interface disable
+    ntp-service kod-enable
+    ntp-service manycast-client
+    ntp-service manycast-server
+    ntp-service max-distance
+    ntp-service max-dynamic-sessions
+    ntp-service multicast-client
+    ntp-service multicast-server
+    ntp-service port
+    ntp-service refclock-master
+    ntp-service reliable authentication-keyid
+    ntp-service server disable
+    ntp-service source-interface
+    ntp-service unicast-peer
+    ntp-service unicast-server
+    reset ntp-service statistics packet
+    snmp-agent trap enable feature-name ntp
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display ntp-service event clock-unsync
+Function
+
+The display ntp-service event clock-unsync command displays the last 10 clock unsynchronization reasons.
+Format
+
+display ntp-service event clock-unsync
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display ntp-service event clock-unsync command to view information about the last 10 clock unsynchronization reasons in the current system.
+Example
+
+# Display the last 10 clock unsynchronization reasons.
+
+<HUAWEI> display ntp-service event clock-unsync
+ 1. Clock source   :  10.1.1.1(vrf1)
+    Session type   :  client, configured
+    Unsync reason  :  Peer reachability lost
+    Unsync time    :  2012-07-30 12:24:44+00:00
+
+ 2. Clock source   :  10.2.1.1(vrf2)
+    Session type   :  bdcast client (Interface: GE0/0/1), dynamic
+    Unsync reason  :  Authentication failure 
+    Unsync time    :  2011-06-15 11:24:44+00:0
+
+# Display the clock unsynchronization reasons.
+Table 3-170 Description of the display ntp-service event clock-unsync command output
+
+Item
+	
+
+Description
+
+Clock source
+	
+
+Indicates the IP address of the server clock.
+
+Session type
+	
+
+Indicates the session type of the server clock.
+
+Unsync reason
+	
+
+Indicates the unsynchronization reasons.
+
+Unsync time
+	
+
+Indicates the unsynchronization time.
+display ntp-service sessions
+Function
+
+The display ntp-service sessions command displays all session information maintained by NTP on the local end.
+Format
+
+display ntp-service sessions [ verbose ]
+Parameters
+Parameter 	Description 	Value
+
+verbose
+	
+
+Displays detailed information about an NTP session.
+
+If verbose is not specified, only summary information about the NTP session is displayed.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+To monitor or locate faults on NTP sessions, run the display ntp-service sessions command to obtain status information about NTP sessions so that the fault can be located efficiently.
+
+Precautions
+
+    If verbose is not specified, summary information about NTP sessions is displayed.
+
+    If verbose is specified, detailed information about NTP sessions is displayed.
+
+Example
+
+# Display NTP session information of the local device.
+
+<HUAWEI> display ntp-service sessions
+ clock source: 224.0.1.1                                                         
+ clock stratum: 1                                                              
+ clock status: configured, insane, valid, unsynced                              
+ reference clock ID: LOCAL(0)                                                    
+ reach: 0                                                                       
+ current poll: 64                                                               
+ now: 9                                                                         
+ offset: 0.0000 ms                                   
+ delay: 0.00 ms                                                  
+ disper: 0.00 ms 
+
+Table 3-171 Description of the display ntp-service sessions command output
+
+Item
+	
+
+Description
+
+clock source
+	
+
+Address of the clock source.
+
+clock stratum
+	
+
+Stratum of the clock source.
+
+The clock stratum determines the precision of the clock, and its value ranges from 1 to 16. The higher the stratum value, the lower the clock precision. The value 1 indicates the highest precision, and the value 16 indicates the lowest precision. The clock with stratum 16 is in the unsynchronized status, and cannot be used as a reference clock.
+
+clock status
+	
+Status of a clock, where
+
+    configured: indicates that the session is set up by a configuration command.
+    master: indicates that the clock source corresponding to the session is the primary clock source of the current system.
+    selected: indicates that the clock source corresponding to the session passes the clock selecting algorithm.
+    candidate: indicates that the clock source corresponding to the session is a candidate clock source.
+    sane: indicates that the clock source corresponding to the session passes the saneness test.
+    insane: indicates that the clock source corresponding to the session does not pass the saneness test.
+    valid: indicates that the clock source corresponding to the session is valid. The clock source corresponding to the session passes the test, is in a synchronized status and is of an effective stratum. The root delay and the root dispersion are within the normal range.
+    invalid: indicates that the clock source corresponding to the session is invalid.
+    unsynced: indicates that the clock source corresponding to the session is not yet synchronized or the stratum is invalid.
+
+reference clock ID
+	
+
+When the local system has been synchronized to a remote NTP server or a clock source, the address of the remote server or the identifier of the clock source is displayed.
+
+reach
+	
+
+Reachability count of the clock source. The value 0 indicates that the clock source is unreachable.
+
+current poll
+	
+
+Poll interval of NTP packets. The interval for sending two successive NTP packets, in seconds.
+
+To set the poll interval, run the ntp-service discard min-interval command.
+
+now
+	
+
+Interval between the last synchronization and the current time.
+
+offset
+	
+
+Offset to the superior clock source.
+
+delay
+	
+
+Delay to the superior clock source.
+
+disper
+	
+
+Dispersion to the superior clock source.
+
+# Display detailed information about NTP sessions on the local device.
+
+<HUAWEI> display ntp-service sessions verbose
+ clock source: 172.16.12.1                                                        
+ clock stratum: 1                                                              
+ clock status: configured, insane, valid, unsynced                              
+ reference clock ID: LOCAL(0)                                                    
+ local mode: client, local poll: 64, current poll: 64                            
+ peer mode: server, peer poll: 64, now: 21                                               
+ offset: -3.2385 ms,delay: 26.97 ms,  disper: 14.85 ms                             
+ root delay: 0.00 ms, root disper: 10.94 ms                                     
+ reach: 255, sync dist: 0.058, sync state: 4                                   
+ precision: 2^18, version: 3, peer interface: wildcard                          
+ reftime: 10:01:38.546 UTC Sep 5 2005(C6C69602.8C00DA1A)                        
+ orgtime: 10:01:43.463 UTC Sep 5 2005(C6C69607.76ACC921)                        
+ rcvtime: 10:01:43.480 UTC Sep 5 2005(C6C69607.7AF4ADBC)                        
+ xmttime: 10:01:43.452 UTC Sep 5 2005(C6C69607.73F1E8E6)                       
+ filter delay :  0.03   0.02   0.03   0.02   0.02   0.02   0.04   0.02          
+ filter offset:  0.00  -0.01   0.00   0.01   0.00   0.00   0.00   0.00          
+ filter disper:  0.03   0.02   0.00   0.11   0.09   0.08   0.06   0.05
+ reference clock status: normal
+
+Table 3-172 Description of the display ntp-service sessions verbose command output
+
+Item
+	
+
+Description
+
+clock source
+	
+
+Address of the clock source.
+
+clock stratum
+	
+
+NTP stratum on which the local system is located.
+
+clock status
+	
+Status of a clock, where
+
+    configured: indicates that the session is set up by a configuration command.
+    master: indicates that the clock source corresponding to the session is the primary clock source of the current system.
+    selected: indicates that the clock source corresponding to the session passes the clock selecting algorithm.
+    candidate: indicates that the clock source corresponding to the session is a candidate clock source.
+    sane: indicates that the clock source corresponding to the session passes the saneness test.
+    insane: indicates that the clock source corresponding to the session does not pass the saneness test.
+    valid: indicates that the clock source corresponding to the session is valid. The clock source corresponding to the session passes the test, is in a synchronized status and is of an effective stratum. The root delay and the root dispersion are within the normal range.
+    invalid: indicates that the clock source corresponding to the session is invalid.
+    unsynced: indicates that the clock source corresponding to the session is not yet synchronized or the stratum is invalid.
+
+reference clock ID
+	
+
+When the local system has been synchronized to a remote NTP server or a clock source, the address of the remote server or the identifier of the clock source is displayed. When the server is located on a certain VPN, the name of the VPN instance is displayed.
+
+local mode
+	
+
+Local system mode.
+
+peer mode
+	
+
+Peer system mode.
+
+local poll
+	
+
+Local polling mode.
+
+peer poll
+	
+
+Peer polling mode.
+
+offset
+	
+
+Offset to the superior clock source.
+
+delay
+	
+
+Delay to the superior clock source.
+
+disper
+	
+
+Dispersion to the superior clock source.
+
+root delay
+	
+
+Total system delay between the local end and the master reference clock. The default value is 0.
+
+If the value of root delay or root disper is large, clock synchronization may fail. A larger value indicates that the packet takes a longer time to reach the local device from the master reference clock. Therefore, the local device cannot determine whether the time in the packet is correct.
+
+root disper
+	
+
+System dispersion of the local end to the master reference clock. The default value is 0.
+
+If the value of root delay or root disper is large, clock synchronization may fail. A larger value indicates that the packet takes a longer time to reach the local device from the master reference clock. Therefore, the local device cannot determine whether the time in the packet is correct.
+
+reach
+	
+
+Reachability mark, indicating the reachability to the clock source.
+
+sync dist
+	
+
+Synchronization distance to the superior clock source. This parameter evaluates and describes the clock source, and NTP chooses the clock source with the shortest synchronization distance.
+
+sync state
+	
+Synchronization state:
+
+    0: The clock has never been synchronized.
+
+    1: Frequency information is obtained from configuration information.
+
+    2: The clock is set.
+
+    3: The clock is set, but the frequency is not yet determined.
+
+    4: The clock is synchronized.
+
+    5: An error is found.
+
+precision
+	
+
+Precision of a peer clock.
+
+version
+	
+
+NTP version.
+
+peer interface
+	
+
+Peer interface.
+
+reftime
+	
+
+Reference timestamp.
+
+orgtime
+	
+
+Time when an NTP packet is sent for the last time.
+
+rcvtime
+	
+
+Time when an NTP packet is received for the last time.
+
+xmttime
+	
+
+Time when an NTP packet is forwarded for the last time.
+
+filter delay
+	
+
+Filter delays of the 8 packets received for the last time.
+
+filter offset
+	
+
+Filter offsets of the 8 packets received for the last time.
+
+filter disper
+	
+
+Filter dispersions of the 8 packets received for the last time.
+
+reference clock status
+	
+The status of the reference clock, including:
+
+    normal: indicates that the peer clock is reachable.
+    abnormal: indicates that the peer clock is unreachable.
+
+display ntp-service statistics packet
+Function
+
+The display ntp-service statistics packet command displays statistics on NTP packets.
+Format
+
+display ntp-service statistics packet [ ipv6 | peer [ ip-address [ vpn-instance vpn-instance-name ] | ipv6 [ ipv6-address [ vpn-instance vpn-instance-name ] ] ] ]
+Parameters
+Parameter 	Description 	Value
+ipv6 	Displays statistics about global IPv6 NTP packets. 	-
+peer 	
+
+Displays statistics on an NTP symmetric peer.
+	
+
+-
+ip-address 	
+
+Specifies the IP address of an NTP symmetric peer.
+	
+
+-
+vpn-instance vpn-instance-name 	
+
+Specifies a VPN instance related to an NTP symmetric peer.
+	
+
+The value must be an existing VPN instance name.
+ipv6 	Displays the packet statistics on IPv6 peers. 	-
+ipv6-address 	Displays the NTP packet statistics on the specified IPv6 peer. 	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display ntp-service statistics packet command output includes the following information, and can help you to debug NTP packets.
+
+    Number of packets sent and received by an interface
+    Number of packets failing authentication
+    Number of dropped packets
+    Reason for dropping an NTP packet last time
+
+Example
+
+# Display the statistics on NTP packets.
+
+<HUAWEI> display ntp-service statistics packet
+ NTP IPv4 Packet Statistical Information     
+ ---------------------------------------     
+ Sent                                  : 100   
+    Send failures                      : 10   
+ Received                              : 1000   
+    Processed                          : 800   
+    Dropped                            : 200   
+       Validity test failures          : 50   
+          Authentication failures      : 20   
+       Invalid packets                 : 50   
+       Access denied                   : 50   
+       Rate-limited                    : 0   
+       Processing delay                : 50   
+       Interface disabled              : 0   
+       Max dynamic association reached : 0   
+       Server disabled                 : 0   
+       Others                          : 0   
+Last 2 packets drop reasons:
+  [2011-11-24 12:19:26-08:00] Global drop: NTP service disabled for interface.
+  [2011-11-24 12:20:30-08:00] Global drop: NTP service disabled for interface.
+
+Table 3-173 Description of the display ntp-service statistics packet command output
+
+Item
+	
+
+Description
+NTP IPv4 Packet Statistical Information 	Statistics on IPv4 NTP packets.
+Sent 	Number of packets sent.
+Send failures 	Number of failures in sending packets.
+Received 	Number of received packets.
+Processed 	Number of processed packets.
+Dropped 	Number of dropped packets.
+Validity test failures 	Number of packets dropped because the packets fail to pass the validity test.
+Authentication failures 	Number of packets dropped because the packets fail to pass the authentication.
+Invalid packets 	Number of packets dropped because the packets are invalid.
+Access denied 	Number of packets dropped for lack of access control authority.
+Rate-limited 	Number of packets dropped due to rate limit.
+Processing delay 	Number of packets dropped because processing of the packets is delayed.
+Interface disabled 	Number of packets dropped because the interface is disabled.
+Max dynamic association reached 	Number of packets dropped because the maximum number of dynamic sessions is reached.
+Server disabled 	Indicates the number of packets dropped as server disabled.
+Others 	Number of packets dropped for other reasons.
+Last 2 packets drop reasons 	Reason for dropping the last n packets, where the maximum value of n can be 10.
+display ntp-service status
+Function
+
+The display ntp-service status command displays the status of NTP.
+Format
+
+display ntp-service status
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To monitor or locate faults on the NTP service, run the display ntp-service status command to obtain status information about the NTP service, such as the synchronization status of the local clock and the stratum of the clock.
+Example
+
+# Display the status of the NTP service.
+
+<HUAWEI> display ntp-service status
+clock status: synchronized
+clock stratum: 2
+reference clock ID: LOCAL(0)
+nominal frequency: 60.0002 Hz
+actual frequency: 60.0002 Hz
+clock precision: 2^18
+clock offset: 0.0000 ms
+root delay: 0.00 ms
+root dispersion: 0.00 ms
+peer dispersion: 10.00 ms
+reference time: 15:51:36.259 UTC Apr 25 2012(C6179088.426490A3)
+synchronization state: spike (clock will be set in 1010 secs)
+
+Table 3-174 Description of the display ntp-service status command output
+
+Item
+	
+
+Description
+
+clock status
+	
+Indicates the clock status.
+
+    synchronized: indicates that the local clock has been synchronized with an NTP server or the reference clock.
+
+    unsynchronized: indicates that the local clock has not been synchronized with any NTP server.
+
+clock stratum
+	
+
+Indicates the stratum of the reference clock. The value ranges from 1 to 15. A lower the clock stratum indicates higher clock precision. When the client gets synchronized to a session, its stratum is the session stratum plus 1.
+
+reference clock ID
+	
+Indicates ID of the reference clock.
+
+    When the local clock has been synchronized with the remote NTP server, ID of the reference clock shows IP address of the remote server.
+
+    When the local clock has been synchronized with the reference clock, it shows ID of the reference clock.
+
+    If the local clock is the reference clock, it shows "Local".
+
+nominal frequency
+	
+
+Indicates the nominal frequency of the local clock, in Hz.
+
+actual frequency
+	
+
+Indicates the actual frequency of the local clock, in Hz.
+
+clock precision
+	
+
+Indicates the precision of the local clock.
+
+clock offset
+	
+
+Indicates the offset between the local clock and the NTP server, in ms.
+
+root delay
+	
+
+Indicates the delay between the local clock and the master reference clock, in ms.
+
+root dispersion
+	
+
+Indicates the dispersion between the local clock and the master reference clock, in ms.
+
+peer dispersion
+	
+
+Indicates the dispersion between the local clock and the peer clock, in ms.
+
+reference time
+	
+
+Indicates reference timestamp.
+
+synchronization state
+	
+Indicates the synchronization status of the local clock:
+
+    clock not set: Indicates the clock is not updated.
+    frequency set by configuration: Indicates the clock frequency is set by NTP configuration.
+    clock set: Indicates the clock is set.
+    clock set but frequency not determined: Indicates the clock is set but the frequency is not determined.
+    clock synchronized: Indicates that the clock is synchronized.
+    spike (clock will be set in XXX secs): Indicates a time difference of more than 128 milliseconds is detected between NTP server and client clock. The clock change will take effect in XXX seconds.
+
+display ntp-service trace
+Function
+
+The display ntp-service trace command displays the system to trace the path of reference clock source from the local device.
+Format
+
+display ntp-service trace
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+When you run the display ntp-service trace command, summary information of NTP servers for synchronizing time on the link from the local device to the reference clock source can be displayed.
+Example
+
+# Display the summary of each passing NTP server when you trace the reference clock source from the local device.
+
+<HUAWEI> display ntp-service trace
+server 127.0.0.1,stratum 5, offset 0.024099 s, synch distance 0.06337
+server 192.168.1.2,stratum 4, offset 0.028786 s, synch distance 0.04575
+server 192.168.2.2,stratum 3, offset 0.035199 s, synch distance 0.03075
+server 192.168.10.1,stratum 2, offset 0.039855 s, synch distance 0.01096
+refid 127.127.1.0
+
+Table 3-175 Description of the display ntp-service trace command output
+
+Item
+	
+
+Description
+
+server
+	
+
+IP address of the NTP server.
+
+stratum
+	
+
+Stratum of the clock on the NTP server.
+
+offset
+	
+
+Offset to the superior reference clock.
+
+synch distance
+	
+
+Synchronization distance to the superior reference clock.
+
+This parameter evaluates and describes the reference clock and NTP chooses the reference clock with the shortest synchronization distance.
+
+refid
+	
+
+Reference clock source.
+display snmp-agent trap feature-name ntp all
+Function
+
+The display snmp-agent trap feature-name ntp all command displays the status of NTP traps.
+Format
+
+display snmp-agent trap feature-name ntp all
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display snmp-agent trap feature-name ntp all command to check status of NTP traps. This status can be configured using the snmp-agent trap enable feature-name ntp command.
+Example
+
+# Display the status of NTP traps.
+
+<HUAWEI> display snmp-agent trap feature-name ntp all
+------------------------------------------------------------------------------                                                      
+Feature name: NTP                                                                                                                   
+Trap number : 1                                                                                                                     
+------------------------------------------------------------------------------                                                      
+Trap name                       Default switch status   Current switch status                                                       
+hwNtpStateChangeTrap            on                      on
+
+Table 3-176 Description of the display snmp-agent trap feature-name ntp all command output
+
+Item
+	
+
+Description
+
+Feature name
+	
+
+Name of the module where the trap is generated.
+
+Trap number
+	
+
+Number of traps.
+
+Trap name
+	
+
+Name of a trap.
+
+Default switch status
+	
+
+Default status of a trap:
+
+    on: The trap function is enabled.
+    off: The trap function is disabled.
+
+Current switch status
+	
+
+Current status of a trap:
+
+    on: The trap function is enabled.
+    off: The trap function is disabled.
+
+This status can be configured using the snmp-agent trap enable feature-name ntp command.
+ntp-service
+Function
+
+The ntp-service command configures the maximum polling interval, the timestamp difference between packets sent by the clock server and received by the client, the maximum interval at which the clock of the client is synchronized.
+
+The undo ntp-service command restores the default value.
+
+By default, the maximum polling interval is 217s, the timestamp difference between packets sent by the clock server and received by the client is 128 ms, the maximum interval at which the clock of the client is synchronized is 600 seconds.
+Format
+
+ntp-service { max-sys-poll max-sys-poll-value | spike-offset spike-offset-value | sync-interval interval } *
+
+undo ntp-service { max-sys-poll | spike-offset | sync-interval } *
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support max-sys-poll max-sys-poll-value and spike-offset spike-offset-value parameters.
+Parameters
+Parameter 	Description 	Value
+
+max-sys-poll max-sys-poll-value
+	
+
+Specifies the maximum polling rate.
+	
+
+The value is an integer ranging from 6 to 17.
+
+spike-offset spike-offset-value
+	
+
+Specifies the timestamp difference between packets sent by the clock server and received by the client.
+	
+
+The value is an integer ranging from 32 to 128, in milliseconds.
+
+sync-interval interval
+	
+
+Sets the maximum interval for clock synchronization.
+	
+
+The value is an integer, in seconds. The value ranges from 180 to 600.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The NTP polling interval is expressed in nth power of 2 (n is an integer). For example, run the ntp-service max-sys-poll 6 command, the system sends polling packets every 64s. In other words, the device monitors the clock change on the server every 64s.
+
+To decrease the timestamp difference between packets sent by the clock server and received by the client, run the ntp-service spike-offset command. If the time offset of the server is greater than the configured timestamp difference, NTP sets the system clock after the interval for time synchronization elapses.
+
+When the clock of the server changes, the clock of the client is required to be synchronized with the clock of the server. If the clock of the server is unstable, you can run the ntp-service sync-interval command on the client to reduce the interval.
+
+The ntp-service max-distance command is applied to only the NTP client. The NTP client calculates the distance with each NTP server, and compares the calculated distance with the distance threshold configured using the ntp-service max-distance command. If the calculated distance is longer than the threshold, the NTP client does not synchronize the clock from this NTP server.
+
+Precautions
+
+The NTP poll interval must be an integer power of 2; therefore, the interval for the client synchronization is configured as a value closest to the integer power of 2. For example, if the interval configured by the user is 180 seconds, the client is synchronized at any time after 128 seconds.
+
+If you run the ntp-service command repeatedly, the latest configuration overrides the previous configurations.
+Example
+
+# Set the maximum interval to 200 seconds for clock synchronization.
+
+<HUAWEI> system-view
+
+[HUAWEI] ntp-service sync-interval 200
+
+ntp-service access
+Function
+
+The ntp-service access command sets the access control authority of the local NTP.
+
+The undo ntp-service access command cancels the configured access control authority.
+
+By default, no access control authority is set.
+Format
+
+ntp-service access { peer | query | server | synchronization | limited } { acl-number | ipv6 acl6-number } *
+
+undo ntp-service access { peer | query | server | synchronization | limited } [ ipv6 | all ]
+
+undo ntp-service access { peer | query | server | synchronization | limited } [ acl-number | ipv6 acl6-number ] *
+Parameters
+Parameter 	Description 	Value
+peer 	Indicates maximum access authority. Both time request and control query can be performed on the local NTP service, and the local clock can be synchronized to the remote server. 	-
+query 	Indicates minimum access. Only control query can be performed on the local NTP service. 	-
+server 	Indicates that server access and query are permitted. Both time request and control query can be performed on the local NTP service, but the local clock cannot be synchronized to the remote server. 	-
+synchronization 	Indicates that only server access is permitted. Only time request can be performed on the local NTP service. 	-
+limited 	When the rate of NTP packets exceeds the upper limit, the incoming NTP packets are discarded. 	-
+acl-number 	Indicates the number of a basic ACL with IPv4 address specified. 	The value is an integer that ranges from 2000 to 2999.
+ipv6 acl6-number 	Indicates the number of an ACL with IPv6 address specified. 	The value is an integer that ranges from 2000 to 2999.
+all 	Indicates all access control authority. 	-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+Usage Scenario
+
+Compared with NTP authentication, ntp-service access is simpler to ensure the network security. When an access request reaches the local end, the access request is successively matched with the access authority from the highest one to the lowest one. The first successfully matched access authority takes effect. The matching order is: peer, server, synchronization, query and limited.
+
+Depending on the access authority to be limited, run the command on different devices accordingly. For details, see the following table.
+Table 3-177 Configuration of the NTP access control authority
+
+NTP Operating Mode
+	
+
+Usage Scenario
+	
+
+Device Configured
+
+Unicast NTP server/client mode
+	
+
+The client is restricted from being synchronized to a server, so that the client will not be synchronized to an unreliable unicast NTP server on the network.
+	
+
+Client
+
+Unicast NTP server/client mode
+	
+
+The server is restricted from processing the synchronization time request of the client, so that the synchronization range of the server is controlled.
+	
+
+Server
+
+NTP symmetric peer mode
+	
+
+The two ends are restricted from being synchronized with each other to prevent an unreliable symmetric passive peer on the network from synchronizing the client.
+	
+
+Symmetric active peer
+
+NTP symmetric peer mode
+	
+
+The symmetric passive peer is restricted from processing the time request, so that the synchronization range of the symmetric passive peer is controlled.
+	
+
+Symmetric passive peer
+
+NTP multicast mode
+	
+
+The client is restricted from synchronizing to the server to prevent an unreliable multicast NTP server from synchronizing the client.
+	
+
+NTP multicast client
+
+NTP broadcast mode
+	
+
+The client is restricted from being synchronized to a server, so that the client will not be synchronized to an unreliable broadcast NTP server on the network.
+	
+
+NTP broadcast client
+
+NTP manycast client mode
+	
+
+The client is restricted from being synchronized to a server.
+	
+
+NTP manycast client
+
+NTP manycast server mode
+	
+
+The server is restricted from processing the clock synchronization request sent by the client.
+	
+
+NTP manycast server
+
+The ntp-service access command ensures the security to the minimal extent. A safer method is to perform identity authentication. See the ntp-service authentication enable command for relevant configuration.
+Precautions
+Before configuring access control authority in ACL, check ACL rule configurations as follows:
+
+    If the ACL rule is set to permit or empty, a permit action will be performed.
+    If the ACL rule is set to deny or the associated peer is not bound to the ACL rule, a deny action will be performed.
+
+Example
+
+# Enable the peer matching ACL 2000 to perform time request, query control and time synchronization on the local device.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service access peer 2000
+
+# Enable the server matching ACL 2002 to perform time request and query control on the local device.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service access server 2002
+
+ntp-service authentication enable
+Function
+
+The ntp-service authentication enable command enables identity authentication for NTP.
+
+The undo ntp-service authentication enable command disables the identity authentication.
+
+By default, identity authentication is disabled.
+Format
+
+ntp-service authentication enable
+
+undo ntp-service authentication enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+On networks requiring high security, authentication must be enabled for NTP. The NTP client authenticates NTP servers using a password and synchronizes time with only the authenticated server. This improves network security.
+Example
+
+# Enable identity authentication for NTP.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service authentication enable
+
+ntp-service authentication-keyid
+Function
+
+The ntp-service authentication-keyid command sets NTP authentication key.
+
+The undo ntp-service authentication-keyid command removes NTP authentication key.
+
+By default, no authentication key is set.
+Format
+
+ntp-service authentication-keyid key-id authentication-mode { md5 | hmac-sha256 } [ cipher ] password
+
+undo ntp-service authentication-keyid key-id
+Parameters
+Parameter 	Description 	Value
+
+key-id
+	
+
+Indicates the key number.
+	
+
+Key ID is an integer and ranges from 1 to 4294967295.
+
+authentication-mode md5
+	
+
+Indicates MD5 authentication mode.
+	
+
+-
+
+authentication-mode hmac-sha256
+	
+
+Indicates HMAC-SHA256 authentication mode.
+	
+
+-
+
+cipher
+	
+
+Indicates that the configured password is displayed in cipher text.
+	
+
+-
+
+password
+	
+
+Specifies the authentication password in plain text or in cipher text.
+	
+The keyword is a string of case sensitive characters, spaces supported.
+
+    1 to 255 characters in plain text.
+    20 to 392 characters in cipher text.
+
+When quotation marks are used around the string, spaces are allowed in the string.
+NOTE:
+
+To improve password security, the password must be a combination of at least two of the following: digits, letters, and special characters, and the password length must be equal to or larger than 8.
+
+If a password contains a space, the password must be placed into a pair of double quotation marks. Only one pair of double quotation marks can be used for each password.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a network that requires high security, the NTP authentication must be enabled. You can configure password authentication between client and server, which guarantee the client only to synchronize with server successfully authenticated, and improve network security. If the NTP authentication function is enabled, a reliable key should be configured at the same time. Keys configured on the client and the server must be identical.
+
+In NTP symmetric peer mode, the symmetric active peer functions as a client and the symmetric passive peer functions as a server.
+
+Follow-up Procedure
+
+You can configure multiple keys for each device. After the NTP authentication key is configured, you need to set the key to reliable using the ntp-service reliable authentication-keyid command. If you do not set the key to reliable, the NTP key does not take effect.
+
+Precautions
+
+To ensure security, you are advised to use the HMAC-SHA256 algorithm, which is more secure, for NTP authentication.
+
+You can configure a maximum of 1024 keys for each device.
+
+If the NTP authentication key is a reliable key, it automatically becomes unreliable when you delete the key. You do not need to run the undo ntp-service reliable authentication-keyid command.
+Example
+
+# Set the HMAC-SHA256 identity authentication key. The key ID number is 10, and the key is Betterkey.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service authentication-keyid 10 authentication-mode hmac-sha256 BetterKey
+
+# Set authentication text to xyz123 in HMAC-SHA256 authentication with cipher option.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service authentication-keyid 10 authentication-mode hmac-sha256 cipher xyz123 
+
+ntp-service broadcast-client
+Function
+
+The ntp-service broadcast-client command configures the device to work in NTP broadcast client mode.
+
+The undo ntp-service broadcast-client command removes the device from the NTP broadcast client mode.
+
+By default, the device is not configured in the NTP broadcast client mode.
+Format
+
+ntp-service broadcast-client
+
+undo ntp-service broadcast-client
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+On a synchronization subnet, when the IP address of a server or a symmetric peer is not determined, or when the clocks on a large number of devices need to be synchronized on the network, you can implement clock synchronization by configuring the broadcast mode.
+
+On a specified interface on the broadcast client, run the ntp-service broadcast-client command to configure an interface on the local device to receive NTP broadcast packets. When the local device automatically runs in the broadcast client mode, the device can receive the synchronization packets sent by a broadcast server. For the configuration of the broadcast server, see the ntp-service broadcast-server command.
+
+When the configuration is complete, you can run the display ntp-service sessions command to obtain information about sessions between the broadcast server and the local device.
+Example
+
+# Enable VLANIF100 to receive NTP broadcast messages.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service broadcast-client
+
+# Enable GigabitEthernet0/0/1 to receive NTP broadcast messages.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service broadcast-client
+
+ntp-service broadcast-server
+Function
+
+The ntp-service broadcast-server command configures the local device to work in NTP broadcast server mode.
+
+The undo ntp-service broadcast-server command removes the device from the NTP broadcast server mode.
+
+By default, the broadcast server mode is not configured.
+Format
+
+ntp-service broadcast-server [ version number | authentication-keyid key-id | port port-number | subnet-broadcast ] *
+
+undo ntp-service broadcast-server [ version number | authentication-keyid key-id | port port-number | subnet-broadcast ] *
+Parameters
+Parameter 	Description 	Value
+
+version number
+	
+
+Indicates the NTP version number.
+
+If this parameter is not specified, the version number is a default value.
+	
+
+The value is an integer that ranges from 1 to 4. The default value is 3.
+
+authentication-keyid key-id
+	
+
+Indicates the authentication key number used to transmit a message to broadcast clients.
+
+If this parameter is not specified, authentication is not performed.
+	
+
+For NTPv1, NTPv2, and NTPv3, the value is an integer ranging from 1 to 4294967295. For NTPv4, the value is an integer ranging from 1 to 65535.
+
+port port-number
+	
+
+Specifies the port number to transmit NTP broadcast message.
+	
+
+The value is 123 or an integer ranging from 1025 to 65535. The default value is 123.
+
+subnet-broadcast
+	
+
+Specifies the subnet broadcast mode for NTP broadcast server.
+	
+
+-
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a synchronization subnet, when the IP address of a server or a symmetric peer is not determined, or when the clocks on a large number of devices need to be synchronized on the network, you can implement clock synchronization by configuring the broadcast mode. On a specified interface on the broadcast server, run the ntp-service broadcast-server command to configure an interface on the local device to send NTP broadcast packets. When the local device automatically runs in the broadcast server mode, the device can send synchronization packets to a broadcast client. For the configuration of the broadcast client, see the ntp-service broadcast-client command.
+
+    Full broadcast mode: The broadcast server sends NTP packets to the broadcast address 255.255.255.255 periodically.
+    Subnet broadcast mode: The broadcast server sends NTP packets to the broadcast address of the network segment to which the interface IP address belongs periodically.
+
+Precautions
+
+The full broadcast mode and subnet broadcast mode cannot be specified at the same time. After configuring either of the two modes, you must run the undo ntp-service broadcast-server command to cancel the current mode before configuring the other mode.
+
+Follow-up Procedure
+
+When the configuration is complete, you can run the display ntp-service sessions command to obtain information about sessions between the broadcast server and the client.
+Example
+
+# Enable VLANIF100 to send NTP broadcast packets, with the NTP version as 2 and the key number as 4.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service broadcast-server version 2 authentication-keyid 4
+
+# Enable GigabitEthernet0/0/1 to send NTP broadcast packets, with the NTP version as 3 and the key number as 100.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service broadcast-server version 3 authentication-keyid 100
+
+ntp-service disable
+Function
+
+The ntp-service disable command disables the IPv4 and IPv6 NTP function.
+
+The undo ntp-service disable command enables the IPv4 and IPv6 NTP function.
+
+By default, the NTP function is enabled.
+Format
+
+ntp-service [ ipv6 ] disable
+
+undo ntp-service [ ipv6 ] disable
+Parameters
+Parameter 	Description 	Value
+
+ipv6
+	
+
+Indicates IPv6 NTP services.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Run the ntp-service disable or ntp-service ipv6 disable command in the system view to disable the IPv4 or IPv6 NTP service function.
+You can run the ntp-service disable command in either of the following situations:
+
+    The device does not need to synchronize clock with IPv4 or IPv6 external servers or peers.
+
+    The device does not need to provide reference clock source for IPv4 or IPv6 external servers.
+
+Precautions
+
+Disabling of NTP service will not delete the existing configurations.
+
+After the NTP service is enabled, the system listens to IP address 0.0.0.0 by default. That is, the system listens to all IP addresses, which is prone to security issues. It is recommended that you run the ntp-service access { peer | query | server | synchronization | limited } { acl-number | ipv6 acl6-number } * command to configure access control permission on the local NTP service. You can also run the ntp-service authentication enable command to configure NTP identify authentication.
+Example
+
+# Disable the IPv4 NTP service.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service disable
+
+# Disable the IPv6 NTP service.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service ipv6 disable
+
+ntp-service discard
+Function
+
+The ntp-service discard command sets the minimum inter-packet interval and the average inter-packet interval of NTP.
+
+The undo ntp-service discard command cancels the minimum inter-packet interval and the average inter-packet interval of NTP.
+
+By default, the minimum inter-packet interval is set to the first power of 2 in seconds, namely, 2 seconds, and the average inter-packet interval is set to the fifth power of 2 in seconds, namely, 32 seconds.
+Format
+
+ntp-service discard { min-interval min-interval-val | avg-interval avg-interval-val } *
+
+undo ntp-service discard
+Parameters
+Parameter 	Description 	Value
+min-interval min-interval-val 	
+
+Specifies the minimum inter-packet interval of NTP.
+
+The actual value of the minimum inter-packet interval of NTP is the value obtained by raising 2 to the power of min-interval-val, expressed in seconds.
+	The value of min-interval-val is an integer that ranges from 1 to 8.
+avg-interval avg-interval-val 	
+
+Specifies the average inter-packet interval of NTP.
+
+The actual value of the average inter-packet interval of NTP is the value obtained by raising 2 to the power of avg-interval-val, expressed in seconds.
+	The value of avg-interval-val is an integer that ranges from 1 to 8.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The minimum inter-packet interval and the average inter-packet interval of NTP are set using the ntp-service discard command. To generate kiss code RATE, we need to set the minimum inter-packet interval and the average inter-packet interval of NTP.
+Example
+
+# Set both the minimum inter-packet interval and the average inter-packet interval of NTP to the fourth power of 2, expressed in seconds, namely, 16 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service discard min-interval 4 avg-interval 4
+
+ntp-service in-interface disable
+Function
+
+The ntp-service in-interface disable command disables an interface from receiving NTP packets.
+
+The undo ntp-service in-interface disable command enables an interface to receive NTP packets.
+
+By default, an interface is enabled to receive NTP packets.
+Format
+
+ntp-service [ ipv6 ] in-interface disable
+
+undo ntp-service [ ipv6 ] in-interface disable
+Parameters
+Parameter 	Description 	Value
+ipv6 	Indicates IPv6 NTP services. 	-
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The undo ntp-service [ ipv6 ] in-interface disable command provides a method for access control.
+You can disable the interface connected to external devices from receiving NTP packets in either of the following situations:
+
+    An unreliable clock server exists on the interface. By default, all the interfaces can receive NTP packets after NTP is enabled on the device. However, an unreliable clock source makes NTP clock data inaccurate.
+    The NTP clock data is modified when the interface is attacked maliciously.
+
+Prerequisites
+
+Before an interface is disabled from receiving IPv6 NTP packets, the IPv6 function must be enabled on the interface.
+Example
+
+# Disable VLANIF100 from receiving NTP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ntp-service in-interface disable
+
+# Disable GigabitEthernet0/0/1 from receiving NTP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service in-interface disable
+
+ntp-service kod-enable
+Function
+
+The ntp-service kod-enable command enables the KOD function.
+
+The undo ntp-service kod-enable command disables the KOD functions.
+
+By default, the KOD function is disabled.
+Format
+
+ntp-service kod-enable
+
+undo ntp-service kod-enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+Usage Scenario
+
+The Kiss-o'-Death (KOD) is a brand new access control technology put forward by NTPv4, and the KOD is mainly used for a server to provide information, such as a status report and access control, for a client. After the KOD function is enabled on the server, the server sends the kiss code DENY or RATE to the client according to the operating status of the system.
+
+When the kiss code is generated in a specific situation, run the ntp-service kod-enable command.
+Follow-up Procedure
+
+After the KOD function is enabled on the server, you can run the ntp-service access limited command to enable control on the rate of incoming NTP packets. When the rate of incoming NTP packets reaches the upper threshold, the server sends the kiss code.
+Example
+# Enable the KOD function.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service kod-enable
+
+ntp-service manycast-client
+Function
+
+The ntp-service manycast-client command configures the NTP manycast client mode.
+
+The undo ntp-service manycast-client command cancels the NTP manycast client mode.
+
+By default, the NTP manycast client mode is disabled.
+Format
+
+ntp-service manycast-client [ ip-address | ipv6 [ ipv6-address ] ] [ authentication-keyid key-id | ttl ttl-number | port port-number ] *
+
+undo ntp-service manycast-client [ ip-address | ipv6 [ ipv6-address ] ] [ authentication-keyid key-id | ttl ttl-number | port port-number ] *
+Parameters
+Parameter 	Description 	Value
+ip-address 	
+
+Specifies a manycast IPv4 address, which is a class D address.
+	The default IPv4 address is 224.0.1.1.
+ipv6 [ ipv6-address ] 	
+
+Specifies a manycast IPv6 address.
+	The default IPv6 address is FF0E::0101.
+authentication-keyid key-id 	
+
+Specifies the ID of the authentication key used for sending packets to a manycast server.
+	The value is an integer that ranges from 1 to 65535.
+ttl ttl-number 	
+
+Specifies the TTL value of a manycast packet.
+	The value is an integer ranges from 1 to 255.
+port port-number 	Specifies the port number to transmit NTP manycast message. 	The value is 123 or an integer ranging from 1025 to 65535. The default value is 123.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The local device runs in the manycast client mode, and periodically sends manycast packets to manycast servers. After the local device receives the reply packet sent by a manycast server, the local device establishes dynamic C/S association with the server.
+In the configuration of the manycast client, if the server address is not specified, 224.0.1.1 or FF0E::0101 is adopted as the server address by default.
+Example
+
+# Configure VLANIF100 to receive NTP manycast packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service manycast-client 
+
+# Configure GigabitEthernet0/0/1 to receive NTP manycast packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service manycast-client
+
+ntp-service manycast-server
+Function
+
+The ntp-service manycast-server command configures the NTP manycast server mode.
+
+The undo ntp-service manycast-server command cancels the NTP manycast server mode.
+
+By default, the NTP manycast server mode is not configured.
+Format
+
+ntp-service manycast-server [ ip-address | ipv6 [ ipv6-address ] ]
+
+undo ntp-service manycast-server [ ip-address | ipv6 [ ipv6-address ] ]
+Parameters
+Parameter 	Description 	Value
+ip-address 	
+
+Specifies a manycast IPv4 address, which is a class D address.
+	The default IPv4 address is 224.0.1.1.
+ipv6 [ ipv6-address ] 	
+
+Specifies a manycast IPv6 address.
+	The default IPv6 address is FF0E::0101.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+Usage Scenario
+
+The manycast server responds to the manycast packets sent by the client. After the manycast client receives the reply packet, the manycast client establishes temporary association with the server and enters C/S mode.
+Precautions
+
+If the manycast IP address is not specified when the undo ntp-service manycast-server command is run, the local device searches for the default IP address. In IPv4 networks, the default IP address of the manycast server is 224.0.1.1. In IPv6 networks, the default IP address of the manycast server is FF0E::0101. If the local device finds the default IP address, the undo ntp-service manycast-server command takes effect; otherwise, the undo ntp-service manycast-server does not take effect.
+Example
+
+# Configure VLANIF100 as an interface of the server. The interface is used for responding to the manycast client request from a manycast address.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service manycast-server 
+
+# Configure GigabitEthernet0/0/1 as an interface of the server. The interface is used for responding to the manycast client request from a manycast address.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service manycast-server 
+
+ntp-service max-distance
+Function
+
+The ntp-service max-distance command configures the maximum distance threshold value.
+
+The undo ntp-service max-distance command restores the default value.
+
+By default, the maximum distance threshold value is 1.
+Format
+
+ntp-service max-distance max-distance-value
+
+undo ntp-service max-distance
+Parameters
+Parameter 	Description 	Value
+
+max-distance-value
+	
+
+Indicates the maximum distance threshold value in seconds.
+	
+
+The value is an integer and ranges from 1 to 16, in seconds. The default value is 1.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+ntp-service max-distance command is used at the client side. At the client side, NTP will calculate synchronization distance for each server and compare it with synchronization distance threshold value. If the synchronization distance exceeds synchronization distance threshold value, the client will not consider that server for clock synchronization. This command is used in the calculation of synchronization distance threshold value.
+Example
+
+# Set the NTP maximum distance to 16s.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service max-distance 16
+
+ntp-service max-dynamic-sessions
+Function
+
+The ntp-service max-dynamic-sessions command sets the maximum dynamic NTP sessions that can be set up.
+
+The undo ntp-service max-dynamic-sessions command restores the maximum dynamic NTP sessions to the default value.
+
+By default, a maximum of 100 NTP dynamic sessions can be set up.
+Format
+
+ntp-service max-dynamic-sessions number
+
+undo ntp-service max-dynamic-sessions
+Parameters
+Parameter 	Description 	Value
+
+number
+	
+
+Specifies the number of dynamic sessions that can be set up.
+	
+
+The value is an integer that ranges from 0 to 100, and the default value is 100.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A maximum of 128 sessions can be established on the same device running the NTP service in the same period, including static and dynamic sessions. In both unicast server/client mode and symmetric peer mode, command lines are used to establish static sessions. The dynamic sessions are established in broadcast mode or multicast mode.
+
+Excessive dynamic sessions directly affect the establishment of static sessions. A user can limit the number of local dynamic sessions solve this problem.
+
+Precautions
+When the number of local dynamic sessions on the device is limited:
+
+    This command limits the number of only dynamic sessions, not static sessions.
+    NTP dynamic sessions established are not affected. That is, when the number of the dynamic sessions exceeds the limit, the dynamic sessions established are not deleted, but a new dynamic session cannot be established.
+    The limit on the number of local dynamic sessions allowed should be configured on the client because the server does not record the number of the established NTP sessions.
+
+Example
+
+# Set the maximum number of NTP dynamic sessions that can be set up to 50.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service max-dynamic-sessions 50
+
+ntp-service multicast-client
+Function
+
+The ntp-service multicast-client command configures the local device to work in NTP multicast client mode.
+
+The undo ntp-service multicast-client command cancels the NTP multicast client mode.
+
+By default, the NTP multicast client mode is not configured.
+Format
+
+ntp-service multicast-client [ ip-address | ipv6 [ ipv6-address ] ]
+
+undo ntp-service multicast-client [ ip-address | ipv6 [ ipv6-address ] ]
+Parameters
+Parameter 	Description 	Value
+ip-address 	Indicates the multicast IP address. 	The default IP address is 224.0.1.1.
+ipv6 [ ipv6-address ] 	
+
+Indicates the multicast IPv6 address.
+	The default IPv6 address is FF0E::0101.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To perform clock synchronization in multicast mode, you can use the ntp-service multicast-client command to specify the current interface on the local device to receive NTP multicast packets. The local device runs in the multicast client mode.
+
+If the valid multicast server is configured, the local device gets synchronized with the multicast server. The local device time is updated with the time of the server.
+
+Follow-up Procedure
+
+When the configuration is complete, run the display ntp-service sessions command to obtain session information about the multicast server and the local device.
+
+You can configure more than one multicast client with different multicast IP address on the same interface. When multiple multicast clients are configured, the device selects the optimal clock source by selecting a preferred clock.
+
+You can configure a maximum of 1024 multicast clients on the local device, but a maximum of 128 multicast clients can work simultaneously.
+Example
+
+# Configure VLANIF100 to receive NTP multicast packets. The multicast address of the multicast packets is 224.0.1.2.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service multicast-client 224.0.1.2
+
+# Configure GigabitEthernet0/0/1 to receive NTP multicast packets. The multicast address of the multicast packets is 224.0.1.1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service multicast-client 224.0.1.1
+
+ntp-service multicast-server
+Function
+
+The ntp-service multicast-server command specifies an interface on the local device to send NTP multicast packets. The local device runs in the multicast server mode.
+
+The undo ntp-service multicast-server command cancels the NTP multicast server mode.
+
+By default, the multicast server mode is not configured.
+Format
+
+ntp-service multicast-server [ ip-address ] [ version number | authentication-keyid key-id | ttl ttl-number | port port-number ] *
+
+ntp-service multicast-server ipv6 [ ipv6-address ] [ authentication-keyid key-id | ttl ttl-number | port port-number ] *
+
+undo ntp-service multicast-server [ ip-address ] [ version number | authentication-keyid key-id | ttl ttl-number | port port-number ] *
+
+undo ntp-service multicast-server ipv6 [ ipv6-address ] [ authentication-keyid key-id | ttl ttl-number | port port-number ] *
+Parameters
+Parameter 	Description 	Value
+
+ip-address
+	
+
+Indicates the multicast IP address.
+	
+
+The default address is 224.0.1.1.
+
+ipv6 [ ipv6-address ]
+	
+
+Indicates the multicast IPv6 address.
+	
+
+The default IPv6 address is FF0E::0101.
+
+version number
+	
+
+Indicates the NTP version number.
+
+If this parameter is not specified, the version number is a default value.
+	
+
+The value is an integer that ranges from 1 to 4. The default value is 3.
+
+authentication-keyid key-id
+	
+
+Indicates the authentication key ID used when sending messages to the multicast clients.
+
+If this parameter is not specified, authentication is not performed.
+	
+
+The value is an integer. It ranges from 1 to 4294967295 when the NTP version number is 1, 2, or 3, and ranges from 1 to 65535 when the version number is 4 or the specified remote server uses an IPv6 address.
+
+ttl ttl-number
+	
+
+Indicates the life span of the multicast packet.
+
+If this parameter is not specified, the life span of the multicast packet is a default value.
+	
+
+The ttl number is an integer that ranges from 1 to 255. The default value is 255.
+
+port port-number
+	
+
+Specifies the port number to transmit NTP multicast message.
+	
+
+The value is 123 or an integer ranging from 1025 to 65535. The default value is 123.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To perform clock synchronization in the multicast mode, run the ntp-service multicast-server command to specify the current interface on the local device to send NTP multicast packets. The local device runs in the multicast server mode, and functions as the multicast server to periodically send multicast packets to the multicast client.
+
+Follow-up Procedure
+
+When the configuration is complete, run the display ntp-service sessions command to obtain session information about the multicast server and the local device.
+
+You can configure a maximum of 128 multicast servers on the local device.
+Example
+
+# Configure VLANIF100 to send NTP multicast packets. The multicast IPv4 address is 224.0.1.1, the authentication key ID is 4 and the NTP version number is 3.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] ip address 10.1.1.1 24
+[HUAWEI-Vlanif100] ntp-service multicast-server 224.0.1.1 authentication-keyid 4 version 3
+
+# Configure GigabitEthernet0/0/1 to send NTP multicast packets. The multicast IPv4 address is 224.0.1.1, the authentication key ID is 4 and the NTP version number is 3.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] ntp-service multicast-server 224.0.1.1 authentication-keyid 4 version 3
+
+ntp-service port
+Function
+
+The ntp-service port command changes the number of the port that sends NTP packets.
+
+The undo ntp-service port command restores the default port number.
+
+By default, port 123 sends NTP packets.
+Format
+
+ntp-service port port-value
+
+undo ntp-service port
+Parameters
+Parameter 	Description 	Value
+port-value 	Specifies the number of the port that sends NTP packets. 	The value is an integer ranging from 1025 to 65535.
+NOTE:
+
+The port-value can be set to the default port 123.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To improve security of network packets, run the ntp-service port command to configure the number of the port that sends NTP packets. Therefore, the user firewall filters packets based on the port number.
+Example
+
+# Set the number of the port that sends NTP packets to 5000.
+
+<HUAWEI> system-view
+
+[HUAWEI] ntp-service port 5000
+
+ntp-service refclock-master
+Function
+
+The ntp-service refclock-master command sets the local clock to be the NTP primary clock that provides the synchronizing time for other devices.
+
+The undo ntp-service refclock-master command cancels the configuration of the NTP primary clock.
+
+By default, no NTP primary clock is specified.
+Format
+
+ntp-service refclock-master [ ip-address ] [ stratum ]
+
+undo ntp-service refclock-master [ ip-address ] [ stratum ]
+Parameters
+Parameter 	Description 	Value
+ip-address 	
+
+Specifies the IP address of the local reference clock.
+
+When no IP address is assigned, the local clock whose IP address is 127.127.1.0 is set as the default NTP primary clock.
+	
+
+The value of ip-address is 127.127.1.u, and u ranges from 0 to 3, which represents the number of the selected local clock.
+stratum 	
+
+Specifies the stratum of the NTP primary clock.
+
+If this parameter is not specified, the stratum is a default value.
+	The value of the stratum is an integer that ranges from 1 to 15. The default value is 8. Timer is accurate if the stratum value is small.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The local clock is the clock of the device itself. Run the ntp-service refclock-master command to set the local clock as the NTP primary clock that provides the synchronization time for other devices.
+
+In NTP, the time synchronization in an NTP synchronization subnet is performed from a smaller level to a larger level, that is, from the 1st level to the 15th level. An authoritative clock is used as a reference time source for the synchronization subnet, and is located at the top of the synchronization subnet. The authoritative clock is stratum0. The current authoritative clock is mostly a Radio Clock or the Global Positioning System. The time of the authoritative clock is synchronized through the broadcast UTC time code other than NTP.
+
+Precautions
+A device on the network can perform clock synchronization in the following manners.
+
+    Synchronizing with the local clock: The local clock is used as the reference clock.
+    Synchronizing with another device on the network: This device is used as an NTP clock server to provide a reference clock for the local end.
+
+If both manners are configured, the device selects an optimal clock source through selecting a preferred clock. That is, clocks determined in the two manners are compared to determine which clock is a lower stratum. The clock of a lower stratum is the preferred clock source.
+Example
+
+# Set the local clock to be the NTP primary clock, the stratum of which set to 3.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service refclock-master 3
+
+ntp-service reliable authentication-keyid
+Function
+
+The ntp-service reliable authentication-keyid command specifies the authentication key to be reliable.
+
+The undo ntp-service reliable authentication-keyid command cancels the current setting.
+
+By default, no authentication key is specified to be reliable.
+Format
+
+ntp-service reliable authentication-keyid key-id
+
+undo ntp-service reliable authentication-keyid key-id
+Parameters
+Parameter 	Description 	Value
+key-id 	Indicates the key number. 	
+
+Key ID is an integer and ranges from 1 to 4294967295.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If the identity authentication is enabled, this command is used to specify that one or more keys are reliable. That is, the client can only be synchronized with the server that provides the reliable key. The client cannot be synchronized with the server that provides unreliable keys.
+Example
+
+# Enable the identity authentication in NTP and adopt the HMAC-SHA256 encryption mode with key number as 37 and the key as BetterKey. Specify the key to be reliable.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service authentication enable
+[HUAWEI] ntp-service authentication-keyid 37 authentication-mode hmac-sha256 cipher BetterKey
+[HUAWEI] ntp-service reliable authentication-keyid 37
+
+ntp-service server disable
+Function
+
+The ntp-service server disable command disables NTP server function.
+
+The undo ntp-service server disable command enables NTP server function.
+
+By default, NTP server function is disabled.
+Format
+
+ntp-service [ ipv6 ] server disable
+
+undo ntp-service [ ipv6 ] server disable
+Parameters
+Parameter 	Description 	Value
+
+ipv6
+	
+
+Indicates IPv6 NTP services.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+For the security purpose, NTP server function can be disabled when the device does not need to act as a server.
+
+By default, NTP server functionality is disabled. To enable NTP server functionality, first configure other NTP functions, such as a clock source, and then run the undo ntp-service server disable command to make the NTP server function take effect. If you run the undo ntp-service [ ipv6 ] server disable command alone, the NTP server function cannot take effect.
+Example
+
+# Disable IPv4 NTP server function.
+
+<HUAWEI> system-view
+
+[HUAWEI] ntp-service server disable
+
+# Disable IPv6 NTP server function.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service ipv6 server disable
+
+ntp-service source-interface
+Function
+
+The ntp-service source-interface command specifies the local source interface that sends NTP packets.
+
+The undo ntp-service source-interface command cancels the current setting.
+
+By default, the local source interface is not specified for sending NTP packets. The local source interface is automatically determined based on routes.
+Format
+
+ntp-service [ ipv6 ] source-interface interface-type interface-number [ vpn-instance vpn-instance-name ]
+
+undo ntp-service [ ipv6 ] source-interface [ interface-type interface-number ] [ vpn-instance vpn-instance-name ]
+Parameters
+Parameter 	Description 	Value
+
+ipv6
+	
+
+Indicates that the network type of the local source interface is IPv6.
+	
+
+-
+
+interface-type interface-number
+	
+
+Indicates the local interface that sends NTP packets.
+	
+
+-
+
+vpn-instance vpn-instance-name
+	
+
+Indicates the name of a VPN instance.
+	
+
+The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Configure the local source interface for sending and receiving NTP packets to prevent other interfaces on the device from receiving NTP response packets. This configuration is convenient for a user to subsequently deploy a flow control policy. If no interface is specified, the source IP address of NTP packets is selected according to routes.
+
+If you have specified vpn-instance when configuring a source IP address using this command, the source IP address can only be used by the NTP client bound to the specified VPN instance and cannot be used by NTP clients bound to other VPN instances or not bound to any VPN instance.
+
+Precautions
+
+    In broadcast, multicast, and manycast modes, NTP is implemented on a specific interface, and this interface is the source interface. Therefore, the ntp-service source-interface command is invalid in broadcast, multicast, and manycast modes.
+    This command applies only to the NTP client, but not the NTP server.
+
+Example
+
+# Specify VLANIF100 as the source interface to send all NTP packets.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service source-interface vlanif 100
+
+ntp-service unicast-peer
+Function
+
+The ntp-service unicast-peer command configures NTP peer mode.
+
+The undo ntp-service unicast-peer command cancels the NTP peer mode.
+
+By default, the NTP peer mode is not configured.
+Format
+
+ntp-service unicast-peer ip-address [ version number | authentication-keyid key-id | source-interface interface-type interface-number | preference | vpn-instance vpn-instance-name | maxpoll max-number | minpoll min-number | preempt | port port-number ] *
+
+ntp-service unicast-peer ipv6 ipv6-address [ authentication-keyid key-id | source-interface interface-type interface-number | preference | vpn-instance vpn-instance-name | maxpoll max-number | minpoll min-number | preempt | port port-number ] *
+
+undo ntp-service unicast-peer { ip-address | ipv6 ipv6-address } [ vpn-instance vpn-instance-name ]
+Parameters
+Parameter 	Description 	Value
+
+ip-address
+	
+
+Indicates the IPv4 address of the remote peer.
+	
+
+The parameter ip-address is a host address and cannot be the broadcast address, the multicast address or the IP address of a reference clock.
+
+ipv6 ipv6-address
+	
+
+Indicates the IPv6 address of the remote server.
+	
+
+The value of ipv6-address is a unicast address, but cannot be a broadcast address, multicast address, or reference clock's IP address.
+
+version number
+	
+
+Indicates the NTP version number. If this parameter is not specified, the default version number is used.
+	
+
+The version number is an integer that ranges from 1 to 4. By default, it is 3.
+
+authentication-keyid key-id
+	
+
+Indicates the authentication key ID used when transmitting messages to the remote peer. If this parameter is not specified, authentication is not performed.
+	
+
+The key ID is an integer that ranges from 1 to 4294967295 when the NTP version number is from 1 to 3. When the NTP version number is 4, the key ID is integer that ranges from 1 to 65535. When the remote server address is an IPv6 address, the key ID is an integer that ranges from 1 to 65535.
+
+maxpoll max-number
+	
+
+Indicates the maximum NTP poll interval.
+	
+
+The value is an integer that ranges from 10 to 17.
+
+minpoll min-number
+	
+
+Indicates the minimum NTP poll interval.
+	
+
+The value is an integer that ranges from 3 to 6.
+
+source-interface interface-type interface-number
+	
+
+Indicates the source interface from which the symmetric active end sends NTP packets to the symmetric passive end. The source IP address of the NTP packets is the IP address of this interface.
+	
+
+-
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the VPN instance name.
+	
+
+The value must be an existing VPN instance name.
+
+preference
+	
+
+Indicates the remote peer as the preferred one. By default, the remote peer is not preferred.
+NOTE:
+
+If you run the ntp-service unicast-peer command multiple times to configure multiple remote peers, you can specify the preference parameter to configure a peer as the preferred one. This prevents the local device from frequently switching connections with remote peers and prevents frequent time changes and a large number of logs generated on the local device.
+	
+
+-
+
+preempt
+	
+
+Indicates that the symmetric peer is in preemption mode. If any error, for example, an authentication failure, is detected on the association, the symmetric peer in preemption mode is marked as unavailable for selection. However, when no other symmetric peers are available for selection, this symmetric peer is marked as available.
+	
+
+-
+
+port port-number
+	
+
+Specifies the port number to transmit NTP unicast message.
+	
+
+The value is 123 or an integer ranging from 1025 to 65535. The default value is 123.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When the clock of a device on the network needs to be synchronized in symmetric peer mode, you can run the ntp-service unicast-peer command to configure a remote node as the symmetric peer of the device. The local device runs in symmetric active peer mode. In this mode, the device and the remote peer can synchronize clock with each other.
+
+Precautions
+
+    If the same server is specified in at least two commands that are run in sequence to configure the NTP server mode, during the configuration restoration, the last run command takes effect. For example, the ntp-service unicast-peer 10.10.1.1 source-interface vlanif 10 command and ntp-service unicast-peer 10.10.1.1 command are run in sequence. During the configuration restoration, only the ntp-service unicast-peer 10.10.1.1 command takes effect.
+    A maximum of 128 peers can be configured for the local device. The optimal symmetric peer is selected as the synchronization source.
+    When a PE is synchronized to another PE or CE in a VPN, the parameter vpn-instance vpn-instance-name needs to be specified.
+    When you run the undo ntp-service unicast-peer command with a specified vpn-instance vpn-instance-name, the configuration of the NTP symmetric passive peer with the IP address ip-address on the VPN is canceled. If vpn-instance vpn-instance-name is not specified, the configuration of the NTP symmetric passive peer with the IP address ip-address on the public network.
+
+Example
+
+# Configure the peer 10.10.1.1 to provide the synchronizing time for the local device. The local device can also provide synchronizing time for the peer. The version number is 3. The IP address of the NTP packets is the address of VLANIF100.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service unicast-peer 10.10.1.1 version 3 source-interface vlanif 100
+
+ntp-service unicast-server
+Function
+
+The ntp-service unicast-server command configures the NTP server mode.
+
+The undo ntp-service unicast-server command cancels the NTP server mode.
+
+By default, the NTP server mode is not configured.
+Format
+
+ntp-service unicast-server ip-address [ version number | authentication-keyid key-id | source-interface interface-type interface-number | preference | vpn-instance vpn-instance-name | maxpoll max-number | minpoll min-number | burst | iburst | preempt | port port-number ] *
+
+ntp-service unicast-server ipv6 ipv6-address [ authentication-keyid key-id | source-interface interface-type interface-number | preference | vpn-instance vpn-instance-name | maxpoll max-number | minpoll min-number | burst | iburst | preempt | port port-number ] *
+
+undo ntp-service unicast-server { ip-address | ipv6 ipv6-address } [ vpn-instance vpn-instance-name ]
+Parameters
+Parameter 	Description 	Value
+
+ip-address
+	
+
+Indicates the IPv4 address of the remote server.
+	
+
+The value of ip-address must be an IP address of a host, but cannot be a broadcast address, multicast address, or reference clock's IP address.
+
+version number
+	
+
+Indicates the NTP version number. If this parameter is not specified, the default version number is used.
+	
+
+The version number is an integer that ranges from 1 to 4. By default, the version number is 3.
+
+authentication-keyid key-id
+	
+
+Indicates the authentication key ID used when messages are transmitted to the remote server. If this parameter is not specified, authentication is not performed.
+	
+
+The key ID is an integer that ranges from 1 to 4294967295 when the NTP version number is from 1 to 3. When the NTP version number is 4, the key ID is integer that ranges from 1 to 65535. When the remote server address is an IPv6 address, the key ID is an integer that ranges from 1 to 65535.
+
+maxpoll max-number
+	
+
+Specifies the NTP maximum poll interval. The NTP poll interval of the system floats between the minimum value and maximum value.
+	
+
+It is an integer ranging from 10 to 17, in seconds. The default value is 10 seconds in NTPv1, NTPv2, NTPv3, and NTPv4.
+
+minpoll min-number
+	
+
+Specifies NTP minimum poll interval. The NTP poll interval of the system floats between the minimum value and maximum value.
+	
+
+It is an integer ranging from 3 to 6, in seconds. The default value is 6 seconds.
+
+source-interface interface-type interface-number
+	
+
+Indicates the source interface from which the unicast client sends NTP packets to the unicast server. The source IP address of the NTP packets is the IP address of this interface.
+	
+
+-
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the VPN instance name.
+	
+
+The value must be an existing VPN instance name.
+
+preference
+	
+
+Indicates the remote server as the preferred one. By default, the remote server is not preferred.
+NOTE:
+
+If you run the ntp-service unicast-server command multiple times to configure multiple remote servers, you can specify the preference parameter to configure a server as the preferred one. This prevents the local device from frequently switching connections with remote servers and prevents frequent time changes and a large number of logs generated on the local device.
+	
+
+-
+
+burst
+	
+
+Indicates that a burst of packets is sent within a fixed poll period. When the poll interval is long, this method helps measure the time jitter.
+	
+
+-
+
+iburst
+	
+
+Indicates that the device sends a burst of packets when receiving a response of an unreachable server. This parameter can be used to accelerate synchronization.
+	
+
+-
+
+preempt
+	
+
+Indicates that the server is in preemption mode. If any error, for example, an authentication failure, is detected on the association, the server marked as "preempt" is marked as unavailable for selection. However, the server is marked as available for selection when no other servers are available for selection on the network and no error occurs on the association of the server.
+	
+
+-
+
+port port-number
+	
+
+Specifies the port number to transmit NTP unicast message.
+	
+
+The value is 123 or an integer ranging from 1025 to 65535. The default value is 123.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When the clock of a device on the network needs to be synchronized in unicast server/client mode, the command can be run, and the remote server specified by ip-address or ipv6-address is used as the local clock server. The local device runs in client mode. In this mode, the local client can be synchronized to the remote server, but the remote server cannot be synchronized to the local client.
+
+When the ntp-service unicast-server command is run, you can also configure the mode used for the remote server, such as the NTP version, authentication key, and the polling interval.
+
+Precautions
+
+    A maximum of 128 servers can be configured for the local device. The optimal symmetric peer is selected as the synchronization source.
+    If the local device works in the client mode, the local device can only be synchronized with the remote server but the remote server cannot be synchronized with the local device.
+    When a PE is synchronized to another PE or CE in a VPN, the parameter vpn-instance vpn-instance-name needs to be specified.
+    When the undo ntp-service unicast-server command is run, if the parameter vpn-instance vpn-instance-name is specified, cancel the configuration of the NTP server with the IP address ip-address or ipv6-address in the VPN. If the parameter vpn-instance vpn-instance-name is not specified, cancel the configuration of the NTP server with the IP address ip-address or ipv6-address in the public network.
+    Before deleting a VPN instance, check whether the VPN instance is bound to the NTP server. This confirmation is to ensure that the changed configuration meets users' requirements. For example:
+        Specify an NTP server and bind a VPN instance to the NTP server. You can view the following configurations:
+
+        <HUAWEI> display current-configuration | begin ntp
+        ntp-service unicast-server 10.1.1.1 vpn-instance vpn2
+        ntp-service refclock-master
+
+        If the VPN instance named vpn2 is deleted, the VPN instance bound to the NTP server is also deleted.
+
+        <HUAWEI> display current-configuration | be ntp
+        ntp-service unicast-server 10.1.1.1
+        ntp-service refclock-master
+
+Example
+
+# Configure the server 10.10.1.1 to provide the synchronizing time for the local device. The NTP version number is 3.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service unicast-server 10.10.1.1 version 3
+
+# Configure the server 10.10.1.1 with VPN instance "abc" to provide the synchronizing time for the local device.
+
+<HUAWEI> system-view
+[HUAWEI] ntp-service unicast-server 10.10.1.1 vpn-instance abc
+
+reset ntp-service statistics packet
+Function
+
+The reset ntp-service statistics packet command clears statistics on NTP packets.
+Format
+
+reset ntp-service statistics packet [ ipv6 | peer [ ip-address [ vpn-instance vpn-instance-name ] | ipv6 [ ipv6-address [ vpn-instance vpn-instance-name ] ] ] ]
+Parameters
+Parameter 	Description 	Value
+ipv6 	Clears the statistics about global IPv6 NTP packets. 	-
+peer 	Clears statistics related to NTP peers. 	-
+ip-address 	Specifies the IP address of an NTP peer. 	-
+vpn-instance vpn-instance-name 	Specifies the VPN instance bound to an NTP peer. 	The value must be an existing VPN instance name.
+ipv6 	Clears the packet statistics on IPv6 peers. 	-
+ipv6-address 	Clears the NTP packet statistics on the specified IPv6 peer. 	-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When debugging NTP, you can use this command to clear the statistics on NTP.
+
+The statistics on NTP cannot be recovered after being cleared. Confirm before you delete the statistics.
+Example
+
+# Clear statistics on NTP packets.
+
+<HUAWEI> reset ntp-service statistics packet 
+
+# Clear statistics on NTP peers.
+
+<HUAWEI> reset ntp-service statistics packet peer 
+
+snmp-agent trap enable feature-name ntp
+Function
+
+The snmp-agent trap enable feature-name ntp command enables the trap function for the NTP module.
+
+The undo snmp-agent trap enable feature-name ntp command disables the trap function for the NTP module.
+
+By default, the trap function is enabled for the NTP module.
+Format
+
+snmp-agent trap enable feature-name ntp [ trap-name hwntpstatechangetrap ]
+
+undo snmp-agent trap enable feature-name ntp [ trap-name hwntpstatechangetrap ]
+Parameters
+Parameter 	Description 	Value
+
+trap-name hwntpstatechangetrap
+	
+
+Indicates that NTP synchronization status changed.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To enable the NMS to easily manage the NTP module of the device, run the snmp-agent trap enable feature-name ntp command to enable the trap function for the NTP module. The command configuration ensures that the traps generated during the device operation are sent to the NMS. Otherwise, NTP traps are not sent to the NMS.
+
+You can run the snmp-agent trap enable feature-name ntp command to check the configuration result.
+Example
+
+# Enable the hwntpstatechangetrap trap.
+
+<HUAWEI> system-view
+[HUAWEI] snmp-agent trap enable feature-name ntp trap-name hwntpstatechangetrap
+
