@@ -1,0 +1,140 @@
+upgrade force
+Function
+
+The upgrade force command configures forcible firmware upgrade for RUs.
+
+By default, the function of upgrading RU firmware is disabled.
+Format
+
+upgrade { app | app1 | app2 | poe | poe3 | poe5 | poe6 | poe7 | poe81 | poe82 | poe83 | bios | bios1 } force
+Parameters
+Parameter 	Description 	Value
+
+app
+	
+
+Specifies the APP firmware of RUs.
+	
+
+-
+
+bios
+	
+
+Specifies the BIOS firmware of RUs.
+	
+
+-
+
+poe
+	
+
+Specifies the PoE firmware of RUs.
+	
+
+-
+
+bios1
+	
+
+Specifies the BIOS1 firmware of RUs.
+	
+
+-
+
+app1
+	
+
+Specifies the APP1 firmware of RUs.
+	
+
+-
+
+app2
+	
+
+Specifies the APP2 firmware of RUs.
+	
+
+-
+
+poe3
+	
+
+Specifies the PoE3 firmware of RUs.
+	
+
+-
+
+poe5
+	
+
+Specifies the PoE5 firmware of RUs.
+	
+
+-
+
+poe6
+	
+
+Specifies the PoE6 firmware of RUs.
+	
+
+-
+
+poe7
+	
+
+Specifies the PoE7 firmware of RUs.
+	
+
+-
+
+poe81
+	
+
+Specifies the PoE81 firmware of RUs.
+	
+
+-
+
+poe82
+	
+
+Specifies the PoE82 firmware of RUs.
+	
+
+-
+
+poe83
+	
+
+Specifies the PoE83 firmware of RUs.
+	
+
+-
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If an RU fails to be upgraded, it enters the cooldown period and can be upgraded again only after the cooldown period ends. To upgrade the firmware of RUs in the cooldown period, you can run this command to configure forcible upgrade.
+
+Precautions
+
+During the BIOS firmware upgrade of RUs, do not power off or disconnect the RUs. Otherwise, the RUs cannot be started.
+
+The upgrade force command upgrades firmware of an RU, regardless of whether the RU has the upgrade function enabled. After this command is run in the view of a single RU, the RU immediately restarts with firmware of the new version.
+Example
+
+# Configure forcible APP firmware upgrade for RUs.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] upgrade app force 
+
