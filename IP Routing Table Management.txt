@@ -1,0 +1,896 @@
+11 IP Routing Table Management
+11.1 Licensing Requirements and Limitations for IP Routing Table Management
+11.2 Managing IP Routing Tables
+11.3 Example for Configuring IP FRR on the Public Network
+11.1 Licensing Requirements and Limitations for IP
+Routing Table Management
+Involved Network Elements
+Other network elements are not required.
+Licensing Requirements
+The number of IPv4 FIB entries supported by the S5720-HI and S5730-HI depends
+on licenses. For the maximum number of IPv4 FIB entries, contact the equipment
+supplier.
+For details about how to apply for a license, see Applying for Licenses in the
+S1720, S5700, and S6700 Series Switches License Usage Guide.
+Feature Support in V200R024C00
+All models of S300, S500, S2700, S5700, and S6700 series switches (except the
+S5751-L, S5731-L and S5731S-L) support IP Routing Table Management.
+NOTE
+For details about the hardware specifications and matched parts of the switch, visit
+Hardware Center. For details about the key specifications and full software specifications of
+the switch, visit Specifications Query.
+The S5751-L, S5731-L, and S5731S-L are remote units and do not support web-based
+management, YANG, or commands. They can be configured only through configuration
+delivery by the central device. For details, see "Simplified Architecture Configuration (the
+Solar System Solution)" in the
+S300, S500, S2700, S5700, and S6700 V200R024C00
+Configuration Guide - Device Management.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1025
+Feature Limitations
+When the S6720-SI, S6720S-S, S6720S-SI, S5730-SI, S5735S-H, S5736-S, S5730S-EI,
+S6720-LI, and S6720S-LI function as route-based forwarding devices, you are
+advised to use them in the following typical route-based forwarding scenarios:
+● IPv4 routes: Among all routing entries, there are no more than 1500 types of
+16-bit prefixes or no more than 200 types of 8-bit prefixes. In VPN scenarios,
+the same prefix is counted multiple times in different VPNs.
+● IPv6 routes: Among all routing entries, there are no more than 1200 types of
+32-bit prefixes or no more than 3 types of 8-bit prefixes. In VPN scenarios, the
+same prefix is counted multiple times in different VPNs.
+Routes with a mask less than 64 bits are recommended, and routes with a
+128-bit mask are not recommended. It is not recommended that you use a
+large number of Layer 3 interfaces to configure IPv6 services. This is because
+two routes will be generated for an IPv6 Layer 3 interface: one is a network
+segment route and the other is a 128-bit local route, and this 128-bit local
+route occupies many hardware resources.
+For example, there are four IP addresses: 10.1.1.1, 10.1.2.1, 10.2.1.1, 192.168.1.1
+● There are three types of 16-bit prefixes: 10.1, 10.2, and 192.168.
+● There are two types of 8-bit prefixes: 10 and 192.
+When the preceding switches are used as route forwarding devices in scenarios
+other than the preceding typical scenarios, collect log information, configuration,
+and routing entries if route forwarding failures occur, and contact technical
+support personnel.
+In a VXLAN scenario, the configuration of ECMP-based distribution of packets with
+the same source address and destination address does not take effect; traffic is
+still load balanced based on the configured ECMP load balancing mode.
+11.2 Managing IP Routing Tables
+11.2.1 Displaying and Maintaining an IP Routing Table
+Context
+You can view IP routing table information to locate routing faults. The following
+describes the commands used to display and maintain IP routing table
+information.
+display commands can be used in all views, and reset commands can only be used
+in the user view.
+If the switch imports a large number of routes, system performance may be
+affected when services are being processed because the routes consume a lot of
+system resources. To improve system security and reliability, configure a limit on
+the number of public route prefixes. When the number of public route prefixes
+exceeds the limit, an alarm is generated, prompting you to check validity of public
+route prefixes.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1026
+Procedure
+● Run the display ip routing-table command to check brief information about
+the active routes in the IPv4 routing table.
+● Run the display ip routing-table verbose command to check detailed
+information about the IPv4 routing table.
+● Run the display ip routing-table
+ip-address [
+mask |
+mask-length ] [ longer-
+match ] [ verbose ] command to check detailed information about the routes
+with the specified destination address in the IPv4 routing table.
+● Run the display ip routing-table
+ip-address1 {
+mask1 |
+mask-length1 }
+ip-
+address2 {
+mask2 |
+mask-length2 } [ verbose ] command to check detailed
+information about the routes within the specified destination address range in
+the IPv4 routing table.
+● Run the display ip routing-table acl {
+acl-number |
+acl-name } [ verbose ]
+command to check detailed information about the routes that match the
+specified basic ACL in the IPv4 routing table.
+● Run the display ip routing-table ip-prefix
+ip-prefix-name [ verbose ]
+command to check detailed information about the routes that match the
+specified IP prefix list in the IPv4 routing table.
+● Run the display ip routing-table protocol
+protocol [ inactive | verbose ]
+command to check detailed information about the routes discovered by the
+specified routing protocol in the IPv4 routing table.
+● Run the display ip routing-table statistics command to check route statistics
+in the IPv4 routing table.
+● Run the display ipv6 routing-table command to check brief information
+about the active routes in the IPv6 routing table.
+● Run the display ipv6 routing-table verbose command to check detailed
+information about the IPv6 routing table.
+● Run the display ipv6 routing-table
+protocol [ inactive | verbose ] command
+to check detailed information about the routes discovered by the specified
+routing protocol in the IPv6 routing table.
+● Run the display ipv6 routing-table statistics command to check route
+statistics in the IPv6 routing table.
+● Run the reset ip routing-table statistics protocol { all |
+protocol } command
+to clear route statistics in the IPv4 routing table.
+● Run the reset ipv6 routing-table statistics protocol { all |
+protocol }
+command to clear route statistics in the IPv6 routing table.
+----End
+11.2.2 Displaying and Maintaining the Routing Management
+Module
+Context
+If the device imports a large number of routes, system performance may be
+affected when services are being processed because the routes consume a lot of
+system resources. To improve system reliability, configure a limit on the number of
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1027
+public route prefixes. When the number of public route prefixes exceeds the limit,
+an alarm is generated, prompting you to check validity of public route prefixes.
+Procedure
+● Run the display rm interface [
+interface-type interface-number ] command
+to check IPv4 routing management (RM) information on the specified
+interface.
+● Run the display rm ipv6 interface [
+interface-type interface-number ]
+command to check IPv6 RM information on the specified interface.
+● Maintain the RM module.
+Configure a limit on the number of public route prefixes.
+a. Run system-view
+The system view is displayed.
+b. Run either of the following commands as required:
+▪ Run ip prefix-limit
+number {
+alert-percent [ route-unchanged ] |
+simply-alert }
+A limit on the number of IPv4 public route prefixes is configured.
+By default, the maximum number of IPv4 public route prefixes is not
+limited.
+▪ Run ipv6 prefix-limit
+number {
+alert-percent [ route-unchanged ] |
+simply-alert }
+A limit on the number of IPv6 public route prefixes is configured.
+By default, the maximum number of IPv6 public route prefixes is not
+limited.
+alert-percent specifies the percentage of the maximum number of
+supported public route prefixes. If you specify
+alert-percent in the
+command, an alarm is generated when the number of public route
+prefixes exceeds the value calculated by the following formula:
+(
+number x
+alert-percent)/100
+New public route prefixes can still be added to the IP routing table until
+the number of public route prefixes reaches the value of
+number.
+Subsequent route prefixes will then be discarded.
+If you specify simply-alert in the command, new public route prefixes
+can still be added to the IP routing table and only an alarm is generated
+after the number of public route prefixes exceeds the value of
+number.
+However, when the total number of private and public route prefixes
+reaches the limit on the number of unicast route prefixes, subsequent
+public route prefixes will be discarded.
+If you decrease the value of
+alert-percent after the number of public
+route prefixes exceeds the value of
+number, whether the IP routing table
+remains unchanged depends on whether route-unchanged is specified in
+the command:
+▪ If it is specified, the IP routing table remains unchanged.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1028
+▪ If it is not specified, the system deletes all the routes from the IP
+routing table and re-adds routes to the IP routing table.
+NOTE
+After the number of public route prefixes exceeds the limit, note the following
+rules:
+● If you run the ip prefix-limit command to increase the value of
+number or
+run the undo ip prefix-limit command to remove the limit, the device
+relearns IPv4 public route prefixes.
+● If you run the ipv6 prefix-limit command to increase the value of
+number
+or run the undo ipv6 prefix-limit command to remove the limit, the device
+relearns IPv6 public route prefixes.
+● Direct and static routes can still be added to the IP routing table.
+c. (Optional) Run ip prefix-limit log-interval
+interval
+An interval at which the system generates logs after the number of public
+route prefixes exceeds the limit is configured.
+By default, the system generates logs at an interval of 5s after the
+number of public route prefixes exceeds the limit.
+You can set a longer interval to decrease the frequency at which the
+system generates logs.
+----End
+11.2.3 Displaying and Maintaining FIB Tables
+Context
+NOTE
+Unless otherwise stated, FIB tables in this document refer to unicast FIB tables.
+A device selects routes according to its IP routing table and forwards packets
+according to FIB tables. If the number of entries in a FIB table reaches or exceeds
+the limit, that is, the FIB table is overloaded, new active routes cannot be delivered
+to the FIB table, affecting packet forwarding.
+Procedure
+● Check FIB entries.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+[ verbose ] command to check IPv4 FIB entries.
+– Run the display fib [ vpn-instance
+vpn-instance-name ] acl
+acl-number
+[ verbose ] command to check IPv4 FIB entries that match a specified
+ACL.
+– Run the display fib [ vpn-instance
+vpn-instance-name ] ip-prefix
+prefix-
+name [ verbose ] command to check IPv4 FIB entries that match a
+specified IP prefix list.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+destination-address1 [ verbose ] command to check IPv4 FIB entries that
+match a specified destination IP address.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+destination-address1 destination-mask1 [ verbose ] command to check
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1029
+IPv4 FIB entries that exactly match a specified destination IP address and
+mask.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+destination-address1 longer [ verbose ] command to check all IPv4 FIB
+entries that match destination IP addresses in the natural mask range.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+destination-address1 destination-mask1 longer [ verbose ] command to
+check all IPv4 FIB entries that match destination IP addresses in a
+specified mask range.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+destination-address1 destination-mask1 destination-address2 destination-
+mask2 [ verbose ] command to check IPv4 FIB entries that match
+destination IP addresses in the range of
+destination-address1 destination-
+mask1 and
+destination-address2 destination-mask2.
+– Run the display fib [ vpn-instance
+vpn-instance-name ] next-hop
+ip-
+address command to check IPv4 FIB entries that match a specified next-
+hop IP address.
+– Run the display fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+statistics command to check the total number of IPv4 FIB entries.
+– Run the display fib [
+slot-id ] statistics all command to check IPv4 FIB
+entry statistics.
+– Run the display ipv6 fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+[ verbose ] command to check IPv6 FIB entries.
+– Run the display ipv6 fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+ipv6-address [ verbose ] command to check IPv6 FIB entries that match a
+specified destination IPv6 address.
+– Run the display ipv6 fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+ipv6-address prefix-length [ verbose ] command to check IPv6 FIB entries
+that exactly match a specified destination IPv6 address and mask.
+– Run the display ipv6 fib [
+slot-id ] [ vpn-instance
+vpn-instance-name ]
+[ verbose ] statistics command to check the total number of IPv6 FIB
+entries.
+– Run the display ipv6 fib [
+slot-id ] statistics all command to check IPv6
+FIB entry statistics.
+● Maintain FIB tables.
+– Enable the alarm function for the IPv4 route prefix usage and set the
+alarm threshold.
+i. Run system-view
+The system view is displayed.
+ii. Run fib threshold-alarm upper-limit
+upper-limit-value lower-limit
+lower-limit-value
+The alarm function for the IPv4 route prefix usage is enabled and the
+alarm threshold is set.
+By default, the alarm function for IPv4 route prefix usage is enabled.
+The upper alarm threshold is 85% and the lower alarm threshold is
+75%.
+– Configure the resource mode of the extended entry space register to
+adjust the IPv4 and IPv6 FIB table sizes.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1030
+i. (Optional) Run the display resource-mode configuration command
+to check the resource mode configuration of the extended entry
+space.
+ii. Run the system-view command to enter the system view.
+iii. Configure the resource allocation mode of the extended entry space.
+○ assign resource-mode { enhanced-mac | enhanced-arp |
+enhanced-ipv4 | super-arp } [ slot
+slot-id | all ] (S6735-S)
+○ assign resource-mode { enhanced-arp | enhanced-sac |
+enhanced-sipfpm | eca | sac } [ slot
+slot-id | all ] (S5731-H,
+S5731S-H, S5731-S, and S5731S-S)
+○ assign resource-mode { enhanced-arp | enhanced-sac |
+enhanced-sipfpm | sac } [ slot
+slot-id | all ] (S6730-S, S6730S-S,
+and S5732-H)
+○ assign resource-mode { enhanced-mac | enhanced-arp |
+enhanced-fib | enhanced-sac | sac | enhanced-sipfpm } [ slot
+slot-id | all ] (S6730-H and S6730S-H)
+○ assign resource-mode { enhanced-mac | enhanced-arp }
+global (S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I,
+S5735-L1, and S5735S-L1)
+By default, the resource allocation mode of the S5731-H, S5731S-H,
+S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-
+L1,S5735S-L1, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S,
+S6730-H, S6730S-H, S6735-S is enhanced-arp.
+– Configure periodic refresh of FIB entries.
+i. Run system-view
+The system view is displayed.
+ii. Run undo fib regularly-refresh disable
+Periodic refresh of FIB entries is enabled.
+By default, periodic refresh of FIB entries is enabled.
+iii. Run fib regularly-refresh { interval
+interval [ entry-number
+entry-
+number ] | entry-number
+entry-number | cycle-interval
+cycle-
+interval }
+The entire FIB entry update interval, FIB entry update interval per
+cycle, and the number of FIB entries updated per cycle are
+configured.
+By default, the FIB entry update interval per cycle is 1 second, and
+the number of FIB entries updated per cycle is 50. The entire FIB
+entry update interval is 1 minute on the S5731-S, S5731-H, S5731S-
+H, S5732-H, S6730-S, S6730S-H, and S6730-H, and is fixed to 1440
+minutes on other devices.
+– Configure periodic refresh of IPv6 FIB entries.
+i. Run system-view
+The system view is displayed.
+ii. Run undo ipv6 fib regularly-refresh disable
+Periodic refresh of IPv6 FIB entries is enabled.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1031
+iii. Run ipv6 fib regularly-refresh { interval
+interval | entry-number
+entry-number | cycle-interval
+cycle-interval }
+The entire IPv6 FIB entry update interval, IPv6 FIB entry update
+interval per cycle, and the number of IPv6 FIB entries updated per
+cycle are configured.
+By default, the IPv6 FIB entry update interval per cycle is 1 second,
+and the number of IPv6 FIB entries updated per cycle is 50. The
+entire IPv6 FIB entry update interval is 1 minute on the S5731-S,
+S5731-H, S5731S-H, S5732-H, S6730-S, S6730S-H, and S6730-H, and
+is fixed to 1440 minutes on other devices.
+----End
+11.2.4 Configuring IP FRR on the Public Network
+Usage Scenario
+On a traditional IP network, when a lower-layer failure occurs on the forwarding
+link of a device, the physical interface of the device becomes Down. After the
+device detects the failure, it instructs the upper-layer routing system to recalculate
+routes and update routing information. It often takes the routing system several
+seconds to reselect an available route.
+Second-level convergence is intolerable to the services that are quite sensitive to
+delay and packet loss because it may lead to service interruptions. For example,
+Voice over Internet Protocol (VoIP) services are only tolerant of millisecond-level
+interruptions. IP FRR ensures that the forwarding system rapidly responds to link
+failures and uses backup routes to forward data, minimizing service traffic
+interruptions.
+NOTE
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H,
+S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+support this function.
+Pre-configuration Tasks
+Before configuring IP FRR on the public network, complete the following tasks:
+● Configure static routes or an IGP to ensure that there are reachable routes
+between devices.
+● Configure different costs for routes to generate two non-equal-cost routes.
+Configuration Procedure
+Configure a route-policy and then enable IP FRR on the public network for the
+route-policy.
+Procedure
+Step 1 Configure a route-policy.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1032
+1. Run system-view
+The system view is displayed.
+2. Run route-policy
+route-policy-name { permit | deny } node
+node
+A route-policy is created and the route-policy view is displayed.
+3. (Optional) Run if-match
+Matching conditions are configured to filter the routes to be backed up.
+Select the if-match command according to 10.6.2 (Optional) Configuring
+an if-match Clause.
+If no matching condition is configured, backup outbound interfaces and
+backup next hops will be specified for all routes of the device. This, however,
+causes backup information to be specified for some routes that do not need
+to be backed up. To correctly configure backup between routes, you are
+advised to configure matching conditions.
+4. Run apply backup-interface
+interface-type interface-number
+A backup outbound interface is configured.
+5. Run apply backup-nexthop
+ip-address
+A backup next hop is configured.
+NOTE
+– If a backup outbound interface is configured on a P2P link, no backup next hop
+needs to be specified.
+– If a backup outbound interface is configured on a non-P2P link, a backup next hop
+needs to be specified.
+6. Run quit
+Return to the system view.
+Step 2 Enable IP FRR on the public network.
+1. Run ip frr route-policy
+route-policy-name
+IP FRR on the public network is enabled.
+When using IP FRR, use this command to enable IP FRR so that the route-
+policy can take effect.
+NOTE
+Only one route-policy can be configured every time you use the command. If you run
+this command multiple times, only the latest configuration takes effect.
+----End
+Verifying the Configuration
+Run the display ip routing-table [ verbose ] command to check information
+about the IPv4 routing table.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1033
+11.2.5 Configuring IPv6 FRR on the Public Network
+Usage Scenario
+On a traditional IP network, when a lower-layer failure occurs on the forwarding
+link of a device, the physical interface of the device becomes Down. After the
+device detects the failure, it instructs the upper-layer routing system to recalculate
+routes and update routing information. It often takes the routing system several
+seconds to reselect an available route.
+Second-level convergence is intolerable to the services that are quite sensitive to
+delay and packet loss because it may lead to service interruptions. For example,
+Voice over Internet Protocol (VoIP) services are only tolerant of millisecond-level
+interruptions. IPv6 FRR ensures that the forwarding system rapidly responds to link
+failures and uses backup routes to forward data, minimizing service traffic
+interruptions.
+NOTE
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H,
+S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+support this function.
+Pre-configuration Tasks
+Before configuring IPv6 FRR on the public network, complete the following tasks:
+● Configure static routes or an IGP to ensure that there are reachable routes
+between devices.
+● Configure different costs for routes to generate two non-equal-cost routes.
+Configuration Procedure
+Configure a route-policy and then enable IPv6 FRR on the public network for the
+route-policy.
+Procedure
+Step 1 Configure a route-policy.
+1. Run system-view
+The system view is displayed.
+2. Run route-policy
+route-policy-name { permit | deny } node
+node
+A route-policy is created and the route-policy view is displayed.
+3. (Optional) Run if-match
+Matching conditions are configured to filter the routes to be backed up.
+Select the if-match command according to 10.6.2 (Optional) Configuring
+an if-match Clause.
+If no matching condition is configured, backup outbound interfaces and
+backup next hops will be specified for all routes of the device. This, however,
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1034
+causes backup information to be specified for some routes that do not need
+to be backed up. To correctly configure backup between routes, you are
+advised to configure matching conditions.
+4. Run apply ipv6 backup-interface
+interface-type interface-number
+A backup outbound interface is configured.
+5. Run apply ipv6 backup-nexthop
+ipv6-address
+A backup next hop is configured.
+NOTE
+– If a backup next hop is specified, a backup outbound interface also needs to be
+specified.
+– If a backup outbound interface is configured on a P2P link, no backup next hop
+needs to be specified.
+– If a backup outbound interface is configured on a non-P2P link, a backup next hop
+needs to be specified.
+6. Run quit
+Return to the system view.
+Step 2 Enable IPv6 FRR on the public network.
+1. Run ipv6 frr route-policy
+route-policy-name
+IPv6 FRR on the public network is enabled.
+When using IPv6 FRR, use this command to enable IPv6 FRR so that the
+route-policy can take effect.
+NOTE
+Only one route-policy can be configured every time you use the command. If you run
+this command multiple times, only the latest configuration takes effect.
+----End
+Verifying the Configuration
+Run the display ipv6 routing-table [ verbose ] command to check information
+about the IPv6 routing table.
+11.2.6 Configuring the ECMP Load Balancing Mode
+Context
+ECMP applies to the network where multiple links to the same destination are
+available. In the traditional routing technology, packets are forwarded to the
+destination through one link only; the other links are in backup or inactive state;
+switching between these links requires a certain period when dynamic routes are
+used. Different from the traditional routing technology, ECMP can use multiple
+links to increase transmission bandwidth and transmit data on a faulty link
+without any delay or packet loss.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1035
+NOTE
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H,
+S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+support ECMP load balancing.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run ecmp load-balance sip [ dip ] [ port ]
+The ECMP load balancing mode is set.
+By default, ECMP load balancing is performed on packets based on the source IP
+address, destination IP address, transport-layer source port number and
+destination port number.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S5735-S, S5735-S-I, S6735-S,
+S6730-H, S6730S-H, S6730-S, and S6730S-S support the ECMP load balancing mode.
+Step 3 Run ecmp load-balance diffluence
+ECMP-based distribution of packets with the same source address and destination
+address is configured.
+By default, ECMP-based distribution of packets with the same source address and
+destination address is not configured.
+In a VXLAN scenario, ECMP-based distribution of packets with the same source
+address and destination address does not take effect; instead, the configured
+ECMP load balancing mode takes effect..
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S,
+and S6730S-S support this command.
+----End
+11.2.7 Configuring the Advertisement of IPv4 ARP Vlink Direct
+Routes
+Context
+After a device's sub-interfaces or VLANIF interfaces have static ARP entries
+configured or dynamically learn ARP entries, the device generates a type of 32-bit
+host route according to ARP entries if the arp direct-route enable command is
+executed to configure the ARP module of the device to report IPv4 ARP Vlink
+direct routes to the RM module. This type of 32-bit host route is called IPv4 ARP
+Vlink direct route.
+By default, IPv4 ARP Vlink direct routes are only used to guide local traffic
+forwarding. To control the routing table size and ensure routing table stability,
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1036
+devices are prohibited from redistributing these direct routes into dynamic routing
+protocols. In some situations, however, devices need to perform operations based
+on specific routes. For example, a device needs to direct remote traffic for different
+users using different export policies. Subsequently, the device needs to redistribute
+IPv4 ARP Vlink direct routes into dynamic routing protocols and advertises them to
+the remote end.
+You can use a route-policy to filter IPv4 ARP Vlink direct routes to be advertised so
+that only the routes matching the route-policy can be advertised. This operation
+can control the routing table size and implement precise control over data traffic.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support the configuration of the advertisement of IPv4 ARP Vlink
+direct routes.
+Pre-configuration Tasks
+Before configuring the advertisement of IPv4 ARP Vlink direct routes, set link layer
+protocol parameters and assign IP addresses to interfaces to ensure that the status
+of the link layer protocol of the interfaces is Up.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run arp vlink-direct-route advertise [ route-policy
+route-policy-name ]
+The advertisement of IPv4 ARP Vlink direct routes is configured.
+By default, a device does not advertise IPv4 ARP Vlink direct routes.
+You can specify the route-policy
+route-policy-name parameter in the command to
+filter the IPv4 ARP Vlink direct routes to be advertised.
+NOTE
+Currently, apply clauses cannot be used to set route attributes for the routes that match
+the specified route-policy.
+IPv4 ARP Vlink direct routes need to be redistributed into the routing tables of
+dynamic routing protocols on the device running dynamic routing protocols before
+these routes are advertised by dynamic routing protocols.
+----End
+Verifying the Configuration
+After the configuration of the advertisement of IPv4 ARP Vlink direct routes is
+complete, you can run the display ip routing-table verbose command to check
+information about IPv4 ARP Vlink direct routes.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1037
+11.3 Example for Configuring IP FRR on the Public
+Network
+Networking Requirements
+In Figure 11-1, RouterB and RouterC are egress routers on the Internet. SwitchA is
+connected to two core switches SwitchB and SwitchC through two GE interfaces.
+Each of SwitchB and SwitchC is connected to the two egress routers through two
+GE interfaces. When a fault occurs on the link between SwitchB and RouterB,
+SwitchB must rapidly respond to the link fault and use a backup route for data
+forwarding to ensure that services are forwarded correctly.
+NOTE
+In this scenario, ensure that all connected interfaces have STP disabled. If STP is enabled
+and VLANIF interfaces of switches are used to construct a Layer 3 ring network, an
+interface on the network will be blocked. As a result, Layer 3 services on the network
+cannot run normally.
+Figure 11-1 Networking diagram of configuring IP FRR on the public network
+Configuration Roadmap
+The configuration roadmap is as follows:
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1038
+1. Configure static routes on SwitchA to ensure that packets destined for
+192.168.1.1/24 are forwarded by SwitchC and packets destined for
+10.55.1.1/24 are forwarded by SwitchB.
+2. Configure a route-policy on SwitchB and apply this route-policy for IP FRR on
+the public network so that services can be rapidly switched to the backup link
+SwitchB→SwitchC→RouterB when the primary link SwitchB→RouterB fails.
+Procedure
+Step 1 Create VLANs and add interfaces to the VLANs.
+# Configure SwitchA. The configurations of SwitchB and SwitchC are similar to the
+configuration of SwitchA.
+<HUAWEI> system-view
+[HUAWEI] sysname SwitchA
+[SwitchA] vlan batch 50 60
+[SwitchA] interface gigabitethernet 0/0/1
+[SwitchA-GigabitEthernet0/0/1] port link-type trunk
+[SwitchA-GigabitEthernet0/0/1] port trunk allow-pass vlan 50
+[SwitchA-GigabitEthernet0/0/1] quit
+[SwitchA] interface gigabitethernet 0/0/2
+[SwitchA-GigabitEthernet0/0/2] port link-type trunk
+[SwitchA-GigabitEthernet0/0/2] port trunk allow-pass vlan 60
+[SwitchA-GigabitEthernet0/0/2] quit
+Step 2 Assign IPv4 addresses to VLANIF interfaces.
+# Configure SwitchA. The configurations of SwitchB and SwitchC are similar to the
+configuration of SwitchA.
+[SwitchA] interface vlanif 50
+[SwitchA-Vlanif50] ip address 10.50.1.2 24
+[SwitchA-Vlanif50] quit
+[SwitchA] interface vlanif 60
+[SwitchA-Vlanif60] ip address 10.60.1.2 24
+[SwitchA-Vlanif60] quit
+Step 3 Configure basic OSPF functions on SwitchB and SwitchC.
+# Configure SwitchB.
+[SwitchB] ospf
+[SwitchB-ospf-1] area 0
+[SwitchB-ospf-1-area-0.0.0.0] network 10.10.1.0 0.0.0.255
+[SwitchB-ospf-1-area-0.0.0.0] network 10.20.1.0 0.0.0.255
+[SwitchB-ospf-1-area-0.0.0.0] network 10.60.1.0 0.0.0.255
+[SwitchB-ospf-1-area-0.0.0.0] network 10.70.1.0 0.0.0.255
+[SwitchB-ospf-1-area-0.0.0.0] quit
+[SwitchB-ospf-1] quit
+# Configure SwitchC.
+[SwitchC] ospf
+[SwitchC-ospf-1] area 0
+[SwitchC-ospf-1-area-0.0.0.0] network 10.30.1.0 0.0.0.255
+[SwitchC-ospf-1-area-0.0.0.0] network 10.40.1.0 0.0.0.255
+[SwitchC-ospf-1-area-0.0.0.0] network 10.50.1.0 0.0.0.255
+[SwitchC-ospf-1-area-0.0.0.0] network 10.70.1.0 0.0.0.255
+[SwitchC-ospf-1-area-0.0.0.0] quit
+[SwitchC-ospf-1] quit
+Step 4 Configure IP addresses and basic OSPF functions on RouterB and RouterC to
+ensure that there are reachable routes between RouterB, RouterC, SwitchB, and
+SwitchC.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1039
+Step 5 Configure static routes on SwitchA to ensure that packets destined for
+192.168.1.1/24 are forwarded by SwitchC and packets destined for 10.55.1.1/24 are
+forwarded by SwitchB.
+# Configure SwitchA.
+[SwitchA] ip route-static 10.55.1.0 24 vlanif 60 10.60.1.1
+[SwitchA] ip route-static 192.168.1.0 24 vlanif 50 10.50.1.1
+Step 6 Configure a route-policy and enable IP FRR on the public network.
+# Configure an IP prefix list on SwitchB.
+[SwitchB] ip ip-prefix ip_frr_pre index 10 permit 10.55.1.0 24
+# On SwitchB, configure a route-policy, backup next hop, and backup outbound
+interface.
+[SwitchB] route-policy ip_frr_rp permit node 10
+[SwitchB-route-policy] if-match ip-prefix ip_frr_pre
+[SwitchB-route-policy] apply backup-nexthop 10.70.1.1
+[SwitchB-route-policy] apply backup-interface vlanif 70
+[SwitchB-route-policy] quit
+# On SwitchB, enable IP FRR on the public network.
+[SwitchB] ip frr route-policy ip_frr_rp
+Step 7 Check information about the backup outbound interface and backup next hop.
+# Check information about the backup outbound interface and backup next hop
+on SwitchB.
+[SwitchB] display ip routing-table verbose
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 1 Routes : 1
+Destination: 10.55.1.0/24
+Protocol: OSPF Process ID: 1
+Preference: 10 Cost: 2
+NextHop: 10.10.1.1 Neighbour: 0.0.0.0
+State: Active Adv Age: 1d17h58m22s
+Tag: 0 Priority: medium
+Label: NULL QoSInfo: 0x0
+IndirectID: 0x80000001
+RelayNextHop: 0.0.0.0 Interface: Vlanif10
+TunnelID: 0x0 Flags: RD
+BkNextHop: 10.70.1.1 BkInterface: Vlanif70
+BkLabel: NULL SecTunnelID: 0x0
+BkPETunnelID: 0x0 BkPESecTunnelID: 0x0
+BkIndirectID: 0x0
+----End
+Configuration Files
+● SwitchA configuration file
+#
+sysname SwitchA
+#
+vlan batch 50 60
+#
+interface Vlanif50
+ip address 10.50.1.2 255.255.255.0
+#
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1040
+interface Vlanif60
+ip address 10.60.1.2 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 50
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 60
+#
+ip route-static 10.55.1.0 255.255.255.0 Vlanif60 10.60.1.1
+ip route-static 192.168.1.0 255.255.255.0 Vlanif50 10.50.1.1
+#
+return
+● SwitchB configuration file
+#
+sysname SwitchB
+#
+vlan batch 10 20 60 70
+#
+ip frr route-policy ip_frr_rp
+#
+interface Vlanif10
+ip address 10.10.1.2 255.255.255.0
+#
+interface Vlanif20
+ip address 10.20.1.2 255.255.255.0
+#
+interface Vlanif60
+ip address 10.60.1.1 255.255.255.0
+#
+interface Vlanif70
+ip address 10.70.1.2 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 70
+#
+interface GigabitEthernet0/0/4
+port link-type trunk
+port trunk allow-pass vlan 60
+#
+ospf 1
+area 0.0.0.0
+network 10.10.1.0 0.0.0.255
+network 10.20.1.0 0.0.0.255
+network 10.60.1.0 0.0.0.255
+network 10.70.1.0 0.0.0.255
+#
+ip ip-prefix ip_frr_pre index 10 permit 10.55.1.0 24
+#
+route-policy ip_frr_rp permit node 10
+if-match ip-prefix ip_frr_pre
+apply backup-nexthop 10.70.1.1
+apply backup-interface Vlanif70
+#
+return
+● SwitchC configuration file
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1041
+#
+sysname SwitchC
+#
+vlan batch 30 40 50 70
+#
+interface Vlanif30
+ip address 10.30.1.1 255.255.255.0
+#
+interface Vlanif40
+ip address 10.40.1.1 255.255.255.0
+#
+interface Vlanif50
+ip address 10.50.1.1 255.255.255.0
+#
+interface Vlanif70
+ip address 10.70.1.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 70
+#
+interface GigabitEthernet0/0/4
+port link-type trunk
+port trunk allow-pass vlan 50
+#
+ospf 1
+area 0.0.0.0
+network 10.30.1.0 0.0.0.255
+network 10.40.1.0 0.0.0.255
+network 10.50.1.0 0.0.0.255
+network 10.70.1.0 0.0.0.255
+#
+return
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 11 IP Routing Table Management
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 1042
