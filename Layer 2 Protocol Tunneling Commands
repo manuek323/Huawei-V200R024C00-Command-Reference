@@ -1,0 +1,1643 @@
+Layer 2 Protocol Tunneling Commands
+
+    Command Support
+    bpdu
+    bpdu dmac
+    bpdu mac-address
+    bpdu packet-type eapol discard
+    bpdu-tunnel stp bridge role provider
+    display bpdu mac-address
+    display bpdu-tunnel global config
+    display l2protocol-tunnel group-mac
+    display l2protocol-tunnel statistics
+    display l2protocol-tunnel statistics group-mac
+    l2protocol-tunnel
+    l2protocol-tunnel drop-threshold
+    l2protocol-tunnel group-mac
+    l2protocol-tunnel protocol-type match disable
+    l2protocol-tunnel user-defined-protocol
+    l2protocol-tunnel vlan
+    l2protocol-tunnel mode
+    l2protocol-tunnel vsi-mode enable
+    reset l2protocol-tunnel statistics
+    reset l2protocol-tunnel statistics group-mac
+    stp bpdu vlan
+    stp snooping enable
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+bpdu
+Function
+
+The bpdu command configures an interface to send received BPDUs to the CPU or discard BPDUs.
+
+By default, an interface sends received BPDUs to the CPU.
+Format
+
+bpdu { disable | enable }
+
+undo bpdu disable
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+disable | enable
+	
+Indicates the action that an interface performs on BPDUs.
+
+    disable: The interface discards BPDUs.
+    enable: The interface sends BPDUs to the CPU.
+
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, MultiGE interface view, port group view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After you run the bpdu enable command on an interface, the interface forwards a packet to the CPU if the destination MAC address of the packet is the BPDU MAC address. You can use the display bpdu mac-address command to view the BPDU MAC address.
+
+This command is not supported by the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S.
+
+On the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S, an interface directly discards BPDUs by default. If BPDUs of a protocol need to be sent to the CPU for processing, enable the function of this protocol. For example, if STP BPDUs need to be sent to the CPU for processing, enable STP globally and on interfaces.
+
+On the S200, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S500, S5735-S, S5735-S-I, an interface directly discards BPDUs except EAPoL packets by default. If BPDUs of a protocol need to be sent to the CPU for processing, enable the function of this protocol. For example, if STP BPDUs need to be sent to the CPU for processing, enable STP globally and on interfaces. EAPoL packets are forwarded by default. To enable a switch to discard EAPoL packets, run the bpdu packet-type eapol discard command on the switch.
+Example
+
+# Enable Eth-Trunk 1 to send received BPDUs to the CPU.
+
+<HUAWEI> system-view
+[HUAWEI] interface eth-trunk 1
+[HUAWEI-Eth-Trunk1] bpdu enable
+
+bpdu dmac
+Function
+
+The bpdu dmac command configures actions taken on packets with a specified destination MAC address and protocol number.
+
+The undo bpdu dmac command restores the default configurations.
+
+By default, no action is taken on packets with a specified destination MAC address and protocol number.
+
+S1730S-S1, S200, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S do not support this command.
+Format
+
+bpdu dmac mac-address eth-type type action encapsulate
+
+undo bpdu dmac mac-address eth-type type action [ encapsulate ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+dmac mac-address
+	
+
+Specifies a destination MAC address.
+	
+
+The value is in H-H-H format. An H contains four hexadecimal digits. The value cannot be 0000-0000-0000.
+
+eth-type type
+	
+
+Specifies the protocol type of Ethernet packets.
+	
+
+The value is a hexadecimal integer that ranges from 0 to FFFF.
+
+action
+	
+
+Specifies the action taken on received packets.
+	
+
+-
+
+encapsulate
+	
+
+Encapsulates packets.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To be compatible with devices of other vendors, run this command to configure actions taken on packets with a specified destination MAC address and protocol number. Actions is encapsulating packets.
+Example
+
+# Configure the device to forward packets with the destination MAC address 0100-0ccc-cccc and protocol number 0101.
+
+<HUAWEI> system-view
+[HUAWEI] bpdu dmac 0100-0ccc-cccc eth-type 0101 action encapsulate
+
+bpdu mac-address
+Function
+
+The bpdu mac-address command sets the MAC address of BPDUs.
+
+The undo bpdu mac-address command cancels the configuration.
+Format
+
+bpdu mac-address mac-address [ mac-address-mask ]
+
+undo bpdu mac-address mac-address [ mac-address-mask ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+mac-address [ mac-address-mask ]
+	
+
+Specifies the MAC address and mask of BPDUs.
+	
+
+The first digit of the MAC address must be 0 and the second digit must be an odd number, for example, 03XX-XXXX-XXXX and 0fXX-XXXX-XXXX.
+
+The mask of the MAC address must consist of consecutive fs and 0s, for example, ffff-ffff-ff00 and ffff-fff0-0000.
+NOTE:
+
+    To enable the device to forward packets destined for 0100-0ccc-cccc by using hardware, run the undo bpdu mac-address command to cancel the BPDU MAC address configuration.
+    Only addresses of 0100-0ccc-cccc, 0100-0ccc-cccd, and 0118-8255-5555 can be configured as BPDU MAC addresses on the S1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, and S6720S-S.
+
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A Bridge Protocol Data Unit (BPDU) uses a special reserved multicast MAC address. An interface can send and receive BPDUs regardless of whether the interface is blocked. By default, the switch does not forward BPDUs at Layer 2.
+
+Sometimes, bridge protocol packets of the devices from other vendors need to be processed as BPDUs. You can set the MAC address of such packets to the MAC address of BPDUs.
+
+Prerequisites
+
+Before running the undo bpdu mac-address mac-address [ mac-address-mask ] command to delete a specified BPDU MAC address, delete all BPDU mac-addresses on the network segment. Then, run the bpdu mac-address mac-address [ mac-address-mask ] command to add the bpdu mac-address that does not need to be deleted.
+Example
+
+# Set the MAC address of BPDUs to 0100-0ccc-cccd.
+
+<HUAWEI> system-view
+[HUAWEI] bpdu mac-address 0100-0ccc-cccd
+
+# Delete the MAC address 0180-c200-0003 as the BPDU MAC address.
+
+<HUAWEI> system-view 
+[HUAWEI] undo bpdu mac-address 0180-c200-0000 ffff-ffff-fff0
+[HUAWEI] bpdu mac-address 0180-c200-0000 FFFF-FFFF-FFFE
+[HUAWEI] bpdu mac-address 0180-c200-0002 FFFF-FFFF-FFFF
+[HUAWEI] bpdu mac-address 0180-c200-0004 FFFF-FFFF-FFFC
+[HUAWEI] bpdu mac-address 0180-c200-0008 FFFF-FFFF-FFF8
+
+bpdu packet-type eapol discard
+Function
+
+The bpdu packet-type eapol discard command configures the switch to discard EAPoL packets.
+
+The undo bpdu packet-type eapol discard command configures the switch to transparently transmit EAPoL packets.
+
+By default, the switch transparently transmits EAPoL packets.
+
+Only the following switch models support this command:
+
+S200, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S500, S5735-S, S5735-S-I
+Format
+
+bpdu packet-type eapol discard
+
+undo bpdu packet-type eapol discard
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Assume that the 802.1X authentication point is deployed at the aggregation or upper layer and the access device functions only as a Layer 2 transparent transmission access device. In such networking, to enable the access device to transparently transmit EAPoL packets to the upper-layer authentication point device, run the undo bpdu packet-type eapol discard command on the access device. If the access device does not need to transparently transmit EAPoL packets to the upper-layer authentication point device, run the bpdu packet-type eapol discard command on the access device.
+
+Precautions
+
+The l2protocol-tunnel enable command takes precedence over the bpdu packet-type eapol discard command. If the bpdu packet-type eapol discard command is run on a device to discard EAPoL packets and then the l2protocol-tunnel enable command is run on an interface to enable the interface to transparently transmit Layer 2 protocol packets, this interface can transparently transmit EAPoL packets.
+Example
+
+# Enable the device to discard EAPoL packets.
+
+<HUAWEI> system-view
+[HUAWEI] bpdu packet-type eapol discard
+
+bpdu-tunnel stp bridge role provider
+Function
+
+The bpdu-tunnel stp bridge role provider command configures the switch as a provider on the network.
+
+The undo bpdu-tunnel stp bridge role provider command configures the switch as a customer on the network.
+
+By default, the switch is a customer on the network.
+
+Only the S6720S-S, S5735S-H, S5736-S, S5720I-SI, S5735-S, and S5735-S-I support this command.
+Format
+
+bpdu-tunnel stp bridge role provider
+
+undo bpdu-tunnel stp bridge role provider
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If the switch is configured as a customer, the well-known destination MAC address of the transmitted BPDU packets is 01-80-C2-00-00-00.
+
+If the switch is configured as a provider, the well-known destination MAC address of the transmitted BPDU packets is 01-80-C2-00-00-08. The provider directly forwards the BPDU packets created by the customer, instead of sending the packets to the CPU.
+
+If the bpdu-tunnel stp bridge role provider and l2protocol-tunnel commands are configured simultaneously, the l2protocol-tunnel command preferentially takes effect.
+Example
+
+# Configure the switch as a provider on the network.
+
+<HUAWEI> system-view
+[HUAWEI] bpdu-tunnel stp bridge role provider
+
+display bpdu mac-address
+Function
+
+The display bpdu mac-address command displays the MAC addresses of BPDUs.
+Format
+
+display bpdu mac-address
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+A Bridge Protocol Data Unit (BPDU) uses a special reserved multicast MAC address. An interface can send and receive BPDUs regardless of whether the interface is blocked. By default, the switch does not forward BPDUs at Layer 2.
+
+Sometimes, bridge protocol packets of the devices from other vendors need to be processed as BPDUs. You can set the MAC address of such packets to the MAC address of BPDUs.
+
+This command displays the MAC addresses of BPDUs.
+Example
+
+# Display the MAC addresses of BPDUs.
+
+<HUAWEI> display bpdu mac-address
+ Remaining configurable number: 126                                             
+ ----------------------------------------------------------------------------   
+ (001) 0100-0ccc-cccc                   (002) 0100-0ccc-cccd                    
+
+Table 5-108 Description of the display bpdu mac-address command output
+
+Item
+	
+
+Description
+
+Remaining configurable number
+	
+
+Number of remaining MAC addresses that you can specify for BPDUs.
+display bpdu-tunnel global config
+Function
+
+The display bpdu-tunnel global config command displays the role of a device on the network and the multicast MAC address of STP BPDUs.
+
+Only the S6720S-S, S5735S-H, S5736-S, S5720I-SI, S5735-S, and S5735-S-I support this command.
+Format
+
+display bpdu-tunnel global config
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To check the role of a device on the network and the multicast MAC address of STP BPDUs, you can use the display bpdu-tunnel global config command.
+Example
+
+# Display the role of a device on the network and multicast MAC address of STP BPDUs.
+
+<HUAWEI> display bpdu-tunnel global config
+BridgeRole      customer                                                
+GroupMac        0100-5e00-0011                                          
+
+Table 5-109 Description of the display bpdu-tunnel global config command output
+
+Item
+	
+
+Description
+
+BridgeRole
+	
+Device role on a network. The roles are classified into two types:
+
+    Customer: The well-known destination MAC address of the BPDUs generated by the customer is 01-80-C2-00-00-00. This is the default type.
+
+    Provider: The well-known destination MAC address of the BPDUs generated by the provider is 01-80-C2-00-00-08.
+
+To specify the parameter, run the bpdu-tunnel stp bridge role provider command.
+
+GroupMac
+	
+
+Multicast MAC address of STP BPDUs.
+
+To specify the parameter, run the l2protocol-tunnel group-mac command.
+display l2protocol-tunnel group-mac
+Function
+
+The display l2protocol-tunnel group-mac command displays transparent transmission information about all standard Layer 2 protocols or a specified Layer 2 protocol.
+Format
+
+display l2protocol-tunnel group-mac { all | protocol-type | user-defined-protocol protocol-name }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays transparent transmission information about all standard Layer 2 protocols and user-defined Layer 2 protocols.
+	
+
+-
+
+protocol-type
+	
+
+Displays transparent transmission information about a specified Layer 2 protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+user-defined-protocol protocol-name
+	
+
+Displays transparent transmission information about a user-defined protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The name is in the format of character strings. It is case-insensitive without spaces. The value ranges from 1 to 31.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring Layer 2 protocol tunneling, you can run this command to check transparent transmission information about all standard Layer 2 protocols or a specified Layer 2 protocol.
+Example
+
+# Display transparent transmission information about the STP protocol.
+
+<HUAWEI> display l2protocol-tunnel group-mac stp
+Protocol  EncapeType  ProtocolType   Protocol-MAC    Group-MAC       Pri
+------------------------------------------------------------------------------------------
+stp       llc           dsap 0x42    0180-c200-0000   0100-0ccd-cdd0  0 
+                        ssap 0x42 
+
+Table 5-110 Description of the display l2protocol-tunnel group-mac command output
+
+Item
+	
+
+Description
+
+Protocol
+	
+
+Name of a Layer 2 protocol whose packets are transparently transmitted.
+
+EncapeType
+	
+
+Encapsulation types of protocols. At present, the encapsulation types of protocol packets can be Ethernet II, SNAP and LLC.
+
+ProtocolType
+	
+
+Type of a Layer 2 protocol whose packets are transparently transmitted.
+
+Protocol-MAC
+	
+
+Multicast destination MAC address of transparently transmitted Layer 2 protocol packets.
+
+Group-MAC
+	
+
+Group MAC address of transparently transmitted Layer 2 protocol packets. It is a multicast MAC address that replaces the original multicast destination MAC address of transparently transmitted Layer 2 protocol packets.
+
+Pri
+	
+
+Priority of transparently transmitted Layer 2 protocol packets.
+display l2protocol-tunnel statistics
+Function
+
+The display l2protocol-tunnel statistics command displays statistics about Layer 2 protocol packets that are transparently transmitted on a specified interface.
+Format
+
+display l2protocol-tunnel statistics interface-type interface-number [ { protocol-type } &<1-16> | user-defined-protocol protocol-name ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type interface-number
+	
+Displays statistics about Layer 2 protocol packets that are transparently transmitted on a specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+When specifying an interface in the command, ensure that Layer 2 protocol tunneling is enabled on the interface.
+	
+
+-
+
+protocol-type
+	
+
+Displays statistics about a specified protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+You can select one or more Layer 2 protocols.
+
+user-defined-protocol protocol-name
+	
+
+Displays statistics about transparently transmitted packets of a user-defined protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The value is a string of 1 to 31 characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring Layer 2 protocol tunneling, you can run this command to view statistics about transparently transmitted packets of a specified Layer 2 protocol. The command output includes:
+
+    Number of Layer 2 protocol packets received by the inbound interface
+
+    Number of Layer 2 protocol packets sent from the outbound interface
+
+    Number of Layer 2 protocol packets discarded when the threshold is exceeded
+
+According to the output information, you can collect traffic statistics and locate faults on the interface.
+
+When an interface transparently transmits packets of multiple Layer 2 protocols, it is recommended that you specify the optional parameters or a regular expression in the command to filter the output information. Otherwise, too much information will be displayed, causing the following problems:
+
+    The displayed information is repeatedly refreshed, causing desired information unable to be located.
+
+    The system does not respond because of prolonged information traversing and searching.
+
+When using this command, pay attention to the following points:
+
+    If no optional parameter is specified, statistics about all Layer 2 protocol packets transparently transmitted on the specified interface are displayed.
+
+    If protocol-type is specified, statistics about packets of the specified Layer 2 protocol that are transparently transmitted on the specified interface are displayed.
+
+    If user-defined-protocol is specified, statistics about packets of the specified user-defined Layer 2 protocol that are transparently transmitted on the specified interface are displayed.
+
+Example
+
+# Display statistics about transparently transmitted STP and HGMP protocol packets.
+
+<HUAWEI> display l2protocol-tunnel statistics GigabitEthernet 0/0/1 stp hgmp
+--------------------------------------------------------------------------------
+Port                Protocol         Drop       Input      Output     Drop
+                                     Threshold  Packets    Packets    Packets
+--------------------------------------------------------------------------------
+GE0/0/1             stp              100        12345      67890      1235      
+
+Table 5-111 Description of the display l2protocol-tunnel statistics command output
+
+Item
+	
+
+Description
+
+Port
+	
+
+Name of an interface on which Layer 2 protocol tunneling is enabled.
+
+Protocol
+	
+
+Name of a Layer 2 protocol whose packets are transparently transmitted.
+
+Drop Threshold
+	
+
+Drop threshold of transparently transmitted Layer 2 protocol packets.
+
+The drop threshold is set by using the l2protocol-tunnel drop-threshold command. The unit is packet per second (pps).
+
+When the rate of incoming Layer 2 protocol packets on an interface exceeds the threshold, the interface discards excess packets.
+
+Input Packets
+	
+
+Number of incoming Layer 2 protocol packets on the interface enabled with Layer 2 protocol tunneling.
+
+Output Packets
+	
+
+Number of outgoing Layer 2 protocol packets on the interface enabled with Layer 2 protocol tunneling.
+
+Drop Packets
+	
+
+Number of Layer 2 protocol packets discarded on the interface after the traffic rate exceeds the drop threshold.
+display l2protocol-tunnel statistics group-mac
+Function
+
+The display l2protocol-tunnel statistics group-mac command displays statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified destination MAC address (group MAC address) on an interface.
+Format
+
+display l2protocol-tunnel statistics group-mac interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the interface on which the statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address are to be displayed.
+
+    interface-type specifies the type of the interface.
+
+    interface-number specifies the number of the interface.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring Layer 2 protocol tunneling based on an interface, VLAN, or QinQ on a device, you can run the display l2protocol-tunnel statistics group-mac command to check statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address on an interface. The command output includes:
+
+    Number of Layer 2 PDUs received by the interface
+
+    Number of Layer 2 PDUs dropped by the interface due to queue resource exhaustion
+
+    Number of Layer 2 PDUs dropped by the interface due to queue execution timeout
+
+The command output helps you locate interface faults.
+Example
+
+# Display statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address on GE 0/0/1.
+
+<HUAWEI> display l2protocol-tunnel statistics group-mac GigabitEthernet 0/0/1
+
+-------------------------------------------------------------------------------------------
+ Port                   Group-Mac           Input            QueueFull          TimeOut
+                                            Packets          DropPackets        DropPackets
+ -------------------------------------------------------------------------------------------
+ GE0/0/1                0100-0ccd-cdd0      8942             0                  8651 
+                        0100-0ccd-cd2d      232              0                  161 
+                        0100-0ccd-cd29      242              0                  181 
+                        0100-0ccd-cd26      228              0                  166 
+                        0100-0ccd-cd22      277              0                  206 
+                        0100-0ccd-cd19      254              0                  184 
+                        0100-0ccd-cd0c      278              0                  203 
+
+Table 5-112 Description of the display l2protocol-tunnel statistics group-mac command output
+
+Item
+	
+
+Description
+
+Port
+	
+
+Interface name
+
+Group-Mac
+	
+
+Multicast MAC address
+
+Input Packets
+	
+
+Number of Layer 2 PDUs received by the interface
+
+QueueFull DropPackets
+	
+
+Number of Layer 2 PDUs dropped by the interface due to queue resource exhaustion
+
+TimeOut DropPackets
+	
+
+Number of Layer 2 PDUs dropped by the interface due to queue execution timeout
+l2protocol-tunnel
+Function
+
+The l2protocol-tunnel enable command enables Layer 2 protocol tunneling on an interface.
+
+The undo l2protocol-tunnel enable command disables Layer 2 protocol tunneling on an interface.
+
+The l2protocol-tunnel disable command disables Layer 2 protocol tunneling on an interface.
+
+By default, Layer 2 protocol tunneling is disabled on an interface.
+Format
+
+l2protocol-tunnel { all | { protocol-type } &<1-16> | user-defined-protocol protocol-name } enable
+
+l2protocol-tunnel { all | { protocol-type } &<1-16> | user-defined-protocol protocol-name } disable
+
+undo l2protocol-tunnel { { protocol-type } &<1-16> | user-defined-protocol protocol-name } enable
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Enables or disables transparent transmission of packets of all standard Layer 2 protocols and user-defined Layer 2 protocols.
+	
+
+-
+
+protocol-type
+	
+
+Enables or disables transparent transmission of packets of a specified Layer 2 protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+NOTE:
+
+    You can select one or more preceding protocols.
+
+    By default, the packets with the destination MAC address of 0100-0CCC-CCCD are not BPDUs. PVST+ BPDUs are transparently transmitted by default, and other protocol packets are not transparently transmitted by default.
+    If PVST BPDUs need to be transparently transmitted, use PVST+. SSTP can be used to transparently transmit the packets with the destination MAC address of 0100-CCCC-CCCD, regardless of the packet protocol.
+
+user-defined-protocol protocol-name
+	
+
+Enables or disables transparent transmission of packets of a specified user-defined Layer 2 protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The value is a string of 1 to 31 characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Layer 2 protocol tunneling is often configured on an interface connecting the PE and CE. After Layer 2 protocol tunneling is enabled, Layer 2 protocol packets received from the user network need to be sent to the CPU and the destination MAC address in the packets needs to be replaced. On the ISP network, Layer 2 protocol packets are directly forwarded.
+
+Generally, the l2protocol-tunnel command is run on user-side interfaces of PEs.
+
+Prerequisites
+
+    The l2protocol-tunnel vlan command enables an interface to transparently transmit Layer 2 protocol packets from the specified VLANs. The l2protocol-tunnel command enables an interface to transparently transmit all Layer 2 protocol packets.
+
+    The l2protocol-tunnel vlan and l2protocol-tunnel commands cannot specify the same protocol type on the same interface; otherwise, the configurations conflict.
+
+    Before specifying a user-defined protocol in the l2protocol-tunnel enable command, run the l2protocol-tunnel user-defined-protocol command to define characteristic information about the Layer 2 protocol.
+
+    STP packets have a default group MAC address for replacing the original destination MAC address. For packets of other Layer 2 protocols, you need to configure a global group MAC address to replace the destination MAC address. For details, see l2protocol-tunnel group-mac.
+
+    To improve system performance, do not add service-irrelevant interfaces to the VLAN on which Layer 2 protocol tunneling is enabled.
+    When an interface is enabled to transparently transmit the packets of a certain protocol, these packets do not participate in protocol processing. For example, after an interface is enabled to transparently transmit STP packets, the interface does not participate in STP calculation. Therefore, you are advised not to enable a protocol and the transparent transmission of this protocol on the same interface.
+
+    You can configure the l2protocol-tunnel enable command on Layer 3 main interfaces and sub-interfaces only when the interfaces are on the S5731-H, S5731S-H, S5732-H, S6730S-H, and S6730-H and these interfaces are bound to VSIs.
+
+Example
+
+# Configure GE0/0/1 to transparently transmit STP BPDUs.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] stp disable
+[HUAWEI-GigabitEthernet0/0/1] l2protocol-tunnel stp enable
+
+l2protocol-tunnel drop-threshold
+Function
+
+The l2protocol-tunnel drop-threshold command sets the drop threshold of Layer 2 protocol packets that are transparently transmitted on an interface.
+
+The undo l2protocol-tunnel drop-threshold command cancels the setting of the drop threshold.
+
+By default, the drop threshold of Layer 2 protocol packets that are transparently transmitted on an interface is 0 pps. The rate of Layer 2 protocol packets is not limited on the interface.
+Format
+
+l2protocol-tunnel drop-threshold rate [ { protocol-type } &<1-16> | user-defined-protocol protocol-name ]
+
+undo l2protocol-tunnel drop-threshold [ { protocol-type } &<1-16> | user-defined-protocol protocol-name ]
+
+undo l2protocol-tunnel drop-threshold rate { protocol-type | user-defined-protocol protocol-name }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+rate
+	
+
+Specifies the drop threshold of Layer 2 protocol packets that are transparently transmitted on an interface.
+	
+
+The value is an integer that ranges from 1 to 4096, in pps.
+
+protocol-type
+	
+
+Specifies the type of a Layer 2 protocol. The interface discards excess packets of this type of protocol when the rate of these packets exceeds the drop threshold.
+NOTE:
+
+You can specify multiple protocols in the command.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+You can select one or more Layer 2 protocols.
+
+user-defined-protocol protocol-name
+	
+
+Sets the drop threshold of packets of a user-defined Layer 2 protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The value is a string of 1 to 31 characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After enabling Layer 2 protocol tunneling on an interface, you can run the l2protocol-tunnel drop-threshold command on this interface to set the drop threshold of protocol packets.
+
+After Layer 2 protocol tunneling is enabled and the drop threshold of Layer 2 protocol packets is set on an interface, the interface drops excess Layer 2 protocol packets when the drop threshold is exceeded. If the trap function is enabled, the device sends a trap message to the NMS to notify the network administrator.
+
+When using the l2protocol-tunnel drop-threshold command, pay attention to the following points:
+
+    If no Layer 2 protocol is specified, the drop threshold applies to all Layer 2 protocol packets that need to be transparently transmitted.
+
+    If a Layer 2 protocol is specified, the interface discards excess packets of the protocol when the rate of these packets exceeds the drop threshold.
+
+    If you run this command without specifying a protocol, and then run the command with a specified protocol, the drop threshold that you set the second time takes effect.
+
+Example
+
+# Set the drop threshold of STP packets that are transparently transmitted on GE0/0/1 to 10 pps.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] l2protocol-tunnel stp enable
+[HUAWEI-GigabitEthernet0/0/1] l2protocol-tunnel drop-threshold 10 stp
+
+l2protocol-tunnel group-mac
+Function
+
+The l2protocol-tunnel group-mac command enables the switch to replace the multicast destination MAC address of Layer 2 protocol packets with a specified multicast MAC address.
+
+The undo l2protocol-tunnel command disables the group MAC function for Layer 2 protocol tunneling. After you run this command, the switch deletes a configured multicast destination MAC address of Layer 2 protocol packets except STP packets that uses the default multicast destination address or restores the default multicast destination MAC address of STP packets.
+
+By default, the multicast destination MAC address of STP packets is replaced by 0100-0ccd-cdd0. For other Layer 2 protocol packets, there is not a default multicast MAC address for replacing their multicast destination MAC addresses.
+Format
+
+l2protocol-tunnel protocol-type group-mac { group-mac | default-group-mac }
+
+undo l2protocol-tunnel protocol-type
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+protocol-type
+	
+
+Specifies the type of a Layer 2 protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+group-mac
+	
+
+Specifies the multicast MAC address that replaces the destination MAC address of Layer 2 protocol packets.
+	
+
+The value is in H-H-H format. An H is a hexadecimal number of 1 to 4 digits. The value ranges from 0100-0000-0000 to 01ff-ffff-ffff.
+
+default-group-mac
+	
+
+Specifies the default MAC address of a multicast group, which is 0100-0ccd-cdd0.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Layer 2 protocols running between user networks, such as MSTP, HGMP, and LACP, must traverse a backbone network to perform Layer 2 protocol calculation.
+
+Generally, the destination MAC addresses in Layer 2 protocol packets of the same Layer 2 protocol are the same. For example, the MSTP PDUs are BPDUs with the destination MAC address 0180-C200-0000. Therefore, when a Layer 2 protocol packet reaches an edge device on a backbone network, the edge device cannot identify whether the Layer 2 protocol packet comes from a user network or the backbone network and sends the Layer 2 protocol packet to the CPU to calculate a spanning tree. As a result, the user network devices calculate a spanning tree with backbone network edge devices but not with user network devices.
+
+To resolve this problem, run the l2protocol-tunnel group-mac command on backbone network edge devices to replace the multicast destination MAC addresses in Layer 2 protocol packets with a specified multicast MAC address (group MAC address). This configuration allows Layer 2 protocol packets to be tunneled so that user network devices can calculate a spanning tree.
+
+After this command is run, run the display l2protocol-tunnel statistics group-mac command to check statistics about the group-mac packets transparently transmitted by a specified interface.
+
+Precautions
+
+Layer 2 protocols with the same protocol type (For example, the LACP and DLDP protocol types are both 0x8809.) Do not configure the same group-mac. Otherwise, Layer 2 protocol transparent transmission may fail.
+
+When configuring Layer 2 protocol tunneling, do not use the following multicast MAC addresses to replace the destination MAC address of Layer 2 protocol packets:
+
+    Reserved multicast MAC addresses: 0180-C200-0000 to 0180-C200-002F
+    Special multicast MAC addresses: 0100-0CCC-CCCC and 0100-0CCC-CCCD
+    Destination MAC address of Smart Link packets: 010F-E200-0004
+    Multicast MAC addresses that have been used on the network.
+    Destination MAC address of VRRP packets: 0100-5E00-0012
+
+Do not replace the destination MAC addresses of SSTP, STP, GVRP, and GMRP packets with the same multicast MAC address.
+Example
+
+# Configure a device to replace the destination MAC address of STP packets with 0100-0100-0100 before tunneling the STP BPDUs.
+
+<HUAWEI> system-view
+[HUAWEI] l2protocol-tunnel stp group-mac 0100-0100-0100
+
+l2protocol-tunnel protocol-type match disable
+Function
+
+The l2protocol-tunnel protocol-type match disable command disables a device from matching Layer 2 protocol tunneling packets to be sent to the CPU against the protocol type.
+
+The undo l2protocol-tunnel protocol-type match disable command cancels the configuration.
+
+By default, a device matches Layer 2 protocol tunneling packets to be sent to the CPU against the protocol type.
+Format
+
+l2protocol-tunnel protocol-type match disable
+
+undo l2protocol-tunnel protocol-type match disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To disable a device from matching Layer 2 protocol tunneling packets to be sent to the CPU against the protocol type, run the l2protocol-tunnel protocol-type match disable command. After this command is run, the device can transparently transmit Layer 2 protocol packets with more than three tags.
+
+Precautions
+
+After the device is disabled from matching Layer 2 protocol tunneling packets to be sent to the CPU against the protocol type, the device checks only these packets' destination MAC addresses, not their protocol types. Packets with the same destination MAC address but different protocol types are all transparently transmitted. The user-defined Layer 2 protocol type configured using the l2protocol-tunnel user-defined-protocol protocol-name protocol-mac protocol-mac encap-type ethernetii protocol-type protocol-type command does not take effect.
+Example
+
+# Disable a device from matching Layer 2 protocol tunneling packets to be sent to the CPU against the protocol type.
+
+<HUAWEI> system-view
+[HUAWEI] l2protocol-tunnel protocol-type match disable
+Info: The specified BPDU tunnel configuration of all interface will be updated. Please wait.
+
+l2protocol-tunnel user-defined-protocol
+Function
+
+The l2protocol-tunnel user-defined-protocol command defines characteristic information about a user-defined Layer 2 protocol, including the protocol name, Ethernet encapsulation format, destination MAC address, and MAC address that replaces the destination MAC address of Layer 2 protocol packets.
+
+The undo l2protocol-tunnel user-defined-protocol command deletes characteristic information about a user-defined Layer 2 protocol.
+
+By default, no characteristic information about a user-defined Layer 2 protocol exists on the device.
+Format
+
+l2protocol-tunnel user-defined-protocol protocol-name protocol-mac protocol-mac [ encap-type { { ethernetii | snap } protocol-type protocol-type-value | llc dsap dsap-value ssap ssap-value } ] group-mac { group-mac | default-group-mac }
+
+undo l2protocol-tunnel user-defined-protocol protocol-name
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+protocol-name
+	
+
+Specifies the name of a user-defined Layer 2 protocol.
+	
+
+The value is a string of 1 to 31 characters without spaces.
+NOTE:
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+
+protocol-mac protocol-mac
+	
+
+Specifies the multicast destination MAC address of the user-defined protocol packets.
+	
+
+The value is in the format of H-H-H. An H is a hexadecimal number of 1 to 4 digits.
+
+encap-type
+	
+Indicates the encapsulation format of transparently transmitted Layer 2 protocol packets.
+
+    ethernetii: indicates Ethernet_II, the encapsulation format for Layer 2 protocol packets that are transparently transmitted.
+
+    snap: indicates Sub-Network Access Protocol (SNAP), the encapsulation format for Layer 2 protocol packets that are transparently transmitted.
+
+    llc: indicates Logical Link Control (LLC), the encapsulation format for Layer 2 protocol packets that are transparently transmitted.
+
+	
+
+-
+
+dsap dsap-value
+	
+
+Specifies the destination service access point.
+	
+
+The value ranges from 0x00 to 0xff, in hexadecimal format.
+
+ssap ssap-value
+	
+
+Specifies the source service access point.
+	
+
+The value ranges from 0x00 to 0xff, in hexadecimal format.
+
+protocol-type protocol-type-value
+	
+
+Indicates the Ethernet encapsulation format.
+	
+The value is a hexadecimal integer.
+
+    The value ranges from 600 to FFFF for Ethernet II encapsulation type.
+    The value ranges from 0 to FFFF for SNAP encapsulation type.
+
+group-mac group-mac
+	
+
+Specifies the multicast MAC address that replaces the destination MAC address of Layer 2 protocol packets.
+	
+
+The value is in the format of H-H-H. An H is a hexadecimal number of 1 to 4 digits. The value ranges from 0100-0000-0000 to 01ff-ffff-ffff.
+
+default-group-mac
+	
+
+Replaces the destination MAC address of Layer 2 protocol packets with the default multicast MAC address 0100-0ccd-cdd0.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When Layer 2 protocol packets with a specified multicast destination MAC address need to be transparently transmitted on an ISP network, you can define characteristic information about the Layer 2 protocol on devices on the ISP network.
+
+When configuring Layer 2 protocol tunneling, do not use the following multicast MAC addresses to replace the destination MAC address of Layer 2 protocol packets:
+
+    Reserved multicast MAC addresses: 0180-C200-0000 to 0180-C200-002F
+    Special multicast MAC addresses: 0100-0CCC-CCCC and 0100-0CCC-CCCD
+    Destination MAC address of Smart Link packets: 010F-E200-0004
+    Common multicast MAC addresses that have been used on the device
+
+Before running the l2protocol-tunnel or l2protocol-tunnel vlan command to enable transparent transmission of user-defined Layer 2 protocol packets, run the l2protocol-tunnel user-defined-protocol command to define characteristic information about the Layer 2 protocol.
+Example
+
+# Define a Layer 2 protocol named huawei. Set the destination MAC address of its packets to 0180-c200-0022 and use multicast MAC address 0100-0100-0100 to replace the destination MAC address of its packets.
+
+<HUAWEI> system-view
+[HUAWEI] l2protocol-tunnel user-defined-protocol huawei protocol-mac 0180-c200-0022 group-mac 0100-0100-0100
+
+l2protocol-tunnel vlan
+Function
+
+The l2protocol-tunnel vlan command enables VLAN-based Layer 2 protocol tunneling on an interface.
+
+The undo l2protocol-tunnel vlan command disables VLAN-based Layer 2 protocol tunneling on an interface.
+
+By default, VLAN-based Layer 2 protocol tunneling is disabled on an interface.
+Format
+
+l2protocol-tunnel { all | { protocol-type } &<1-15> | user-defined-protocol protocol-name } vlan { low-id [ to high-id ] } &<1-10>
+
+undo l2protocol-tunnel { all | { protocol-type } &<1-15> | user-defined-protocol protocol-name } vlan { low-id [ to high-id ] } &<1-10>
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Enables or disables transparent transmission of packets of all standard Layer 2 protocols and user-defined Layer 2 protocols.
+	
+
+-
+
+protocol-type
+	
+
+Enables or disables transparent transmission of packets of a specified Layer 2 protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+You can select one or more Layer 2 protocols.
+
+user-defined-protocol protocol-name
+	
+
+Enables or disables transparent transmission of packets of a user-defined Layer 2 protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The value is a string of 1 to 31 characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+
+low-id
+	
+
+Specifies the start VLAN ID.
+	
+
+The value is an integer that ranges from 1 to 4094. The value must be smaller than the end VLAN ID.
+
+high-id
+	
+
+Specifies the end VLAN ID.
+	
+
+The value is an integer that ranges from 1 to 4094. The value must be greater than the start VLAN ID.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 100GE interface view, 40GE interface view, MultiGE interface view, port group view, 25GE interface view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After a user-side interface of a PE on an ISP network is enabled to transparently transmit Layer 2 protocol packets, the interface directly forwards Layer 2 protocol packets sent from a user network instead of sending the packets to the CPU. In this way, Layer 2 protocol packets are transparently transmitted through the ISP network.
+
+The l2protocol-tunnel vlan command is usually used on user-side interfaces of PEs.
+
+The l2protocol-tunnel vlan command enables an interface to transparently transmit Layer 2 protocol packets from the specified VLANs. The l2protocol-tunnel command enables an interface to transparently transmit all Layer 2 protocol packets.
+
+The l2protocol-tunnel vlan and l2protocol-tunnel commands cannot specify the same protocol type on the same interface. Otherwise, the configurations conflict.
+
+Before specifying a user-defined protocol in the l2protocol-tunnel vlan command, run the l2protocol-tunnel user-defined-protocol command to define characteristic information about the Layer 2 protocol.
+
+STP packets have a default MAC address for replacing the original destination MAC address. For packets of other Layer 2 protocols, you need to configure a global group MAC address to replace the destination MAC address. For details, see l2protocol-tunnel group-mac.
+
+In addition, the VLAN specified in the command must be the static VLAN, but not the VLAN dynamically created by GVRP or VCMP.
+
+If the l2protocol-tunnel vlan command is run more than once, all configurations take effect.
+Example
+
+# Enable GE0/0/1 to transparently transmit LACP packets with VLAN tags ranging from 100 to 200.
+
+<HUAWEI> system-view
+[HUAWEI] vlan batch 100 to 200
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 100 to 200
+[HUAWEI-GigabitEthernet0/0/1] l2protocol-tunnel lacp vlan 100 to 200
+
+l2protocol-tunnel mode
+Function
+
+The l2protocol-tunnel mode command configures the Layer 2 protocol tunneling mode of an interface.
+
+The undo l2protocol-tunnel mode command restores the default Layer 2 protocol tunneling mode of an interface.
+
+By default, the Layer 2 protocol tunneling mode of an interface is VLAN.
+Format
+
+l2protocol-tunnel mode { vsi | vlan }
+
+undo l2protocol-tunnel mode
+
+Only the S5731-S, S5731S-S, S5731-H, S5731S-H, S5732-H, S6730-S, S6730S-S, S6730S-H and S6730-H support this command.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vsi
+	
+
+Sets the Layer 2 protocol tunneling mode to VSI.
+	
+
+-
+
+vlan
+	
+
+Sets the Layer 2 protocol tunneling mode to VLAN.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, Eth-Trunk interface view, 25GE interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To transparently transmit Layer 2 protocol packets from a user network in a scenario where a VLANIF interface is connected to a VPLS network, run the l2protocol-tunnel mode vsi command to set the Layer 2 protocol tunneling mode of an interface to VSI.
+Example
+
+# Set the Layer 2 protocol tunneling mode to VSI on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] l2protocol-tunnel mode vsi
+
+l2protocol-tunnel vsi-mode enable
+Function
+
+The l2protocol-tunnel vsi-mode enable command sets the Layer 2 protocol tunneling mode of the device to VSI.
+
+The undo l2protocol-tunnel vsi-mode enable command restores the default Layer 2 protocol tunneling mode of the device.
+
+By default, the Layer 2 protocol tunneling mode of the device is VLAN.
+Format
+
+l2protocol-tunnel vsi-mode enable
+
+undo l2protocol-tunnel vsi-mode enable
+
+Only the S5731-S, S5731S-S, S5731-H, S5731S-H, S5732-H, S6730-S, S6730S-S, S6730S-H and S6730-H support this command.
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When receiving BPDUs encapsulated with a group MAC address through a non-VSI tunnel-side interface, the device discards the BPDUs by default. To enable the device to forward the BPDUs from the VSI tunnel side, run the l2protocol-tunnel vsi-mode enable command to set the Layer 2 protocol tunneling mode of the device to VSI. Then the BPDUs can enter the VSI tunnel and be forwarded out. After the BPDUs reach the peer end, the source MAC address of the BPDUs is restored to the original one.
+Example
+
+# Set the Layer 2 protocol tunneling mode of the device to VSI.
+
+<HUAWEI> system-view
+[HUAWEI] l2protocol-tunnel vsi-mode enable
+
+reset l2protocol-tunnel statistics
+Function
+
+The reset l2protocol-tunnel statistics command clears statistics about Layer 2 protocol packets that are transparently transmitted on an interface.
+Format
+
+reset l2protocol-tunnel statistics interface-type interface-number [ { protocol-type } &<1-16> | user-defined-protocol protocol-name ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type interface-number
+	
+Clears statistics about Layer 2 protocol packets that are transparently transmitted on a specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+The specified interface must be enabled with Layer 2 protocol tunneling.
+	
+
+-
+
+protocol-type
+	
+
+Clears statistics about transparently transmitted packets of a specified protocol.
+	
+The protocol type can be:
+
+    Spanning Tree Protocol (STP)
+    Link Aggregation Control Protocol (LACP)
+    Ethernet Operation, Administration, and Maintenance 802.3ah (EOAM3ah)
+    Link Layer Discovery Protocol (LLDP)
+    GARP VLAN Registration Protocol (GVRP)
+    GARP Multicast Registration Protocol (GMRP)
+    HUAWEI Group Management Protocol (HGMP)
+    VLAN Trunking Protocol (VTP)
+    Unidirectional Link Detection (UDLD)
+    Port Aggregation Protocol (PAGP)
+    Cisco Discovery Protocol (CDP)
+    Per VLAN Spanning Tree Plus (PVST+)
+    Shared Spanning Tree Protocol (SSTP)
+    Dynamic Trunking Protocol (DTP)
+    Device Link Detection Protocol (DLDP)
+    Ethernet Synchronization Message Channel (ESMC)
+
+You can select one or more Layer 2 protocols.
+
+user-defined-protocol protocol-name
+	
+
+Clears statistics about transparently transmitted packets of a user-defined protocol. protocol-name specifies the name of a user-defined protocol.
+	
+
+The value is a string of 1 to 31 case-sensitive characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+To collect statistics about Layer 2 protocol packets transparently transmitted on an interface in a specified period, you must reset original statistics on the interface.
+
+When using the reset l2protocol-tunnel statistics command, pay attention to the following points:
+
+    If you specify an interface but do not specify any protocol, statistics about all Layer 2 protocol packets on the interface are reset.
+
+    If you specify an interface and a protocol, statistics about packets of the specified protocol are reset.
+
+Statistics about Layer 2 protocol packets cannot be restored after being deleted. Confirm your action before you use this command.
+Example
+
+# Reset statistics about all Layer 2 protocol packets on GE0/0/1.
+
+<HUAWEI> reset l2protocol-tunnel statistics gigabitethernet 0/0/1
+
+# Reset statistics about STP packets on GE0/0/2.
+
+<HUAWEI> reset l2protocol-tunnel statistics gigabitethernet 0/0/2 stp
+
+reset l2protocol-tunnel statistics group-mac
+Function
+
+The reset l2protocol-tunnel statistics group-mac command clears statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with destination MAC addresses (group MAC address) on an interface.
+Format
+
+reset l2protocol-tunnel statistics group-mac [ interface-type interface-number ]
+Parameters
+Parameter 	Description 	Value
+interface-type interface-number 	
+
+Specifies the interface on which the statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address are to be cleared.
+
+    interface-type specifies the type of the interface.
+
+    interface-number specifies the number of the interface.
+
+	
+
+-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After Layer 2 protocol tunneling is configured on a device, if you need to collect statistics within a specified period about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address on an interface, first run the reset l2protocol-tunnel statistics group-mac command to clear existing statistics on the interface, and then enable the interface to collect statistics within that period.
+Example
+
+# Clear statistics about transparently transmitted Layer 2 PDUs whose multicast destination MAC addresses are replaced with a specified group MAC address on GE 0/0/1.
+
+<HUAWEI> reset l2protocol-tunnel statistics group-mac Gigabitethernet 0/0/1
+
+stp bpdu vlan
+Function
+
+The stp bpdu vlan command configures the STP packets sent from an interface to contain the specified VLAN ID.
+
+The undo stp bpdu vlan command cancels the configuration.
+
+By default, the STP packets sent from an interface do not contain VLAN IDs.
+Format
+
+stp bpdu vlan vlan-id
+
+undo stp bpdu vlan
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the VLAN ID contained in the STP packets sent from an interface.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 100GE interface view, 40GE interface view, MultiGE interface view, port group view, 25GE interface view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When multiple user networks connect to the interfaces of the same PE, the PE interface needs to distinguish STP packets from different user networks. In this case, you need to configure the STP packets sent from each CE interface to contain the specified VLAN ID. In addition, the STP packets sent to the CE interface must also contain the specified VLAN ID.
+
+On the CE interface, run the stp bpdu vlan vlan-id command to configure the STP packets sent to the PE to contain the specified VLAN ID. On the PE interface connected to the CE, run the l2protocol-tunnel vlan command to enable the STP packets with the specified VLAN ID to traverse the ISP network.
+
+Before running the stp bpdu vlan command on a CE interface, ensure that the CE interface has been added to the specified VLAN.
+
+The stp bpdu vlan command is usually configured on the network interface of the CE.
+Example
+
+# Configure the STP packets sent from GE0/0/1 to contain VLAN ID 100.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 100
+[HUAWEI-GigabitEthernet0/0/1] stp bpdu vlan 100
+
+stp snooping enable
+Function
+
+The stp snooping enable command enables STP snooping.
+
+The undo stp snooping enable command disables STP snooping.
+
+By default, STP snooping is disabled on interfaces.
+Format
+
+stp snooping enable
+
+undo stp snooping enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After you run the l2protocol-tunnel command to enable transparent transmission of Layer 2 protocol packets on untagged interfaces or the l2protocol-tunnel vlan command to enable transparent transmission of Layer 2 protocol packets on tagged interfaces, the untagged or tagged interfaces directly forward Layer 2 protocol packets sent from user networks over the ISP network but not send them to the CPU for processing. When a device enabled with Layer 2 protocol tunneling receives TC packets, the device clears the MAC entries and ARP entries and updates the forwarding table after the stp snooping enable command is executed.
+Example
+
+# Enable STP snooping.
+
+<HUAWEI> system-view
+
+[HUAWEI] stp snooping enable
+
