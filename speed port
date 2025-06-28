@@ -1,0 +1,81 @@
+speed port
+Function
+
+The speed port command sets a fixed rate for an interface on an RU.
+
+The undo speed port command restores the default rate of an interface on an RU.
+
+By default, an interface on an RU works at the rate of 1000 Mbit/s.
+Format
+
+speed { 10 | 100 | 1000 | 2500 } port { portid1 [ to portid2 ] } &<1-32>
+
+undo speed { 10 | 100 | 1000 | 2500 } port { portid1 [ to portid2 ] } &<1-32>
+Parameters
+Parameter 	Description 	Value
+
+10
+	
+
+Sets the interface rate to 10 Mbit/s.
+	
+
+-
+
+100
+	
+
+Sets the interface rate to 100 Mbit/s.
+	
+
+-
+
+1000
+	
+
+Sets the interface rate to 1000 Mbit/s.
+	
+
+-
+
+2500
+	
+
+Sets the interface rate to 2500 Mbit/s.
+	
+
+-
+
+{ portid1 [ to portid2 ] }
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 32. If the specified interface index is larger than the largest one on the RU, the command is not issued to the RU.
+Views
+
+remote-unit N view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+In non-auto negotiation mode, if interfaces on two connected devices work at different rates, the two devices cannot communicate with each other. In this case, you need to run this command to change the rates of the interfaces to be the same.
+
+Prerequisites
+
+The undo negotiation auto port command has been run to configure the interface to work in non-auto-negotiation mode.
+
+Follow-up procedure
+
+After running this command, run the commit command to make the configuration take effect.
+Example
+
+# Configure interface 2 on RU 0 to work at the rate of 100 Mbit/s in non-auto-negotiation mode.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] undo negotiation auto port 2
+[HUAWEI-remote-unit-0] speed 100 port 2
+
