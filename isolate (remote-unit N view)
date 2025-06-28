@@ -1,0 +1,60 @@
+isolate (remote-unit N view)
+Function
+
+The isolate enable command enables port isolation on an RU.
+
+The isolate disable command disables port isolation on an RU.
+
+The undo isolate command restores the default configuration.
+
+By default, port isolation is disabled on an RU.
+Format
+
+isolate {enable | disable }
+
+undo isolate
+Parameters
+Parameter 	Description 	Value
+
+enable
+	
+
+Enables port isolation.
+	
+
+-
+
+disable
+	
+
+Disables port isolation.
+	
+
+-
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After an RU is delivered, its downlink interfaces are in the same broadcast domain and are not isolated by default. This allows users connected to the same RU to communicate with each other before being authenticated. To prevent this, you can configure port isolation on RUs. To isolate downlink interface on a single RU, run the isolate enable command in the view of the RU.
+
+Precautions
+
+The port isolation configuration specific to an RU has a higher priority than the global port isolation configuration.
+
+Follow-up Procedure
+
+After running this command, run the commit command to make the configuration take effect.
+Example
+
+# Disable port isolation on an RU.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] isolate disable
+
