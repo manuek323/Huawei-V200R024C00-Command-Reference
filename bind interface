@@ -1,0 +1,48 @@
+bind interface
+Function
+
+The bind interface command binds an interface on the central switch to an RU for interconnection.
+
+The undo bind command unbinds the interconnection interface from an RU.
+
+By default, no interconnection interface is bound to an RU.
+Format
+
+bind interface interface-type interface-number
+
+undo bind
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To deliver configurations to an RU, you need to bind an interface on the central switch to the RU for interconnection. After interface binding, you can run the remote-unit connect-interface interface-type interface-number command on the central switch to enter the view of an RU by specifying an interconnection interface, and run the display remote-unit connect-interface interface-type interface-number command to view information about an RU bound to a specific interconnection interface.
+
+Precautions
+
+    An interface can be bound to only one RU.
+    An Eth-Trunk physical member interface cannot be bound to an RU.
+
+Example
+
+# Bind XGigabitEthernet0/0/1 to the RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] bind interface XGigabitEthernet 0/0/1
+
