@@ -1,0 +1,822 @@
+Loopback Detection Configuration Commands
+
+    Command Support
+    display loopback-detect
+    display loopback-detect interface
+    loopback-detect action
+    loopback-detect auto action
+    loopback-detect auto disable
+    loopback-detect enable (system view)
+    loopback-detect enable (interface view)
+    loopback-detect packet vlan
+    loopback-detect packet-interval
+    loopback-detect recovery-time
+    loopback-detect untagged mac-address
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display loopback-detect
+Function
+
+The display loopback-detect command displays the loopback detection configuration and status of loopback detection enabled interfaces.
+Format
+
+display loopback-detect
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+This command is used to check the loopback detection configuration and status of each interface on which loopback detection is enabled.
+Example
+
+# Display the loopback detection configuration and status of loopback detection enabled interfaces.
+
+<HUAWEI> display loopback-detect
+Loopback-detect sending-packet interval:  5                                                                                         
+                                                                                                                                    
+(A): Auto Loopback-detect                                                                                                           
+-----------------------------------------------------------------                                                                   
+Interface                     RecoverTime  Action     Status                                                                        
+-----------------------------------------------------------------                                                     
+GigabitEthernet0/0/1          30           quitvlan(A) NORMAL                     
+----------------------------------------------------------------- 
+
+Table 5-106 Description of the display loopback-detect command output
+
+Item
+	
+
+Description
+
+Loopback-detect sending-packet interval
+	
+
+Interval between sending loopback detection packets, in seconds. For details, see loopback-detect packet-interval.
+
+Interface
+	
+
+Interface on which loopback detection is enabled.
+
+RecoverTime
+	
+
+Interface recovery time, in seconds. For details, see loopback-detect recovery-time.
+
+Action
+	
+Action performed when a loopback is detected on an interface:
+
+    block: blocks the interface. After the interface is blocked, it is isolated from other interfaces and does not forward received data packets to other interfaces.
+    nolearn: disables MAC address learning on the interface. When a loopback is detected on the interface, the interface stops learning MAC addresses.
+    shutdown: shuts down the interface. When a loopback is detected on an interface, the interface is shut down.
+    trap: only sends a trap. When a loopback is detected on an interface, the interface only sends a trap.
+    trap(A): only sends a trap. (A) indicates that automatic loopback detection is performed on an interface.
+    quitvlan: quits VLANs. When a loopback is detected on an interface, the interface exits from the VLAN in which a loop occurs.
+    quitvlan(A): quits VLANs. (A) indicates that automatic loopback detection is performed on an interface.
+
+To specify the parameter, run the loopback-detect action or loopback-detect auto action command.
+
+Status
+	
+Status of a loopback detection enabled interface:
+
+    NORMAL: No loopback is detected on the interface.
+    BLOCK: A loopback is detected on the interface and the interface is blocked.
+    NOLEARN: A loopback is detected on the interface and the MAC address learning is disabled on the interface.
+    SHUTDOWN: A loopback is detected on the interface and the interface is shut down.
+    TRAP: A loopback is detected on the interface and a trap is sent.
+    QUITVLAN: A loopback is detected on the interface and the interface exits from the VLAN in which a loop occurs.
+
+display loopback-detect interface
+Function
+
+display loopback-detect interface command displays the LBDT configuration and status of LBDT-enabled interfaces.
+Format
+
+display loopback-detect interface interface-type interface-number
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type interface-number
+	
+
+Specifies the interface type and number.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+This command is used to check the loopback detection configuration and status of each interface on which loopback detection is enabled.
+Example
+
+# Display the LBDT configuration and status of interfaces that are enabled with LBDT manually.
+
+<HUAWEI> display loopback-detect interface GigabitEthernet 0/0/1
+LBDT mode   : Manual
+Detect VLAN : Untag
+Looped VLAN : 
+Action      : shutdown
+Status      : NORMAL
+Recover Time: 15
+
+# Display the LBDT configuration and status of interfaces that are enabled with LBDT automatically.
+
+<HUAWEI> display loopback-detect interface GigabitEthernet 0/0/1
+LBDT mode    : Auto
+PVID VLAN    :
+  VLAN ID           : 1
+  Trap only VLAN ID : -
+Mac-flap VLAN:
+  Total NUM         : 0
+  VLAN ID           : -
+  Trap only VLAN NUM: 0
+  Trap only VLAN ID : -
+  Quit-vlan VLAN NUM: 0
+  Quit-vlan VLAN ID : -
+
+Table 5-107 Description of the display loopback-detect interface command output
+
+Item
+	
+
+Description
+
+LBDT mode
+	
+Mode in which LBDT is enabled:
+
+    Manual: LBDT is enabled manually.
+
+    To enable LBDT on an interface, run the loopback-detect enable (interface view) command.
+
+    Auto: LBDT is enabled automatically.
+
+    To enable automatic LBDT on the device, run the undo loopback-detect auto disable command.
+
+Detect VLAN
+	
+
+VLAN where LBDT is configured to detect loops.
+
+To configure a VLAN where LBDT is configured to detect loops, run the loopback-detect packet vlan command.
+
+Looped VLAN
+	
+
+VLAN where loops are detected.
+
+Action
+	
+Action performed when a loopback is detected on an interface:
+
+    block: blocks the interface. After the interface is blocked, it is isolated from other interfaces and does not forward received data packets to other interfaces.
+    nolearn: disables MAC address learning on the interface. When a loopback is detected on the interface, the interface stops learning MAC addresses.
+    shutdown: shuts down the interface. When a loopback is detected on an interface, the interface is shut down.
+    trap: only sends a trap. When a loopback is detected on an interface, the interface only sends a trap.
+    quitvlan: quits VLANs. When a loopback is detected on an interface, the interface exits from the VLAN in which a loop occurs.
+
+To configure an action performed when a loopback is detected, run the loopback-detect action command.
+
+Status
+	
+Status of a loopback detection enabled interface:
+
+    NORMAL: No loopback is detected on the interface.
+    BLOCK: A loopback is detected on the interface and the interface is blocked.
+    NOLEARN: A loopback is detected on the interface and the MAC address learning is disabled on the interface.
+    SHUTDOWN: A loopback is detected on the interface and the interface is shut down.
+    TRAP: A loopback is detected on the interface and a trap is sent.
+    QUITVLAN: A loopback is detected on the interface and the interface exits from the VLAN in which a loop occurs.
+
+Recover Time
+	
+
+Restoration time of an interface, in seconds.
+
+To configure the restoration time of an interface, run the loopback-detect recovery-time command.
+
+PVID VLAN
+	
+
+VLAN that is specified by the PVID and where automatic LBDT is enabled.
+
+VLAN ID
+	
+
+Default VLAN of the interface.
+
+To configure the default VLAN of an interface, run the port default vlan command.
+
+Trap only VLAN ID
+	
+
+VLAN that is specified by the PVID and where loops are detected. The value is displayed as - if there is no such a VLAN.
+
+Mac-flap VLAN
+	
+
+VLAN where MAC address flapping detection is enabled automatically.
+
+Total NUM
+	
+
+Total number of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping.
+
+VLAN ID
+	
+
+List of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping.
+
+Trap only VLAN NUM
+	
+
+Total number of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping and the action is trap.
+
+Trap only VLAN ID
+	
+
+List of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping and the action is trap.
+
+Quit-vlan VLAN NUM
+	
+
+Total number of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping and the action is quit-vlan.
+
+Quit-vlan VLAN ID
+	
+
+List of VLANs where MAC address flapping detection is enabled automatically to detect MAC address flapping and the action is quit-vlan.
+loopback-detect action
+Function
+
+The loopback-detect action command configures an action to be taken when a loopback is detected on an interface.
+
+The undo loopback-detect action command restores the default action.
+
+By default, an interface is shut down when a loopback is detected on the interface.
+Format
+
+loopback-detect action { block | nolearn | shutdown | trap | quitvlan }
+
+undo loopback-detect action [ block | nolearn | shutdown | trap | quitvlan ] (Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, MultiGE interface view, 25GE interface view, 100GE interface view, Eth-Trunk interface view)
+
+undo loopback-detect action (port group view)
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+block
+	
+
+Blocks an interface when a loopback is detected.
+	
+
+-
+
+nolearn
+	
+
+Disables MAC address learning on an interface when a loopback is detected on the interface.
+	
+
+-
+
+shutdown
+	
+
+Shuts down an interface when a loopback is detected on the interface.
+	
+
+-
+
+trap
+	
+
+Only sends a trap message when a loopback is detected.
+	
+
+-
+
+quitvlan
+	
+
+The interface exits from the VLAN in which a loop occurs when a loopback is detected on an interface.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 100GE interface view, 40GE interface view, MultiGE interface view, port group view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After loopback detection is enabled on an interface, the interface sends loopback detection packets at intervals. When a loopback is detected on the interface, the system performs an action to minimize the impact on the entire network. The loopback-detect action command configures the action.
+The system performs any of the following actions after detecting a loopback on an interface:
+
+    block: blocks the interface. After the interface is blocked, it is isolated from other interfaces and does not forward received data packets to other interfaces.
+    nolearn: disables MAC address learning on the interface. When a loopback is detected on the interface, the interface stops learning MAC addresses.
+    shutdown: shuts down the interface.
+    trap: only sends a trap.
+    quitvlan: When a loopback is detected on an interface, the interface exits from the VLAN in which a loop occurs.
+
+Prerequisites
+
+Enable loopback detection in the interface view or system view.
+
+Follow-up Procedure
+
+    If the action is set to block, nolearn, trap or quitvlan, you can run the loopback-detect recovery-time command to set the interface recovery time.
+
+    If the action is set to shutdown, the shutdown interface cannot be automatically restored after a loopback is eliminated. You must run the shutdown and undo shutdown commands or run the restart command to enable the interface again. In addition to the preceding methods, the interface that is manually shut down or enters the Error-Down state due to other protocols will be automatically restored after the recovery time. However, the interface that is disabled only by LBDT cannot be restored after the recovery time.
+
+Example
+
+# Configure the system to shut down GigabitEthernet0/0/1 when a loopback occurs.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] loopback-detect action shutdown
+
+loopback-detect auto action
+Function
+
+The loopback-detect auto action command specifies an action when automatic LBDT is triggered to detect loops in the VLAN where MAC address flapping is detected.
+
+The undo loopback-detect auto action command restores the default action when automatic LBDT is triggered to detect loops in the VLAN where MAC address flapping is detected.
+
+By default, the action is trap when automatic LBDT is triggered to detect loops in the VLAN where MAC address flapping is detected.
+Format
+
+loopback-detect auto action { trap | quitvlan }
+
+undo loopback-detect auto action
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+trap 	
+
+Indicates that the interface only sends a trap when loops are detected.
+	
+
+-
+quitvlan 	
+
+Indicates that the interface is removed from the VLAN where MAC address flapping is detected.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+When the switch is configured with MAC address flapping detection and automatic LBDT, if MAC address flapping is detected in a VLAN, automatic LBDT is triggered to detect loops in the VLAN. Then you can run the loopback-detect auto action command to configure an action on the interface to minimize the impact of loops on the entire network.
+When automatic LBDT is triggered to automatically detect loops in the VLAN where MAC address flapping is detected, you can configure either of the following actions on the interface:
+
+    trap: The interface only sends a trap.
+    quitvlan: The interface is removed from the VLAN where a loop occurs.
+
+Prerequisites
+
+    MAC address flapping detection has been enabled. For details on how to configure MAC address flapping detection, see Configuring MAC Address Flapping Detection.
+    Automatic LBDT has been enabled using the undo loopback-detect auto disable command.
+
+Follow-up Procedure
+
+Run the loopback-detect recovery-time command to configure the recovery time of the problematic interface.
+
+Precautions
+
+The quitvlan action that is configured using this command takes effect only in the scenario where automatic LBDT is triggered to detect a loop between interfaces in the VLAN where MAC address flapping is detected. The trap action is used in the scenario where automatic LBDT is triggered to detect a loop on the downstream network or device in the VLAN where MAC address flapping is detected.
+Example
+
+# Configure the quitvlan action when automatic LBDT is triggered to detect loops in the VLAN where MAC address flapping is detected.
+
+<HUAWEI> system-view
+[HUAWEI] mac-address flapping detection
+[HUAWEI] undo loopback-detect auto disable
+[HUAWEI] loopback-detect auto action quitvlan
+
+loopback-detect auto disable
+Function
+
+The loopback-detect auto disable command disables automatic LBDT.
+
+The undo loopback-detect auto disable command enables automatic LBDT.
+
+By default, automatic LBDT is enabled.
+Format
+
+loopback-detect auto disable
+
+undo loopback-detect auto disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When an interface changes from Down to Up, a loop may occur. You can enable automatic LBDT. The device then immediately detects loops and reports the corresponding alarm. When the switch is enabled with MAC address flapping detection, if MAC address flapping is detected, LBDT is triggered automatically to detect loops in the VLAN where MAC address flapping occurs.
+
+Precautions
+
+    When the switch is upgraded from an earlier version to V200R009 or later, automatic loop detection is disabled by default.
+
+    The device enabled with automatic LBDT automatically reports an alarm when detecting a loop. After the loop is eliminated, the device automatically reports a clear alarm. The time for reporting a clear alarm is one or two times the recovery time. The recovery time can be configured using the loopback-detect recovery-time command. The default value is three detection intervals, that is, 15s.
+    When automatic LBDT is enabled, all interfaces where the loopback-detect enable command is not configured periodically to send detection packets with the PVID to detect loops, consuming CPU resources. If no loop occurs on a network, run the loopback-detect auto disable command to disable automatic LBDT to reduce resource consumption.
+
+Example
+
+# Enable automatic LBDT.
+
+<HUAWEI> system-view
+[HUAWEI] undo loopback-detect auto disable
+
+loopback-detect enable (system view)
+Function
+
+The loopback-detect enable command enables loopback detection on all interfaces.
+
+The undo loopback-detect enable command disables loopback detection on all interfaces.
+
+By default, loopback detection is disabled on all interfaces.
+Format
+
+loopback-detect enable
+
+undo loopback-detect enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+When loopback detection needs to be enabled on all or most of interfaces on a device, you can use the loopback-detect enable command to simplify configuration.
+
+Precautions
+
+After you run the loopback-detect enable command in the system view, the CPU usage increases because all interfaces send broadcast loopback detection packets at intervals.
+
+Loopback detection occupies CPU resources; therefore, disable this function when it is not required.
+
+Follow-up Procedure
+
+If loopback detection is not required on an interface, run the undo loopback-detect enable command in the interface view to disable loopback detection.
+Example
+
+# Enable loopback detection on all interfaces.
+
+<HUAWEI> system-view
+
+[HUAWEI] loopback-detect enable
+
+loopback-detect enable (interface view)
+Function
+
+The loopback-detect enable command enables loopback detection on an interface.
+
+The undo loopback-detect enable command disables loopback detection on an interface.
+
+By default, loopback detection is disabled on an interface.
+Format
+
+loopback-detect enable
+
+undo loopback-detect enable
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, MultiGE interface view, 100GE interface view, 25GE interface view, port group view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+The loopback-detect enable command enables loopback detection on an interface. This function enables the system to detect a loopback on the downstream network quickly and shut down an interface to minimize the impact of the loopback on the entire network.
+
+Precautions
+
+After loopback detection is enabled on an interface, the interface sends loopback detection packets at intervals.
+
+A large number of broadcast packets are sent during loopback detection, occupying CPU resources; therefore, disable loopback detection if it is not required.
+
+On the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S, manual LBDT can be configured on a maximum of 64 Eth-Trunks; on other models, manual LBDT can be configured on a maximum of 32 Eth-Trunks.
+Example
+
+# Enable loopback detection for the GE0/0/1 interface.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] loopback-detect enable
+
+loopback-detect packet vlan
+Function
+
+The loopback-detect packet vlan command configures loopback detection in a specified VLAN.
+
+The undo loopback-detect packet vlan command cancels the configuration.
+
+By default, loopback detection is disabled in a VLAN.
+Format
+
+loopback-detect packet vlan { vlan-id1 [ to vlan-id2 ] } &<1-8>
+
+undo loopback-detect packet vlan [ { vlan-id1 [ to vlan-id2 ] } &<1-8> ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Specifies the VLAN IDs of loopback detection packets.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than the value of vlan-id1.
+
+	
+
+    The value of vlan-id1 is an integer that ranges from 1 to 4094.
+    The value of vlan-id2 is an integer that ranges from 1 to 4094.
+    Each interface can send detection packets with a maximum of 32 VLAN IDs.
+
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, MultiGE interface view, 100GE interface view, 25GE interface view, port group view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, loopback detection is disabled in VLANs. After the loopback-detect packet vlan command is executed on an interface, the interface sends multiple copies of tagged loopback detection packets with the specified VLAN tags.
+
+Prerequisites
+
+The specified VLANs exist and the interface has been added to the VLANs in tagged mode.
+
+Before running this command, check whether loopback detection is enabled. If not, run the loopback-detect enable (interface view) command to enable loopback detection.
+
+Precautions
+
+If you run the loopback-detect packet vlan command multiple times in the same interface view, multiple VLAN IDs are specified.
+
+Each interface can send detection packets with a maximum of 32 VLAN IDs.
+Example
+
+# Configure loopback detection in VLAN30 on the GE0/0/1 interface.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 30
+[HUAWEI-vlan30] quit
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 30
+[HUAWEI-GigabitEthernet0/0/1] loopback-detect enable
+[HUAWEI-GigabitEthernet0/0/1] loopback-detect packet vlan 30
+
+loopback-detect packet-interval
+Function
+
+The loopback-detect packet-interval command sets the interval between sending loopback detection packets on all interfaces.
+
+The undo loopback-detect packet-interval command restores the default interval between sending loopback detection packets on all interfaces.
+
+By default, the interval between sending loopback detection packets is 5 seconds.
+Format
+
+loopback-detect packet-interval packet-interval-time
+
+undo loopback-detect packet-interval [ packet-interval-time ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+packet-interval-time
+	
+
+Specifies the interval between sending loopback detection packets.
+	
+
+The value is an integer that ranges from 1 to 300, in seconds.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+After loopback detection is enabled on an interface, the interface sends loopback detection packets at the interval specified by the loopback-detect packet-interval command. You can run the loopback-detect packet-interval command to adjust the interval between sending loopback detection packets according to service requirements. If a shorter interval is set, the system sends more loopback detection packets in a certain period. This enables the system to detect loopbacks more quickly and accurately, but more system sources are consumed.
+
+Precautions
+
+If you run the loopback-detect packet-interval command multiple times, only the latest configuration takes effect.
+
+After a loopback detection-enabled interface recovers from Down to Up, the interface sends loopback detection packets immediately.
+Example
+
+# Set the interval between sending loopback detection packets on all interfaces to 10s.
+
+<HUAWEI> system-view
+[HUAWEI] loopback-detect packet-interval 10
+
+loopback-detect recovery-time
+Function
+
+The loopback-detect recovery-time command sets the interface recovery time after a loopback is detected.
+
+The undo loopback-detect recovery-time command restores the interface recovery time after a loopback is detected.
+
+The default recovery time is three times the loopback detection interval.
+Format
+
+loopback-detect recovery-time recovery-time
+
+undo loopback-detect recovery-time [ recovery-time ] (Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, MultiGE interface view, 25GE interface view, 100GE interface view, Eth-Trunk interface view)
+
+undo loopback-detect recovery-time (port group view)
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+recovery-time
+	
+
+Interface recovery time.
+	
+
+The value is an integer that ranges from 1 to 1000, in seconds.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, MultiGE interface view, 100GE interface view, 25GE interface view, port group view, Eth-Trunk interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+After loopback detection is enabled on an interface, the device sends loopback detection packets at intervals through the interface, performs the preconfigured action on the interface after a loopback is detected, and starts timing. You can configure the interface recovery time. After the configured interface recovery time, the system will attempt to recover the interface. If the loopback is removed on the interface, the system recovers the interface from the error-down state.
+
+Precautions
+
+If you run the loopback-detect recovery-time command multiple times, only the latest configuration takes effect.
+
+After a loop is eliminated, the interface recovery time is the same as the value of recovery-time or two times the value of recovery-time.
+
+It is recommended that the interface recovery time be three times the packet sending interval. If the packet sending interval has been set to a small value, the interface recovery time should be at least 10 seconds longer than the packet sending interval.
+
+If the action is set to shutdown, the shutdown interface cannot be automatically restored after a loopback is eliminated. You must run the shutdown and undo shutdown commands or run the restart command to enable the interface again. In addition to the preceding methods, the interface that is manually shut down or enters the Error-Down state due to other protocols will be automatically restored after the recovery time. However, the interface that is disabled only by LBDT cannot be restored after the recovery time.
+
+The default recovery time is three times the loopback detection interval and is not restricted by the value ranging from 1 to 1000. If you configure the command manually, the recovery time can only be set to a value from 1 to 1000.
+Example
+
+# Sets the recovery time of the GE0/0/1 interface to 50 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] loopback-detect recovery-time 50
+
+loopback-detect untagged mac-address
+Function
+
+The loopback-detect untagged mac-address command sets the destination MAC address of untagged loopback detection packets.
+
+The undo loopback-detect untagged mac-address command restores the default destination MAC address of untagged loopback detection packets.
+
+By default, the destination MAC address of untagged loopback detection packets is 0180-C200-000A.
+Format
+
+loopback-detect untagged mac-address mac-address
+
+undo loopback-detect untagged mac-address [ mac-address ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+mac-address mac-address
+	
+
+Specifies the destination MAC address of untagged loopback detection packets.
+	
+
+The destination MAC address can only be a broadcast MAC address or a multicast MAC address.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The loopback-detect untagged mac-address command applies to scenarios with self-loops and loops on the downstream network. When the connected interfaces are access interfaces, run the loopback-detect packet vlan command to configure the device to detect loops in a specified VLAN. This is because untagged packets are processed only when the transmit interface receives them. If the device is not configured to detect loops in a specified VLAN, run the loopback-detect untagged mac-address command.
+
+Prerequisites
+
+Loopback detection has been enabled using the loopback-detect enable (system view) command.
+
+Precautions
+
+If you run this command multiple times, only the latest configuration takes effect.
+
+You are not advised to set the destination MAC address of untagged loopback detection packets to a destination MAC address of other protocols but to the broadcast MAC address FFFF-FFFF-FFFF.
+Example
+
+# Set the destination MAC address of untagged loopback detection packets to FFFF-FFFF-FFFF.
+
+<HUAWEI> system-view
+[HUAWEI] loopback-detect enable
+[HUAWEI] loopback-detect untagged mac-address ffff-ffff-ffff
+
