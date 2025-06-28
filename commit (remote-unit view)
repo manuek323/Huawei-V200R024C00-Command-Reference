@@ -1,0 +1,64 @@
+commit (remote-unit view)
+Function
+
+The commit command delivers configurations to RUs.
+Format
+
+commit { all | name remote-unit-name | interface interface-type interface-number }
+Parameters
+Parameter 	Description 	Value
+
+all
+	
+
+Commits configurations of all RUs.
+	
+
+-
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value is a string of 1 to 32 case-sensitive characters without spaces.
+
+interface interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+Views
+
+remote-unit view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+After configuring an RU by running commands on the central switch, such as the port rate, port isolation, port shutdown, and port negotiation, you need to run the commit command to deliver the configurations to the RU for the configurations to take effect.
+
+The commit command can be run to deliver configurations to offline RUs. After an offline RU goes online, the central switch automatically applies the committed configurations to this RU.
+
+Precautions
+
+A central switch does not deliver configurations to RUs that fail to be authenticated or are not authenticated.
+
+RUs do not save their configurations. After the central switch or an RU is restarted and works normally, the central switch preferentially delivers the configuration in the single RU view. If no configuration is available in the single RU view, the central switch delivers the configuration in the global RU view.
+
+Follow-up Procedure
+
+Run the display remote-unit commit configuration command to check the configurations that are successfully delivered to RUs, and run the display remote-unit commit result command to check configuration delivery results of RUs.
+Example
+
+# Deliver configurations to the RU connected to XGigabitEthernet0/0/1 on the central switch.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 
+[HUAWEI-remote-unit] commit interface XGigabitEthernet 0/0/1
+
