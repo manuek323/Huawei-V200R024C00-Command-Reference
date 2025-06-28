@@ -1,0 +1,1531 @@
+SEP Configuration Commands
+
+    Command Support
+    block port
+    control-vlan (SEP segment view)
+    deal smart-link-flush
+    description (SEP segment view)
+    display sep error packet
+    display sep interface
+    display sep segment
+    display sep topology
+    preempt (SEP segment view)
+    protected-instance
+    reset sep error packet statistics
+    reset sep interface statistics
+    sep segment
+    sep segment (interface view)
+    sep segment priority
+    tc-notify
+    tc-protection interval
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+block port
+Function
+
+The block port command configures the mode in which an interface is blocked on the device where the primary edge interface resides.
+
+The undo block port command restores the default mode in which an interface is blocked on the device where the primary edge interface resides.
+
+By default, the system selects a blocked interface from the interfaces on both ends of the link that is established last or the link that recovers from a fault last.
+Format
+
+block port { sysname sysname interface interface-type interface-number | hop hop-id | optimal | middle }
+
+undo block port
+Parameters
+Parameter 	Description 	Value
+sysname sysname 	Specifies the name of the device where the interface to be blocked resides. 	The value is a string of 1 to 20 case-sensitive characters without spaces. When double quotation marks are used around the string, spaces are allowed in the string.
+interface interface-type interface-number 	
+
+Specifies the interface to be blocked. interface-type indicates the type of the interface to be blocked.
+
+After SEP is enabled, sysname sysname and interface { interface-type interface-number } specify the interface to be blocked. Before configuring the mode in which an interface is blocked, run the display sep topology verbose command to view detailed information about the topology of the current ring and obtain information about all the interfaces in the topology. Then, you can specify the device and interface names.
+	-
+hop hop-id 	
+
+Specifies the interface with the specified hop count from the primary edge interface as the blocked interface. hop-id specifies the hop count.
+
+If hop-id is set to 1, the primary edge interface is blocked. If hop-id is set to 2, the neighboring interface of the primary edge interface is blocked. The hop count increases by steps of 1 in the downstream direction of the primary edge interface.
+	The value is an integer that ranges from 1 to 128.
+optimal 	
+
+Specifies the interface with the highest priority as the blocked interface.
+
+SEP compares interface priorities as follows:
+
+    A larger value set using the sep segment priority command indicates a higher priority.
+
+    If interfaces have the same priority value, a smaller bridge MAC address indicates a higher priority.
+
+    If interfaces have the same priority value and the same bridge MAC address, a smaller interface number indicates a higher priority.
+
+	-
+middle 	
+
+Specifies the interface in the middle of the SEP segment as the blocked interface.
+	-
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+In a SEP segment, some interfaces are blocked to prevent loops. Any interface in a SEP segment may be blocked if no interface is specified for blocking. A complete SEP segment contains only one blocked interface.
+
+You can specify the blocked interface according to network requirements or your reference. The specified interface is not blocked immediately. Normally, the blocked interface is one of the two interfaces that complete neighbor negotiations last. The specified interface preempts to be the blocked interface only after the preemption mechanism takes effect.
+
+The SEP segment must have been created before the block port command is used.
+
+To make the block port command configuration take effect, complete the following tasks before using the block port command.
+
+    Run the sep segment command in the system view to create a SEP segment.
+
+    Run the control-vlan (SEP segment view) command to configure the control VLAN of the SEP segment.
+
+    Run the sep segment (interface view) command to add the interface to the SEP segment and configure the interface as the primary edge interface.
+
+Example
+
+# On the device where the primary edge interface is located, specify the device and interface names to block the specified interface.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] block port sysname HUAWEI interface gigabitethernet 0/0/1
+
+# On the device where the primary edge interface is located, specify the interface with the specified hop count from the primary edge interface as the interface to be blocked.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] block port hop 3
+
+# On the device where the primary edge interface is located, specify the interface with the highest priority as the interface to be blocked.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] block port optimal
+
+# On the device where the primary edge interface is located, specify the interface in the middle of the SEP segment as the interface to be blocked.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] block port middle
+
+control-vlan (SEP segment view)
+Function
+
+The control-vlan command configures the control VLAN of a SEP segment for SEP packet transmission.
+
+The undo control-vlan command deletes the configured control VLAN.
+
+By default, no control VLAN is configured in a SEP segment.
+Format
+
+control-vlan vlan-id
+
+undo control-vlan
+Parameters
+Parameter 	Description 	Value
+vlan-id 	Specifies the ID of the control VLAN in a SEP segment. 	The value is an integer that ranges from 1 to 4094.
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After a SEP segment is created, run the control-vlan command to create a control VLAN for the SEP segment.
+
+Compared with a data VLAN, a control VLAN forwards only SEP packets but not service packets in a SEP segment, which improves SEP security.
+
+Precautions
+
+    Devices in the same SEP segment must be configured with the same control VLAN to fast forward SEP packets. Different SEP segments can use the same control VLAN.
+
+    In the absence of neighbors, devices that are not in a SEP segment cannot be added to the control VLAN of the SEP segment. Otherwise, network loops occur.
+
+    The control VLAN must be not created, and is not used by other features. In addition, no interface is added to the control VLAN.
+
+    To check whether the control VLAN is created or view the control VLAN where SEP packets are transmitted, run the display sep interface command and specify the verbose parameter.
+    You must configure the control VLAN of a SEP segment before adding interfaces to the SEP segment.
+
+        If the SEP segment contains an interface, the control VLAN cannot be deleted. To delete the configured control VLAN, run the undo sep segment command in the interface view to remove the interface from the SEP segment, and then run the undo control-vlan command.
+
+        If the SEP segment contains no interface, you can configure the control VLAN multiple times. Only the latest configuration takes effect.
+
+        After the control VLAN is created, the configuration file automatically displays the command for creating the VLAN.
+
+        Each SEP segment must have a control VLAN. After an interface is added to a SEP segment that has a control VLAN, the interface is automatically added to the control VLAN.
+            If the interface type is trunk, in the configuration file, the port trunk allow-pass vlan command is displayed in the view of the interface added to the SEP segment.
+            If the interface type is hybrid, in the configuration file, the port hybrid tagged vlan command is displayed in the view of the interface added to the SEP segment.
+
+Example
+
+# Configure control VLAN 5 for SEP segment 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] control-vlan 5
+
+deal smart-link-flush
+Function
+
+The deal smart-link-flush command enables a device in a SEP segment to process SmartLink Flush packets.
+
+The undo deal smart-link-flush command disables a device in a SEP segment from processing SmartLink Flush packets.
+
+By default, a device in a SEP segment is disabled from processing SmartLink Flush packets.
+Format
+
+deal smart-link-flush
+
+undo deal smart-link-flush
+Parameters
+
+None
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a host is connected to a SEP network through a SmartLink group, the host sends SmartLink Flush packets to the connected devices in the SEP segment, if the active/standby switchover of member interfaces in the SmartLink group occurs. In this situation, the deal smart-link-flush command must be used to enable the devices in the SEP segment to process SmartLink Flush packets.
+
+Prerequisites
+
+Interfaces have been added to the SEP segment.
+
+Precautions
+
+After the deal smart-link-flush command is used, the device that receives a SmartLink Flush packet in the SEP segment floods the forwarding database (FDB) to notify the other devices in the SEP segment of topology changes. The other devices then refresh their MAC address entries to ensure reliable traffic transmission.
+
+The deal smart-link-flush command must be run on the device that receives SmartLink Flush packets and the interfaces on the device have been added to the SEP segment.
+Example
+
+# Enable a device in SEP segment 1 to process SmartLink Flush packets.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] deal smart-link-flush
+
+description (SEP segment view)
+Function
+
+The description command configures the description of the SEP segment.
+
+The undo description command restores the default setting.
+
+By default, the description of a SEP segment is null.
+Format
+
+description text
+
+undo description
+Parameters
+Parameter 	Description 	Value
+
+text
+	
+
+Specifies the description of a SEP segment
+	
+
+The value is a string of 1 to 255 case-sensitive characters with spaces supported.
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a device running SEP, you can run the description command to configure the description of the SEP segment, such as the SEP segment ID. Configuring the description of a SEP segment facilitates the maintenance of the SEP segment.
+
+Precautions
+
+After being configured in the SEP-Segment view, the description command takes effect only on the local device.
+Example
+
+# Configure the description It's segment 10 for SEP segment 10.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 10
+
+[HUAWEI-sep-segment10] description It's segment 10
+
+display sep error packet
+Function
+
+The display sep error packet command displays the statistics about error packets received by SEP and the contents of recently received packets.
+Format
+
+display sep error packet
+Parameters
+
+None.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+If a device on a Layer 2 network runs SEP is attacked by SEP error packets, the display sep error packet command can be used to view recently received MSTP error packets.
+Example
+
+Display the statistics about error packets received by SEP and the contents of recently received packets.
+
+<HUAWEI> display sep error packet
+
+4 error-packets have been received and the last
+
+one is received at 2012/05/02 12:45:31 UTC+08:00 :
+
+
+01 80 c2 00 00 02 00 e0 fc 8e 0b 34 88 09 01 01 
+01 14 80 00 00 e0 fc 8e 0b 34 01 21 80 00 09 06
+47 00 00 00 02 14 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 c7 00 00 00 03 10 ff ff 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00
+
+display sep interface
+Function
+
+The display sep interface command displays information about the interfaces in a SEP segment.
+Format
+
+display sep interface [ interface-type interface-number | segment segment-id ] [ verbose ]
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Displays SEP information on a specified interface. interface-type specifies the type of an interface. interface-number specifies the number of an interface.
+	
+
+-
+
+segment segment-id
+	
+
+Displays information about the interfaces in a specified SEP segment.
+	
+
+The value is an integer that ranges from 1 to 1024.
+
+verbose
+	
+
+Displays detailed SEP information on a specified interface, including traffic statistics.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To monitor the status of an interface or locate an interface fault, use this command to collect statistics and the status of the interface. Then you can locate the interface fault according to the statistics.
+
+When using the display sep interface command:
+
+    If no parameter is specified, this command displays information about all the interfaces in SEP segments.
+
+    If only interface-type interface-number is specified, this command displays information about a specified interface in SEP segments.
+
+    If only segment segment-id is specified, this command displays information about all the interfaces in a specified SEP segment.
+
+    If only verbose is specified, this command displays detailed information about all the interfaces in SEP segments.
+
+    If interface-type interface-number and verbose are specified, this command displays detailed information about a specified interface in SEP segments.
+
+    If segment segment-id and verbose are specified, this command displays detailed information about a specified interface in a specified SEP segment.
+
+Before running this command, complete the following tasks:
+
+    Run the sep segment command in the system view to create a SEP segment.
+
+    Run the sep segment (interface view) command in the Ethernet interface view to add an interface to a SEP segment and set the role of the interface as required.
+
+Example
+
+# Display information about all the interfaces in SEP segments.
+
+<HUAWEI> display sep interface
+
+SEP segment 1
+----------------------------------------------------------------
+Interface        Port Role      Neighbor Status            Port Status
+----------------------------------------------------------------
+GE0/0/1             *secondary    up                  forwarding
+GE0/0/2             common        up                  forwarding
+
+# Display information about a specified interface in SEP segments.
+
+<HUAWEI> display sep interface gigabitethernet 0/0/1
+
+SEP segment 1
+----------------------------------------------------------------
+Interface           Port Role     Neighbor Status     Port Status
+----------------------------------------------------------------
+GE0/0/1             common        up                  forwarding 
+
+# Display detailed information about a specified interface in a specified SEP segment.
+
+<HUAWEI> display sep interface segment 1 verbose
+
+SEP segment 1                              
+Control-vlan           :3                                                       
+Preempt Delay Timer    :15                                                       
+TC-Notify Propagate to :stp                                                        
+---------------------------------------------------------------- 
+Interface              :GE0/0/1
+Port Role              :Config = *primary / Active =  *secondary
+Port Priority          :64
+Port Status            :forwarding
+Neighbor Status        :up
+Neighbor Port          :NULL
+NBR TLV             rx :0                tx :0
+LSP INFO TLV        rx :0                tx :0
+LSP ACK TLV         rx :0                tx :0
+PREEMPT REQ TLV     rx :0                tx :0
+PREEMPT ACK TLV     rx :0                tx :0
+TC Notify           rx :0                tx :0
+EPA                 rx :0                tx :0 
+Interface              :GE0/0/2
+Port Role              :Config = common / Active =  common
+Port Priority          :64
+Port Status            :forwarding
+Neighbor Status        :up
+Neighbor Port          :LSW3 - GE0/0/1 (00e0-ff7c-6400.0000)
+NBR TLV             rx :51820            tx :51882
+LSP INFO TLV        rx :50380            tx :5776
+LSP ACK TLV         rx :5749             tx :50296
+PREEMPT REQ TLV     rx :0                tx :1
+PREEMPT ACK TLV     rx :4                tx :0
+TC Notify           rx :22               tx :3
+EPA                 rx :0                tx :0 
+
+Table 5-94 Description of the display sep interface command output
+
+Item
+	
+
+Description
+
+SEP segment
+	
+
+ID of a SEP segment. To specify the parameter, run the sep segment command.
+
+Interface
+	
+
+Interface name.
+
+Port Role
+	
+Role of an interface in a SEP segment:
+
+    common: common interface
+
+    primary: primary edge interface
+
+    secondary: secondary edge interface
+
+    *primary: no-neighbor primary edge interface
+
+    *secondary: no-neighbor secondary edge interface
+
+Neighbor Status
+	
+Status of the neighbor state machine:
+
+    up: Neighbor negotiations succeed and the protocol status of the interface is Up.
+
+    down: Neighbor negotiations fail and no neighbor relationship is established between the local interface and its peer interface.
+
+    init: The local interface receives packets from the peer interface and neighbor negotiations start.
+
+    conflict: The local interface receives packets from multiple peer interfaces and the protocol status of the interface is Conflict.
+
+Port Status
+	
+Current status of the interface:
+
+    discarding: The interface is blocked and can forward SEP packets but not data packets.
+
+    forwarding: The interface is in Forwarding state and can forward both data packets and SEP packets.
+
+Port Priority
+	
+
+Interface priority. It is an integer that ranges from 1 to 128. By default, the interface priority is 64. To specify the parameter, run the sep segment priority command.
+
+Control-vlan
+	
+
+ID of a control VLAN. A control VLAN is used to forward SEP packets in the local SEP segment. To specify the parameter, run the control-vlan command.
+
+Preempt Delay Timer
+	
+
+Delay in preempting the blocked interface after the faulty link recovers, in seconds. To specify the parameter, run the preempt command.
+
+TC-Notify Propagate to
+	
+
+Object to be notified of a topology change. To specify the parameter, run the tc-notify command.
+
+Neighbor Port
+	
+
+Neighbor interface. It is in the format of system name+interface name (system MAC address or interface ID). If there is no neighbor, the value is NULL.
+
+NBR TLV
+	
+Neighbor information packet:
+
+    rx: indicates the number of received neighbor information packets.
+
+    tx: indicates the number of sent neighbor information packets.
+
+LSP INFO TLV
+	
+LSA packets:
+
+    rx: indicates the number of received LSA packets.
+
+    tx: indicates the number of sent LSA packets.
+
+LSP ACK TLV
+	
+ACK packets in response to LSA packets:
+
+    rx: indicates the number of received ACK packets in response to LSA packets.
+
+    tx: indicates the number of sent ACK packets in response to LSA packets.
+
+PREEMPT REQ TLV
+	
+Preemption packets:
+
+    rx: indicates the number of received preemption packets.
+
+    tx: indicates the number of sent preemption packets.
+
+PREEMPT ACK TLV
+	
+ACK packets in response to preemption packets:
+
+    rx: indicates the number of received ACK packets in response to preemption packets.
+
+    tx: indicates the number of sent ACK packets in response to preemption packets.
+
+TC Notify
+	
+Packets reporting topology changes:
+
+    rx: indicates the number of received packets reporting topology changes.
+
+    tx: indicates the number of sent packets reporting topology changes.
+
+EPA
+	
+Packets reporting edge port selection:
+
+    rx: indicates the number of received packets reporting edge port selection.
+
+    tx: indicates the number of sent packets reporting edge port selection.
+
+display sep segment
+Function
+
+The display sep segment command displays the configurations of SEP segments.
+Format
+
+display sep segment {segment-id | all }
+Parameters
+Parameter 	Description 	Value
+segment-id 	Displays the configuration of a specified SEP segment. 	The value is an integer that ranges from 1 to 1024.
+all 	Displays the configurations of all SEP segments. 	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After SEP is configured, you can run the display sep segment command to view the configuration of a specified SEP segment or all SEP segments on the network.
+Example
+
+# Display the configuration of SEP segment 2.
+
+<HUAWEI> display sep segment 2
+
+-----------------------------------------------------------------
+SEP Segment ID         :2
+SEP Control-vlan       :3
+Protected-instance     :0 to 5 9 12 to 13 16 to 17 20 to 21
+Preempt Delay Timer(s) :20/0 (Configured/Remaining)
+Block Port Expected    :Eth-Trunk2
+Name of Port Member    :Eth-Trunk3
+TC-Notify Propagate to :segment 6
+
+# Display the configurations of all SEP segments.
+
+<HUAWEI> display sep segment all
+
+-----------------------------------------------------------------
+SEP Segment ID         :1
+SEP Control-vlan       :10
+Protected-instance     :0 to 48
+Preempt Delay Timer(s) :20/0 (Configured/Remaining)
+Block Port Expected    :Eth-Trunk2
+Name of Port Member    :GE0/0/1
+TC-Notify Propagate to :segment 6
+-----------------------------------------------------------------
+SEP Segment ID         :2
+SEP Control-vlan       :3
+Protected-instance     :0 to 5 9 12 to 13 16 to 17 20 to 21
+Preempt Delay Timer(s) :20/0 (Configured/Remaining)
+Block Port Expected    :Eth-Trunk2
+Name of Port Member    :Eth-Trunk3
+TC-Notify Propagate to :segment 6
+-----------------------------------------------------------------
+Total number of segment configured = 2
+
+Table 5-95 Description of the display sep segment command output
+
+Item
+	
+
+Description
+
+SEP Segment ID
+	
+
+ID of a SEP segment. To specify the parameter, run the sep segment command.
+
+SEP Control-vlan
+	
+
+Control VLAN for transmitting SEP packets. To specify the parameter, run the control-vlan command.
+
+Protected-instance
+	
+
+ID of a protected instance. To specify the parameter, run the protected-instance command.
+Preempt Delay Timer(s) 	
+
+Delay in preemption.
+
+    Configured: configured value of the Preempt Delay Timer (s).
+
+    Remaining: remaining value of the Preempt Delay Timer (s). If the timer does not start, 0 is displayed.
+
+If preemption is not configured for a SEP segment, one of the two interfaces that complete neighbor negotiation last remains to be blocked even though a network fault is rectified. Consequently, the interface specified to be blocked is not blocked.
+
+To specify the parameter, run the preempt command.
+
+Block Port Expected
+	
+
+Specified blocked interface. To specify the parameter, run the block port command.
+
+Name of Port Member
+	
+
+Name of a member interface.
+
+TC-Notify Propagate to
+	
+
+Object to which topology changes are reported. To specify the parameter, run the tc-notify command.
+display sep topology
+Function
+
+The display sep topology command displays the topologies of SEP segments.
+Format
+
+display sep topology [ segment segment-id ] [ verbose ]
+Parameters
+Parameter 	Description 	Value
+
+segment segment-id
+	
+
+Displays the topology of a specified SEP segment.
+	
+
+The value is an integer that ranges from 1 to 1024.
+
+verbose
+	
+
+Displays detailed information about the topology of a SEP segment.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After SEP is configured, you can run the display sep topology command to view the topologies of SEP segments, including device names, names of the interfaces added to SEP segments, and roles of the interfaces in a SEP segment.
+
+When running the display sep topology command:
+
+    If no parameter is specified, this command displays brief information about the topologies of all the SEP segments on the device.
+
+    If only segment segment-id is specified, this command displays brief information about the topology of a specified SEP segment.
+
+    If only verbose is specified, this command displays detailed information about the topologies of all SEP segments on the device.
+
+    If segment segment-id and verbose are specified, this command displays detailed information about the topology of a specified SEP segment on the device.
+
+Before running this command, complete the following tasks:
+
+    Run the sep segment command in the system view to create a SEP segment.
+
+    Run the sep segment (interface view) command in the Ethernet interface view to add an interface to the SEP segment and set the role of the interface as required.
+
+    Edge interfaces must be configured in the SEP segment; otherwise, the SEP topology is incomplete and the system displays an error message.
+
+Example
+
+# Display the topologies of all SEP segments on the device.
+
+<LSW1> display sep topology
+SEP segment 1
+SEP detects a segment failure that may be caused by an incomplete topology
+------------------------------------------------------------------------
+System Name      Port Name           Port Role       Port Status     Hop
+------------------------------------------------------------------------
+LSW1             GE0/0/1             *secondary      forwarding      1
+LSW1             GE0/0/2             common          forwarding      2
+LSW3             GE0/0/1             common          forwarding      3
+LSW3             GE0/0/2             common          forwarding      4
+LSW2             GE0/0/1             common          forwarding      5
+LSW2             GE0/0/2             *secondary      discarding      6
+
+# Display detailed topology information in SEP segment 1.
+
+<LSW1> display sep topology segment 1 verbose
+
+SEP segment 1
+----------------------------------------------------------------
+System Name     :LSW1
+Port Name       :GE0/0/1
+Port Role       :Config = primary / Active =  primary
+PortID          :00e0-9e62-6100.0000
+Port Priority   :64
+Port Status     :forwarding
+Link Status     :up
+Neighbor Status :up
+Age Time        :60(s)
+Sequence Number :0x8000000e
+Neighbor Port   :LSW2 - GE0/0/2 (00e0-8830-fe00.0000)
+Brother Port    :LSW1 - GE0/0/3 (00e0-9e62-6100.0001)
+
+Table 5-96 Description of the display sep topology command output
+
+Item
+	
+
+Description
+
+SEP segment
+	
+
+ID of a SEP segment. To specify the parameter, run the sep segment command.
+
+System Name
+	
+
+Device name.
+
+Port Name
+	
+
+Name of an interface added to the SEP segment.
+
+Port Role
+	
+Role of an interface in the SEP segment:
+
+    common: common interface
+
+    primary: primary edge interface
+
+    secondary: secondary edge interface
+
+    *primary: no-neighbor primary edge interface
+
+    *secondary: no-neighbor secondary edge interface
+
+Config: indicates the configured role of an interface in a SEP segment.
+
+Active: indicates the running role of an interface in a SEP segment.
+NOTE:
+
+In normal situations, a SEP segment has a primary edge interface, a secondary edge interface, and common interfaces.
+
+Port Status
+	
+Current status of an interface:
+
+    discarding: The interface is blocked and can forward SEP packets but not data packets.
+
+    forwarding: The interface is in Forwarding state and can forward both data packets and SEP packets.
+
+PortID
+	
+
+Interface ID. It is in the format of 6-byte system MAC address+2-byte interface number.
+
+Port Priority
+	
+
+Interface priority. It is an integer that ranges from 1 to 128. By default, the interface priority is 64. To specify the parameter, run the sep segment priority command.
+
+Link Status
+	
+Link status:
+
+    up: The link is Up.
+
+    down: The link is Down.
+
+Neighbor Status
+	
+Status of the neighbor state machine:
+
+    up: Neighbor negotiations succeed and the protocol status of the interface is Up.
+
+    down: Neighbor negotiations fail and no neighbor relationship is established between the local interface and its peer interface.
+
+    init: The local interface receives packets from the peer interface and neighbor negotiations start.
+
+    conflict: The local interface receives packets from multiple peer interfaces and the protocol status of the interface is Conflict.
+
+Age Time
+	
+
+Aging time of the LSA.
+
+Sequence Number
+	
+
+Sequence number of the LSA.
+
+Neighbor Port
+	
+
+Neighbor interface. It is in the format of system name+interface name (system MAC address or interface ID). If there is no neighbor, the value is NULL.
+
+Brother Port
+	
+
+Brother interface. It is in the format of system name+interface name (system MAC address or interface ID). If there is no brother, the value is NULL.
+preempt (SEP segment view)
+Function
+
+The preempt command configures the blocked interface preemption mode on the device where the primary edge interface is located.
+
+The undo preempt delay command cancels the configuration of delayed preemption on the primary edge interface.
+
+By default, the SEP preemption mode is not configured.
+Format
+
+preempt { manual | delay seconds }
+
+undo preempt delay
+Parameters
+Parameter 	Description 	Value
+
+manual
+	
+
+Indicates the manual preemption mode.
+	
+
+-
+
+delay
+	
+
+Indicates the delayed preemption mode.
+	
+
+-
+
+seconds
+	
+
+Specifies the preemption delay.
+
+You can configure a preemption delay to prevent network flapping. When link faults are rectified, the specified interface waits until the delay timer expires, and then preempts to be the blocked interface.
+	
+
+The value is an integer that ranges from 15 to 600, in seconds.
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+In a SEP segment, some ports are blocked to prevent loops.
+
+When a link in the SEP segment fails, the blocked interface in Up state changes to the Forwarding state after receiving a fault notification packet. If the preemption mode is not configured, when all link faults are rectified or the last two interfaces enabled with SEP complete neighbor negotiations, interfaces send blocking status packets to each other. The interface with the highest priority is then blocked, and the other interfaces enter the Forwarding state.
+
+The blocked interface is determined by the administrative priority and user-defined priority of each interface. The priority value of an interface contains 16 bits. The higher 8 bits are defined by the system, and the lower 8 bits are set by the user. The value of the lower 8 bits ranges from 1 to 128, and the default value is 64. The interface with the highest priority is blocked.
+
+If the preemption mode is configured on the device where the primary edge interface is located, the specified interface transitions to the Blocking state and sends blocking status packets to other ports.
+
+SEP supports the following preemption modes:
+
+    Delayed preemption
+
+    After all interface faults are rectified, the faulty interface does not send any fault notification packet. If the primary edge interface does not receive any fault notification packet within 3 seconds, it starts the delay timer. When the delay timer expires, the devices in the SEP segment initiate blocked interface preemption.
+
+    You must set the preemption delay when delayed preemption is used because there is no default delay time.
+
+    After delay preemption is configured, you can run the undo preempt delay command in the SEP segment view to delete the configuration of delay preemption.
+
+    Manual preemption
+
+    In this mode, if the link status databases of the primary and secondary edge interfaces are complete, the primary edge interface sends preemption packets to block the specified interface. Then the specified interface sends blocking status packets to request the original blocked interface to transition to the Forwarding state.
+
+        Manual preemption is a one-off operation and will not take effect again after the preemption is complete on the SEP segment. To change the blocked interface, run the preempt command and specify the delay parameter to configure delayed preemption.
+
+        Manual preemption causes a short link disconnection in the SEP segment.
+
+Blocked interface preemption is triggered when the following conditions are met:
+
+    The primary edge interface in the SEP segment is selected.
+
+    To configure interface roles, run the sep segment segment-id [ edge [ no-neighbour ] { primary | secondary } ] command in the interface view.
+
+    The method of selecting the interface to block is configured on the device where the primary edge interface is located.
+
+    To configure the method of selecting the interface to block, run the block port { sysname sysname interface interface-type interface-number | hop hop-id | optimal | middle } command in the SEP segment view.
+
+    The topology of the SEP segment must be complete.
+
+Example
+
+# Configure the manual preemption mode on the device where the primary edge port is located.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] preempt manual
+
+# Configure the delayed preemption mode on the device where the primary edge port is located.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] preempt delay 100
+
+protected-instance
+Function
+
+The protected-instance command configures protected instances in a SEP segment.
+
+The undo protected-instance command deletes the protected instances in a SEP segment.
+
+By default, no protected instance is configured in a SEP segment.
+Format
+
+protected-instance { all | { instance-id1 [ to instance-id2 ] } &<1-10> }
+
+undo protected-instance { all | { instance-id1 [ to instance-id2 ] } &<1-10> }
+Parameters
+Parameter 	Description 	Value
+all 	
+
+Indicates all protected instances in a SEP segment.
+	-
+instance-id1 [ to instance-id2 ] 	
+
+Specifies the IDs of protected instances in a SEP segment.
+
+The keyword to connecting two instance IDs, indicating an ID range from instance-id1 to instance-id2. The value of instance-id2 must be greater than the value of instance-id1.
+
+&<1-10> indicates that the parameter before the sign (&) can be repeated 1 to 10 times.
+	
+
+The value is an integer in the range 0 to 4094. Each device supports a maximum of 65 instances.
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In common SEP networking, a physical ring can be configured with only one SEP segment in which only one interface can be blocked. If an interface in a complete SEP segment is blocked, all service data is transmitted only along the path where the primary edge interface is located. The path where the secondary edge interface is located remains idle, wasting bandwidth.
+
+SEP multi-instance is used to improve bandwidth efficiency, allowing each physical interface on a ring network to be added to two SEP segments. A physical ring can be configured with two logical rings, allowing packets carrying different VLAN IDs to pass through. Load balancing is then implemented between the two logical rings. This implementation requires logical rings to be configured with different protected instances and mappings between protected instances and VLANs to be configured. The protected-instance command can be used to configure protected instances for a SEP segment.
+
+Prerequisites
+
+The protected instance IDs configured for SEP segments do not overlap. If different SEP segments have duplicate protected instance IDs, replan protected instance IDs.
+
+Follow-up Procedure
+Complete the following tasks to configure mappings between protected instances and VLANs:
+
+    Run the stp region-configuration command to enter the MST region view.
+
+    Run the instance instance-id vlan { vlan-id1 [ to vlan-id2 ] } &<1-10> command to configure mappings between protected instances and VLANs.
+
+    The value of instance-id specified in this command must be the same as the value of instance-id specified in the protected-instance command.
+    Run the active region-configuration command to activate the configured mappings between protected instances and VLANs.
+
+Precautions
+
+If you run the protected-instance command multiple times in the same SEP segment, multiple instances are configured.
+
+After the protected-instance command is run to configure different protected instances for SEP segments and mappings between protected instances and VLANs are set, topology changes affect only corresponding VLANs. This ensures reliable data transmission.
+
+Before adding an interface to a SEP segment, ensure that the SEP segment has been configured with protected instances; otherwise, the interface cannot be added to the SEP segment.
+Example
+
+# Configure protected instances for SEP segment 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] protected-instance all
+
+reset sep error packet statistics
+Function
+
+The reset sep error packet statistics command clears the statistics of error sep packets.
+Format
+
+reset sep error packet statistics
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Applicable Scenario
+
+You can use the reset sep error packet statistics command to clear the history statistics when you need to observe the statistics of error sep packets in a period from the current time.
+
+Precautions
+
+The reset sep error packet statistics command clears the statistics about error sep packets are cleared and cannot be restored. Therefore, confirm the action before you use the command.
+Example
+
+# Clear the statistics about error sep packets.
+
+<HUAWEI> reset sep error packet statistics
+
+reset sep interface statistics
+Function
+
+The reset sep interface statistics command clears SEP packet statistics on a specified interface in a SEP segment.
+Format
+
+reset sep interface interface-type interface-number statistics
+Parameters
+Parameter 	Description 	Value
+interface interface-type interface-number 	Clears SEP packet statistics on a specified interface in a SEP segment. interface-type specifies the type of the interface in a SEP segment. interface-number specifies the number of the interface in a SEP segment. 	-
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Before collecting SEP packet statistics on an interface within a certain period, clear existing traffic statistics on this interface. In such a situation, you can run the reset sep interface statistics command.
+
+    Before the reset sep interface statistics command is run, the SEP segment must be created and the interface must be added to the SEP segment.
+
+    After the reset sep interface statistics command is run, SEP packet statistics on the specified interface in the SEP segment are cleared and cannot be restored. Confirm your action before you use this command.
+
+Example
+
+# Clear SEP packet statistics on GE 0/0/1 in the SEP segment.
+
+<HUAWEI> reset sep interface gigabitethernet 0/0/1 statistics
+
+sep segment
+Function
+
+The sep segment command creates a SEP segment and displays the SEP segment view. If the specified SEP segment has been created, you can directly enter the SEP segment view.
+
+The undo sep segment command deletes the existing SEP segment.
+Format
+
+sep segment segment-id
+
+undo sep segment segment-id
+Parameters
+Parameter 	Description 	Value
+
+segment-id
+	
+
+Specifies the ID of a SEP segment.
+	
+
+The value is an integer that ranges from 1 to 1024.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+On a Layer 2 switching network, packets will be transmitted infinitely once a loop occurs, causing a broadcast storm. The broadcast storm occupies all the bandwidth on the network, causing network congestion or even breakdown of the entire network. To prevent loops on a Layer 2 switching network, Huawei develops the Smart Ethernet Protection (SEP) protocol.
+
+SEP is a ring network protocol specially used for the Ethernet link layer. It blocks redundant links to prevent loops. It can run on a network together with STP, RSTP, MSTP, and RRPP and supports display of the network topology. When the devices of other vendors are used on the network, SEP can also prevent loops, but does not need to be configured on these devices.
+
+A SEP segment consists of interconnected Layer 2 switching devices configured with the same SEP segment ID and control VLAN ID. A SEP segment is the basic unit for SEP.
+
+The switches support a maximum of 48 SEP segments.
+
+A maximum of two interfaces on a Layer 2 switching device can be added to the same SEP segment.
+
+Before enabling SEP, run the sep segment command to create a SEP segment. Then run the control-vlan (SEP segment view) command in the SEP segment view to configure a control VLAN.
+
+A SEP segment can be deleted only when it does not contain any interface. If the SEP segment contains interfaces, run the undo sep segment segment-id command in the corresponding interface views to delete the interfaces from the SEP segment one by one.
+Example
+
+# Create SEP segment 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1]
+
+sep segment (interface view)
+Function
+
+The sep segment command adds an Ethernet interface to a specified SEP segment and configures the role of the Ethernet interface.
+
+The undo sep segment command removes an Ethernet interface from a specified SEP segment and deletes the interface role configuration.
+
+By default, an Ethernet interface is not added to a specified SEP segment and is not configured with a role.
+Format
+
+sep segment segment-id [ edge [ no-neighbor ] { primary | secondary } ]
+
+undo sep segment segment-id
+Parameters
+Parameter 	Description 	Value
+
+segment-id
+	
+
+Specifies the ID of the SEP segment to which an Ethernet interface is added.
+	
+
+The value is an integer that ranges from 1 to 1024.
+
+edge
+	
+
+Specifies the Ethernet interface added to the SEP segment as an edge interface.
+	
+
+-
+
+no-neighbor
+	
+
+Specifies the Ethernet interface as a no-neighbor edge interface.
+	
+
+-
+
+primary
+	
+
+Specifies the Ethernet interface as a primary edge interface.
+	
+
+-
+
+secondary
+	
+
+Specifies the Ethernet interface as a secondary edge interface.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, MultiGE interface view, 40GE interface view, 100GE interface view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A Layer 2 interface can forward SEP packets only after being added to a SEP segment. Each Layer 2 switching device in a SEP segment is a node. Each node can have at most two Layer 2 interfaces added to the same SEP segment.
+
+When using the sep segment command:
+
+    If no parameter is specified, this command adds an Ethernet interface to a specified SEP segment and configures the interface as a common interface.
+
+    In a SEP segment, all interfaces except edge interfaces and blocked interfaces are common interfaces.
+
+    A common interface monitors the status of the directly-connected SEP link. When the link status changes, the interface sends a topology change notification message to notify its neighbors. Then the topology change notification message is flooded on the link until it finally reaches the primary edge interface. The primary edge interface determines how to process the link change.
+
+    If edge and primary are specified, this command adds an Ethernet interface to the specified SEP segment and configures the interface as the primary edge interface.
+
+    A SEP segment has only one primary edge interface, which is determined by the configuration and primary edge interface election. The primary edge interface initiates blocked interface preemption, terminates packets, and sends topology change notification messages to other networks.
+
+    If edge and secondary are specified, this command adds an Ethernet interface to the specified SEP segment and configures the interface as the secondary edge interface.
+
+    A SEP segment has only one secondary edge interface, which is determined by the configuration and secondary edge interface election. The secondary edge interface terminates packets and sends topology change notification messages to other networks.
+
+    If edge, no-neighbor, and primary are specified, this command adds an Ethernet interface to the specified SEP segment and configures the interface as the no-neighbor primary edge interface.
+
+    An interface at the edge of a SEP segment is a no-neighbor edge interface. There are two types of no-neighbor edge interface: no-neighbor primary edge interface and no-neighbor secondary edge interface. You can configure the role of a no-neighbor edge interface. A no-neighbor edge interface terminates packets and sends topology change notification messages to other networks. It is commonly used to interconnect Huawei devices and non-Huawei devices or interconnect Huawei devices and devices that do not support SEP.
+
+    If edge, no-neighbor, and secondary are specified, this command adds an Ethernet interface to the specified SEP segment and configures the interface as the no-neighbor secondary edge interface.
+
+To view the role of an interface added to a SEP segment, run the display sep topology or display sep interface command.
+
+Precautions
+
+    You have created a SEP segment and configured a control VLAN and protected instances.
+
+    To add an interface to a SEP segment, configure the interface as a hybrid or trunk interface.
+
+    If no-neighbor is not specified, the interface to be added to the SEP segment is not an STP or RRPP interface.
+
+    Two interfaces at the edge of a SEP segment must be configured as edge interfaces. The roles of the interfaces are defined by users.
+
+    All the interfaces on the network are Up so that the SEP segment is complete and the displayed topology information is correct.
+
+Example
+
+# Add GE 0/0/1 to SEP segment 1 and configure the interface as the no-neighbor secondary edge interface.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+
+[HUAWEI-GigabitEthernet0/0/1] sep segment 1 edge no-neighbor secondary
+
+sep segment priority
+Function
+
+The sep segment priority command configures the priority of an Ethernet interface in a specified SEP segment.
+
+The undo sep segment priority command restores the default priority of an Ethernet interface in a specified SEP segment.
+
+By default, the priority of an Ethernet interface in a specified SEP segment is 64.
+Format
+
+sep segment segment-id priority priority
+
+undo sep segment segment-id priority
+Parameters
+Parameter 	Description 	Value
+
+segment-id
+	
+
+Specifies the ID of the SEP segment to which an Ethernet interface is added.
+	
+
+The value is an integer that ranges from 1 to 1024.
+
+priority
+	
+
+Specifies the priority of an Ethernet interface in a specified SEP segment.
+
+A larger value indicates a higher priority. When the link fault is rectified, the interface with the highest priority is likely to become the blocked interface.
+	
+
+The value is an integer that ranges from 1 to 128. The default value is 64.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, MultiGE interface view, 40GE interface view, 100GE interface view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+In a SEP segment, some interfaces are blocked to prevent loops. Any interface in a SEP segment may be blocked if no interface is specified for blocking. A complete SEP segment contains only one blocked interface.
+
+If you run the block port optimal command to select the blocked interface according to the port priority, the interface priority set using the sep segment priority command determines whether the interface will be blocked when an interface fault is rectified.
+
+The blocked interface is determined by the administrative priority and user-defined priority of each interface. The priority value of an interface contains 16 bits. The higher 8 bits are defined by the system, and the lower 8 bits are set by the user. A higher interface priority indicates a higher probability that the interface is blocked.
+
+SEP compares interface priorities as follows:
+
+    Compares configured interface priority values. A larger value indicates a higher priority.
+
+    Compares bridge MAC addresses of interfaces with same priority values. A smaller bridge MAC address indicates a higher priority.
+
+    Compares interface numbers of interfaces with identical bridge MAC addresses. A smaller interface number indicates a higher priority.
+
+Before using the sep segment priority command, ensure that the interface is added to the specified SEP segment using the sep segment (interface view) command.
+Example
+
+# Set the priority of GE 0/0/1 added to SEP segment 1 to 10.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+
+[HUAWEI-GigabitEthernet0/0/1] sep segment 1
+
+[HUAWEI-GigabitEthernet0/0/1] sep segment 1 priority 10
+
+tc-notify
+Function
+
+The tc-notify command configures a SEP segment to report topology changes to other SEP segments or networks running other ring network protocols.
+
+The undo tc-notify command disables a SEP segment from reporting topology changes to other SEP segments or networks running other ring network protocols.
+
+By default, a SEP segment does not send topology change notifications.
+Format
+
+tc-notify { segment { segment-id1 [ to segment-id2 ] } &<1-10> | stp | rrpp | smart-link send-packet vlan vlan-id | vpls }
+
+undo tc-notify { segment { segment-id1 [ to segment-id2 ] } &<1-10> | stp | rrpp | smart-link send-packet vlan | vpls }
+
+Only S5731-S, S5731-H, S5731S-H, S5732-H, S6730-S, S6730S-H, and S6730-H support vpls parameter.
+Parameters
+Parameter 	Description 	Value
+
+segment segment-id1 [ to segment-id2 ]
+	
+
+Specifies the SEP segments to which topology changes of the local SEP segment need to be reported.
+
+Topology changes of the local SEP segment are reported to other SEP segments, but not the local SEP segment.
+
+The keyword to connecting two instance IDs, indicating an ID range from instance-id1 to instance-id2. The value of instance-id2 must be greater than the value of instance-id1.
+	
+
+The value is an integer that ranges from 1 to 1024.
+
+stp
+	
+
+Indicates that the local SEP segment reports topology changes to STP networks.
+	
+
+-
+
+rrpp
+	
+
+Indicates that the local SEP segment reports topology changes to RRPP networks.
+	
+
+-
+
+smart-link
+	
+
+Indicates that the local SEP segment reports topology changes to an upper-layer network using SmartLink Flush packets.
+
+When the local SEP segment is connected to an upper-layer network through a no-neighbor edge interface, this parameter must be specified in the tc-notify command.
+	
+
+-
+
+send-packet vlan vlan-id
+	
+
+Specifies the ID of a VLAN used to transmit SmartLink Flush packets.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+vpls
+	
+
+Indicates that the local SEP segment reports topology changes to VPLS networks.
+	
+
+-
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If topology changes in a SEP segment are not reported to the upper-layer Layer 2 network in time, devices on the upper-layer network retain the original MAC address entries, causing traffic interruption. To ensure uninterrupted traffic transmission, run the tc-notify command to configure the local SEP segment to report topology changes to other SEP segments or networks running other ring network protocols.
+
+Prerequisites
+
+The sep segment command has been used to create SEP segments.
+
+Precautions
+
+When the topology of a SEP segment changes, the SEP segment sends topology change notification messages to other SEP segments or networks running other ring network protocols. If the specified segment or network does not exist, the tc-notify command configuration does not take effect.
+
+After receiving topology change notification messages from a SEP segment, devices on the upper layer network send Flush FDB packets on the network. Then, all the devices on the upper-layer network delete the original MAC addresses and learn new MAC addresses to ensure normal traffic transmission.
+
+The tc-notify command is used on the device connecting a lower-layer network and an upper-layer network.
+Example
+
+# Configure SEP segment 1 to report topology changes to SEP segments 10 to 20.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] tc-notify segment 10 to 20
+
+# Configure SEP segment 1 to report topology changes to STP networks.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] tc-notify stp
+
+# Configure SEP segment 1 to report topology changes to RRPP networks.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] tc-notify rrpp
+
+# Configure SEP segment 1 to report topology changes to upper-layer networks using SmartLink Flush packets.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] tc-notify smart-link send-packet vlan 3
+
+# Configure SEP segment 1 to report topology changes to VPLS networks.
+
+<HUAWEI> system-view
+[HUAWEI] sep segment 1
+[HUAWEI-sep-segment1] tc-notify vpls
+
+tc-protection interval
+Function
+
+The tc-protection interval command sets the interval for suppressing topology change (TC) notification packets.
+
+The undo tc-protection interval command restores the default interval for suppressing TC notification packets.
+
+By default, the interval for suppressing TC notification packets is 2s.
+Format
+
+tc-protection interval interval-value
+
+undo tc-protection interval
+Parameters
+Parameter 	Description 	Value
+interval-value 	
+
+Specifies the interval for suppressing TC notification packets.
+
+A longer interval ensures stable SEP operating but deteriorates convergence performance.
+	The value is an integer that ranges from 1 to 10, in seconds.
+Views
+
+SEP segment view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Assume that a host is connected to an upstream network through three or more SEP networks. If the topology of the SEP network nearest to the host changes, doubled TC notification packets are flooded on the upper-layer SEP network. Each time TC notification packets pass through a SEP segment, TC notification packets will be doubled. The upstream network will receive multiple duplicate TC notification packets.
+
+Frequent topology change notifications reduce the CPU packet processing capability, and cause devices in the SEP segments to frequently refresh MAC address entries, which consumes bandwidth resources. To address the problem, run the tc-protection interval command to suppress TC notification packets.
+
+Prerequisites
+
+The sep segment command has been used to create SEP segments.
+
+Precautions
+
+After this command is used, the upstream network only needs to process one TC notification packet but not multiple duplicate TC notification packets. In addition, this function protects devices on the SEP segment against TC attacks.
+Example
+
+# Set the interval for suppressing TC notification packets to 3s in SEP segment 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] sep segment 1
+
+[HUAWEI-sep-segment1] tc-protection interval 3
+
