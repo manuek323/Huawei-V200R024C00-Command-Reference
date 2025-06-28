@@ -1,0 +1,206 @@
+Function
+
+The display remote-unit command displays detailed real-time information about an RU.
+Format
+
+display remote-unit { connect-interface interface-type interface-number | name remote-unit-name } verbose realtime
+Parameters
+Parameter 	Description 	Value
+
+connect-interface interface-type interface-number
+	
+
+Specifies the type and number of the interface connecting the central switch to an RU. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value is a string of 1 to 32 case-sensitive characters without spaces.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command to view detailed real-time information about an RU, including the ESN, name, MAC address, device type, online duration, and firmware version.
+Example
+
+# Display detailed real-time information about the RU connected to Eth-Trunk 10 on the central switch.
+
+<HUAWEI> system-view
+[HUAWEI] display remote-unit connect-interface Eth-Trunk 10 verbose realtime
+------------------------------------------------------------------------ 
+ESN                :219801177002xxxxxxxx 
+Name               :- 
+ID                 :10 
+Device mac         :xxxx-xxxx-xxxx 
+Device type        :S5731-L4T2S-RUA 
+Item               :98011768 
+Manufacture Date   :2021-12-17
+Up time            :0 day, 4 hours, 12 minutes, 20 seconds 
+APP version        :220123020 
+APP type           :APP
+POE version        :- 
+POE type           :POE
+BIOS version       :220207016
+BIOS type          :BIOS
+Connect interface  :Eth-Trunk10 
+Disk usage         :44% 
+Memory usage       :40% 
+CPU usage          :- 
+Fan speed          :-
+Temperature        :34(Celsius) 
+Mac usage          :0%  
+Status             :Normal 
+Authen Result      :-
+------------------------------------------------------------------------
+
+Table 3-79 Description of the display remote-unit verbose realtime command output
+
+Item
+	
+
+Description
+
+ESN
+	
+
+ESN of an RU.
+
+Name
+	
+
+Alias of an RU. This field displays a hyphen (-) if an RU is not configured with an alias.
+
+ID
+	
+
+ID of an RU.
+
+Device mac
+	
+
+System MAC address of an RU.
+
+Device type
+	
+
+Device type of an RU.
+
+Item
+	
+
+Code of an RU.
+
+Manufacture Date
+	
+
+Manufacture date of an RU.
+
+Up time
+	
+
+Online duration of an RU.
+
+APP version
+	
+
+APP firmware version.
+
+APP type
+	
+
+APP firmware type:
+
+    APP: APP firmware.
+    APP1: APP1 firmware. Only the S5751-L series RUs support this value.
+
+POE version
+	
+
+PoE firmware version.
+
+POE type
+	
+
+PoE firmware type:
+
+    POE: PoE firmware. Only the S5751-L series RUs support this value.
+    POE3: PoE3 firmware. Only the S5751-L series RUs support this value.
+    POE5: PoE5 firmware. Only the S5751-L series RUs support this value.
+    POE6: PoE6 firmware. Only the S5751-L series RUs support this value.
+    POE7: PoE7 firmware. Only the S5751-L series RUs support this value.
+    POE81: PoE81 firmware. Only the S5751-L series RUs support this value.
+    POE82: PoE82 firmware. Only the S5751-L series RUs support this value.
+    POE83: PoE83 firmware. Only the S5751-L series RUs support this value.
+
+BIOS version
+	
+
+BIOS firmware version.
+
+BIOS type
+	
+
+BIOS firmware type:
+
+    BIOS: BIOS firmware.
+    BIOS1: BIOS1 firmware. Only the S5751-L series RUs support this value.
+
+Connect interface
+	
+
+Interface connecting the central switch to an RU. If the central switch uses a physical Eth-Trunk member interface to connect to an RU, this field displays the corresponding Eth-Trunk interface.
+
+Disk usage
+	
+
+Disk usage of an RU.
+
+Memory usage
+	
+
+Memory usage of an RU.
+
+Temperature
+	
+
+Current temperature of an RU.
+
+Mac usage
+	
+
+MAC address table usage of an RU.
+
+Disk space(MB)
+	
+
+Disk size of an RU.
+
+Status
+	
+
+Status of an RU:
+
+    Normal: online
+    Upgrading
+    Configuring: the RU is being configured.
+    Abnormal: The link connecting the RU and central switch is faulty, or the RU is an excess one because the number of connected RUs has reached the upper limit.
+    Idle: the RU is in the initialization state.
+
+Authen Result
+	
+
+Authentication result of an RU:
+
+    Success
+    Fail
+    -: the RU is not authenticated.
