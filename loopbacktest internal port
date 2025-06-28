@@ -1,0 +1,43 @@
+loopbacktest internal port
+Function
+
+The loopbacktest internal port configures an interface on an RU to perform an internal loopback test.
+
+By default, internal loopback testing is not configured for an RU interface.
+Format
+
+loopbacktest internal port port-id
+Parameters
+Parameter 	Description 	Value
+
+port-id
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 32. If the specified interface index is larger than the largest one on the RU, the command is not issued to the RU.
+Views
+
+remote-unit N view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to check whether the internal forwarding chip of an RU works properly.
+
+Precautions
+
+    This command is executed only once and is not recorded in Buildrun information.
+
+Example
+
+# Configure internal loopback testing for interface 2 on RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] loopbacktest internal port 2
+
