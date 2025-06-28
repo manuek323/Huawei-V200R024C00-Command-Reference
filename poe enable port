@@ -1,0 +1,74 @@
+poe enable port
+Function
+
+The poe enable port command sets the power supply mode for an interface on an RU.
+
+The undo poe enable port command restores the default power supply mode of a PoE interface on an RU.
+
+By default, interfaces supporting the PoE++ mode provide power in that mode (also referred to as the bt-inrush mode). Interfaces that do not support the PoE++ mode provide power in at-inrush mode.
+Format
+
+poe { at-inrush | af-inrush } enable port port-id
+
+undo poe { at-inrush | af-inrush } enable port port-id
+
+The following RUs work in PoE++ mode by default:
+
+S5731-L4P2HW-RUA, S5731S-L4P2HW-RUA, S5731-L4P2S-RUA, S5731S-L4P2S-RUA, S5731-L4P2ST-RUA, S5731S-L4P2ST-RUA, S5731-L4P2HT-RUA, S5731S-L4P2HT-RUA
+
+The following RUs work in PoE+ mode by default:
+
+S5731-L8P2ST-RUA, S5731S-L8P2ST-RUA, S5731-L8P2HT-RUA, S5731S-L8P2HT-RUA, S5731-L8LP2ST-RUA, S5751-L8LP2X-RUA, S5751-L8LP2J-RUA, S5751-L8P2X-RUA, S5751-L8P2J-RUA, S5751-L8P2HX-RUA, S5751-L8P2HJ-RUA, S5751-L8P2PN2J-RUA, S5751-L8P2PN2X-RUA, S5751-L8P2PN2HX-RUA, S5751-L24P2J-RUA, S5751-L24P2X-RUA, S5751-L24P2PN2X-RUA
+Parameters
+Parameter 	Description 	Value
+
+poe at-inrush
+	
+
+Sets an RU interface to work in PoE+ power supply mode.
+	
+
+-
+
+poe af-inrush
+	
+
+Sets an RU interface to work in 802.3af power supply mode.
+	
+
+-
+
+port-id
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 32. If the specified interface index is larger than the largest one on the RU, the command is not issued to the RU.
+Views
+
+remote-unit N view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To power the PDs requiring the standard power supply mode, you can run the poe at-inrush enable command. This command configures PoE interfaces to work in PoE+ power supply mode. Some non-IEEE standard PDs do not support high-current power supply, and instead only support low-current power supply. To power on such non-standard PDs, you can run the poe af-inrush enable command to configure PoE interfaces on RUs to work in 802.3af power supply mode.
+
+Follow-up procedure
+
+After running this command, run the commit command to make the configuration take effect.
+
+Precautions
+
+Switching the PoE power supply mode of an RU interface between the at-inrush and bt-inrush modes will cause PDs to be powered off.
+Example
+
+# Set interface 1 on RU 0 to work in PoE+ power supply mode.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] poe at-inrush enable port 1
+
