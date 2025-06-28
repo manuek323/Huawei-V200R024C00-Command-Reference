@@ -1,0 +1,218 @@
+display remote-unit upgrade
+Function
+
+The display remote-unit upgrade command displays RU upgrade information.
+Format
+
+display remote-unit upgrade { record | information }
+Parameters
+Parameter 	Description 	Value
+
+record
+	
+
+Displays upgrade records of RUs.
+	
+
+-
+
+information
+	
+
+Displays the upgrade information about the RUs that are being upgraded.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+An RU has three types of firmware: APP firmware (controlling the forwarding process, parsing XLDP packets, and processing configurations), PoE firmware, and BIOS firmware. The three types of firmware can all be upgraded. System software packages or patches (containing firmware) of the central switch can be used to upgrade RUs.
+
+You can run this command to view the upgrade information about RUs. The information includes the firmware version of an RU connected to the central switch, information about the RUs that fail to be upgraded and enter the cooldown period, information about RUs which have the firmware package of the new version successfully pre-loaded and wait to be reset, information about RUs that are being upgraded, and the upgrade progress in percentage. After the upgrade is complete, you can run this command to check upgrade records.
+
+If an RU fails to be upgraded, it enters the cooldown period. You can upgrade it again only after the cooldown period ends.
+Example
+
+# Display RU upgrade information.
+
+<HUAWEI> system-view
+[HUAWEI] display remote-unit upgrade information
+Firmware information:  
+------------------------------------------------------------------------------- 
+Type              Version                 From                Note 
+------------------------------------------------------------------------------- 
+APP               220207016               Startup software    - 
+POE               -                       -                   - 
+BIOS              220207016               Startup software    - 
+APP1              6553663                 Startup software    -  
+APP2              6553663                 Startup software    -  
+POE3              7849                    Startup software    -
+POE5              32776                   Startup software    -   
+POE6              40960                   Startup software    -  
+POE7              49152                   Startup software    -  
+POE81             21                      Startup software    - 
+POE82             486                     Startup software    - 
+POE83             15                      Startup software    - 
+BIOS1             98                      Startup software    - 
+Remote-unit during cooling down: 
+------------------------------------------------------------------------------- 
+Type              ConnectInterface        FailCnt             CoolDownInSeconds 
+------------------------------------------------------------------------------- 
+
+Waiting for restart to apply new firmware's remote-unit information: 
+------------------------------------------------------------------------------- 
+Type              ConnectInterface        NextVersion(APP/POE/BIOS) 
+------------------------------------------------------------------------------- 
+
+Upgrading remote-unit information:
+-------------------------------------------------------------------------------
+Type              ConnectInterface        Firmware            Percent
+-------------------------------------------------------------------------------
+S5731-L8P2HT-RUA  XGigabitEthernet0/0/1   APP                 3%
+
+Table 3-77 Description of the display remote-unit upgrade information command output
+
+Item
+	
+
+Description
+
+Firmware information
+	
+
+Firmware of the RU to be upgraded.
+
+Type
+	
+
+Firmware type: APP/POE/BIOS/BIOS1/APP1/APP2/POE3/POE5/POE6/POE7/POE81/POE81/POE81.
+
+Version
+	
+
+Firmware version.
+NOTE:
+
+For an RU of the S5731-L16P2SR-RUA or S5731S-L16P2SR-RUA model, only the following firmware versions are supported:
+
+APP firmware: 221207011
+
+PoE firmware: 7701
+
+BIOS firmware: 220225001
+
+The S5731-L8LP2ST-RUA supports only the following firmware versions:
+
+APP firmware: 230109001 and later
+
+From
+	
+
+Source file used for upgrading the RU. It can be a patch or software package of the central switch.
+
+Note
+	
+
+Whether the current firmware is successfully signed.
+
+    -: The signature is correct.
+    Bad signature: The firmware patch signature is incorrect. In this case, the firmware will not be upgraded.
+    No signature: The firmware patch does not have a digital signature. In this case, the firmware will not be upgraded.
+
+Remote-unit during cooling down
+	
+
+RUs that fail to be upgraded and are in the cooldown period. You can end the cooldown period of an RU by resetting the RU.
+
+Type
+	
+
+Device type of an RU.
+
+ConnectInterface
+	
+
+Interconnection interface.
+
+FailCnt
+	
+
+Number of upgrade failures.
+
+CoolDownInSeconds
+	
+
+Remaining seconds in the cooldown period. When the value becomes 0, the RU can be upgraded again.
+
+Waiting for restart to apply new firmware's remote-unit information
+	
+
+Information about the RUs that have new firmware successfully pre-loaded and wait to be reset.
+NOTE:
+
+If the function of applying new functions after the upgrade at a specified time is enabled, the information about the RUs to be reset at a specified time is displayed. If this function is disabled and an RU cannot be reset in time, the information about the RU is displayed in this field for a short time. After the RU is reset, the corresponding information is automatically cleared.
+
+NextVersion(APP/POE/BIOS)
+	
+
+Version number for the next startup.
+NOTE:
+
+If the upgrade command is run in the remote-unit view, the version for the next RU startup is displayed. For the firmware not supported by the RU, a hyphen (-) is displayed. If the forcible upgrade command is run in the remote-unit N view, the version number only of the upgraded firmware is displayed. For the firmware not upgraded, a hyphen (-) is displayed.
+
+Upgrading remote-unit information:
+	
+
+Information about the RUs that are being upgraded.
+
+Firmware
+	
+
+Firmware type: APP/POE/BIOS/BIOS1/APP1/APP2/POE3/POE5/POE6/POE7/POE81/POE81/POE81.
+
+Percent
+	
+
+Upgrade progress, in percentage.
+
+# Display upgrade records of RUs.
+
+<HUAWEI> system-view
+[HUAWEI] display remote-unit upgrade record
+------------------------------------------------------------------------------- 
+StartTime             ConnectInterface        Firmware   UpdateResult 
+------------------------------------------------------------------------------- 
+2021/12/25 03:25:54   XGigabitEthernet0/0/1   APP        Success 
+2021/12/25 03:30:08   XGigabitEthernet0/0/1   APP        Success 
+
+Table 3-78 Description of the display remote-unit upgrade record command output
+
+Item
+	
+
+Description
+
+StartTime
+	
+
+Start time.
+
+ConnectInterface
+	
+
+Interconnection interface.
+
+Firmware
+	
+
+Firmware type: APP/POE/BIOS/BIOS1/APP1/APP2/POE3/POE5/POE6/POE7/POE81/POE81/POE81.
+
+UpdateResult
+	
+
+Upgrade result. Success indicates that the upgrade is successful. Other values indicate that the upgrade fails.
