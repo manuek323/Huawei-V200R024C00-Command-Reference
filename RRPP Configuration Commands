@@ -1,0 +1,1921 @@
+RRPP Configuration Commands
+
+    Command Support
+    control-vlan
+    description (RRPP domain view)
+    display rrpp brief
+    display rrpp error packet
+    display rrpp ring-group
+    display rrpp snooping enable
+    display rrpp snooping vsi
+    display rrpp statistics
+    display rrpp verbose
+    domain (RRPP ring group view)
+    protected-vlan
+    reset rrpp error packet statistics
+    reset rrpp statistics
+    ring enable
+    ring node-mode
+    rrpp domain
+    rrpp enable
+    rrpp linkup-delay-timer
+    rrpp ring-group
+    rrpp snooping enable
+    rrpp snooping vsi
+    rrpp snooping all-vsi
+    timer (RRPP domain view)
+
+Command Support
+
+All models of S300, S500, S2700, S5700, and S6700 series switches (except the S5751-L, S5731-L, and S5731S-L) support RRPP.
+
+Only the S5731-H, S5731S-H, S5732-H, S6735-S, S6730S-H, and S6730-H support RRPP Snooping.
+control-vlan
+Function
+
+The control-vlan command configures the control VLAN in an RRPP domain.
+
+The undo control-vlan command deletes the configured control VLAN.
+
+By default, no control VLAN is configured in an RRPP domain.
+Format
+
+control-vlan vlan-id
+
+undo control-vlan
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the control VLAN ID in an RRPP domain. The VLAN must be a VLAN that has not been created.
+	
+
+The value is an integer that ranges from 1 to 4093.
+NOTE:
+
+VLAN 1 is the default VLAN and cannot be configured as the control VLAN.
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A VLAN that transmits RRPP packets in an RRPP domain is called a control VLAN.
+
+An RRPP domain is configured with two control VLANs, that is, the major control VLAN and sub-control VLAN. You need to specify only the major control VLAN. The VLAN whose ID is one greater than the ID of the major control VLAN becomes the sub-control VLAN.
+
+Precautions
+
+    The control VLAN must be included in the protected VLANs; otherwise, the RRPP ring cannot be configured.
+
+    The control VLAN specified by vlan-id must be a VLAN that has not been created, and not been used by other features. The sub-control VLAN specified by vlan-id plus one must be a VLAN that has not been created, and not been used by other features.
+    The control VLAN is deleted when the RRPP domain is deleted using the undo rrpp domain command.
+
+Example
+
+# Set the control VLAN ID in RRPP Domain 1 to 100.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+
+description (RRPP domain view)
+Function
+
+The description command configures the description of the RRPP domain.
+
+The undo description command restores the default setting.
+
+By default, the description of an RRPP domain is null.
+Format
+
+description text
+
+undo description
+Parameters
+Parameter 	Description 	Value
+text 	Specifies the description of an RRPP domain. 	The value is a string of 1 to 255 case-sensitive characters.
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a device running RRPP, you can run the description command to configure the description of the RRPP domain, such as the RRPP domain ID. Configuring the description of an RRPP domain facilitates the maintenance of the RRPP domain.
+
+Precautions
+
+After being configured in the RRPP domain view, the description command takes effect only on the local device.
+Example
+
+# Configure the description It's RRPP Domain 10 for RRPP domain 10.
+
+<HUAWEI> system-view
+
+[HUAWEI] rrpp domain 10
+
+[HUAWEI-rrpp-domain-region10] description It's RRPP Domain 10
+
+display rrpp brief
+Function
+
+The display rrpp brief command displays summary information about all RRPP domains configured on the device.
+Format
+
+display rrpp brief [ domain domain-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+domain domain-id
+	
+
+Displays summary information about a specified RRPP domain.
+
+If this parameter is not specified, the command displays summary information about all RRPP domains.
+	
+
+The value is an integer that ranges from 1 to 64.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run the display rrpp brief command on the RRPP-enabled device to view summary information about RRPP domains configured on the device. The command output shows whether RRPP is enabled, the configuration of RRPP domains, and information about the configured rings in the RRPP domains.
+Example
+
+# Display summary information about RRPP.
+
+<HUAWEI> display rrpp brief
+Abbreviations for Switch Node Mode :
+M - Master , T - Transit , E - Edge , A - Assistant-Edge
+
+RRPP Protocol Status: Disable
+RRPP Working Mode: HW
+RRPP Linkup Delay Timer: 1 sec (0 sec default)
+Number of RRPP Domains: 1
+
+Domain Index   : 1
+Control VLAN   : major 30    sub 31
+Protected VLAN : Reference Instance 10
+Hello Timer    : 1 sec(default is 1 sec)  Fail Timer : 6 sec(default is 6 sec)
+
+ Ring   Ring    Node     Primary/Common             Secondary/Edge        Is
+ ID     Level   Mode     Port                       Port                  Enabled
+ -------------------------------------------------------------------------------
+ 1      0       M        GigabitEthernet0/0/2              GigabitEthernet0/0/3         No
+
+# Display summary information about RRPP Domain 1.
+
+<HUAWEI> display rrpp brief domain 1
+Abbreviations for Switch Node Mode :
+M - Master , T - Transit , E - Edge , A - Assistant-Edge
+RRPP Protocol Status: Disable
+RRPP Working Mode: HW
+RRPP Linkup Delay Timer: 1 sec (0 sec default)
+Number of RRPP Domains: 1
+
+Domain Index   : 1
+Control VLAN   : major 30    sub 31
+Protected VLAN : Reference Instance 10
+Hello Timer    : 1 sec(default is 1 sec)  Fail Timer : 6 sec(default is 6 sec)
+
+ Ring   Ring    Node     Primary/Common             Secondary/Edge        Is
+ ID     Level   Mode     Port                       Port                  Enabled
+ -------------------------------------------------------------------------------
+ 1      0       M        GigabitEthernet0/0/2              GigabitEthernet0/0/3         No 
+
+Table 5-97 Description of the display rrpp brief command output
+
+Item
+	
+
+Description
+
+Abbreviations for Switch Node Mode
+	
+Abbreviations of node modes. The value can be:
+
+    M-Master: indicates the master node.
+    T-Transit: indicates the transit node.
+    E-Edge: indicates the edge node.
+    A-Assistant-Edge: indicates the assistant edge node.
+
+RRPP Protocol Status
+	
+Status of RRPP.
+
+    Enable: indicates that RRPP is enabled.
+    Disable: indicates that RRPP is disabled.
+
+To enable RRPP, run the rrpp enable command.
+
+Number of RRPP Domains
+	
+
+Number of RRPP domains configured.
+
+Domain Index
+	
+
+ID of the RRPP domain.
+
+To specify the parameter, run the rrpp domain command.
+
+RRPP Working Mode
+	
+RRPP working mode:
+
+    GB: indicates RRPP defined by the national standard of China.
+    HW: indicates RRPP defined by Huawei.
+
+RRPP Linkup Delay Timer
+	
+
+Delay time before the master node becomes Complete.
+
+To set the delay time before the master node becomes Complete, run the rrpp linkup-delay-timer command.
+
+Control VLAN : major 30 sub 31
+	
+
+Control VLAN IDs of the RRPP domain. major indicates the master control VLAN and sub indicates the sub-control VLAN.
+
+To specify the parameter, run the control-vlan command.
+
+Protected VLAN
+	
+
+ID of the instance bound to the protected VLAN in the RRPP domain.
+
+To specify the parameter, run the protected-vlan command.
+
+Hello Timer
+	
+
+Hello timer in the RRPP domain, in seconds.
+
+To set the value of the Hello timer, run the timer (RRPP domain view) command.
+
+Fail Timer
+	
+
+Fail timer in the RRPP domain, in seconds.
+
+To set the value of the Fail timer, run the timer (RRPP domain view) command.
+
+Ring ID
+	
+
+ID of the RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Ring Level
+	
+Level of the RRPP ring.
+
+    Level 0 indicates the major ring.
+    Level 1 indicates the sub-ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Node Mode
+	
+
+Mode of a node. For modes of a node, see the preceding item Abbreviations for Switch Node Mode.
+
+To specify the parameter, run the ring node-mode command.
+
+Primary/Common Port
+	
+
+Primary interface or common interface on the master node or transit node of an RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Secondary/Edge Port
+	
+
+Secondary interface or edge interface on the master node or transit node of an RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Is Enabled
+	
+
+Whether a ring is enabled.
+
+To enable a ring, run the ring enable command.
+display rrpp error packet
+Function
+
+The display rrpp error packet command displays statistics about recently-received RRPP error packets.
+Format
+
+display rrpp error packet
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+When a device receives RRPP attack packets on a network, you can run the display rrpp error packet command to collect statistics about recently-received RRPP error packets to locate the problem.
+Example
+
+# Display statistics about recently-received RRPP error packets.
+
+<HUAWEI> display rrpp error packet
+
+4 error-packets have been received and the last
+
+one is received at 2010/01/02 12:45:31 UTC+00:00 :
+
+
+00 0f e2 07 82 17 00 18 82 99 fc 22 81 00 e0 01
+00 48 aa aa 03 00 e0 2b 00 bb 99 0b 00 40 01 05
+
+00 01 00 01 00 00 00 18 82 99 fc 22 00 01 00 03
+
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+00 00 00 00 00.
+
+display rrpp ring-group
+Function
+
+The display rrpp ring-group command displays the configuration about an RRPP ring group.
+Format
+
+display rrpp ring-group [ ring-group-id ]
+Parameters
+Parameter 	Description 	Value
+
+ring-group ring-group-id
+	
+
+Specifies the ID of an RRPP ring group. If this parameter is not specified, configurations about all the RRPP ring groups are displayed.
+	
+
+The value is an integer that ranges from 1 to 16.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run the display rrpp ring-group command on an RRPP-enabled device to view configurations about RRPP ring groups and learn their running status.
+
+Precautions
+
+If the RRPP-enabled device is an edge node, the ring that sends Edge-Hello packets is displayed.
+
+If the RRPP-enabled device is an assistant edge node, the ring that receives Edge-Hello packets is displayed.
+Example
+
+# Display configurations about all ring groups.
+
+<HUAWEI> display rrpp ring-group
+
+ Ring Group 1:
+ domain 1 ring 1 to 3, 5
+ domain 2 ring 1 to 3, 5
+ domain 1 ring 1 send Edge-Hello packet
+
+ Ring Group 2:
+ domain 1 ring 4, 6 to 7
+ domain 2 ring 4, 6 to 7
+
+# Check the configuration about Ring Group 2.
+
+<HUAWEI> display rrpp ring-group 2
+
+ Ring Group 2:
+ domain 1 ring 4, 6 to 7
+ domain 2 ring 4, 6 to 7
+
+Table 5-98 Description of the display rrpp ring-group command output
+
+Item
+	
+
+Description
+
+Ring Group
+	
+
+ID of the RRPP ring group.
+
+To specify the parameter, run the rrpp ring-group command.
+
+domain xx ring xx
+	
+
+Sub-rings in the ring group.
+
+To specify sub-rings in a ring group, run the domain command.
+
+domain xx ring xx send Edge-Hello packet
+	
+
+Sub-ring that sends Edge Hello packets in the RRPP ring group.
+display rrpp snooping enable
+Function
+
+The display rrpp snooping enable command displays information about an interface where RRPP snooping is enabled.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H support this command.
+Format
+
+display rrpp snooping enable { all | interface vlanif interface-number }
+
+display rrpp snooping enable { all | interface interface-type interface-number [.subinterface-number ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays information about all interfaces where RRPP snooping is enabled.
+	
+
+-
+
+interface vlanif interface-number
+	
+
+Displays information about a VLANIF interface where RRPP snooping is enabled.
+
+interface-number specifies the number of the VLANIF interface.
+	
+
+-
+
+interface interface-type interface-number [.subinterface-number ]
+	
+
+Displays information about an interface where RRPP snooping is enabled.
+
+interface-type specifies the type of the interface, interface-number specifies the number of the interface, and subinterface-number specifies the number of the sub-interface.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can use the display rrpp snooping enable command to view information about interfaces where RRPP snooping is enabled.
+Example
+
+# Display information about all interfaces where RRPP snooping is enabled.
+
+<HUAWEI> display rrpp snooping enable all
+  Port                             VsiName          Vlan  
+-------------------------------------------------------- 
+  Vlanif100                        name1            100
+  Vlanif200                        name2            200
+
+# Display information about interfaces where RRPP snooping is enabled.
+
+<HUAWEI> display rrpp snooping enable interface vlanif 100 
+  Port                             VsiName          Vlan 
+-------------------------------------------------------- 
+  Vlanif100                        name1            100
+
+Table 5-99 Description of the display rrpp snooping enable command output
+
+Item
+	
+
+Description
+
+Port
+	
+
+Name of the interface where RRPP snooping is enabled.
+
+To specify the parameter, run the rrpp snooping enable command.
+
+VsiName
+	
+
+Name of the VSI that is bound to the interface.
+
+To specify the parameter, run the rrpp snooping vsi command.
+
+Vlan
+	
+
+VLAN that is associated with the interface. It refers to the control VLAN of the RRPP ring.
+display rrpp snooping vsi
+Function
+
+The display rrpp snooping vsi command displays the VSI that is associated with RRPP snooping.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H support this command.
+Format
+
+display rrpp snooping vsi { all | interface vlanif interface-number }
+
+display rrpp snooping vsi { all | interface interface-type interface-number [.subinterface-number ] }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays all VSIs that are associated with RRPP snooping.
+	
+
+-
+
+interface vlanif interface-number
+	
+
+Displays the VSI associated with RRPP snooping on the specified VLANIF interface.
+
+interface-number specifies the VLANIF interface number.
+	
+
+-
+
+interface interface-type interface-number [.subinterface-number ]
+	
+
+Displays the VSI associated with RRPP snooping on the specified interface.
+
+interface-type specifies the type of the interface, interface-number specifies the number of the interface, subinterface-number specifies the number of the sub-interface.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command on an RRPP snooping-enabled device to view VSIs that are associated with RRPP snooping.
+Example
+
+# Display VSIs associated with RRPP snooping on all interfaces.
+
+<HUAWEI> display rrpp snooping vsi all
+  Port                              VsiName
+----------------------------------------------- 
+  Vlanif100                         name1
+  Vlanif100                         name2
+  Vlanif200                         name1
+  Vlanif200                         name2
+
+# Display the VSI associated with RRPP snooping on the specified interface.
+
+<HUAWEI> display rrpp snooping vsi interface vlanif 100 
+  Port                              VsiName
+----------------------------------------------- 
+  Vlanif100                         name1
+  Vlanif100                         name2
+
+Table 5-100 Description of the display rrpp snooping vsi command output
+
+Item
+	
+
+Description
+
+Port
+	
+
+Name of the interface that is bound to a VSI.
+
+To specify the parameter, run the rrpp snooping enable command.
+
+VsiName
+	
+
+Name of the VSI that is associated with the interface.
+
+To specify the parameter, run the rrpp snooping vsi command.
+display rrpp statistics
+Function
+
+The display rrpp statistics command displays statistics on RRPP packets.
+Format
+
+display rrpp statistics domain domain-id [ ring ring-id ]
+Parameters
+Parameter 	Description 	Value
+
+domain domain-id
+	
+
+Specifies the ID of an RRPP domain.
+	
+
+The value is an integer that ranges from 1 to 64.
+
+ring ring-id
+	
+
+Specifies the ID of an RRPP ring. If ring-id is not specified, statistics on packets of all the rings in a specified RRPP domain are displayed.
+	
+
+The value is an integer that ranges from 1 to 64.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to view statistics on RRPP packets on each interface to locate network faults.
+Example
+
+# Display the statistics on packets on RRPP Ring 1 in Domain 1.
+
+<HUAWEI> display rrpp statistics domain 1 ring 1
+
+RRPP Ring     : 1
+
+Ring Level    : 0
+
+Node Mode     : Master
+
+Is Active     : Yes
+
+Primary port  : GigabitEthernet0/0/1
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    386     0       0         0           0        0        386
+
+ Rcv     0       0       0         0           0        0        0
+
+Secondary port: GigabitEthernet0/0/2
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    0       0       0         0           0       0        0
+
+ Rcv     0       0       0         0           0       0        0
+
+# Display the statistics on packets on all RRPP rings in Domain 3.
+
+<HUAWEI> display rrpp statistics domain 3
+
+RRPP Ring     : 3
+
+Ring Level    : 0
+
+Node Mode     : Transit
+
+Is Active     : Yes
+
+Primary port  : GigabitEthernet0/0/1
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    0       0       0         0           0       0        0
+
+ Rcv     0       0       0         0           0       0        0
+
+Secondary port: GigabitEthernet0/0/2
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    0       0       0         0           0       0        0
+
+ Rcv     0       0       0         0           0       0        0
+
+RRPP Ring     : 4
+
+Ring Level    : 1
+
+Node Mode     : Assistant-edge
+
+Is Active     : Yes
+
+Common port   : GigabitEthernet0/0/3
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    0       0       0         0           0       0        0
+
+ Rcv     0       0       0         0           0       0        0
+
+Edge port     : GigabitEthernet0/0/4
+
+ Packet          LINK    COMMON    COMPLETE    EDGE    MAJOR    Packet
+
+ Direct  HEALTH  DOWN    FDB       FDB         HELLO   FAULT    Total
+
+ -------------------------------------------------------------------------------
+
+ Send    0       0       0         0           0       0        0
+
+ Rcv     0       0       0         0           0       0        0
+
+Table 5-101 Description of the display rrpp statistics command output
+
+Item
+	
+
+Description
+
+RRPP Ring
+	
+
+ID of the RRPP ring.
+
+Ring Level
+	
+Level of the RRPP ring.
+
+    Level 0 indicates the major ring.
+
+    Level 1 indicates the sub-ring.
+
+Node Mode
+	
+Mode of a node on the RRPP ring.
+
+    Master: indicates the master node.
+
+    Transit: indicates the transit node.
+
+    Edge: indicates the edge node.
+
+    Assistant Edge: indicates the assistant edge node that is supported by RRPP defined by Huawei.
+
+Is Active
+	
+
+Whether the RRPP ring is activated. The RRPP ring can be activated only when RRPP and the RRPP ring are enabled.
+
+To activate an RRPP ring, run the rrpp enable and ring enable commands.
+
+Primary port
+	
+
+Primary interface on the RRPP ring.
+
+Secondary port
+	
+
+Secondary interface on the RRPP ring.
+
+Common port
+	
+
+Common interface on the edge node or assistant edge node of the RRPP sub-ring.
+
+Edge port
+	
+
+Edge interface on the edge node or assistant edge node of the RRPP sub-ring.
+
+Packet Direct
+	
+Direction of RRPP packets.
+
+    Send: indicates the packets sent from the interface.
+
+    Rcv: indicates the packets received by the interface.
+
+HEALTH
+	
+
+Number of Hello packets sent by the master node to check the loop integrity.
+
+LINK DOWN
+	
+
+Number of LinkDown packets. LinkDown packets are sent by the transit node, edge node, or assistant edge node to notify the master node that the status of the link on the ring becomes Down and the physical ring does not exist. Only statistics on received packets are collected on the master node and statistics on sent packets are collected on other nodes.
+
+COMMON FDB
+	
+
+Number of common FDB packets used to refresh the FDB. Common FDB packets are sent from the master node to request the transit node, edge node, and assistant edge node to update their MAC address forwarding entries and ARP entries. Only statistics on sent packets are collected on the master node and statistics on received packets are collected on other nodes.
+
+COMPLETE FDB
+	
+
+Number of Complete FDB packets used to update the FDB after the ring network recovers. Complete FDB packets are sent from the master node to request the transit node, edge node, and assistant edge node to update their MAC address forwarding entries and ARP entries. These packets are also used to request the transit node to unblock the temporarily blocked interfaces. Only statistics on sent packets are collected on the master node and statistics on received packets are collected on other nodes.
+
+EDGE HELLO
+	
+
+Number of Edge-Hello packets used to check the integrity of the major ring. Edge-Hello packets are sent from the edge node of the sub-ring to the assistant edge node of the same sub-ring. The sub-ring checks the integrity of the major ring in the same domain through the Edge-Hello packets. Only statistics on sent packets are collected on the edge node and statistics on received packets are collected on the assistant edge node.
+
+MAJOR FAULT
+	
+
+Number of Major-Fault packets used to notify faults on the major ring. Major-Fault packets are sent by the assistant edge interface on a sub-ring. If the assistant edge node does not receive the Edge-Hello packet from the edge interface within a specified period, the assistant edge node sends the Major-Fault packet to the edge interface to notify that the packets cannot be transparently transmitted on the major ring. Only statistics on received packets are collected on the edge node and statistics on sent packets are collected on the assistant edge node.
+
+Packet Total
+	
+
+Total number of sent or received packets.
+display rrpp verbose
+Function
+
+The display rrpp verbose command displays detailed configuration about RRPP on the device.
+Format
+
+display rrpp verbose [ domain domain-id [ ring ring-id ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+domain domain-id
+	
+
+Specifies the ID of an RRPP domain.
+	
+
+The value is an integer that ranges from 1 to 64.
+
+ring ring-id
+	
+
+Specifies the ID of an RRPP ring.
+
+If this parameter is not specified, detailed configurations about all the rings in a specified domain is displayed.
+	
+
+The value is an integer that ranges from 1 to 64.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to check detailed configuration about RRPP. The command output helps you analyze the link status of the network and locate network faults.
+Example
+
+# Display detailed configuration about the master node on Ring 1 in RRPP Domain 1.
+
+<HUAWEI> display rrpp verbose domain 1 ring 1
+Domain Index   : 1
+Control VLAN   : major 400    sub 401
+Protected VLAN : Reference Instance 30
+Hello Timer    : 1 sec(default is 1 sec)  Fail Timer : 6 sec(default is 6 sec)
+RRPP Ring      : 1
+Ring Level     : 0
+Node Mode      : Master
+Ring State     : Complete
+Is Enabled     : Enable                        Is Active : Yes
+Primary port   : GigabitEthernet0/0/1                 Port status: UP
+Secondary port : GigabitEthernet0/0/2                 Port status: BLOCKED
+
+Table 5-102 Description of the display rrpp verbose command output
+
+Item
+	
+
+Description
+
+Domain Index
+	
+
+ID of the RRPP domain.
+
+To specify the parameter, run the rrpp domain command.
+
+Control VLAN : major 400 sub 401
+	
+
+Control VLAN IDs of the RRPP domain. major indicates the master control VLAN and sub indicates the sub-control VLAN.
+
+To specify the parameter, run the control-vlan command.
+
+Protected VLAN
+	
+
+Instance mapping the protected VLANs of the RRPP domain.
+
+To specify the parameter, run the protected-vlan command.
+
+Hello Timer
+	
+
+Value of the Hello timer, in seconds.
+
+To set the value of the Hello timer, run the timer (RRPP domain view) command.
+
+Fail Timer
+	
+
+Value of the Fail timer, in seconds.
+
+To set the value of the Fail timer, run the timer (RRPP domain view) command.
+
+RRPP Ring
+	
+
+ID of the RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Ring Level
+	
+Level of the RRPP ring.
+
+    Level 0 indicates the major ring.
+    Level 1 indicates the sub-ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Node Mode
+	
+Role of a node on the RRPP ring. The value can be:
+
+    Master: indicates the master node.
+    Transit: indicates the transit node.
+    Edge: indicates the edge node.
+    Assistant Edge: indicates the assistant edge node.
+
+To specify the parameter, run the ring node-mode command.
+
+Ring State
+	
+Status of the RRPP ring. The value can be:
+
+    Complete: indicates that the ring is complete. Only the master node can be in Complete state.
+    Failed: indicates that the ring fails. Only the master node can be in Failed state.
+    Unknown: indicates that the status of the ring is unknown. The Unknown state occurs when RRPP or the RRPP ring is enabled.
+    LinkUp: indicates that the link is Up. Only transit nodes can be in LinkUp state.
+    LinkDown: indicates that the link is Down. Only transit nodes can be in LinkDown state.
+    Preforwarding: indicates that the link is in Preforwarding state. Only transit nodes can be in Preforwarding state.
+
+Is Enabled
+	
+
+Whether the ring is enabled.
+
+To enable a ring, run the ring enable command.
+
+Is Active
+	
+
+Whether the RRPP ring is activated. The RRPP ring can be activated only when RRPP and the RRPP ring are enabled.
+
+To activate an RRPP ring, run the rrpp enable and ring enable commands.
+
+Primary port
+	
+
+Primary interface on the RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Secondary port
+	
+
+Secondary interface on the RRPP ring.
+
+To specify the parameter, run the ring node-mode command.
+
+Port status
+	
+Status of an interface on the RRPP ring. The value can be:
+
+    UNKNOWN: indicates that the device is not properly installed in a stack.
+
+    UP: indicates that the interface is in Up state and can forward packets.
+
+    DOWN: indicates that the interface is not connected.
+
+    BLOCKED: indicates that the interface is in Up state but cannot forward packets.
+
+domain (RRPP ring group view)
+Function
+
+The domain command adds sub-rings to an RRPP ring group.
+
+The undo domain command deletes the sub-rings from the RRPP ring group.
+Format
+
+domain domain-id ring { ring-id1 [ to ring-id2 ] } &<1-10>
+
+undo domain domain-id ring { ring-id1 [ to ring-id2 ] } &<1-10>
+Parameters
+Parameter 	Description 	Value
+domain-id 	Specifies the ID of an RRPP domain. 	The value is an integer that ranges from 1 to 64.
+ring ring-id1 to ring-id2 	Specifies the ID of an RRPP sub-ring.
+
+    ring-id1 specifies the first sub-ring ID.
+    to ring-id2 specifies the last sub-ring ID. The value of ring-id2 must be larger than the value of ring-id1. ring-id1 and ring-id2 identify a range of instances. If to ring-id2 is not specified, only ring-id1 is specified.
+
+	The value is an integer that ranges from 1 to 64.
+Views
+
+RRPP ring group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If multiple RRPP rings exist, you can add sub-rings to the ring group to reduce the number of Edge-Hello packets, improving system performance.
+
+Precautions
+
+A maximum of 15 sub-rings can be added to a ring group.
+
+If the domain command is run more than once, all configurations take effect.
+
+    Only an edge node or an assistant edge node on a sub-ring can be added to a ring group. The edge nodes on the sub-rings are configured on the same device. Similarly, the assistant edge nodes are on the same device.
+
+    A sub-ring can belong to only one ring group.
+
+    All the sub-rings in a ring group must be on the same type of nodes, that is, edge nodes or assistant edge nodes.
+
+    To add an activated sub-ring to a ring group, add the sub-ring to the ring group on the assistant edge node, and then perform the same operation on the edge node.
+
+    To delete an activated sub-ring from a ring group, delete the sub-ring from the ring group on the edge node, and then perform the same operation on the assistant edge node.
+
+    All the sub-rings in a ring group must have the same primary ring link; otherwise, the ring group cannot work properly.
+
+    The configuration and activation status of a ring group must be the same on the edge node and assistant edge node.
+
+Example
+
+# Add sub-rings to Ring Group 1.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp ring-group 1
+[HUAWEI-rrpp-ring-group1] domain 1 ring 1 to 3 5
+
+protected-vlan
+Function
+
+The protected-vlan command configures a list of protected VLANs in an RRPP domain.
+
+The undo protected-vlan command deletes the list of protected VLANs in an RRPP domain.
+Format
+
+protected-vlan reference-instance { all | { { instance-id1 [ to instance-id2 ] } &<1-10> } }
+
+undo protected-vlan reference-instance { all | { { instance-id1 [ to instance-id2 ] } &<1-10> } }
+Parameters
+Parameter 	Description 	Value
+reference-instance 	
+
+Indicates the instance imported by a specified RRPP domain.
+	-
+all 	
+
+Indicates that VLANs in all the instances are protected VLANs.
+
+all can be configured successfully only when instances 0 to 64 are created. This task is performed to create an instance and configure the mapping between the instance and VLANs.
+	-
+instance-id1 to instance-id2 	Specifies the ID of a protected instance.
+
+    instance-id1 specifies the first instance ID. The value is an integer that ranges from 0 to 4094.
+    to instance-id2 specifies the last instance ID. instance-id2 is an integer that ranges from 0 to 4094. The value of instance-id2 must be larger than the value of instance-id1. instance-id1 and instance-id2 identify a range of instances. If to instance-id2 is not specified, only instance-id1 is specified.
+
+	The value is an integer that ranges from 0 to 4094.
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The control VLAN transmits RRPP protocol packets and the data VLAN transmits data packets. The control VLAN and data VLANs must be configured as the protected VLANs so that RRPP takes effect for these VLAN packets. Otherwise, VLAN packets may cause broadcast storms on the ring network. This will cause the network to be unavailable.
+
+Precautions
+
+When you configure the list of protected VLANs, note the following points:
+
+    Protected VLANs must be configured before you configure an RRPP ring.
+
+    You can delete or change existing protected VLANs before configuring an RRPP ring. The protected VLANs cannot be changed after the RRPP ring is configured.
+
+    In the same physical topology, the control VLAN of a domain cannot be configured as a protected VLAN of another domain.
+
+    The control VLAN must be configured as a protected VLAN; otherwise, the RRPP ring cannot be configured.
+
+    The control VLAN can be mapped to other instances before the RRPP ring is created. After the RRPP ring is created, the mapping cannot be changed unless you delete the RRPP ring.
+
+    When an RRPP domain is deleted, the protected VLANs in the RRPP domain are deleted automatically.
+
+    When the mapping between an instance and VLANs changes, the protected VLANs of the RRPP domain also change.
+
+    All the VLANs allowed by an RRPP interface must be configured as protected VLANs.
+
+If the protected-vlan command is run more than once, all configurations take effect.
+Example
+
+# Configure the VLANs mapping instances 0 as the protected VLANs in Domain 1.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+
+reset rrpp error packet statistics
+Function
+
+The reset rrpp error packet statistics command clears statistics on RRPP error packets.
+Format
+
+reset rrpp error packet statistics
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If you need to check statistics on RRPP error packets from the current time, you can run this command to clear historical statistics on RRPP error packets.
+
+Configuration Impact
+
+The statistics on all the RRPP error packets are cleared and cannot be restored after you run the command. Exercise caution when you run the command.
+Example
+
+# Clear statistics on all the RRPP error packets.
+
+<HUAWEI> reset rrpp error packet statistics
+
+reset rrpp statistics
+Function
+
+The reset rrpp statistics command clears statistics on all RRPP packets.
+Format
+
+reset rrpp statistics domain domain-id [ ring ring-id ]
+Parameters
+Parameter 	Description 	Value
+domain domain-id 	Specifies the ID of an RRPP domain. 	The value is an integer that ranges from 1 to 64.
+ring ring-id 	
+
+Specifies the ID of an RRPP ring.
+
+If ring-id is specified, statistics on RRPP packets on the primary and secondary interfaces of the specified ring in the domain of the switch are cleared. If ring-id is not specified, statistics on all the RRPP packets on the RRPP interfaces of all rings are cleared.
+	The value is an integer that ranges from 1 to 64.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+This command clears statistics on all the RRPP packets so that you can collect new statistics to analyze the network.
+
+Precautions
+
+The statistics on RRPP packets cannot be restored after you clear them. Exercise caution before you run the command.
+Example
+
+# Clear the statistics on RRPP packets on Ring 1 in Domain 1.
+
+<HUAWEI> reset rrpp statistics domain 1 ring 1
+
+# Clear the statistics on RRPP packets all the rings in Domain 1.
+
+<HUAWEI> reset rrpp statistics domain 1 
+
+ring enable
+Function
+
+The ring enable command enables an RRPP ring.
+
+The undo ring enable command disables an RRPP ring.
+
+By default, an RRPP ring is disabled.
+Format
+
+ring ring-id enable
+
+undo ring ring-id enable
+Parameters
+Parameter 	Description 	Value
+ring ring-id 	Specifies the ID of an RRPP ring. 	The value is an integer that ranges from 1 to 64.
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The RRPP ring cannot be activated using the ring enable command. You also need to run the rrpp enable command to enable RRPP so that the RRPP ring can be activated.
+Example
+
+# Activate ring 1 in Domain 1.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+[HUAWEI-rrpp-domain-region1] ring 1 node-mode transit primary-port gigabitethernet 0/0/5 secondary-port gigabitethernet 0/0/6 level 1
+[HUAWEI-rrpp-domain-region1] ring 1 enable
+
+# Disable Ring 1 in Domain 1.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] undo ring 1 enable
+
+ring node-mode
+Function
+
+The ring node-mode command configures the node mode and specifies the interfaces for nodes.
+
+The undo ring command deletes an RRPP ring.
+
+Deleting the RRPP ring can delete the mode configured on the node and interfaces on the node.
+Format
+
+ring ring-id node-mode { master | transit } primary-port interface-type interface-number secondary-port interface-type interface-number level level-value
+
+ring ring-id node-mode { assistant-edge | edge } common-port interface-type interface-number edge-port interface-type interface-number
+
+undo ring ring-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ring ring-id
+	
+
+Specifies the ID of an RRPP ring to be created or deleted.
+	
+
+The value is an integer that ranges from 1 to 64.
+
+master
+	
+
+Specifies the current device as the master node on the RRPP ring to be created. You need to specify the primary and secondary interfaces on the master node, and the level of the ring.
+	
+
+-
+
+transit
+	
+
+Specifies the current device as a transit node on the RRPP ring to be created. You need to specify the primary and secondary interfaces on the transit node, and the level of the ring.
+	
+
+-
+
+primary-port
+	
+
+Specifies the primary interface on the node.
+	
+
+-
+
+interface-type interface-number
+	
+Specifies the type and number of an interface.
+
+    interface-type specifies the interface type.
+    interface-number specifies the interface number.
+
+	
+
+-
+
+secondary-port
+	
+
+Specifies the secondary interface of the node.
+	
+
+-
+
+level-value
+	
+
+Specifies the level on an RRPP ring.
+	
+The value can be 0 or 1.
+
+    0: indicates a major ring.
+    1: indicates a sub-ring.
+
+assistant-edge
+	
+
+Specifies the current device as the assistant edge node on the RRPP ring to be created.
+	
+
+-
+
+edge
+	
+
+Specifies the current device as the edge node on the RRPP ring to be created.
+	
+
+-
+
+common-port interface-type interface-number
+	
+Specifies the common interface of the sub-ring and major ring.
+
+    interface-type specifies the interface type.
+    interface-number specifies the interface number.
+
+	
+
+-
+
+edge-port interface-type interface-number
+	
+Specifies the edge interface of the sub-ring.
+
+    interface-type specifies the interface type.
+    interface-number specifies the interface number.
+
+	
+
+-
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+RRPP specifies devices and interfaces on the ring network as nodes and interfaces of different roles on the RRPP ring to implement RRPP functions.
+
+Prerequisites
+
+An RRPP domain has been created using the rrpp domain command, and STP has been enabled using the stp disable command on the interfaces that want to join the RRPP domain.
+Precautions
+
+    The rings in the same RRPP domain must use different ring IDs.
+    After the RRPP ring is enabled, to delete the RRPP ring using the undo ring ring-id command, you must run the undo ring ring-id enable command to disable the RRPP ring first.
+    After the control-vlan command is used to configure the control VLAN in an RRPP domain, the ID of the sub-control VLAN is the control VLAN ID plus one. If the protected VLAN list specified by protected-vlan does not contain the control VLAN or sub-control VLAN, the system displays an error message when you run the ring node-mode command.
+
+Example
+
+# Configure the master node of Ring 10 in Domain 1, with GE0/0/5 as the primary interface and GE0/0/6 as the secondary interface.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+[HUAWEI-rrpp-domain-region1] ring 10 node-mode master primary-port gigabitethernet 0/0/5 secondary-port gigabitethernet 0/0/6 level 0
+
+# Configure the transit node of Ring 10 in Domain 1, with GE0/0/5 as the primary interface and GE0/0/6 as the secondary interface.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+[HUAWEI-rrpp-domain-region1] ring 10 node-mode transit primary-port gigabitethernet 0/0/5 secondary-port gigabitethernet 0/0/6 level 0
+
+# Configure the master node of Ring 20 in Domain 1, with GE0/0/5 as the primary interface and GE0/0/6 as the secondary interface.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+[HUAWEI-rrpp-domain-region1] ring 20 node-mode master primary-port gigabitethernet 0/0/5 secondary-port gigabitethernet 0/0/6 level 1
+
+# Configure the transit node of Ring 20 in Domain 1, with GE0/0/5 as the primary interface and GE0/0/6 as the secondary interface.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] control-vlan 100
+[HUAWEI-rrpp-domain-region1] protected-vlan reference-instance 0
+[HUAWEI-rrpp-domain-region1] ring 20 node-mode transit primary-port gigabitethernet 0/0/5 secondary-port gigabitethernet 0/0/6 level 1
+
+# Delete Ring 10.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp domain 1
+[HUAWEI-rrpp-domain-region1] undo ring 10 enable
+[HUAWEI-rrpp-domain-region1] undo ring 10
+
+rrpp domain
+Function
+
+The rrpp domain command creates an RRPP domain.
+
+The undo rrpp domain command deletes an RRPP domain.
+
+By default, the RRPP domain is not created.
+Format
+
+rrpp domain domain-id
+
+undo rrpp domain domain-id
+Parameters
+Parameter 	Description 	Value
+domain domain-id 	Specifies the ID of an RRPP domain. 	The value is an integer that ranges from 1 to 64.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Other RRPP configurations can be performed only after an RRPP domain is created.
+
+Precautions
+
+Before you delete a domain, ensure that no RRPP ring is configured in the domain. If a ring exists in the domain, the domain cannot be deleted.
+Example
+
+# Create RRPP Domain 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] rrpp domain 1
+
+[HUAWEI-rrpp-domain-region1]
+
+# Delete RRPP Domain 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] undo rrpp domain 1
+
+rrpp enable
+Function
+
+The rrpp enable command enables RRPP.
+
+The undo rrpp enable or rrpp disable command disables RRPP.
+
+By default, RRPP is disabled.
+Format
+
+rrpp enable
+
+undo rrpp enable
+
+rrpp disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The RRPP ring cannot be activated using the rrpp enable command. You also need to run the ring enable command to enable RRPP so that the RRPP ring can be activated.
+
+Running the undo rrpp enable or rrpp disable command may cause network loops. Therefore, exercise caution when running these commands.
+Example
+
+# Enable RRPP.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp enable
+
+# Disable RRPP.
+
+<HUAWEI> system-view
+[HUAWEI] undo rrpp enable
+
+# Disable RRPP.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp disable
+
+rrpp linkup-delay-timer
+Function
+
+The rrpp linkup-delay-timer command sets the value of a LinkUp timer.
+
+The undo rrpp linkup-delay-timer command restores the default value of a LinkUp timer.
+
+By default, the value of a LinkUp timer is 0.
+Format
+
+rrpp linkup-delay-timer linkup-delay-timer-value
+
+undo rrpp linkup-delay-timer
+Parameters
+Parameter 	Description 	Value
+linkup-delay-timer-value 	Sets the value of the LinkUp timer. 	The value is an integer that ranges from 0 to 1000, in seconds.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When the link recovers, transmission paths of the traffic are switched frequently if the link status changes frequently on a ring. As a result, link flapping occurs and system performance deteriorates. To address this problem, a LinkUp timer is used to set the period after which the status of the master node changes to Complete.
+
+Precautions
+
+After a LinkUp timer is set, the status of the Blocked interface on the RRPP link is changed only after the period set using the linkup-delay-timer-value command. This prevents link flapping.
+
+The value set by the linkup-delay-timer-value command must be no larger than the value of the Fail timer minus twice the value of the Hello timer.
+
+The rrpp linkup-delay-timer command is valid only for the master node.
+
+Configure the LinkUp timer on the master node on the RRPP ring.
+
+In scenarios where RRPP packets are transparently transmitted, running the rrpp linkup-delay-timer command on the master node of the major ring is not recommended. If you do so, temporary loops may occur due to RRPP packet interruption or loss.
+Example
+
+# Set the value of the LinkUp timer to 2 seconds.
+
+<HUAWEI> system-view
+
+[HUAWEI] rrpp linkup-delay-timer 2
+
+rrpp ring-group
+Function
+
+The rrpp ring-group command creates an RRPP ring group and enters the RRPP ring group view.
+
+The undo rrpp ring-group command deletes an RRPP ring group.
+
+By default, the RRPP ring group is not created.
+Format
+
+rrpp ring-group ring-group-id
+
+undo rrpp ring-group ring-group-id
+Parameters
+Parameter 	Description 	Value
+
+ring-group ring-group-id
+	
+
+Specifies the ID of an RRPP ring group.
+	
+
+The value is an integer that ranges from 1 to 16.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can create an RRPP ring group to reduce the number of Edge-Hello packets, improving system performance.
+
+Precautions
+
+A maximum of 16 ring groups are supported on each node.
+
+When running the rrpp ring-group command to add a subring to a ring group, add the subring to the ring group on the assistant edge node and then on the edge node.
+
+To delete a ring group, delete it on the edge node first, and then perform the same operation on the assistant edge node.
+Example
+
+# Create Ring Group 1 and enter its view.
+
+<HUAWEI> system-view
+[HUAWEI] rrpp ring-group 1
+[HUAWEI-rrpp-ring-group1]
+
+rrpp snooping enable
+Function
+
+The rrpp snooping enable command enables RRPP snooping on an interface.
+
+The undo rrpp snooping enable command disables RRPP snooping on an interface.
+
+By default, RRPP snooping is disabled on an interface.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H support this command.
+Format
+
+rrpp snooping enable
+
+undo rrpp snooping enable
+Parameters
+
+None
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, Eth-Trunk sub-interface view, VLANIF interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When an RRPP ring accesses the virtual private LAN service (VPLS) network in which devices are connected using PWs, the device cannot respond to RRPP protocol packets directly. Therefore, the VPLS network cannot sense the status change of the RRPP ring. When the RRPP ring topology changes, each node in the VPLS network forwards downstream data according to the MAC address table generated before the RRPP ring topology changes. As a result, the downstream traffic cannot be forwarded. When RRPP snooping is configured on sub-interfaces or VLANIF interfaces, the VPLS network can transparently transmit RRPP protocol packets, detect the changes on the RRPP rings, and upgrade the forwarding entries to ensure that traffic is switched in time to a congestion-free path.
+
+When an RRPP network and a VPLS network are connected to form a network, you can run the rrpp snooping enable command to enable RRPP snooping on interfaces of the devices deployed on the network.
+
+Precautions
+Before running the rrpp snooping enable command, ensure that the following configurations are completed on the sub-interface or VLANIF interface:
+
+    Binding the sub-interface or VLANIF interface to a VSI using the l2 binding vsi vsi-name command in the interface view.
+
+    Specifying that the sub-interface or VLANIF interface permits only the packets in the control VLAN of the RRPP domain to pass through.
+
+After you run the rrpp snooping enable command, RRPP snooping is automatically associated with the VSI bound to this interface.
+
+When RRPP snooping is enabled on the interface, the status of the RRPP ring can be detected through RRPP control packets. When the RRPP ring status changes, the VSI can receive a notification and update the MAC address table.
+
+RRPP and RRPP snooping cannot be simultaneously configured on the same interface.
+Example
+
+# Enable RRPP snooping on an interface.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rrpp snooping enable
+
+rrpp snooping vsi
+Function
+
+The rrpp snooping vsi command associates RRPP snooping on an interface with a VSI that is not bound to the interface.
+
+The undo rrpp snooping vsi command cancels the configuration.
+
+By default, the RRPP snooping-enabled interface is not associated with other VSIs on the device.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H support this command.
+Format
+
+rrpp snooping vsi vsi-name
+
+undo rrpp snooping vsi vsi-name
+Parameters
+Parameter 	Description 	Value
+
+vsi-name
+	
+
+Specifies the name of a VSI instance.
+	
+
+The value is a string of 1 to 31 case-sensitive characters, spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, Eth-Trunk sub-interface view, VLANIF interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In the scenario of RRPP and VPLS association, when the RRPP ring fails, the RRPP snooping-enabled interface clears the forwarding entries on the associated VSI and the remote VPLS device, and relearns the entries. In this way, downstream traffic can be forwarded through a normal path.
+
+Precautions
+
+Before running the rrpp snooping vsi command, you must enable RRPP snooping using the rrpp snooping enable command.
+
+The VSI specified in the rrpp snooping vsi command is bound to other sub-interfaces or VLANIF interfaces, instead of the interface where RRPP snooping is enabled.
+
+After you run the rrpp snooping vsi command, the change of the RRPP ring status is reported to the VSI that is bound to the interface so that the VSI can update its MAC address table.
+Example
+
+# Associate RRPP snooping with VSI abc.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rrpp snooping vsi abc
+
+rrpp snooping all-vsi
+Function
+
+The rrpp snooping all-vsi command associates a sub-interface with the VSI that all the other sub-interfaces connected to the same primary interface are bound to.
+
+The undo rrpp snooping all-vsi command cancels the association.
+
+By default, a sub-interface is not associated with the VSI that all the other sub-interfaces connected to the same primary interface are bound to.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H support this command.
+Format
+
+rrpp snooping all-vsi
+
+undo rrpp snooping all-vsi
+Parameters
+
+None
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, Eth-Trunk sub-interface view, VLANIF interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In the scenario of RRPP and VPLS association, when the RRPP ring fails, the RRPP snooping-enabled sub-interface clears the forwarding entries on the associated VSI and the remote VPLS device, and relearns the entries. In this way, downstream traffic can be forwarded through a normal path.
+
+You can run the rrpp snooping all-vsi command on the RRPP snooping-enabled sub-interface to associate the sub-interface with the VSI that all the other sub-interfaces connected to the same primary interface are bound to. The sub-interface clears all the forwarding entries of associated VSIs when the preceding fault occurs.
+
+Prerequisites
+
+RRPP snooping has been enabled using the rrpp snooping enable command.
+
+Precautions
+
+    You must run the l2 binding vsi vsi-name command to bind other interfaces connected to the same primary interface to the VSI before associating the VSI using the rrpp snooping all-vsi command on the current sub-interface.
+
+    You can run the undo rrpp snooping all-vsi command to cancel all the associations between the current sub-interface and the VSIs bound to other interfaces connected to the same primary interface.
+
+    You do not need to enable RRPP snooping on other sub-interfaces connected to the same primary interface.
+
+Example
+# Associate the sub-interface with VSIs that all the other sub-interfaces connected to the same primary interface are bound to.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1.1
+[HUAWEI-GigabitEthernet0/0/1.1] rrpp snooping enable
+[HUAWEI-GigabitEthernet0/0/1.1] rrpp snooping all-vsi
+
+timer (RRPP domain view)
+Function
+
+The timer command sets the values of the Hello timer and Fail timer.
+
+The undo timer command restores the default values of the Hello timer and Fail timer.
+
+By default, the value of the Hello timer is 1 second and that of the Fail timer is 6 seconds.
+Format
+
+timer hello-timer hello-value fail-timer fail-value
+
+undo timer
+Parameters
+Parameter 	Description 	Value
+hello-timer hello-value 	Specifies the value of the Hello timer. 	The value is an integer that ranges from 1 to 10, in seconds. The default value is 1.
+fail-timer fail-value 	Specifies the value of the Fail timer. 	The value is an integer that ranges from 3 to 1200, in seconds. The default value is 6. The value of fail-value must be three times the value of hello-value or larger.
+Views
+
+RRPP domain view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can set the values of the Hello timer and Fail timer as required.
+
+Precautions
+
+You need to run the timer command only on the master node, edge node, and assistant edge node.
+
+The value of the Fail timer must be three times the value of the Hello timer or larger.
+
+By default, the value of the Hello timer on an edge node is half of the value of the Hello timer on the master node of the major ring.
+
+The values of the Hello timer and Fail timer must be the same on the nodes in an RRPP domain; otherwise, the edge interface on the edge node may be unstable.
+
+You are advised to set the value of the Fail timer to 30 seconds, because the default value may cause temporary loops. For example, when RRPP multi-instance is enabled, multiple RRPP domains are configured on the same ring. If the value of the Fail timer is set to the default value, loops may occur.
+Example
+
+# Set the Hello timer and Fail timer in RRPP Domain 1 to 2s and 7s respectively.
+
+<HUAWEI> system-view
+
+[HUAWEI] rrpp domain 1
+
+[HUAWEI-rrpp-domain-region1] timer hello-timer 2 fail-timer 7
+
+# Restore the default values of the timers in RRPP Domain 1.
+
+<HUAWEI> system-view
+
+[HUAWEI] rrpp domain 1
+
+[HUAWEI-rrpp-domain-region1] undo timer
+
