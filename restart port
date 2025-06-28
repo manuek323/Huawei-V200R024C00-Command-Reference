@@ -1,0 +1,44 @@
+restart port
+Function
+
+The restart port command restarts an interface on an RU.
+
+By default, no interface on an RU will be restarted.
+Format
+
+restart port port-id
+Parameters
+Parameter 	Description 	Value
+
+port-id
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 34. If the specified number is greater than the largest interface number on the RU, the RU will not execute this command.
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If an interface on an RU is faulty, you can run this command to restart the interface.
+
+Precautions
+
+    If an interface is disabled (in the shutdown state) before the restart, the interface is enabled automatically (in the undo shutdown state) after the restart.
+    An RU that has no interconnection interface bound cannot be restarted.
+
+Example
+
+# Restart interface 1 on the RU.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] restart port 1
+
