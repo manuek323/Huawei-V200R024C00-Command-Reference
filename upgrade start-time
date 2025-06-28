@@ -1,0 +1,53 @@
+upgrade start-time
+Function
+
+The upgrade start-time command restarts RUs with firmware of the new version at a specified time.
+
+The undo upgrade start-time command deletes the configuration.
+
+By default, no time is set for RUs to restart with firmware of the new version.
+Format
+
+upgrade start-time HH:MM:SS
+
+undo upgrade start-time
+Parameters
+Parameter 	Description 	Value
+
+HH:MM:SS
+	
+
+Specifies the time when RUs restart with firmware of the new version.
+	
+
+The value is in the 24-hour format of HH:MM:SS. HH indicates hours, and its value is an integer ranging from 0 to 23; MM indicates minutes, and its value is an integer ranging from 0 to 59; SS indicates seconds, and its value is an integer ranging from 0 to 59.
+Views
+
+remote-unit view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The firmware upgrade of an RU consists of two steps:
+
+    The RU loads firmware of the new version. In this step, the central switch sends the firmware package of the new version to the RU.
+    The RU restarts to make firmware of the new version take effect.
+
+You can run the upgrade start-time command to configure RUs to restart with firmware of the new version at a specified time. This command configures the restart time in step 2.
+
+Precautions
+
+During the BIOS firmware upgrade of RUs, do not power off or disconnect the RUs. Otherwise, the RUs cannot be started.
+
+After you run the upgrade start-time command to configure RUs to restart with firmware of the new version at a specified time, other upgrade commands that have been configured are overwritten. That is, RUs will restart with firmware of the new version at the time specified by the upgrade start-time command.
+Example
+
+# Configure RUs to restart with firmware of the new version at midnight.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] upgrade start-time 00:00:00
+
