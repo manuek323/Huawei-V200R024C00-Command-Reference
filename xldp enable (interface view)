@@ -1,0 +1,55 @@
+xldp enable (interface view)
+Function
+
+The xldp enable command enables XLDP on an interface.
+
+The xldp disable command disables XLDP on an interface.
+
+The undo xldp disable command restores the default configuration.
+
+After XLDP is enabled in the system view, all interfaces are enabled with XLDP by default.
+Format
+
+xldp enable
+
+xldp disable
+
+undo xldp disable
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, MultiGE interface view, 40GE interface view, 100GE interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After XLDP is enabled on an interface, the interface exchanges XLDP packets with XLDP-enabled neighbors. The interface receives status information from the neighbors and sends the local status information to the neighbors. An intelligent simplified campus network runs based on the XLDP protocol.
+
+Prerequisites
+
+XLDP has been enabled globally using the xldp enable in the system view.
+
+Precautions
+
+    XLDP can be enabled in the system view and the interface view.
+        After XLDP is enabled in the system view, all interfaces are enabled with XLDP.
+        After XLDP is disabled in the system view, all XLDP settings are restored to the default settings except the setting of XLDP trap. Therefore, XLDP is also disabled on all interfaces.
+        An interface can send and receive XLDP packets only after XLDP is enabled in both the system view and the interface view.
+        After XLDP is disabled globally, the commands for enabling and disabling XLDP on an interface do not take effect.
+        If some interfaces need to have XLDP enabled but some need to have XLDP disabled, you can globally enable XLDP and run the xldp disable command in the interface view to disable XLDP for the required interfaces. To re-enable XLDP on these interfaces, run the xldp enable command in the views of these interfaces.
+    The xldp enable (interface view) command can be run only on an Ethernet interface, regardless of whether it works at Layer 2 or Layer 3 mode, and cannot be run on a logical interface such as a VLANIF or Eth-Trunk interface. For an Eth-Trunk interface, XLDP can only be enabled on its member interfaces. XLDP-enabled interfaces and XLDP-disabled interfaces can be added to the same Eth-Trunk.
+    If a large number of XLDP packets are sent to attack an interface, disable XLDP on the interface so that the interface does not send XLDP packets to the CPU for processing.
+
+Example
+
+# Disable XLDP on the Ethernet interface GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] xldp disable
+
