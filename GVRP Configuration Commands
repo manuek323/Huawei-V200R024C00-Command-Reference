@@ -1,0 +1,1012 @@
+GVRP Configuration Commands
+
+    Command Support
+    display garp statistics
+    display garp timer
+    display gvrp state
+    display gvrp statistics
+    display gvrp status
+    display gvrp vlan-operation
+    garp timer
+    garp timer leaveall
+    gvrp
+    gvrp registration
+    reset garp statistics
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display garp statistics
+Function
+
+The display garp statistics command displays statistics about the Generic Attribute Registration Protocol (GARP) on an interface.
+Format
+
+display garp statistics [ interface { interface-type interface-number [ to interface-type interface-number ] }&<1-10> ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Displays the statistics about GARP on the specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After the GARP VLAN Registration Protocol (GVRP) is enabled on an interface, the system collects statistics about GVRP packets sent, received, and discarded on the interface. You can view the statistics to check whether the GVRP function on the interface is normal.
+When using this command, pay attention to the following points:
+
+    If interface interface-type interface-number is not specified, the system displays statistics about GARP packets on all the interfaces.
+    If interface interface-type interface-number is specified, the system displays statistics about GARP packets on the specified interface.
+
+Example
+
+# Display statistics about GARP packets on a specified interface.
+
+<HUAWEI> display garp statistics interface gigabitethernet 0/0/1
+
+  GARP statistics on port GigabitEthernet0/0/1
+    Number of GVRP frames received       : 0                                    
+    Number of GVRP frames transmitted    : 0                                    
+    Number of frames discarded           : 0                                    
+
+Table 5-63 Description of the display garp statistics command output
+
+Item
+	
+
+Description
+
+Number of GVRP frames received
+	
+
+Number of GVRP packets received by an interface.
+
+Number of GVRP frames transmitted
+	
+
+Number of GVRP packets sent by an interface.
+
+Number of frames discarded
+	
+
+Number of packets discarded by an interface.
+display garp timer
+Function
+
+The display garp timer command displays the values of GARP timers.
+Format
+
+display garp timer [ interface { interface-type interface-number [ to interface-type interface-number ] }&<1-10> ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Displays the GARP timers of the specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+The display garp timer command displays the values of GARP timers. When using this command, pay attention to the following points:
+
+    If interface interface-type interface-number is not specified, the system displays GARP timers of all the interfaces.
+    If interface interface-type interface-number is specified, the system displays GARP timers of the specified interface.
+
+Example
+
+# Display the values of the GARP timers of the specified interface.
+
+<HUAWEI> display garp timer interface gigabitethernet 0/0/1
+
+  GARP timers on port GigabitEthernet0/0/1
+    GARP JoinTime                : 80 centiseconds
+    GARP LeaveTime               : 240 centiseconds
+    GARP LeaveAllTime            : 1000 centiseconds
+    GARP HoldTime                : 40 centiseconds 
+
+Table 5-64 Description of the display garp timer command output
+
+Item
+	
+
+Description
+
+GARP JoinTime
+	
+
+Value of the Join timer. You can run the garp timer command to set the Join timer.
+
+GARP LeaveTime
+	
+
+Value of the Leave timer. You can run the garp timer command to set the Leave timer.
+
+GARP LeaveAllTime
+	
+
+Value of the LeaveAll timer. You can run the garp timer leaveall command to set the LeaveAll timer.
+
+GARP HoldTime
+	
+
+Value of the Hold timer. You can run the garp timer command to set the Hold timer.
+display gvrp state
+Function
+
+The display gvrp state command displays information about the GVRP state machine.
+Format
+
+display gvrp state interface interface-type interface-number vlan vlan-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Displays information about the GVRP state machine of the specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+	
+
+-
+
+vlan vlan-id
+	
+
+Displays information about the state machine of the specified VLAN.
+	
+
+The value is an integer that ranges from 2 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The GVRP function has two types of state machines: Applicant state machine and Registrar state machine.
+
+An applicant implements declaration of attributes. If no message is lost during transmission, an applicant can ensure that all registrars have registered an attribute after it sends a Join message or receives a JoinIn message. To ensure reliable transmission of messages, the applicant needs to send two Join messages or send a Join message and receive a JoinIn message to confirm that all registrars have registered an attribute. Therefore, a simple counter is used. The counter starts from 0 and increases by 1 every time the applicant sends a Join message or receives a JoinIn message. The maximum value of the counter is 2. If the applicant receives a JoinEmpty, Empty, Leave, or LeaveAll message, the counter is reset to 0. This indicates that the applicant can send PDUs only when the value of the counter is smaller than 2.
+The Join timer controls the interval for sending Join messages, but not every attribute has its own Join timer. A GVRP participant uses a Join timer. The value of the Join timer must be long enough to ensure that all the attributes can be packaged in a message and transmitted in a declaration.
+
+    Anxious applicants
+    Depending on the value of the applicant counter, an applicant may be in either of the following states:
+
+        V (very anxious): The value of the counter is 0, indicating that the applicant does not send a Join message or receive a JoinIn message.
+
+        A (anxious): The value of the counter is 1, indicating that no message is lost and all the registrars have registered the attribute.
+
+        Q (quiet): The value of the counter is 2, indicating that the applicant does not need to send Join messages.
+
+    Members and observers
+
+    The preceding states are applicable to normal situations. In special cases, for example, when some terminals do not need to send registration messages and only need to retain all the GARP state machines, these terminals must be separated from other entities. Therefore, the concept of member and observer is introduced. A member refers to an entity that tries to declare or retain an attribute value or an entity that has not sent a Leave message yet. An observer refers to an entity that traces the states of attributes but does not declare attributes.
+    Multiple entities may actively join or leave the same attribute. To minimize the number of Join or Leave messages in this situation, members are classified into active members and passive members. Therefore, the following states are introduced:
+        A: Active member
+        P: Passive member
+        O: Observer
+
+In addition, when an active member must send a Leave message to cancel a declaration, the active member enters the leaving state. Considering all these states, the state machine of an applicant has multiple state combinations, as shown in the following table.
+
+State Combination
+	
+
+Very Anxious
+	
+
+Anxious
+	
+
+Quiet
+	
+
+Leaving
+
+Active Member
+	
+
+VA
+	
+
+AA
+	
+
+QA
+	
+
+LA
+
+Passive Member
+	
+
+VP
+	
+
+AP
+	
+
+QP
+	
+
+-
+
+Observer
+	
+
+VO
+	
+
+AO
+	
+
+QO
+	
+
+LO
+When a passive member needs to cancel a declaration, it can switch to the observer state. Therefore, the leaving passive member state does not exist.
+
+A registrar has a Leave timer and three states: IN (attribute registered), MTR (attribute deregistered), and LV (attribute being deregistered). If a registrar in LV state does not receive the declaration of an attribute within the timeout interval of the Leave timer, the registrar enters the MTR state.
+A registrar changes to different states depending on the received message:
+
+    When receiving a Join message, the registrar changes to the IN state.
+
+    When receiving a Leave or LeaveAll message, the registrar changes from the IN state to the LV state and starts the Leave timer. If the registrar is not in IN state, it does not change its state after receiving a Leave or LeaveAll message.
+
+    The registrar does not change its state after receiving an Empty message.
+
+Example
+
+# Display information about the GVRP state machine.
+
+<HUAWEI> display gvrp state interface gigabitethernet 0/0/1 vlan 100 
+    GVRP state of VLAN 100 on port GigabitEthernet0/0/1
+
+         Applicant state machine :    VP
+         Registrar state machine :    MTR
+
+Table 5-65 Description of the display gvrp state command output
+
+Item
+	
+
+Description
+
+Applicant state machine
+	
+
+State machine of the applicant.
+
+Registrar state machine
+	
+
+State machine of the registrar.
+display gvrp statistics
+Function
+
+The display gvrp statistics command displays statistics about GVRP on an interface.
+Format
+
+display gvrp statistics [ interface { interface-type interface-number [ to interface-type interface-number ] }&<1-10> ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Displays the statistics about GVRP on the specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+If no interface is specified, the system displays statistics about GVRP on all interfaces.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display gvrp statistics command displays statistics about GVRP on an interface, including the GVRP status, number of GVRP registration failures, source MAC address of the last GVRP PDU, and registration mode of the interface.
+Example
+
+# Display the statistics about GVRP on an interface.
+
+<HUAWEI> display gvrp statistics interface gigabitethernet 0/0/1
+
+
+  GVRP statistics on port GigabitEthernet0/0/1
+    GVRP status                     : Enabled
+    GVRP registrations failed       : 0
+    GVRP last PDU origin            : 0000-0000-0000
+    GVRP registration type          : Normal        
+
+Table 5-66 Description of the display gvrp statistics command output
+
+Item
+	
+
+Description
+
+GVRP status
+	
+GVRP state. The value can be:
+
+    Enabled
+    Disabled
+
+To specify the parameter, run the gvrp command.
+
+GVRP registrations failed
+	
+
+Number of GVRP registration failures.
+
+GVRP last PDU origin
+	
+
+Source MAC address of the last GVRP PDU.
+
+GVRP registration type
+	
+GVRP registration type of an interface, which is configured by the gvrp registration command. The registration type can be:
+
+    Fixed
+    Forbidden
+    Normal
+
+display gvrp status
+Function
+
+The display gvrp status command displays whether global GVRP is enabled.
+Format
+
+display gvrp status
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The device with GVRP enabled can dynamically register VLANs or deregister VLANs from an interface. You can run the display gvrp status command to check whether GVRP is enabled.
+Example
+
+# Display the enabling status of global GVRP.
+
+<HUAWEI> display gvrp status
+GVRP status: disabled
+
+Table 5-67 Description of the display gvrp status command output
+
+Item
+	
+
+Description
+
+GVRP status
+	
+
+The status of global GVRP.
+
+To specify the parameter, run the gvrp command.
+display gvrp vlan-operation
+Function
+
+The display gvrp vlan-operation command displays the operation of adding a specified interface to dynamic VLANs.
+Format
+
+display gvrp vlan-operation interface interface-type interface-number
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Displays operations related to dynamic VLANs performed on the specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display gvrp vlan-operation command displays the dynamic VLANs to which an interface is added.
+Example
+
+# Display the operation of adding an interface to dynamic VLANs.
+
+<HUAWEI> display gvrp vlan-operation interface GigabitEthernet 0/0/1
+    Dynamic VLAN operations on port GigabitEthernet0/0/1
+
+         Operations of adding VLAN to TRUNK             : none 
+
+Table 5-68 Description of the display gvrp vlan-operation command output
+
+Item
+	
+
+Description
+
+Operations of adding VLAN to TRUNK
+	
+
+Operation of adding a trunk interface to dynamic VLANs.
+garp timer
+Function
+
+The garp timer command sets GARP timers.
+
+The undo garp timer command restores the default values of GARP timers.
+
+By default, the value of the Hold timer is 10 centiseconds, the value of the Join timer is 20 centiseconds, and the value of the Leave timer is 60 centiseconds.
+Format
+
+garp timer { hold | join | leave } timer-value
+
+undo garp timer { hold | join | leave } [ timer-value ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+hold timer-value
+	
+
+Sets the value of the GARP Hold timer.
+	
+
+    Lower limit: 10 centiseconds
+
+    Upper limit: less than or equal to half the value of the Join timer, changing with the value of the Join timer
+    The value can be exactly divided by 5, in centiseconds.
+
+join timer-value
+	
+
+Sets the value of the GARP Join timer.
+	
+
+    Lower limit: greater than or equal to two times the value of the Hold timer, changing with the value of the Hold timer
+
+    Upper limit: smaller than half the value of the Leave timer, changing with the value of the Leave timer
+    The value can be exactly divided by 5, in centiseconds.
+
+leave timer-value
+	
+
+Sets the value of the GARP Leave timer.
+	
+
+    Lower limit: greater than two times the value of the Join timer, changing with the value of the Join timer
+
+    Upper limit: smaller than the value of the LeaveAll timer, changing with the value of the LeaveAll timer
+    The value can be exactly divided by 5, in centiseconds.
+
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, MultiGE interface view, 100GE interface view, 40GE interface view, 100GE interface view, port group view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+This command can set the following GARP timers:
+
+    Join timer: controls sending of Join messages including JoinIn messages and JoinEmpty messages.
+
+    Hold timer: controls sending of Join messages (JoinIn messages and JoinEmpty messages) and Leave messages (LeaveIn messages and LeaveEmpty messages).
+
+    Leave timer: controls attribute deregistration.
+
+You can set the GARP timers to control sending of GARP protocol packets.
+
+Prerequisite
+
+The physical port has been added to the port group before running the garp timer command in the port group view.
+
+Before setting garp timers on an interface, you must enable GVRP globally and on the interface.
+
+Precautions
+When using the garp timer command to set the GARP timers, pay attention to the following points:
+
+    The garp timer can be used only on trunk interfaces.
+
+    The undo garp timer command restores the default values of GARP timers. If the default value of a timer is out of the valid range, the undo garp timer command does not take effect.
+
+    The value range of each timer changes with the values of the other timers. If a value you set for a timer is not in the allowed range, you can change the value of the timer that determines the value range of this timer.
+
+    To restore the default values of all the GARP timers, restore the Hold timer to the default value, and then restore the Join timer, Leave timer, and LeaveAll timer to the default values in sequence.
+
+When many dynamic VLANs need to be registered or the network radius is large, using default values of timers may cause VLAN flapping and high CPU usage. In this case, increase values of the timers. The following values are recommended depending on the number of VLANs.
+Table 5-69 Relationship between GARP timer values and number of dynamic VLANs that need to be registered
+
+Timer
+	
+
+Number of Dynamic VLANs to Be Registered (N)
+
+N <= 500
+	
+
+500 < N <= 1000
+	
+
+1000 < N <= 1500
+	
+
+N > 1500
+
+GARP Hold timer
+	
+
+100 centiseconds (1 second)
+	
+
+200 centiseconds (2 seconds)
+	
+
+800 centiseconds (8 seconds)
+	
+
+1000 centiseconds (10 seconds)
+
+GARP Join timer
+	
+
+600 centiseconds (6 seconds)
+	
+
+1200 centiseconds (12 seconds)
+	
+
+4000 centiseconds (40 seconds)
+	
+
+6000 centiseconds (1 minute)
+
+GARP Leave timer
+	
+
+3000 centiseconds (30 seconds)
+	
+
+6000 centiseconds (1 minute)
+	
+
+20000 centiseconds (3 minutes and 20 seconds)
+	
+
+30000 centiseconds (5 minutes)
+
+GARP LeaveAll timer
+	
+
+12000 centiseconds (2 minutes)
+	
+
+24000 centiseconds (4 minutes)
+	
+
+30000 centiseconds (5 minutes)
+	
+
+32765 centiseconds (5 minutes and 27.65 seconds)
+Example
+
+# Set the Leave timer of GigabitEthernet 0/0/1 to 800 centiseconds.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] garp timer leave 800
+
+# Set the Join timer of GigabitEthernet 0/0/1 to 300 centiseconds.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] garp timer join 300
+
+# Set the Hold timer of GigabitEthernet 0/0/1 to 100 centiseconds.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] garp timer hold 100
+
+garp timer leaveall
+Function
+
+The garp timer leaveall command sets the GARP LeaveAll timer.
+
+The undo garp timer leaveall command restores the default value of the GARP LeaveAll timer.
+
+The default value of the LeaveAll timer is 1000 centiseconds (10 seconds).
+Format
+
+garp timer leaveall timer-value
+
+undo garp timer leaveall [ timer-value ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+timer-value
+	
+
+Specifies the value of the GARP LeaveAll timer.
+	
+
+The value is an integer that ranges from 65 to 32765 and that can be exactly divided by 5, in centiseconds. The value of the LeaveAll timer must be greater than the values of Leave timers on all the interfaces.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a GARP participant is enabled, the LeaveAll timer is started. When the LeaveAll timer expires, the GARP participant sends LeaveAll messages to request other GARP participants to re-register all its attributes. Then the LeaveAll timer restarts.
+
+Devices on a network may have different settings for the LeaveAll timer. In this case, all the devices use the smallest LeaveAll timer value on the network. When the LeaveAll timer of a device expires, the device sends LeaveAll messages to other devices. After other devices receive the LeaveAll messages, they reset their LeaveAll timers. Therefore, only the LeaveAll timer with the smallest value takes effect even if devices have different settings for the LeaveAll timer.
+
+Prerequisites
+
+Before setting LeaveAll timers, you must enable GVRP globally.
+
+Precautions
+
+The Leave timer length on an interface is restricted by the global LeaveAll timer length. When configuring the global LeaveAll timer, ensure that all the interfaces that have a GARP Leave timer configured are working properly.
+Example
+
+# Set the LeaveAll timer to 2000 centiseconds.
+
+<HUAWEI> system-view
+[HUAWEI] garp timer leaveall 2000
+
+gvrp
+Function
+
+The gvrp command enables GVRP globally or on an interface.
+
+The undo gvrp command disables GVRP globally or on an interface.
+
+By default, GVRP is disabled globally and on each interface.
+Format
+
+gvrp
+
+undo gvrp
+Parameters
+
+None
+Views
+
+System view, Ethernet interface view, GE interface view, XGE interface view, MultiGE interface view, 40GE interface view, 100GE interface view, port group view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The device with GVRP enabled can dynamically register VLANs or deregister VLANs from an interface. To make GVRP take effect, run the gvrp command both in the system view and interface view.
+
+Precautions
+When configuring GVRP, pay attention to the following points:
+
+    If you run the gvrp command in the system view, GVRP is enabled globally. If you run this command in the interface view, GVRP is enabled on the interface.
+
+    Before enabling GVRP on an interface, you must enable GVRP globally.
+
+    Before enabling GVRP on an interface, you must set the link type of the interface to trunk.
+    GVRP and Port security conflict on an interface; therefore, the port-security enable and gvrp commands cannot be used on the same interface.
+    When GVRP is enabled globally, manually change values of timers based on the network scale.
+    Table 5-70 Relationship between GARP timer values and number of dynamic VLANs that need to be registered
+
+    Timer
+    	
+
+    Number of Dynamic VLANs to Be Registered (N)
+
+    N <= 500
+    	
+
+    500 < N <= 1000
+    	
+
+    1000 < N <= 1500
+    	
+
+    N > 1500
+
+    GARP Hold timer
+    	
+
+    100 centiseconds (1 second)
+    	
+
+    200 centiseconds (2 seconds)
+    	
+
+    800 centiseconds (8 seconds)
+    	
+
+    1000 centiseconds (10 seconds)
+
+    GARP Join timer
+    	
+
+    600 centiseconds (6 seconds)
+    	
+
+    1200 centiseconds (12 seconds)
+    	
+
+    4000 centiseconds (40 seconds)
+    	
+
+    6000 centiseconds (1 minute)
+
+    GARP Leave timer
+    	
+
+    3000 centiseconds (30 seconds)
+    	
+
+    6000 centiseconds (1 minute)
+    	
+
+    20000 centiseconds (3 minutes and 20 seconds)
+    	
+
+    30000 centiseconds (5 minutes)
+
+    GARP LeaveAll timer
+    	
+
+    12000 centiseconds (2 minutes)
+    	
+
+    24000 centiseconds (4 minutes)
+    	
+
+    30000 centiseconds (5 minutes)
+    	
+
+    32765 centiseconds (5 minutes and 27.65 seconds)
+
+Example
+
+# Enable GVRP globally.
+
+<HUAWEI> system-view
+[HUAWEI] gvrp
+
+# Enable GVRP on GigabitEthernet 0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] gvrp
+
+gvrp registration
+Function
+
+The gvrp registration command sets the registration mode of a GVRP interface.
+
+The undo gvrp registration command restores the default registration mode of a GVRP interface.
+
+By default, the registration mode of a GVRP interface is normal.
+Format
+
+gvrp registration { fixed | forbidden | normal }
+
+undo gvrp registration [ fixed | forbidden | normal ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+fixed
+	
+
+Indicates the fixed registration mode.
+	
+
+-
+
+forbidden
+	
+
+Indicates the forbidden registration mode.
+	
+
+-
+
+normal
+	
+
+Indicates the normal registration mode.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, MultiGE interface view, 40GE interface view, 100GE interface view, port group view, Eth-Trunk interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+A GVRP interface supports three registration modes:
+
+    Normal: In this mode, the GVRP interface can dynamically register and deregister VLANs, and transmit dynamic VLAN registration information and static VLAN registration information.
+    Fixed: In this mode, the GVRP interface is disabled from dynamically registering and deregistering VLANs and can transmit only the static VLAN registration information. If the registration mode of a trunk interface is set to fixed, the interface allows only the manually configured VLANs to pass even if it is configured to allow all the VLANs to pass.
+    Forbidden: In this mode, the GVRP interface is disabled from dynamically registering and deregistering VLANs and can transmit only information about VLAN 1. If the registration mode of a trunk interface is set to forbidden, the interface allows only VLAN 1 to pass even if it is configured to allow all the VLANs.
+
+Pre-configuration Tasks
+
+Before setting the registration mode of an interface, you must enable GVRP globally and configure the interface as a trunk interface.
+Example
+
+# Set the registration mode of GE0/0/1 to fixed.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] gvrp
+[HUAWEI-GigabitEthernet0/0/1] gvrp registration fixed
+
+reset garp statistics
+Function
+
+The reset garp statistics command clears statistics about GARP packets on an interface.
+Format
+
+reset garp statistics [ interface { interface-type interface-number [ to interface-type interface-number ] }&<1-10> ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Clears the statistics about GARP packets on a specified interface.
+
+    interface-type specifies the type of an interface.
+
+    interface-number specifies the number of an interface.
+
+	
+
+-
+Views
+
+User view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Before collecting GARP traffic statistics on a specific interface within a certain period, you need to clear the existing GARP traffic statistics on this interface.
+When using this command, pay attention to the following points:
+
+    If interface interface-type interface-number is not specified, the system clears statistics about GARP packets on all the interfaces.
+    If interface interface-type interface-number is specified, the system clears statistics about GARP packets on the specified interface.
+
+Precautions
+
+GVRP statistics cannot be restored after being cleared. Confirm your action before using this command.
+Example
+
+# Clear statistics about GARP packets on GE0/0/1.
+
+<HUAWEI> reset garp statistics interface gigabitethernet 0/0/1
+
