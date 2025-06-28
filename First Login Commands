@@ -1,0 +1,1055 @@
+First Login Commands
+
+    Command Support
+    clock datetime
+    clock daylight-saving-time
+    clock timezone
+    display calendar
+    display clock
+    display sys-netid
+    sysname
+    sys-netid
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+clock datetime
+Function
+
+The clock datetime command sets the current date and time on a switch.
+Format
+
+clock datetime HH:MM:SS YYYY-MM-DD
+Parameters
+Parameter 	Description 	Value
+
+HH:MM:SS
+	
+
+Specifies the current time on a switch.
+	
+
+HH specifies the hour, which is an integer ranging from 0 to 23. MM specifies the minute, which is an integer ranging from 0 to 59. SS specifies the second, which is an integer ranging from 0 to 59.
+
+YYYY-MM-DD
+	
+
+Specifies the current date (year, month, and day) on the switch.
+	
+
+YYYY specifies the year, which is an integer ranging from 2000 to 2037. MM specifies the month, which is an integer ranging from 1 to 12. DD specifies the day, which is an integer ranging from 1 to 31.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In the scenario where accurate absolute time is required, the current date and time must be set on a switch.
+
+Prerequisite
+
+The time zone and daylight saving time have been configured using the clock timezone and clock daylight-saving-time commands. If the time zone and daylight saving time are not configured, the clock datetime command sets a UTC time.
+
+Precautions
+
+    The specified time must be in 24-hour format. If you do not specify MM and SS, their values are 0. You must enter at least one digit to specify HH. For example, when you enter 0, the time is 00:00:00.
+
+    The specified year must be a four-digit number and the specified month and day can be a one-digit number. For example, when you enter 2012-9-1, the time is 2012-09-01.
+
+    If the device is configured to restart at a specified time and if the system time is changed to be more than 10 minutes later than the specified restart time, the scheduled restart function will be disabled.
+
+The valid time range is based on the UTC, and this command sets the local time. If the DST or time zone is specified in the current environment, the system automatically converts the local time to the UTC.
+
+For example, if you set the time zone to GMT+8 and the local date to 2000-1-1, the UTC converted equals to the local date minus eight hours, which is 1999-12-31. However, the valid date range is 2000 to 2037. As a result, the validity check fails, and date setting fails.
+Example
+
+# Set the current time and date of the system to 0:1:2 2012-01-01.
+
+<HUAWEI> clock datetime 0:1:2 2012-01-01
+
+clock daylight-saving-time
+Function
+
+The clock daylight-saving-time command sets the name, start time, and end time of the daylight saving time (DST).
+
+The undo clock daylight-saving-time command cancels the DST settings.
+
+By default, DST is not used.
+Format
+
+clock daylight-saving-time time-zone-name one-year start-time start-date end-time end-date offset
+
+clock daylight-saving-time time-zone-name repeating start-time { { first | second | third | fourth | last } weekday month | start-date1 } end-time { { first | second | third | fourth | last } weekday month | end-date1 } offset [ start-year [ end-year ] ]
+
+undo clock daylight-saving-time
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+time-zone-name
+	
+
+Specifies the name of the DST zone.
+	
+
+The value is a string of 1 to 32 case-sensitive characters without spaces.
+
+one-year
+	
+
+Specifies absolute DST.
+	
+
+-
+
+repeating
+	
+
+Specifies periodic DST.
+	
+
+-
+
+start-time
+	
+
+Specifies the DST start time.
+	
+
+The start time is in 24-hour format HH:MM. HH specifies the hour, which is an integer ranging from 0 to 23. MM specifies the minute, which is an integer ranging from 0 to 59. If MM is not specified, DST starts on the hour. You must enter at least one digit to specify HH. For example, when you enter 0, the start time is 00:00.
+
+start-date
+	
+
+Specifies the DST start date.
+	
+
+The start date is in the format YYYY-MM-DD. YYYY specifies the year, which is an integer ranging from 2000 to 2099, MM specifies the month, which is an integer ranging from 1 to 12, and DD specifies the day, which is an integer ranging from 1 to 31.
+
+end-time
+	
+
+Specifies the DST end time.
+	
+
+The end time is in 24-hour format HH:MM. HH specifies the hour, which is an integer ranging from 0 to 23. MM specifies the minute, which is an integer ranging from 0 to 59. If MM is not specified, DST starts on the hour. You must enter at least one digit to specify HH. For example, when you enter 0, the start time is 00:00.
+
+end-date
+	
+
+Specifies the DST end date.
+	
+
+The end date is in the format YYYY-MM-DD. YYYY specifies the year, which is an integer ranging from 2000 to 2099, MM specifies the month, which is an integer ranging from 1 to 12, and DD specifies the day, which is an integer ranging from 1 to 31.
+
+first
+	
+
+Specifies the first workday in a month.
+	
+
+-
+
+second
+	
+
+Specifies the second workday in a month.
+	
+
+-
+
+third
+	
+
+Specifies the third workday in a month.
+	
+
+-
+
+fourth
+	
+
+indicates the fourth workday in a month.
+	
+
+-
+
+last
+	
+
+Specifies the last workday in a month.
+	
+
+-
+
+weekday
+	
+
+Specifies a day of the week.
+	
+
+The value is Mon, Tue, Wed, Thu, Fri, Sat, or Sun.
+
+month
+	
+
+Specifies a month.
+	
+
+The value is Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, or Dec.
+
+start-date1
+	
+
+Specifies the DST start date.
+	
+
+The start date is in the format MM-DD. MM specifies the month, which is an integer ranging from 1 to 12, and DD specifies the day, which is an integer ranging from 1 to 31.
+
+end-date1
+	
+
+Specifies the DST end date.
+	
+
+The end date is in the format MM-DD. MM specifies the month, which is an integer ranging from 1 to 12, and DD specifies the day, which is an integer ranging from 1 to 31.
+
+offset
+	
+
+Specifies the DST offset.
+	
+
+The offset is in 24-hour format HH:MM. HH specifies the hour, which is an integer ranging from 0 to 2. MM specifies the minute, which is an integer ranging from 0 to 59. If MM is not specified, the offset is the specified hours. You must enter at least one digit to specify HH.
+
+The offset should be shorter than or equal to 2 hours.
+
+start-year
+	
+
+Specifies the start year.
+	
+
+The start year is in the format YYYY and ranges from 2000 to 2099.
+
+end-year
+	
+
+Specifies the end year.
+	
+
+The end year is in the format YYYY and ranges from 2000 to 2099.
+Views
+
+User view, system view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+DST, also referred to as summer time, is a convention intended to save resources. In high latitude areas, sunrise time is earlier during summer than it is during winter. To reduce use of incandescent lighting in the evenings and save energy, clocks are adjusted forward one hour.
+
+Users can customize the DST zone according to their countries' or regions' convention. In addition, users can set how far ahead clocks are adjusted forward, usually an hour. With DST enabled, when it is time to start DST, the system time is adjusted according to the user-specified DST. When it is time to end DST, the system time automatically returns to the original time.
+
+Configuration Impact
+To configure DST, note the following:
+
+    The time in logs and debugging information uses the local time adjusted based on the time zone and the configured DST.
+    The time in the output of the display commands uses the local time adjusted based on the time zone and the configured DST.
+
+To remove configurations for DST, note the following:
+
+    If DST has already taken effect when you remove the configurations, the device will adjust its clock by subtracting the value of the offset parameter from the current time.
+    If DST has not taken effect, removing the configurations will not affect the system time.
+
+Precautions
+
+    The DST is configured in the summer. The DST duration ranges from one day to one year.
+
+    You can configure the start time and end time for periodic DST in one of the following modes: date+date, week+week, date+week, and week+date.
+
+    When you run the clock daylight-saving-time command in either the user or system view, the configuration files are both generated in the system view. You are advised to run this command in the system view.
+
+Example
+# Set periodic DST.
+
+<HUAWEI> system-view
+[HUAWEI] clock daylight-saving-time bj repeating 0 first sun jan 0 first sun apr 2 2009 2009
+
+# Set periodic DST by day.
+
+<HUAWEI> system-view
+[HUAWEI] clock daylight-saving-time bj repeating 12:11 1-1 1:0 3-4 1
+
+# Set absolute DST.
+
+<HUAWEI> system-view
+[HUAWEI] clock daylight-saving-time bj one-year 12:11 2010-10-2 1:00 2010-11-4 1
+
+clock timezone
+Function
+
+The clock timezone command sets the local time zone.
+
+The undo clock timezone command deletes the local time zone.
+
+By default, the system uses the Coordinated Universal Time (UTC) time zone.
+Format
+
+clock timezone time-zone-name { add | minus } offset
+
+undo clock timezone
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+time-zone-name
+	
+
+Specifies the time zone name.
+	
+
+The name is a string of 1 to 32 case-sensitive characters without spaces.
+
+add
+	
+
+Specifies the offset from the UTC for the time zone specified by time-zone-name. That is, the sum of the default UTC time zone and offset is equal to the time zone specified by time-zone-name.
+	
+
+-
+
+minus
+	
+
+Specifies the offset from the UTC for the time zone specified by time-zone-name. That is, the remainder obtained by subtracting offset from the default UTC time zone is equal to the time zone specified by time-zone-name.
+	
+
+-
+
+offset
+	
+
+Specifies the offset from the UTC.
+	
+Format: HH:MM:SS
+
+    HH specifies the hour.
+        If the local time is earlier than the UTC, the value is an integer ranging from 0 to 14.
+        If the local time is later than the UTC, the value is an integer ranging from 0 to 12.
+    MM and SS specify the minute and second respectively, and both range from 0 to 59.
+    When HH is set to the maximum value, the MM and SS values must be 0.
+
+Views
+
+User view, System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The system clock is the time indicated by the system timestamp. Because the rules governing local time differ in different regions, the system clock can be configured to comply with the rules of any given region.
+
+System clock = UTC + Time zone offset + DST offset
+
+To ensure normal communication between devices, set an accurate system clock. You can run the clock timezone and clock daylight-saving-time commands to set the time zone and DST offsets.
+
+Configuration Impact
+System time adjustment may affect the timing restart function. If you must adjust the system time after the timing restart function is enabled, pay attention to the impact of system time adjustment on the timing restart function:
+
+    If the system time is changed to less than 10 minutes after the scheduled restart time, the system restarts immediately.
+    If the system time is changed to 10 minutes or more after the scheduled restart time, the timing restart function is disabled.
+    If the system time is changed to 720 hours earlier than the scheduled restart time, the timing restart function is disabled.
+
+Precautions
+
+    The specified time must be in 24-hour format. If you do not specify MM and SS, their values are 0. You must enter at least one digit to specify HH. For example, when you enter 0, the time is 00:00:00.
+
+    After configuring the local time zone, run the display clock command to view the configuration. The time in logs and diagnostic information uses the local time adjusted based on the time zone and DST.
+
+    When you run the clock timezone command in either the user or system view, the configuration files are both generated in the system view. You are advised to run this command in the system view.
+
+    Executing the clock timezone command takes about 3 seconds.
+
+Example
+
+# Set the local time zone name for Beijing China to BJ.
+
+If the default UTC is London time 2012-12-01 00:00:00, Beijing time is London time plus 08:00 because the offset from UTC is 8 hours.
+
+<HUAWEI> clock datetime 0:0:0 2012-12-01
+<HUAWEI> system-view
+[HUAWEI] clock timezone BJ add 08:00:00
+
+display calendar
+Function
+
+The display calendar command displays the calendar of the current month or a specified month in a specified year.
+Format
+
+display calendar [ month [ year ] ]
+Parameters
+Parameter 	Description 	Value
+month 	Specifies the month for which the calendar is displayed. 	
+The value is a character string. The values and their meanings are as follows:
+
+    Jan: January
+    Feb: February
+    Mar: March
+    Apr: April
+    May: May
+    Jun: June
+    Jul: July
+    Aug: August
+    Sep: September
+    Oct: October
+    Nov: November
+    Dec: December
+
+year 	Specifies the year for which the calendar is displayed. 	The value is an integer that ranges from 2000 to 2099.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring the current date and time on the switch using the clock datetime command, you can run the display calendar command to view calendar information.
+
+If no month or year is specified, the calendar of the current month is displayed by default. If only month but not year is specified, the calendar of the specified month in the current year is displayed.
+Example
+
+# Display the calendar of the current month.
+
+<HUAWEI> display calendar
+
+      November    2012
+ Sun Mon Tue Wed Thu Fri Sat
+                   1   2   3
+   4   5   6   7   8   9  10
+  11  12  13  14  15  16  17
+  18  19  20  21  22  23  24
+  25  26  27  28  29  30
+ Today is 16 November 2012.
+
+# Display the calendar of May 2008.
+
+<HUAWEI> display calendar May 2008
+
+        May    2008
+ Sun Mon Tue Wed Thu Fri Sat
+                   1   2   3
+   4   5   6   7   8   9  10
+  11  12  13  14  15  16  17
+  18  19  20  21  22  23  24
+  25  26  27  28  29  30  31
+ Today is 16 November 2012.
+
+Table 2-20 Description of the display calendar command output
+
+Item
+	
+
+Description
+
+Sun
+	
+
+Sunday
+
+Mon
+	
+
+Monday
+
+Tue
+	
+
+Tuesday
+
+Wed
+	
+
+Wednesday
+
+Thu
+	
+
+Thursday
+
+Fri
+	
+
+Friday
+
+Sat
+	
+
+Saturday
+display clock
+Function
+
+The display clock command displays the current date and clock setting.
+Format
+
+display clock [ utc ]
+Parameters
+Parameter 	Description 	Value
+
+utc
+	
+
+Indicates that the clock is adjusted to the Coordinated Universal Time (UTC).
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run the display clock command to view the system date and clock setting and adjust the setting if necessary.
+
+Precautions
+
+The system clock is set using the clock datetime, clock timezone, and clock daylight-saving-time commands.
+
+    If the three commands are not used, the original system clock is displayed after you run the display clock command.
+    You can use any combination of the three commands to configure the system time. Table 2-21 lists the formats of the configured time.
+
+The table assumes that the original system time is 08:00:00 on January 1, 2010.
+
+    1: indicates that the clock datetime command is used, in which the current time and date is date-time.
+    2: indicates that the clock timezone command is used, in which the time zone parameter is set and the time offset is zone-offset.
+    3: indicates that the clock daylight-saving-time command is used, in which the DST parameters are set and the time offset is offset.
+    [1]: indicates that the clock datetime command is optional.
+
+Table 2-21 System clock setting examples
+
+Action
+	
+
+System Time Configuration
+	
+
+Example
+
+1
+	
+
+date-time
+	
+
+Command: clock datetime 8:0:0 2011-11-12
+
+Configured system time:
+
+2011-11-12 08:00:06
+Saturday
+Time Zone(DefaultZoneName) : UTC
+
+2
+	
+
+Original system time ± zone-offset
+	
+
+Command: clock timezone BJ add 8
+
+Configured system time:
+
+2010-01-01 16:00:30+08:00
+Friday
+Time Zone(BJ) : UTC+08:00
+
+1, 2
+	
+
+date-time ± zone-offset
+	
+
+Commands: clock datetime 8:0:0 2011-11-12 and clock timezone BJ add 8
+
+Configured system time:
+
+2011-11-12 16:00:10+08:00
+Saturday
+Time Zone(BJ) : UTC+08:00
+
+[1], 2, 1
+	
+
+date-time
+	
+
+Commands: clock timezone NJ add 8 and clock datetime 9:0:0 2011-11-12
+
+Configured system time:
+
+2011-11-12 09:00:07+08:00
+Saturday
+Time Zone(NJ) : UTC+08:00 
+
+3
+	
+
+If the original system time is not in the DST segment, the original system time is displayed.
+	
+
+Command: clock daylight-saving-time BJ one-year 6:0 2011-8-1 6:0 2011-10-01 1
+
+Configured system time:
+
+2010-01-01 08:00:16
+Friday
+Time Zone(DefaultZoneName) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 08-01 06:00:00
+         End time    : 10-01 06:00:00
+         Saving time : 01:00:00
+
+If the original system time is in the DST segment, the configured system time is the original system time plus offset.
+	
+
+Command: clock daylight-saving-time BJ one-year 6:0 2010-1-1 6:0 2010-9-1 2
+
+Configured system time:
+
+2010-01-01 10:00:26+02:00 DST
+Friday
+Time Zone(BJ) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2010
+         End year    : 2010
+         Start time  : 01-01 06:00:00
+         End time    : 09-01 06:00:00
+         Saving time : 02:00:00
+
+1, 3
+	
+
+If date-time is not in the DST segment, the configured system time is date-time.
+	
+
+Commands: clock datetime 9:0:0 2011-11-12 and clock daylight-saving-time BJ one-year 6:0 2012-8-1 6:0 2012-10-01 1
+
+Configured system time:
+
+2011-11-12 09:00:26
+Saturday
+Time Zone(DefaultZoneName) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2012
+         End year    : 2012
+         Start time  : 08-01 06:00:00
+         End time    : 10-01 06:00:00
+         Saving time : 01:00:00 
+
+If date-time is in the DST segment, the configured system time is date-time+offset.
+	
+
+Commands: clock datetime 9:0:0 2011-11-12 and clock daylight-saving-time BJ one-year 9:0 2011-11-12 6:0 2011-12-01 2
+
+Configured system time:
+
+2011-11-12 11:02:21 DST
+Saturday
+Time Zone(BJ) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 11-12 09:00:00
+         End time    : 12-01 06:00:00
+         Saving time : 02:00:00  
+
+[1], 3, 1
+	
+
+If date-time is not in the DST segment, the configured system time is date-time.
+	
+
+Commands: clock daylight-saving-time BJ one-year 6:0 2012-8-1 6:0 2012-10-01 1 and clock datetime 9:0 2011-11-12
+
+Configured system time:
+
+2011-11-12 09:00:02
+Saturday
+Time Zone(DefaultZoneName) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2012
+         End year    : 2012
+         Start time  : 08-01 06:00:00
+         End time    : 10-01 06:00:00
+         Saving time : 01:00:00 
+
+If date-time is in the DST segment, the configured system time is date-time.
+	
+
+Commands: clock daylight-saving-time BJ one-year 1:0 2011-1-1 1:0 2011-9-1 2 and clock datetime 3:0 2011-1-1
+
+Configured system time:
+
+2011-01-01 03:00:19 DST
+Saturday
+Time Zone(BJ) : UTC
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 01-01 01:00:00
+         End time    : 09-01 01:00:00
+         Saving time : 02:00:00
+
+2, 3 or 3, 2
+	
+
+If the result of original system time ± zone-offset is not in the DST segment, the configured system time is equal to the original system time ± zone-offset.
+	
+
+Commands: clock timezone BJ add 8 and clock daylight-saving-time BJ one-year 6:0 2011-1-1 6:0 2011-9-1 2
+
+Configured system time:
+
+2010-01-01 16:01:29+08:00
+Friday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 01-01 06:00:00
+         End time    : 09-01 06:00:00
+         Saving time : 02:00:00
+
+If the result of original system time ± zone-offset is in the DST segment, the configured system time is equal to the original system time ± zone-offset ± offset.
+	
+
+Commands: clock daylight-saving-time BJ one-year 1:0 2010-1-1 1:0 2010-9-1 2 and clock timezone BJ add 8
+
+Configured system time:
+
+2010-01-01 18:05:31+08:00 DST
+Friday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2010
+         End year    : 2010
+         Start time  : 01-01 01:00:00
+         End time    : 09-01 01:00:00
+         Saving time : 02:00:00
+
+1, 2, 3 or 1, 3, 2
+	
+
+If the value of date-time ± zone-offset is not in the DST segment, the configured system time is equal to date-time ± zone-offset.
+	
+
+Commands: clock datetime 8:0:0 2011-11-12, clock timezone BJ add 8, and clock daylight-saving-time BJ one-year 6:0 2012-1-1 6:0 2012-9-1 2
+
+Configured system time:
+
+2011-11-12 08:01:40+08:00
+Saturday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2012
+         End year    : 2012
+         Start time  : 01-01 06:00:00
+         End time    : 09-01 06:00:00
+         Saving time : 02:00:00
+
+If the value of date-time ± zone-offset is in the DST segment, the configured system time is equal to date-time ± zone-offset + offset.
+	
+
+Commands: clock datetime 8:0:0 2011-1-1, clock daylight-saving-time BJ one-year 6:0 2011-1-1 6:0 2011-9-1 2 and clock timezone BJ add 8
+
+Configured system time:
+
+2011-01-01 10:00:43+08:00 DST
+Saturday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 01-01 06:00:00
+         End time    : 09-01 06:00:00
+         Saving time : 02:00:00
+
+[1], 2, 3, 1 or [1], 3, 2, 1
+	
+
+If date-time is not in the DST segment, the configured system time is date-time.
+	
+
+Commands: clock daylight-saving-time BJ one-year 6:0 2012-1-1 6:0 2012-9-1 2, clock timezone BJ add 8, and clock datetime 8:0:0 2011-11-12
+
+Configured system time:
+
+2011-11-12 08:00:03+08:00
+Saturday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2012
+         End year    : 2012
+         Start time  : 01-01 06:00:00
+         End time    : 09-01 06:00:00
+         Saving time : 02:00:00
+
+If date-time is in the DST segment, the configured system time is date-time.
+	
+
+Commands: clock timezone BJ add 8, clock daylight-saving-time BJ one-year 1:0 2011-1-1 1:0 2011-9-1 2, and clock datetime 3:0:0 2011-1-1
+
+Configured system time:
+
+2011-01-01 03:00:03+08:00 DST
+Saturday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2011
+         End year    : 2011
+         Start time  : 01-01 01:00:00
+         End time    : 09-01 01:00:00
+         Saving time : 02:00:00
+
+Example
+
+# Display the current system date and time.
+
+<HUAWEI> display clock
+
+2013-02-07 15:34:02+08:00
+Thursday
+Time Zone(BJ) : UTC+08:00
+Daylight saving time :
+         Name        : BJ
+         Repeat mode : one-year
+         Start year  : 2013
+         End year    : 2013
+         Start time  : 06-01 00:00:00
+         End time    : 09-01 00:00:00
+         Saving time : 02:00:00 
+
+# Display the UTC of the system.
+
+<HUAWEI> display clock utc
+
+2012-04-23 15:11:20
+Monday 
+
+Table 2-22 Description of the display clock command output
+
+Item
+	
+
+Description
+
+Time Zone
+	
+
+Time zone.
+
+Daylight saving time
+	
+
+DST.
+
+Name
+	
+
+DST name.
+
+Repeat mode
+	
+DST mode.
+
+    one-year: absolute DST
+    repeat: periodic DST
+
+Start year
+	
+
+Year from which DST starts.
+
+End year
+	
+
+Year when DST ends.
+
+Start time
+	
+
+Time when DST starts.
+
+End time
+	
+
+Time when DST ends.
+
+Saving time
+	
+
+Storage time.
+display sys-netid
+Function
+
+The display sys-netid command displays the name of a network element (NE).
+Format
+
+display sys-netid
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can use this command to check the NE name. If the NE name is not set on the device, the system displays a message indicating that the NE name is not set.
+Example
+
+# Display the NE name.
+
+<HUAWEI> display sys-netid
+Info: The NetID is: huawei-1234567890 
+
+sysname
+Function
+
+The sysname command sets a device host name.
+
+The undo sysname command restores the default device host name.
+
+By default, the device host name is HUAWEI.
+Format
+
+sysname host-name
+
+undo sysname
+Parameters
+Parameter 	Description 	Value
+
+host-name
+	
+
+Specifies a host name.
+	
+
+The value is a string of 1 to 246 case-sensitive characters. It can contain spaces.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Changing the host name of a device affects the CLI prompt. For example, if the host name of the device is HUAWEI, the prompt of the user view is <HUAWEI>.
+Example
+
+# Set the host name of the device to HUAWEIA.
+
+<HUAWEI> system-view
+[HUAWEI] sysname HUAWEIA
+[HUAWEIA]
+
+sys-netid
+Function
+
+The sys-netid command sets a name for a network element (NE).
+
+The undo sys-netid command deletes the NE name.
+
+By default, no NE name is set.
+Format
+
+sys-netid netid
+
+undo sys-netid
+Parameters
+Parameter 	Description 	Value
+
+netid
+	
+
+Specifies the NE name.
+	
+
+The value is a string of 16 to 240 case-sensitive characters.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When the network management tool needs to obtain the name of an NE, you can run the sys-netid command to set the NE name. The NE name is the same as that obtained from the MIB object hwEntitySystemNetID.
+
+Precautions
+
+If you run the sys-netid command multiple times, only the latest configuration takes effect.
+Example
+
+# Set the NE name.
+
+<HUAWEI> system-view
+[HUAWEI] sys-netid huawei-1234567890
+Info: NetID set successfully.
+Info: New NetID is: huawei-1234567890. 
+
