@@ -1,0 +1,4250 @@
+Device Status Checking Commands
+
+    Command Support
+    check hardware health
+    display built-in power
+    display battery information
+    display chip-temperature
+    display compatible-information
+    display cpu-usage
+    display cpu-usage configuration
+    display cpu-usage history
+    display device
+    display device mac-number
+    display device manufacture-info
+    display diagnostic-information
+    display elabel
+    display esn
+    display fan
+    display integrated-power information
+    display memory-usage
+    display memory-usage threshold
+    display power
+    display system-software information
+    display software information
+    display transceiver
+    display transceiver diagnosis interface
+    display temperature
+    display version
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+check hardware health
+Function
+
+The check hardware health command displays health check information about the device.
+Format
+
+check hardware health [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before upgrading a device's software package, run this command to check the health check information about the device. Ensure that all check items are normal before the upgrade to prevent a device upgrade failure.
+Example
+
+# Display health check information about the device.
+
+<HUAWEI> check hardware health
+---------------------------------------------------------------------                                                               
+Hardware health information of slot 0                                                                                           
+---------------------------------------------------------------------                                                               
+Board ID                              : Normal                                                                                      
+PCB version                           : Normal                                                                                      
+Bom ID                                : Normal                                                                                      
+Flash read state                      : Normal                                                                                      
+NAND bad block check result           : Normal   
+Remaining space                       : Normal                                                                                    
+NOR flash erase state                 : Normal                                                                                      
+CPLD erase state                      : Normal                                                                                      
+CPLD self-check                       : Normal                                                                                      
+DDR single-bit ECC error count        : 0                                                                                           
+Cache single-bit ECC error count      : 0 
+Power PWR1(CML)                       : Normal                                                                                      
+Power PWR1(TEMPERATURE)               : Normal                                                                                      
+Power PWR1(VIN_UV)                    : Normal                                                                                      
+Power PWR1(IOUT_OC)                   : Normal                                                                                      
+Power PWR1(VOUT_OV)                   : Normal                                                                                      
+Power PWR1(OFF)                       : Normal                                                                                      
+Power PWR1(BUSY)                      : Normal                                                                                      
+Power PWR1(UNKNOWN)                   : Normal                                                                                      
+Power PWR1(OTHER)                     : Normal                                                                                      
+Power PWR1(FANS)                      : Normal                                                                                      
+Power PWR1(POWER_GOOD)                : Normal                                                                                      
+Power PWR1(MFR)                       : Normal                                                                                      
+Power PWR1(INPUT)                     : Normal                                                                                      
+Power PWR1(IOUT/POUT)                 : Normal                                                                                      
+Power PWR1(VOUT)                      : Normal   
+Board corrosion                       : No    
+
+Table 3-1 Description of the check hardware health command output and troubleshooting methods for abnormal devices
+
+Item
+	
+
+Description
+	
+
+Troubleshooting methods for abnormal devices
+
+Hardware health information of slot x
+	
+
+Health check information about the device.
+	
+
+-
+
+Board ID
+	
+
+Status of the Printed circuit board (PCB) check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+PCB version
+	
+
+Status of the PCB version check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+Bom ID
+	
+
+Status of the Bom ID check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+Flash read state
+	
+
+Status of the flash read/write check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+NAND bad block check result
+	
+
+Status of the bad block check of the NAND flash.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+NOTE:
+
+This field is not available for the S6735-S.
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+Remaining space
+	
+
+Status of the flash remaining space check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+    Enter the device directory.
+
+        If the switch has a hard disk, run the cd hda1: command to enter the hard disk directory.
+
+        If the switch has a flash rather than a hard disk, run the cd flash: command to enter the flash directory.
+
+    Run the dir command to check the size of the remaining storage space. If the remaining space is not enough, run the delete command to delete unneeded files.
+
+    Run the dir command to check whether the size of the remaining storage space is greater than the size of the PDF file.
+
+        If so, go to Step 5.
+
+        If not, go to Step 4.
+
+    Collect log information and configuration information, and then contact technical support personnel.
+
+    End.
+
+NOR flash erase state
+	
+
+Status of the erase and write check of the NOR flash.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+NOTE:
+
+This field is not available for the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, and S5735-S-I.
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+CPLD erase state
+	
+
+Status of the CPLD erase and write check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+CPLD self-check
+	
+
+Status of the CPLD self-check.
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+DDR single-bit ECC error count
+	
+
+DDR single-bit ECC error frequency.
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+Cache single-bit ECC error count
+	
+
+Cache single-bit ECC error frequency.
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+
+Power PWR1(CML)
+	
+
+Whether the communication of the power module is normal:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(TEMPERATURE)
+	
+
+Whether the temperature of the power module is abnormal:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(VIN_UV)
+	
+
+Whether the input voltage of the power module is below the lower threshold:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(IOUT_OC)
+	
+
+Whether the power module has output overcurrent:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(VOUT_OV)
+	
+
+Whether the output voltage of the power module exceeds the upper threshold:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(OFF)
+	
+
+Whether the power module is powered off:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(BUSY)
+	
+
+Whether the power module is busy and does not respond:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(UNKNOWN)
+	
+
+Whether the power module status is unknown:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(OTHER)
+	
+
+Whether the power module is faulty due to any other reasons:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(FANS)
+	
+
+Whether the fan of the power module is faulty:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(POWER_GOOD)
+	
+
+Whether the output of the power module is normal:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(MFR)
+	
+
+Whether a user-defined fault occurs on the power module:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(INPUT)
+	
+
+Whether the input of the power module is normal:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(IOUT/POUT)
+	
+
+Whether the output current or power of the power supply is faulty:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Power PWR1(VOUT)
+	
+
+Whether the output voltage of the power module is normal:
+
+    Normal: The status is normal.
+    Abnormal: The status is abnormal.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the power supply is faulty, collect alarm and configuration information, and contact technical support personnel.
+
+Board corrosion
+	
+
+Whether the device is corroded.
+
+    Yes: Corrosion occurs.
+    No: Corrosion does not occur.
+
+If this parameter is not supported, a hyphen (-) is displayed.
+	
+
+If the device hardware is damaged, collect alarm and configuration information and contact technical support personnel.
+display built-in power
+Function
+
+The display built-in power command displays the built-in power supply status of switches with extended temperature range.
+
+Only S5720I-28X-SI-AC and S5720I-28X-PWH-SI-AC support this command.
+Format
+
+display built-in power
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display built-in power command to check whether the built-in power supply status of switches with extended temperature range is normal.
+
+If some member switches do not support this command, the system displays a prompt message.
+Example
+
+# Display the built-in power supply status of switches with extended temperature range.
+
+<HUAWEI> display built-in power
+------------------------------------------------------------                                                                        
+ Slot    PowerID     State                                                                                                          
+------------------------------------------------------------                                                                        
+ 1       PWR1        Normal                                                                                                         
+         PWR2        Abnormal                                                                                                       
+ 2       PWR1        Normal                                                                                                         
+         PWR2        Abnormal                                                                                                       
+------------------------------------------------------------                                                                        
+Info: Slot 0 does not support the command.  
+
+Table 3-2 Description of the display built-in power command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+PowerID
+	
+
+Power supply ID.
+
+State
+	
+Power supply status:
+
+    Abnormal
+    Normal
+
+display battery information
+Function
+
+The display battery information command displays lithium battery information.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+display battery information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command to view lithium battery information.
+Example
+
+# Display lithium battery information.
+
+<HUAWEI> display battery information
+Info: This operation may take a few seconds. Please wait for a moment....                                                           
+------------------------------------------------------------                                                                        
+ Lithium battery information of integrated power                                                                                    
+------------------------------------------------------------ 
+Battery group information                                                                                                           
+   Battery status                                      : Float charging                                                             
+   Battery voltage(V)                                  : 54.26                                                                      
+   Battery current(A)                                  : 0.00                                                                       
+   Total battery capacity(Ah)                          : 200                                                                        
+   Available battery capacity(%)                       : 100.00                                                                     
+   Battery temperature(degC)                           : 29.47                                                                      
+   Battery run time(h)                                 : 256.00                                                                     
+   Number of connected ESMUs                           : 2                                                                          
+
+Battery 1 information                                                                                                               
+   Battery voltage(V)                                  : 54.28                                                                      
+   Battery current(A)                                  : 0.00                                                                       
+   Device address                                      : 1                                                                          
+   Battery status                                      : Charging                                                                   
+   Battery SOH(%)                                      : 100.00                                                                     
+   Battery capacity(Ah)                                : 100                                                                        
+   Electrochemical cell package voltage(V)             : 50.99                                                                      
+   Maximum allowable current limiting coefficient(C10) : 0.30                                                                       
+   Electric core(1-16) voltage(V)                      :                                                                        
+       core[1-4]  :3.40 3.40 3.40 3.40                                                                                              
+       core[5-8]  :3.40 3.40 3.40 3.40                                                                                              
+       core[9-12] :3.38 3.40 3.40 3.40                                                                                              
+       core[13-16]:3.40 3.40 3.40 3.40                                                                                       
+   Electric core(1-16) degree(degC)                    :                                                                                  
+       core[1-4]  :29.00 29.00 29.00 29.00                                                                                          
+       core[5-8]  :29.00 29.00 29.00 29.00                                                                                          
+       core[9-12] :29.00 29.00 29.00 30.00                                                                                          
+       core[13-16]:30.00 30.00 30.00 30.00                                                                                    
+   SoftWare version                                    : V116                                                                     
+
+Battery 2 information                                                                                                               
+   Battery voltage(V)                                  : 54.25                                                                      
+   Battery current(A)                                  : 0.00                                                                       
+   Device address                                      : 2                                                                          
+   Battery status                                      : Charging                                                                   
+   Battery SOH(%)                                      : 100.00                                                                     
+   Battery capacity(Ah)                                : 100                                                                        
+   Electrochemical cell package voltage(V)             : 51.28                                                                      
+   Maximum allowable current limiting coefficient(C10) : 0.30                                                                       
+   Electric core(1-16) voltage(V)                      :                                                                            
+       core[1-4]  :3.42 3.42 3.41 3.42                                                                                              
+       core[5-8]  :3.42 3.42 3.42 3.42                                                                                              
+       core[9-12] :3.42 3.42 3.42 3.42                                                                                              
+       core[13-16]:3.42 3.42 3.42 3.42                                                                                      
+   Electric core(1-16) degree(degC)                    :                                                                            
+       core[1-4]  :31.00 31.00 31.00 29.00                                                                                          
+       core[5-8]  :29.00 29.00 29.00 29.00                                                                                          
+       core[9-12] :29.00 29.00 29.00 30.00                                                                                          
+       core[13-16]:30.00 30.00 30.00 30.00                                                                                    
+   SoftWare version                                    : V116
+
+Table 3-3 Description of the display battery information command output
+
+Item
+	
+
+Description
+
+Lithium battery information of integrated power
+	
+
+Information about the integrated lithium battery system.
+
+Battery group information
+	
+
+Battery group information.
+
+Battery status
+	
+
+Battery status.
+
+Battery voltage(V)
+	
+
+Battery voltage, in volts (V).
+
+Battery current(A)
+	
+
+Battery current, in amperes (A).
+
+Total battery capacity(Ah)
+	
+
+Total battery capacity, in Ah.
+
+Available battery capacity(%)
+	
+
+Remaining battery capacity, in percentage.
+
+Battery temperature(degC)
+	
+
+Battery temperature, in ºC.
+
+Battery run time(h)
+	
+
+Battery backup time, in hours.
+
+Number of connected ESMUs
+	
+
+Number of connected ESMUs.
+
+Device address
+	
+
+Device address.
+
+Battery SOH(%)
+	
+
+Battery string SOH, in percentage.
+
+Battery capacity(Ah)
+	
+
+Battery capacity, in Ah.
+
+Electrochemical cell package voltage(V)
+	
+
+Electrochemical cell package voltage, in volts (V).
+
+Maximum allowable current limiting coefficient(C10)
+	
+
+Maximum allowable current limiting coefficient, in C10.
+
+Electric core(1-16) voltage(V)
+	
+
+Voltage of electrochemical cells 1 to 16, in Volt (V).
+
+Electric core(1-16) degree(degC)
+	
+
+Temperature of electrochemical cells 1 to 16, in degrees Celsius.
+
+SoftWare version
+	
+
+Software version. The value is in ASCII format.
+display chip-temperature
+Function
+
+The display chip-temperature command displays the temperature of chip.
+Format
+
+display chip-temperature { all | slot slot-id }
+Parameters
+Parameter 	Description 	Value
+
+all
+	
+
+Displays the temperature of chip of all slots.
+	
+
+-
+
+slot slot-id
+	
+
+Displays the temperature of chip of a specified slot.
+	
+
+The value must be set according to the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+A proper temperature range is the prerequisite for stable running of switches. If the temperature of chip is too high or too low, the hardware may be damaged.
+Example
+
+# Display the temperature of chips of all slots. (The actual output information may differ from the following information.)
+
+<HUAWEI> display chip-temperature all
+--------------------------------------------------- 
+ Slot        Chip        Status        Current(C)  
+---------------------------------------------------
+ 0           LSW         Normal        46
+             CPU         Normal        60
+             PHY         Normal        52
+
+<HUAWEI> display chip-temperature all
+--------------------------------------------------- 
+ Slot        Chip        Status        Current(C)  
+---------------------------------------------------
+ 0           LSW1        Normal        46
+             LSW2        Normal        50
+             CPU         Normal        60
+             PHY         Normal        52
+
+Table 3-4 Description of the display chip-temperature command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Chip
+	
+
+Type of the chip.
+
+    CPU: indicates a CPU chip.
+    LSW: indicates a forwarding chip. If there are multiple chips, they are displayed as LSW1, LSW2, ..., and so on.
+    PHY: indicates a PHY chip on the backplane.
+    PHY1: indicates a PHY chip on a subcard.
+
+Status
+	
+Temperature status.
+
+    Normal: The temperature is normal.
+
+    Abnormal: The temperature is abnormal or all interfaces on the device are down.
+
+Current(C)
+	
+
+Current temperature of the chip, in the centigrade scale (°C). The temperature value is displayed as an integer, so there may be a maximum of 1°C error between the displayed value and actual temperature.
+display compatible-information
+Function
+
+The display compatible-information command displays compatible information of a device.
+Format
+
+display compatible-information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Generally, device versions have matching NMS software. The NMS software needs to apply to all the devices supported by matching versions. Otherwise, the NMS cannot manage devices. If the NMS version is an earlier version but the current device is running a later version that does not match the current NMS version, the NMS cannot manage the current device.
+
+To decouple the NMS version and device version, a compatible device model developed based on an earlier version is defined for each device model. If the NMS cannot manage a device because of version mismatch, obtain information about the device compatible with the current device. The NMS can then use the obtained information to manage the current device.
+
+For example:
+
+S5720-SI_R10 is a device model newly available in V200R010. The NMS software version that matches the device software version is V200R010.
+
+S5720-SI_R8 is a device model newly available in V200R008. The NMS software version that matches the device software version is V200R008.
+
+When you use the NMS of V200R008 to manage S5720-SI_R10, the device cannot be managed because of version mismatch. The NMS then obtains compatibility information about S5720-SI_R10 and learns that it is compatible with S5720-SI_R8. Subsequently, the NMS uses information about S5720-SI_R8 to manage the current device.
+
+If the device does not have a compatible version, the system will display a message, indicating that no compatible information exists after the display compatible-information command is executed.
+
+Compatible information of stacked devices can also be displayed.
+Example
+
+# Display compatible information of a device.
+
+<HUAWEI> display compatible-information
+SlotID              : 0   
+Compatible SysOids  : 1.3.6.1.4.1.2011.2.23.331                                                                                     
+Compatible Version  : V200R008C00                                                                                                   
+ProductName         : S5735-L24P4S-A   
+
+Table 3-5 Description of the display compatible-information command output
+
+Item
+	
+
+Description
+
+SlotID
+	
+
+The slot ID.
+
+Compatible SysOids
+	
+
+System OID of an old device version.
+
+Compatible Version
+	
+
+Old device version compatible with the current device version.
+
+ProductName
+	
+
+Product name of new devices.
+display cpu-usage
+Function
+
+The display cpu-usage command displays CPU usage statistics.
+Format
+
+display cpu-usage [ slave | slot slot-id ] [ vcpu vcpu-index ]
+
+The slave parameter is not supported if the switch does not support the stacking function or does not have the stacking function enabled.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S support the vcpu vcpu-index parameter.
+Parameters
+Parameter 	Description 	Value
+
+slave
+	
+
+Displays the CPU usage of slave devices in a stack. This parameter is valid only in a stack system.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+vcpu vcpu-index
+	
+
+Displays the usage of a specified virtual CPU.
+	
+
+Specify the vcpu-index parameter based on the hardware configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+CPU usage is an important indicator to evaluate device performance. A high CPU usage will cause service faults, for example, BGP route flapping, frequent VRRP active/standby switchover, and even failed device login. You can use the display cpu-usage command to view CPU usage to check whether devices are working properly.
+
+When the CPU usage is high, rectify the fault according to "Troubleshooting: High CPU" in Huawei S Series Campus Switches Troubleshooting Guide.
+Example
+
+# Display the CPU usage on the device.
+
+<HUAWEI> display cpu-usage
+CPU Usage Stat. Cycle: 60 (Second)                                              
+CPU Usage            : 20% Max: 99%                                              
+CPU Usage Stat. Time : 2019-10-23  10:04:45                                     
+CPU utilization for five seconds: 5%: one minute: 5%: five minutes: 5%          
+Max CPU Usage Stat. Time : 2019-10-21 16:14:00.                                 
+                           
+TaskName             CPU  Runtime(CPU Tick High/Tick Low)  Task Explanation     
+VIDL                 80%         0/e3a150c0       DOPRA IDLE                    
+OS                   10%         0/ bfb0440       Operation System              
+1AGAGT                6%         0/       0       1AGAGT                        
+AAA                   2%         0/    1d4a       AAA  Authen Account Authorize 
+ACL                   1%         0/   13362       ACL Access Control List       
+ADPT                  1%         0/       0       ADPT Adapter                  
+AGNT                  0%         0/       0       AGNTSNMP agent task           
+AGT6                  0%         0/       0       AGT6SNMP AGT6 task            
+ALM                   0%         0/       0       ALM  Alarm Management         
+ALS                   0%         0/  527a3e       ALS  Loss of Signal           
+AM                    0%         0/   232cf       AM   Address Management       
+APP                   0%         0/       0       APP                           
+ARP                   0%         0/   36582       ARP                           
+ASFI                  0%         0/       0       ASFI                          
+ASFM                  0%         0/       0       ASFM                          
+BATT                  0%         0/       0       BATT Main Task                
+BFD                   0%         0/  100f36       BFD Bidirection Forwarding    
+                                                  Detect                        
+BFDA                  0%         0/       0       BFDA BFD Adapter              
+BFDS                  0%         0/    5825       BFDS                          
+BOX                   0%         0/  1d0097       BOX Output                    
+BPDU                  0%         0/    1806       BPDU Adapter                  
+BTRC                  0%         0/     60e       BTRC                          
+CDM                   0%         0/    9b95       CDM                           
+CFM                   0%         0/    6f68       CFM Configuration file        
+                                                  management                    
+CLKI                  0%         0/       0       CLKI                          
+DEFD                  0%         0/   22ebd       DEFD CPU Defend               
+DELM                  0%         0/    355c       DELMAC FOR STP                
+DEV                   0%         0/       0       DEV  Device Management        
+DHCP                  0%         0/   12188       DHCP Dynamic Host Config      
+                                                  Protocol                      
+DLDP                  0%         0/    dc0d       DLDP Protocol                 
+EAP                   0%         0/    38a9       EAP  Extensible Authen        
+                                                  Protocol                      
+EFMT                  0%         0/   11c70       EFMTEST 802.3AH Test          
+EOAM                  0%         0/    ea8f       EOAM1AG                       
+ESAP                  0%         0/       0       ESAP eSap Adapter             
+ETHA                  0%         0/       0       ETHA                          
+EZOP                  0%         0/   506f4       EZOP EasyOperation            
+                                                  application                   
+EZPP                  0%         0/  1e41f8       EZPP EasyOperation packet     
+FCAT                  0%         0/    6479       FCAT Catch Packets for        
+                                                  debugging                     
+FECD                  0%         0/   11d8e       FECD Mod Manage Task          
+FIB                   0%         0/    523b       FIB Forward Information Base  
+FIB6                  0%         0/       0       FIB6IPv6 FIB                  
+FLOW                  0%         0/    ce76       FLOW SFLOW                    
+FMAT                  0%         0/    7f23       FMATFault Manage task         
+FTS                   0%         0/  125f35       FTS                           
+GEM                   0%         0/       0       GEM task                      
+GEMR                  0%         0/       0       GEMRun task                   
+GRSA                  0%         0/       0       GRSA                          
+GVRP                  0%         0/       0       GVRP Protocol                 
+HACK                  0%         0/       0       HACKtask for HA ACK           
+HOTT                  0%         0/       0       HOTT                          
+HS2M                  0%         0/       0       HS2MHigh available task       
+HTTP                  0%         0/   5d420       HTTP                          
+IFLP                  0%         0/    8611       IFLP                          
+IFNT                  0%         0/       0       IFNTIfnet task                
+IFPD                  0%         0/ 2177f21       IFPD Ifnet Product Adapter    
+INFO                  0%         0/   70409       INFOInformation center        
+IP                    0%         0/    cb13       IP                            
+IPCK                  0%         0/       0       IPCKIPC task for ack message  
+IPCQ                  0%         0/  3c6ffd       IPCQIPC task for single queue 
+IPCR                  0%         0/       0       IPCR IPC Receiver             
+JOB                   0%         0/       0       JOB Schedule                  
+L2                    0%         0/   2a6b5       L2                            
+L2IF                  0%         0/   b7fbc       L2IF                          
+L2_E                  0%         0/   10088       L2_EOAM_Y1731                 
+L2_P                  0%         0/   58a50       L2_PR                         
+L2_R                  0%         0/  169c0c       L2_RING                       
+L2_T                  0%         0/    1724       L2_TRUNK                      
+L3I4                  0%         0/       0       L3I4 LPU Manage IPv4 unicast  
+                                                  FDB                           
+L3IO                  0%         0/       0       L3IO LPU Process urpf, vrrp   
+                                                  etc.                          
+L3M4                  0%         0/       0       L3M4 MPU Manage IPv4 unicast  
+                                                  FDB                           
+L3MB                  0%         0/    4319       L3MB MPU Process urpf, vrrp   
+                                                  etc.                          
+LAGAGT                0%         0/   107dd       LAGAGT                        
+LBDT                  0%         0/  1bf810       LBDT Loopback Detect Mpu      
+LINK                  0%         0/       0       LINK                          
+LLDP                  0%         0/   70921       LLDP Protocol                 
+LNP                   0%         0/       0       LNP task                      
+MAC                   0%         0/    564f       MAC Media Access Control      
+MACL                  0%         0/   21954       MACL Access Control List      
+MAD                   0%         0/    dae7       MAD Task                      
+MADP                  0%         0/       0       MADP MAD proxy Task           
+MCSW                  0%         0/   12624       MCSW Mulitcast Switch Adapter 
+MERX                  0%         0/   8a774       MERX Meth Receive             
+METH                  0%         0/   f0699       METH Metropolitan Ethernet    
+MFF                   0%         0/    b308       MFF MAC Forced Forwarding     
+MFIB                  0%         0/     beb       MFIBMulticast forward info    
+MIRR                  0%         0/       0       MIRR Capture Packet           
+MSYN                  0%         0/   7245a       MSYN Mac Synchronization      
+Mirr                  0%         0/    4107       Mirror                        
+NDIO                  0%         0/       0       NDIO LPU Manage IPv6 unicast  
+                                                  FDB                           
+NDMB                  0%         0/       0       NDMB MPU Manage IPv6 unicast  
+                                                  FDB                           
+NFPT                  0%         0/   d2dec       NFPTNFP timer task            
+NTPT                  0%         0/       0       NTPT task                     
+OAM1                  0%         0/       0       OAM1 EOAM Adapter             
+PAT                   0%         0/       0       PAT                           
+PNGI                  0%         0/       0       PNGI                          
+PNGM                  0%         0/       0       PNGM MPU Process icmp reply   
+                                                  fast                          
+POE+                  0%         0/       0       POE+ PPP Over Ethernet Plus   
+PPI                   0%         0/   58e46       PPI Product Process Interface 
+PTAL                  0%         0/       0       PTAL Portal                   
+RDS                   0%         0/       0       RDS  Radius                   
+RMON                  0%         0/   11240       RMONRemote monitoring         
+ROUT                  0%         0/  6a6343       ROUTRoute task                
+RPCQ                  0%         0/   22254       RPCQRemote procedure call     
+RTMR                  0%         0/   ed870       RTMR                          
+SAM                   0%         0/    2e2d       SAM  Service Agent Module     
+SAPP                  0%         0/    758e       SAPP                          
+SECE                  0%         0/  2e6e82       SECE Security                 
+SLAG                  0%         0/       0       SLAG                          
+SMAG                  0%         0/       0       SMAG Smart Link Agent         
+SMLK                  0%         0/   71827       SMLK Smart Link Protocol      
+SNPG                  0%         0/   d97b7       SNPG Multicast Snooping       
+SOCK                  0%         0/   4bdda       SOCKPacket schedule and       
+                                                  process                       
+SPM                   0%         0/   6a1ce       SPM  Smart Power Management   
+SRM                   0%         0/  6bb9b8       SRM  System Resource          
+                                                  Management                    
+SRMI                  0%         0/       0       SRMI External Interrupt       
+SRMT                  0%         0/  fe2a46       SRMT System Resource Manage   
+                                                  Timer                         
+STFW                  0%         0/       0       STFW Super task forward       
+STND                  0%         0/       0       STNDStandby task              
+STP                   0%         0/  79e590       STP                           
+STRA                  0%         0/   1c767       STRA Source Trail             
+TACH                  0%         0/   9817e       TACHWTACACS                   
+TARP                  0%         0/       0       TARPING                       
+TICK                  0%         0/  7dbef6                                     
+TM                    0%         0/       0       TM   Transmission Management  
+TNQA                  0%         0/   83134       TNQAC                         
+TRAP                  0%         0/    14d7       TRAPSNMP trap task            
+TTNQ                  0%         0/       0       TTNQAS                        
+TUNL                  0%         0/    5c17       TUNL                          
+UCM                   0%         0/    3e46       UCM  User Control Management  
+UTSK                  0%         0/       0       UTSK                          
+VCMP                  0%         0/       0       VCMP task                     
+VFS                   0%         0/       0       VFS Virtual file system       
+VFSD                  0%         0/       0       VFSDVFS flash task for delete 
+                                                  file block                    
+VMON                  0%         0/    78d5       VMONSystem monitor            
+VMSH                  0%         0/       0       VMSH                          
+VP                    0%         0/    5966       VP  Virtual path task         
+VPR                   0%         0/       0       VPR  VP Receiver              
+VRPT                  0%         0/    39fd       VRPT                          
+VRRP                  0%         0/  152ced       VRRP                          
+VT                    0%         0/       0       VT   Virtual Transfer         
+VT0                   0%         0/  4909c5       VT0 Line user's task          
+VT1                   0%         0/       0       VT1 Line user's task          
+VTYD                  0%         0/   b3282       VTYDVirtual terminal          
+WEB                   0%         0/    1295       WEB  Web                      
+XMON                  0%         0/       0       XMONVxworks system monitor    
+XQOS                  0%         0/   12999       XQOS Quality of service       
+_EXC                  0%         0/       0       Exception Agent Task          
+_TIL                  0%         0/       0       Infinite loop event task      
+bcmCNTR.0             0%         0/  61077b       tS10                          
+bcmCNTR.1             0%         0/  605691       tS11                          
+bcmDPC                0%         0/   25d89       tS09                          
+bcmL2X.0              0%         0/  b069d6       tS0c                          
+bcmL2X.1              0%         0/  b2c5f2       tS0f                          
+bcmRX                 0%         0/  1df879       bcmRX                         
+bcmTX                 0%         0/    16f2       tS0a                          
+frag_add              0%         0/  45ecce       tS0d                          
+frag_del              0%         0/       0       tS0e                          
+linkscan              0%         0/  ecce16       tS12                          
+root                  0%         0/       0       tS03                          
+soft_learn            0%         0/   7812a       tS0b                          
+tExcTask              0%         0/       0       tS00                          
+tLogTask              0%         0/       0       tS01                          
+tShell                0%         0/       0       tS02                          
+
+Table 3-6 Description of the display cpu-usage command output
+
+Item
+	
+
+Description
+
+CPU Usage Stat. Cycle
+	
+
+Interval for collecting CPU usage statistics. The interval is 60 seconds and cannot be configured.
+
+CPU Usage
+	
+
+Average CPU usage in the last 10 seconds.
+
+Max
+	
+
+Highest CPU usage in history.
+
+CPU Usage Stat. Time
+	
+
+Time when the latest CPU usage statistics are collected.
+
+CPU utilization for five seconds
+	
+
+CPU usage in five seconds.
+
+one minute
+	
+
+CPU usage in one minute.
+
+five minutes
+	
+
+CPU usage in five minutes.
+
+Max CPU Usage Stat. Time
+	
+
+Time when the highest CPU usage statistics are collected.
+
+TaskName
+	
+
+Task that is being executed. For details about all the tasks and functions of the device, see "Troubleshooting: High CPU Usage - How to Locate the High CPU Usage Problem - Determining Fault Causes According to CPU Usages of Tasks (Fixed Switches)" and "Troubleshooting: High CPU Usage - Appendix - CPU-related Tasks and Functions for Fixed Switches" in Huawei S Series Campus Switches Troubleshooting Guide.
+
+CPU
+	
+
+Real-time CPU usage of each task.
+
+Runtime(CPU Tick High/Tick Low)
+	
+
+System running time calculated based on CPU tick.
+
+Task Explanation
+	
+
+Explanation to the task.
+display cpu-usage configuration
+Function
+
+The display cpu-usage configuration command displays CPU usage configuration.
+Format
+
+display cpu-usage configuration [ slave | slot slot-id ]
+
+The slave parameter is not supported if the switch does not support the stacking function or does not have the stacking function enabled.
+Parameters
+Parameter 	Description 	Value
+
+slave
+	
+
+Displays CPU usage configuration of standby switches in a stack.
+	
+
+-
+
+slot slot-id
+	
+
+Displays device CPU usage configuration of a specified slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+This command displays the alarm threshold and recovery threshold.
+
+    When CPU usage reaches the alarm threshold, the system generates a CPU usage alarm.
+
+    When CPU usage falls within the recovery threshold, the system generates a clear alarm.
+
+Example
+
+# Display CPU usage configuration.
+
+<HUAWEI> display cpu-usage configuration
+The CPU usage monitor is turned on. 
+The current monitor cycle is 60 seconds.
+The current monitor warning threshold is 95%.
+The current monitor restore threshold is 80%. 
+
+Table 3-7 Description of the display cpu-usage configuration command output
+
+Item
+	
+
+Description
+
+The CPU usage monitor
+	
+
+Whether the CPU usage monitoring function is enabled or disabled.
+
+To enable the CPU usage monitoring function, run the cpu-usage monitor command.
+
+The current monitor cycle
+	
+
+CPU usage monitoring period, which cannot be configured.
+
+The current monitor warning threshold
+	
+
+Alarm threshold. To set the CPU usage alarm threshold, run the cpu-usage threshold threshold-value [ restore restore-threshold-value ] [ slot slot-id ] command.
+
+The current monitor restore threshold
+	
+
+Alarm recovery threshold. To set the CPU usage alarm recovery threshold, run the cpu-usage threshold threshold-value [ restore restore-threshold-value ] [ slot slot-id ] command.
+display cpu-usage history
+Function
+
+The display cpu-usage history command displays CPU usage statistics within a period.
+Format
+
+display cpu-usage history [ 1hour | 24hour | 72hour ] [ slave | slot slot-id ] [ vcpu vcpu-index ]
+
+The slave parameter is not supported if the switch does not support the stacking function or does not have the stacking function enabled.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S support the vcpu vcpu-index parameter.
+Parameters
+Parameter 	Description 	Value
+
+1hour
+	
+
+Displays CPU usage statistics within the last one hour.
+	
+
+-
+
+24hour
+	
+
+Displays CPU usage statistics within the last 24 hours.
+	
+
+-
+
+72hour
+	
+
+Displays CPU usage statistics within the last 72 hours.
+	
+
+-
+
+slave
+	
+
+Displays the CPU usage statistics of slave devices in a stack. This parameter is valid only in a stack system.
+	
+
+-
+
+slot slot-id
+	
+
+Displays the CPU usage statistics of a specified slot ID.
+	
+
+The value varies with the device configuration.
+
+vcpu vcpu-index
+	
+
+Displays the CPU usage statistics of a specified virtual CPU.
+	
+
+Specify the vcpu-index parameter based on the hardware configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+The system collects CPU usage statistics at a specified interval (usually 60s) and saves them in the historical record table. To check CPU usage statistics within a period, run the display cpu-usage history command, and the command output helps you determine whether the CPU is working properly.
+
+In the display cpu-usage history command output, the x-coordinate indicates the specified period, and the y-coordinate indicates the CPU usage.
+
+Precautions
+
+If CPU usage is constantly higher than the upper alarm threshold (95% by default) before the feature is deployed on a large scale, check the device to troubleshoot the fault.
+Example
+
+# Display CPU usage statistics within the last one hour.
+
+<HUAWEI> display cpu-usage history 1hour
+100%|
+ 95%|
+ 90%|
+ 85%|
+ 80%|
+ 75%|
+ 70%|
+ 65%|
+ 60%|
+ 55%|
+ 50%|
+ 45%|
+ 40%|
+ 35%|                  H
+ 30%|                  H
+ 25%|                  H
+ 20%|                  H
+ 15%|                  H
+ 10%|                  H
+  5%|HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+     ---------+---------+---------+---------+---------+---------+>
+              10        20        30        40        50        60
+              System cpu-usage last 60 minutes(Per Min)
+
+# Display CPU usage statistics within the last 24 hours.
+
+<HUAWEI> display cpu-usage history 24hour
+
+100%|
+ 95%|
+ 90%|
+ 85%|
+ 80%|
+ 75%|*
+ 70%|*
+ 65%|*
+ 60%|*
+ 55%|*
+ 50%|*
+ 45%|*
+ 40%|*
+ 35%|*                         **
+ 30%|*                         **
+ 25%|*                         **
+ 20%|*                         **
+ 15%|*                         **
+ 10%|H                         **
+  5%|HHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+     ---------+---------+---------+---------+-------->
+              10        20        30        40
+       System cpu-usage last 24 hours(Per Halfhour)
+      * = maximum cpu-usage    H = average cpu-usage
+
+# Display CPU usage statistics within the last 72 hours.
+
+<HUAWEI> display cpu-usage history 72hour
+
+100%|
+ 95%|
+ 90%|
+ 85%|
+ 80%|
+ 75%|*
+ 70%|*
+ 65%|*
+ 60%|*
+ 55%|*
+ 50%|*
+ 45%|*
+ 40%|*
+ 35%|*            *
+ 30%|*            *
+ 25%|*            *
+ 20%|*            *
+ 15%|*            *
+ 10%|*            *
+  5%|HHHHHHHHHHHHHH
+     ---------+---------+---------+---------+---------+---------+---------+-->
+              10        20        30        40        50        60        70
+                   System cpu-usage last 72 hours(Per Hour)
+                  * = maximum cpu-usage    H = average cpu-usage
+
+Table 3-8 Description of the display cpu-usage history command output
+
+Item
+	
+
+Description
+
+System cpu-usage last 60 minutes(Per Min)
+	
+
+CPU usage statistics within the last one hour, with a step of one minute.
+
+System cpu-usage last 24 hours(Per Halfhour)
+	
+
+CPU usage statistics within the last 24 hours, with a step of half an hour.
+
+System cpu-usage last 72 hours(Per Hour)
+	
+
+CPU usage statistics within the last 72 hours, with a step of an hour.
+
+* = maximum cpu-usage
+	
+
+Maximum CPU usage. For example, the maximum CPU usage in the first hour in the latest 72 hours is 75%.
+
+H = average cpu-usage
+	
+
+Average CPU usage. For example, the average CPU usage in the first hour in the latest 72 hours is 5%.
+display device
+Function
+
+The display device command displays the type and status of the components on a device.
+Format
+
+display device [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+If you need to check whether a switch is working properly, run the display device command to view hardware information of the components and device registration status on the switch.
+
+This command can also display the working status of the battery or redundant power supply (RPS) used for a device.
+The following product models support the use of an RPS:
+
+    S5720-LI series: S5720-52X-LI-DC, S5720-28X-LI-24S-AC, S5720-28X-LI-24S-DC, S5720-28X-PWH-LI-AC, S5720-52X-PWR-LI-ACF, S5720-52X-LI-48S-AC, S5720-28X-PWR-LI-ACF
+    S5720S-LI series: S5720S-28X-LI-24S-AC
+
+Example
+
+# Display information about the components on a device (with a built-in power supply unit or power module).
+
+<HUAWEI> display device
+S5720-52X-LI-DC's Device status:Slot  Sub  Type               Online    Power      Register     Status   Role
+--------------------------------------------------------------------------------
+0     -    S5720-52X-LI       Present   PowerOn    Registered   Normal   Master
+           RPS                Present   PowerOn    Registered   Self-powered
+
+# Display information about components on a device (connected to an RPS).
+
+<HUAWEI> display device
+S5720-52X-LI-DC's Device status:Slot  Sub  Type               Online    Power      Register     Status   Role
+--------------------------------------------------------------------------------
+0     -    S5720-52X-LI       Present   PowerOn    Registered   Normal   Master
+           RPS                Present   PowerOn    Registered   Self-powered
+
+# Display information about components on a device (where ports on the device panel and ports on subcards cannot be used together).
+
+<HUAWEI> display device
+S6720-32C-PWH-SI-AC's Device status:                                                                                                
+Slot Sub  Type                  Online    Power    Register     Status   Role                                                       
+-------------------------------------------------------------------------------                                                     
+0    -    S6720-32C-PWH-SI      Present   PowerOn  Registered   Normal   Master                                                     
+     1    -                     Present   PowerOn  Unregistered -        NA                                                         
+     PWR1 POWER                 Present   PowerOn  Registered   Normal   NA                                                         
+     FAN1 FAN                   Present   PowerOn  Registered   Normal   NA                                                         
+Info: Slot 0 is in the port-on-card disable mode, so subcard 1 is unavailable and unregistered.
+
+# Display information about the component in slot 0.
+
+<HUAWEI> display device slot 0
+*down: administratively down                                                                           
+
+S5735S-L24P4X-A1's Device status:                                                           
+Slot Sub  Type                   Online    Power    Register     Status   Role                         
+--------------------------------------------------------------------------------------                 
+0    -    S5735S-L24P4X-A1       Present   PowerOn  Registered   Normal   Master                       
+--------------------------------------------------------------------------------------                 
+  Board Type        : S5735S-L24P4X-A1                                                                 
+  Board Description : 24*10/100/1000BASE-T ports, 4*10GE SFP+ ports, PoE+, 380W PoE, built-in AC power 
+--------------------------------------------------------------------------------------                 
+--------------------------------------------------------------------------------------                 
+Port     Port       Optic     MDI     Speed   Duplex  Flow-           Port   PoE                       
+         Type       Status            (Mbps)          Ctrl            State  State                     
+--------------------------------------------------------------------------------------                 
+0/0/1    GE(C)      -         Auto    1000    Full    Disable         Down   Enable                    
+0/0/2    GE(C)      -         Auto    1000    Full    Disable         Down   Disable                   
+0/0/3    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/4    GE(C)      -         Auto    1000    Full    Disable         Down   -                         
+0/0/5    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/6    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/7    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/8    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/9    GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/10   GE(C)      -         Auto    1000    Full    Disable         Down   Disable                   
+0/0/11   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/12   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/13   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/14   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/15   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/16   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/17   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/18   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/19   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/20   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/21   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/22   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/23   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                    
+0/0/24   GE(C)      -         Auto    1000    Full    Disable         *down  Enable                                      
+0/0/1    XGE(F)     Absent    -       10000   Full    Disable         Down   -                         
+0/0/2    XGE(F)     Present   -       10000   Full    Disable         *down  -                         
+0/0/3    XGE(F)     Absent    -       10000   Full    Disable         *down  -                         
+0/0/4    XGE(F)     Absent    -       10000   Full    Disable         *down  -                         
+--------------------------------------------------------------------------------------          
+
+Table 3-9 Description of the display device command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Sub
+	
+Card ID. The value can be:
+
+    –: indicates that the component is a device, not a card.
+    n: indicates a card. n is a digit.
+    FANn: indicates a fan module. n indicates the serial number of the fan module.
+    PWRn: indicates a power module . n indicates the serial number of the power module.
+
+Type
+	
+
+Component type. A component can be a device, RPS, or a card.
+Subcards are classified into the front subcard, rear subcard, power subcard and fan subcard.
+
+    Front card: The command displays the PCB model of a front card. For card classification and details about different cards, see the Hardware Description.
+    Rear card: The command displays the PCB model of a rear card. For card classification and details about different cards, see the Hardware Description.
+    Fan subcards include FAN.
+    Power subcard is POWER.
+    Lead-acid battery board: PBB-12AHA
+
+Redundant power supply: RPS
+
+Online
+	
+
+Whether a component is available. If the component is available, this field displays Present. If the component is unavailable, it is not displayed in the command output.
+
+Power
+	
+Power supply status. The value can be:
+
+    PowerOn
+    PowerOff
+
+Register
+	
+Whether the device is registered:
+
+    Registered: indicates that the component is registered.
+    Unregistered: indicates that the component is unregistered.
+
+Status
+	
+Status of the component. The value can be:
+
+    Abnormal: indicates that the component is running abnormally or the component does not match the device model.
+    Normal: indicates that the component is running normally.
+    WarmingUp: indicates that a subcard is performing configuration restoration.
+
+If the device is connected to an RPS power supply, the following values may be displayed:
+
+    Non-powered: The RPS power supply is not supplying power to the local device.
+    Other-powered: The RPS power supply is supplying power to another device and cannot supply power to the local device.
+    Self-powered: The RPS power supply is supplying power to the local device.
+    –: The RPS power supply is initializing and has not registered.
+
+Role
+	
+Role of a component.
+
+    In a stack, the value can be:
+
+    Master: The component is the master switch.
+
+    Standby: The component is the standby switch.
+
+    Slave: The component is a slave switch.
+    On a standalone device, this field displays Master.
+    The value NA indicates a card.
+
+Board Type
+	
+
+Device type.
+
+Board Description
+	
+
+Device description.
+
+Port
+	
+
+Number of an interface on a device.
+
+Port Type
+	
+Type of an interface.
+
+    If the field value contains (C), this interface is an electrical interface.
+    If the field value contains (F), this interface is an optical interface.
+
+Optic Status
+	
+Whether an optical module is available on an interface.
+
+    Present: An optical module is present on the interface.
+    Absent: No optical module is present on the interface.
+    -: Optical module information cannot be obtained.
+
+MDI
+	
+Medium dependent interface (MDI) type, which can be any of the following:
+
+    Auto
+    Normal
+    Across
+
+If this field displays -, the MDI type of the interface cannot be obtained.
+
+Speed (Mbps)
+	
+
+Interface speed.
+
+Duplex
+	
+Duplex mode of an interface.
+
+    Half: The interface works in half-duplex mode.
+    Full: The interface works in full-duplex mode.
+    -: The interface duplex mode cannot be obtained.
+
+To set the duplex mode for an interface, run the duplex command.
+
+Flow-Ctrl
+	
+
+Flow control status on an interface.
+
+    Disable: The flow control and received flow control is disabled on the interface.
+    Enable: The flow control function is enabled on the interface.
+    Receive enable: The receive flow control is enabled on the interface.
+    -: The flow control status cannot be obtained.
+
+To configure flow control, run the flow-control or flow-control receive command.
+
+Port State
+	
+Status of an interface:
+
+    down: The interface is physically Down.
+    *down: The interface is manually shut down.
+    up: The interface is in Up state.
+
+PoE State
+	
+Status of the PoE function on an interface.
+
+    Enable: The PoE function is enabled.
+    Disable: The PoE function is disabled.
+    -: PoE information cannot be obtained.
+
+display device mac-number
+Function
+
+The display device mac-number command displays the number of MAC addresses of a switch.
+Format
+
+display device mac-number [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Specifies a device ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+One or more MAC addresses may be configured on a switch before delivery. To check the number of MAC addresses of a switch, run the display device mac-number command. If the switch has multiple MAC addresses configured, the MAC addresses of Layer 3 interfaces are different from the system MAC address. If the switch has only one MAC address configured, the MAC addresses of Layer 3 interfaces are the same as the system MAC address. On a switch with one or more MAC addresses configured, the MAC addresses of Layer 2 interfaces are the same as the system MAC address.
+
+If slot slot-id is not specified in a stack, the display device mac-number command displays the number of MAC addresses of the master switch.
+Example
+
+# Display the number of MAC addresses.
+
+<HUAWEI> display device mac-number
+The number of MAC address : 1 
+
+Table 3-10 Description of the display device mac-number command output
+
+Item
+	
+
+Description
+
+The number of MAC address
+	
+
+Number of MAC addresses.
+display device manufacture-info
+Function
+
+The display device manufacture-info command displays manufacture information about the device.
+Format
+
+display device manufacture-info [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+slot slot-id 	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display device manufacture-info command to view manufacture information about the device, including the serial number and manufacture date. The command output contains information about only service subcards and does not contain information about fans and power modules.
+Example
+
+# Display manufacture information about the device.
+
+<HUAWEI> display device manufacture-info
+Slot  Sub  Serial-number          Manu-date                                     
+- - - - - - - - - - - - - - - - - - - - - -                                     
+0     -    2102353169107C800132   2011-08-24                                    
+      1    021ESN1234567890       2000-01-01
+
+# Display manufacture information about devices in a stack.
+
+<HUAWEI> display device manufacture-info
+Slot  Sub  Serial-number          Manu-date                                     
+- - - - - - - - - - - - - - - - - - - - - -                                     
+0     -    2102353169107C800132   2011-08-24                                    
+      1    021ESN1234567890       2000-01-01                                    
+3     -    2102353170107C800132   2011-08-23                                    
+4     -    2102353170107C800132   2011-08-23                                    
+      1    020WYG1234567892       2010-12-02                                    
+8     -    2102353170107C800235   2000-01-01
+
+Table 3-11 Description of the display device manufacture-info command output
+
+Item
+	
+
+Description
+slot 	Slot ID.
+Sub 	Subcard number.
+Serial-number 	Serial number.
+Manu-date 	Manufacture date of the device.
+display diagnostic-information
+Function
+
+The display diagnostic-information command collects and displays all the current diagnostic information or saves diagnostic information in a specified file.
+Format
+
+display diagnostic-information [ level { high | medium | low } ] [ acl | ap | arp | bfd | cmng | decoding | defend | dhcp | engine | evpn | gpm | l2adp | l3adp | lbdt | lldp | mcast | mpls | qos | rrpp | rumng | sa | sdk | smlk | srm | sta | stack | stat | stp | ucm | vxlan ] [ file-name ]
+
+    Only the S5720I-SI, S500, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support bfd.
+
+    Only the S5731-H, S5731S-H, S5731-S, S5731S-S, S5732-H, S6730S-H, S6730-S, S6730S-S, and S6730-H support mpls.
+
+    Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support sdk.
+
+    The stack parameter is supported on a stack only.
+
+    Only the S5731-H, S5731S-H, S5732-H, S6730S-H, and S6730-H support ap and sta.
+    Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support vxlan and evpn.
+
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+level
+	
+
+Collects diagnostic information about each module based on the level.
+	
+
+-
+
+high
+	
+
+Collects diagnostic information at the high level about each module.
+	
+
+-
+
+medium
+	
+
+Collects diagnostic information at the medium level about each module.
+	
+
+-
+
+low
+	
+
+Collects diagnostic information at the low level about each module.
+	
+
+-
+
+acl
+	
+
+Displays ACL information.
+	
+
+-
+
+ap
+	
+
+Displays AP information.
+	
+
+-
+
+arp
+	
+
+Displays ARP information.
+	
+
+-
+
+bfd
+	
+
+Displays BFD information.
+	
+
+-
+
+cmng
+	
+
+Displays cloud-based management information.
+	
+
+-
+
+defend
+	
+
+Displays attack defense information.
+	
+
+-
+
+decoding
+	
+
+Displays decoding information.
+	
+
+-
+
+dhcp
+	
+
+Displays DHCP information.
+	
+
+-
+
+engine
+	
+
+Displays engine information.
+	
+
+-
+
+evpn
+	
+
+Displays EVPN information.
+	
+
+-
+
+gpm
+	
+
+Displays GPM information.
+	
+
+-
+
+l2adp
+	
+
+Displays L2 information.
+	
+
+-
+
+l3adp
+	
+
+Displays L3 information.
+	
+
+-
+
+lbdt
+	
+
+Displays LBDT information.
+	
+
+-
+
+lldp
+	
+
+Displays LLDP information.
+	
+
+-
+
+mcast
+	
+
+Displays multicast information.
+	
+
+-
+
+mpls
+	
+
+Displays MPLS information.
+	
+
+-
+
+qos
+	
+
+Displays QoS information.
+	
+
+-
+
+rrpp
+	
+
+Displays RRPP information.
+	
+
+-
+
+sa
+	
+
+Displays SA information.
+	
+
+-
+
+sdk
+	
+
+Displays sdk information.
+	
+
+-
+
+smlk
+	
+
+Displays Smart Link information.
+	
+
+-
+
+stack
+	
+
+Displays stack information.
+	
+
+-
+
+srm
+	
+
+Displays device information.
+	
+
+-
+
+sta
+	
+
+Displays STA information.
+	
+
+-
+
+stat
+	
+
+Displays basic statistic information.
+	
+
+-
+
+stp
+	
+
+Displays STP information.
+	
+
+-
+
+ucm
+	
+
+Displays UCM module information.
+	
+
+-
+
+vxlan
+	
+
+Displays VXLAN module information.
+	
+
+-
+
+file-name
+	
+
+Specifies the name of the file where diagnostic information is stored.
+	
+
+The value is a string of 5 to 64 characters. The file name extension must be .txt. The default directory where files are stored is flash:/.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+When a fault occurs in the system, you can use the display diagnostic-information command to collect diagnostic information for fault location.
+
+The display diagnostic-information command output includes the output for multiple display commands, such as display clock, display version, and display current-configuration. Running the display diagnostic-information command is like running these display commands in batches.
+One-click diagnostic information collection takes a long time. Therefore, you can specify a module name or collect diagnostic information based on the level. Table 3-12 lists the commands at the high and medium levels. Other commands that are not listed in the table are at the low level.
+Table 3-12 Commands at the high and medium levels
+
+Command
+	
+
+Level
+
+display version
+	
+
+High
+
+display patch-information
+	
+
+High
+
+display current-configuration
+	
+
+High
+
+display device
+	
+
+High
+
+display alarm active
+	
+
+High
+
+display alarm history
+	
+
+High
+
+display ip interface brief
+	
+
+High
+
+display interface brief
+	
+
+High
+
+display interface
+	
+
+High
+
+display logbuffer
+	
+
+High
+
+display trapbuffer
+	
+
+High
+
+display lldp neighbor brief
+	
+
+High
+
+display bgp peer
+	
+
+High
+
+display bgp vpnv4 all peer
+	
+
+High
+
+display ospf peer
+	
+
+High
+
+display isis peer
+	
+
+High
+
+display mpls ldp peer
+	
+
+High
+
+display vrrp
+	
+
+High
+
+display vrrp brief
+	
+
+High
+
+display stp
+	
+
+High
+
+display stp brief
+	
+
+High
+
+display clock
+	
+
+High
+
+display elabel
+	
+
+High
+
+display license
+	
+
+High
+
+display license resource usage
+	
+
+High
+
+display reset-reason history-reset-record slot
+	
+
+High
+
+display cpu-usage
+	
+
+Medium
+
+display cpu-usage slave
+	
+
+Medium
+
+display cpu-usage slot
+	
+
+Medium
+
+display memory-usage
+	
+
+Medium
+
+display memory-usage slave
+	
+
+Medium
+
+display memory-usage slot
+	
+
+Medium
+
+Precautions
+
+    If the file-name parameter is not specified, diagnostic information is only displayed on the screen. If the file-name parameter is specified, diagnostic information is only stored to a specified file but not displayed on the screen, and the command level is management level (3).
+    The command output does not support split-screen display.
+
+    If this command displays a long output, press Ctrl+C to abort this command.
+
+    This command displays diagnostic information, which helps locate faults but may affect system performance. For example, CPU usage may become high. Therefore, do not use this command when the system is running properly.
+
+    Running the display diagnostic-information command simultaneously on multiple terminals connected to the device is prohibited. This is because CPU usage of the device may obviously increase and the device performance may be degraded.
+
+    When you run this command, the device obtains or uses some personal data of users, such as the STA MAC address. Delete the personal data immediately after the command is executed to ensure user data security.
+
+Example
+
+# Display diagnostic information about the device.
+
+<HUAWEI> display diagnostic-information
+===========================================================                     
+  ===============display interface brief===============                         
+===========================================================                     
+PHY: Physical
+*down: administratively down
+#down: LBDT down
+(l): loopback
+(s): spoofing
+(E): E-Trunk down
+(b): BFD down
+(e): ETHOAM down
+(dl): DLDP down
+(lb): LBDT block
+InUti/OutUti: input utility/output utility
+Interface                   PHY   Protocol  InUti OutUti   inErrors  outErrors  
+Eth-Trunk5                  down  down         0%     0%          0          0  
+Eth-Trunk9                  down  down         0%     0%          0          0  
+GigabitEthernet0/0/1        *down down         0%     0%          0          0  
+GigabitEthernet0/0/2        *down down         0%     0%          0          0  
+GigabitEthernet0/0/3        *down down         0%     0%          0          0  
+GigabitEthernet0/0/4        *down down         0%     0%          0          0  
+GigabitEthernet0/0/5        up    up           0%     0%          0          0  
+GigabitEthernet0/0/6        *down down         0%     0%          0          0  
+GigabitEthernet0/0/7        down  down         0%     0%          0          0  
+GigabitEthernet0/0/8        *down down         0%     0%          0          0  
+GigabitEthernet0/0/9        down  down         0%     0%          0          0  
+GigabitEthernet0/0/10       down  down         0%     0%          0          0  
+GigabitEthernet0/0/11       up    up           0%     0%          0          0  
+GigabitEthernet0/0/12       down  down         0%     0%          0          0  
+GigabitEthernet0/0/13       down  down         0%     0%          0          0  
+GigabitEthernet0/0/14       down  down         0%     0%          0          0  
+GigabitEthernet0/0/15       down  down         0%     0%          0          0  
+GigabitEthernet0/0/16       down  down         0%     0%          0          0  
+GigabitEthernet0/0/17       down  down         0%     0%          0          0  
+GigabitEthernet0/0/18       down  down         0%     0%          0          0  
+GigabitEthernet0/0/19       down  down         0%     0%          0          0  
+GigabitEthernet0/0/20       *down down         0%     0%          0          0  
+GigabitEthernet0/0/21       down  down         0%     0%          0          0  
+GigabitEthernet0/0/22       *down down         0%     0%          0          0  
+GigabitEthernet0/0/23       down  down         0%     0%          0          0  
+GigabitEthernet0/0/24       up    up           0%     0%          0          0  
+......
+
+# Save diagnostic information to the file aa.txt in the flash memory.
+
+<HUAWEI> display diagnostic-information aa.txt
+Now saving the diagnostic information to the device
+ 100%
+Info: The diagnostic information was saved to the device successfully.
+
+display elabel
+Function
+
+The display elabel command displays the electronic label of the device.
+Format
+
+display elabel [ slot slot-id [ subcard-id ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+subcard-id
+	
+
+Specifies the subcard ID the ID of power module.
+	
+
+The value must be set according to the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Electronic labels identify the hardware. You can use the display elabel command to view the electronic label information.
+
+No electronic label is displayed for an electrical interface or a combo interface working as an electrical interface.
+
+The electronic label version of devices delivered since V200R011 has been updated to version 4.0. This version adds the following fields compared to earlier versions:
+
+    Model indicates the hardware external model of the device.
+    ExInfo indicates the hardware extension information of the device. This field is not provided in electronic labels of optical modules.
+    ElabelVersion indicates the version of the elabel.
+
+Example
+
+# Display the electronic label of the slot 0.
+
+<HUAWEI> display elabel slot 0
+Warning: It may take a long time to excute this command. Continue? [Y/N]:y
+Info: It is executing, please wait...
+/$[System Integration Version]
+/$SystemIntegrationVersion=3.0
+                         
+                         
+[Slot_0]                 
+/$[Board Integration Version]
+/$BoardIntegrationVersion=3.0
+                         
+                         
+[Main_Board]             
+                         
+/$[ArchivesInfo Version] 
+/$ArchivesInfoVersion=3.0
+                         
+                         
+[Board Properties]       
+BoardType=S5720-52X-LI-DC
+BarCode=2102353174107C800132                                                    
+Item=02353174            
+Description=S5720-52X-LI-DC Mainframe (48 10/100/1000BASE-T, 4 100/1000BASE-X, AC 110/220V)                                        
+Manufactured=2011-08-22  
+VendorName=Huawei        
+IssueNumber=00           
+CLEICode=                
+BOM=                     
+                         
+                         
+                         
+                         
+[Port_GigabitEthernet0/0/1]
+/$[ArchivesInfo Version] 
+/$ArchivesInfoVersion=3.0
+                         
+                         
+[Board Properties]       
+BoardType=               
+BarCode=                 
+Item=                    
+Description=             
+Manufactured=            
+/$VendorName=            
+IssueNumber=             
+CLEICode=                
+BOM=
+
+Table 3-13 Description of the display elabel command output
+
+Item
+	
+
+Description
+
+BoardIntegrationVersion
+	
+
+Version of the board software integration format.
+
+ArchivesInfoVersion
+	
+
+Electronic label information version.
+
+SystemIntegrationVersion
+	
+
+Version of the host software integration format.
+
+BoardType
+	
+
+Vendor's component model of the specified component.
+
+BarCode
+	
+
+Bar code of the specified component.
+
+Item
+	
+
+BOM code of the specified component.
+
+Description
+	
+
+English description of the specified component.
+
+Manufactured
+	
+
+Production date of the specified component.
+
+VendorName
+	
+
+Vendor name of the specified component.
+
+IssueNumber
+	
+
+Issuing number of the specified component.
+
+CLEICode
+	
+
+CLEI code of the specified component.
+
+BOM
+	
+
+Sales BOM code of the specified component, which is an item number.
+display esn
+Function
+
+The display esn command displays the Equipment Serial Number (ESN) of a device.
+Format
+
+display esn
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+An ESN uniquely identifies a device.
+
+In a stack, the display esn command displays the ESNs of all member devices.
+Example
+# Display the ESN of the device.
+
+<HUAWEI> display esn
+ESN of slot 0: 210235860012xxxxxxxx
+
+Table 3-14 Description of the display esn command output
+
+Item
+	
+
+Description
+
+ESN of slot 0
+	
+
+SN of the device with the slot ID 0.
+display fan
+Function
+
+The display fan command displays the fan status.
+Format
+
+display fan [ power ]
+
+Only the following models support the power parameter:
+
+S5731-H, S5731S-H, S5732-H, S5735-L, S5736-S, and S6730-H
+Parameters
+Parameter 	Description 	Value
+
+power
+	
+
+Indicates the fan speed of the power module.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Devices can run properly when fans are working properly. If proper heat dissipation cannot be ensured for devices, devices may overheat, damaging the hardware. You can use the display fan command to view the fan status.
+
+Different device models may support different numbers of fans.
+Example
+
+# Display the fan status of the device.
+
+<HUAWEI> display fan
+---------------------------------------------------------------------------------------------------                                 
+ Slot  FanID   Online    Status    Speed     Mode     Airflow         Auto Min-Speed   Name                                         
+---------------------------------------------------------------------------------------------------                                 
+ 2         1   Present   Normal      34%     Auto     Front-to-Back                -   FAN-031A-B                                   
+ 2         2   Present   Normal      34%     Auto     Front-to-Back                -   FAN-031A-B 
+
+Table 3-15 Description of the display fan command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+FAN
+	
+
+Number of a fan.
+
+Online
+	
+Whether a fan is available:
+
+    Present: available
+    Absent: unavailable
+
+Status
+	
+Running status of a fan:
+
+    Normal: The fan is running normally.
+    Abnormal: The fan works abnormally.
+    -: The fan is not present.
+
+Speed
+	
+
+Percentage of the current fan speed to the full speed. If this field displays -, the fan is not present or the fan works abnormally.
+
+Mode
+	
+Working mode of a fan:
+
+    AUTO: The fan speed can be automatically adjusted.
+    MANUAL: The fan works at a fixed speed.
+    -: The fan is not present or the fan works abnormally.
+
+Airflow
+	
+Airflow direction of a fan:
+
+    Back-to-Side: Air flows from the rear to the left and right sides.
+    Side-to-Back: Air flows from the left and right sides to the rear.
+    Side-to-Side: Air flows from one side to the other side.
+    Front-to-Back: Air flows from the front to the rear.
+    -: The fan is not present.
+
+Auto Min-Speed
+	
+
+Minimum fan speed in automatic fan speed adjustment mode.
+
+To configure the minimum fan speed in automatic fan speed adjustment mode, run the set fan speed auto min-speed command. If this field displays -, this command is not supported, or the fan is not present, or the fan works abnormally.
+
+Name
+	
+
+Name of a fan:
+NOTE:
+
+The information is displayed only for the S5731-H, S5732-H, and S6730-H.
+
+# Display the fan speed of the power module.
+
+<HUAWEI> display fan power
+----------------------------------------                                                                                            
+ Slot  FanID   Online    PowerSpeed                                                                                                 
+----------------------------------------                                                                                            
+ 1         1   Absent             -                                                                                                 
+ 1         2   Present          46%
+
+Table 3-16 display fan power command output
+
+Item
+	
+
+Description
+
+Speed
+	
+
+Fan speed of the power module.
+display integrated-power information
+Function
+
+The display integrated-power information command displays information about the built-in or external power supply of an extended-temperature switch.
+
+This command is available only on the following switch models:
+
+S5735-S4T2X-IA150G1, S5735-S8P2X-IA200G1, S5735-S8P2X-IA200H1, S5735-L8P4X-IA1, S5735-L8T4X-IA1
+Format
+
+display integrated-power information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command on an extended-temperature switch to check the version and working status of the built-in or external power supply.
+Example
+
+# Display information about the built-in power supply of the S5735-S4T2X-IA150G1.
+
+<HUAWEI> display integrated-power information
+------------------------------------------------------------                                                                        
+ Integrated power information                                                                                                       
+------------------------------------------------------------                                                                        
+General information                                                                                                                 
+   Software version             : 555                                                                                               
+   Hardware version             : B                                                                                                 
+   Power supply mode            : Mains Power 500                                                                                   
+   Total input power(W)         : 0.00                                                                                              
+   AC input voltage status      : Normal                                                                                            
+   12V DC output voltage status : Normal                                                                                            
+   24V AC output voltage(V)     : 0.00                                                                                              
+   24V AC output current(A)     : 0.00                                                                                              
+   53V DC output voltage status : Normal                                                                                            
+
+Table 3-17 Description of the display integrated-power information command output
+
+Item
+	
+
+Description
+
+Integrated power information
+	
+
+Information about the built-in power supply.
+
+General information
+	
+
+Generic information about the built-in power supply.
+
+Software version
+	
+
+Software version, in hexadecimal notation.
+
+Hardware version
+	
+
+Hardware version, which is an ASCII value.
+
+Power supply mode
+	
+
+Working mode of the built-in power supply.
+
+Total input power(W)
+	
+
+Total input power, in Watt (W).
+
+AC input voltage status
+	
+
+AC input voltage status:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+12V DC output voltage status
+	
+
+12 V DC output voltage status:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+24V AC output voltage(V)
+	
+
+24 V AC output voltage, in Volt (V).
+
+24V AC output current(A)
+	
+
+24 V AC output current, in amperes (A).
+
+53V DC output voltage status
+	
+
+53 V DC output voltage status:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+# Display information about the built-in power supply of the S5735-S8P2X-IA200H1.
+
+<HUAWEI> display integrated-power information
+Info: This operation may take a few seconds. Please wait for a moment..                                                             
+------------------------------------------------------------                                                                        
+ Integrated power information                                                                                                       
+------------------------------------------------------------                                                                        
+General information                                                                                                                 
+   Hardware version             : A                                                                                                 
+   Software version(ASCII)      : V100R021C10SPC000                                                                                 
+   Power supply mode            : Hybrid Power 500(B)                                                                               
+   Current power supply mode    : Mains                                                                                             
+   Busbar voltage(V)            : 54.26                                                                                             
+   AC voltage(V)                : 218.69                                                                                            
+   SSU input voltage(V)         : 0.00                                                                                              
+   SSU input current(A)         : 0.00                                                                                              
+   Total load power(W)          : 0.00                                                                                              
+   Total input power(W)         : 0.00                                                                                              
+   12V DC output voltage status : Normal                                                                                            
+   24V AC output voltage(V)     : 0.00                                                                                              
+   24V AC output current(A)     : 0.00                                                                                              
+   53V DC output voltage(V)     : 54.50    
+
+Table 3-18 Description of the display integrated-power information command output
+
+Item
+	
+
+Description
+
+Integrated power information
+	
+
+Information about the built-in power supply.
+
+General information
+	
+
+Generic information about the built-in power supply.
+
+Hardware version
+	
+
+Hardware version. The value is in hexadecimal notation.
+
+Software version(ASCII)
+	
+
+Software version. The value is in ASCII format.
+
+Current power supply mode
+	
+
+Working mode of the built-in power supply.
+
+Busbar voltage(V)
+	
+
+Busbar voltage, in volts (V).
+
+AC voltage(V)
+	
+
+AC voltage, in volts (V).
+
+SSU input voltage(V)
+	
+
+Input voltage of the solar supply unit (SSU), in volts (V).
+
+SSU input current(A)
+	
+
+Input current of the SSU, in amperes (A).
+
+Total load power(W)
+	
+
+Total load power, in watts (W).
+NOTE:
+
+If NA is displayed, the power consumption is too low or cannot be detected. In this case, see the minimum power consumption of the device.
+
+Total input power(W)
+	
+
+Total input power, in watts (W).
+NOTE:
+
+If NA is displayed, the power consumption is too low or cannot be detected. In this case, see the minimum power consumption of the device.
+
+12V DC output voltage status
+	
+
+12 V DC output voltage status:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+24V AC output voltage(V)
+	
+
+24 V AC output voltage, in volts (V).
+
+24V AC output current(A)
+	
+
+24 V AC output current, in amperes (A).
+
+53V DC output voltage(V)
+	
+
+53 V DC output voltage, in volts (V).
+
+53V DC output current(A)
+	
+
+53 V DC output current, in amperes (A).
+
+AC current(A)
+	
+
+AC current, in amperes (A).
+
+Chip1 upgrade status
+	
+
+Upgrade status of chip 1:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+Chip2 upgrade status
+	
+
+Upgrade status of chip 2:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+Chip3 upgrade status
+	
+
+Upgrade status of chip 3:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+Chip4 upgrade status
+	
+
+Upgrade status of chip 4:
+
+    Normal: The voltage is normal.
+    Abnormal: The voltage is abnormal.
+
+# Display information about the power supply connected to the S5735-L8P4X-IA1.
+
+<HUAWEI> display integrated-power information
+------------------------------------------------------------                                                                        
+ Integrated power information                                                                                                       
+------------------------------------------------------------                                                                        
+General information                                                                                                                 
+   Hardware version             : B                                                                                                 
+   Software version             : V1.20          
+
+Table 3-19 Description of the display integrated-power information command output
+
+Item
+	
+
+Description
+
+Integrated power information
+	
+
+Information about the external power supply.
+
+General information
+	
+
+Generic information about the built-in power supply.
+
+Hardware version
+	
+
+Hardware version. The value is in hexadecimal notation.
+
+Software version
+	
+
+Software version.
+display memory-usage
+Function
+
+The display memory-usage command displays the memory usage of the device.
+Format
+
+display memory-usage [ slave | slot slot-id ] [ vcpu vcpu-index ]
+
+The slave parameter is not supported if the switch does not support the stacking function or does not have the stacking function enabled.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S support the vcpu vcpu-index parameter.
+Parameters
+Parameter 	Description 	Value
+
+slave
+	
+
+Displays memory usage of a slave switch in a stack. This parameter is valid only when multiple switches form a stack.
+	
+
+-
+
+slot slot-id
+	
+
+Displays memory usage of a slot ID.
+	
+
+The value depends on the device configuration.
+
+vcpu vcpu-index
+	
+
+Specifies the virtual CPU number.
+	
+
+Specify the vcpu-index parameter based on the hardware configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Memory usage is an important index to evaluate device performance. A high memory usage will cause service faults. You can use the display memory-usage command to view memory usage to check whether devices are working properly.
+
+The memory usage displayed using the display memory-usage command is based on the total available memory of a process.
+Example
+
+# Display memory usage of the current device.
+
+<HUAWEI> display memory-usage
+ Memory utilization statistics at 2008-12-15 15:17:42+08:00
+ System Total Memory Is: 394152720 bytes
+ Total Memory Used Is: 130975664 bytes
+ Memory Using Percentage Is: 33% 
+
+# Display memory usage of the virtual CPU 1 in slot 0.
+
+<HUAWEI> display memory-usage slot 0 vcpu 1
+ Vcpu 1 Memory utilization Info:                                                
+ Memory utilization statistics at 2017-08-26 06:11:20+00:00                     
+ System Total Memory Is: 30408904 bytes                                         
+ Total Memory Used Is: 22938332 bytes                                           
+ Memory Using Percentage Is: 75%                                                
+
+Table 3-20 Description of the display memory-usage command output
+
+Item
+	
+
+Description
+
+Memory utilization statistics at
+	
+
+Time when memory usage is collected.
+
+System Total Memory
+	
+
+Total memory of the device network operating system.
+
+Total Memory Used
+	
+
+Total used memory of the device network operating system.
+
+Memory Using Percentage
+	
+
+Memory usage.
+display memory-usage threshold
+Function
+
+The display memory-usage threshold command displays the memory usage threshold on the device.
+Format
+
+display memory-usage threshold [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Displays the memory usage threshold of a specified slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can view the memory usage alarm threshold to learn about the conditions for triggering alarms.
+
+    When memory usage reaches the alarm threshold, the system generates an alarm.
+    When memory usage falls within the alarm threshold, the system generates a clear alarm.
+
+Example
+
+# Display the memory usage threshold on the main control board.
+
+<HUAWEI> display memory-usage threshold
+ Current memory threshold of the main board is 95%.
+
+Table 3-21 Description of the display memory-usage threshold command output
+
+Item
+	
+
+Description
+
+Current memory threshold of the main board is 95%.
+	
+
+The memory usage threshold of the main control board is 95%. To set the memory usage threshold of the main control board, use the set memory-usage threshold threshold-value command.
+display power
+Function
+
+The display power command displays information about all power supplies on the device.
+Format
+
+display power
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can use this command to check the status of all power supplies, and their power.
+
+No information is displayed for built-in power supplies.
+Example
+
+# Display the current power supply status.
+
+<HUAWEI> display power
+-----------------------------------------------------------------------      
+ Slot    PowerID  Online   Mode   State      Power(W)  CurrentPower(W)       
+-----------------------------------------------------------------------
+ 0       PWRI     Present  AC     Supply       500.00          70.50
+ 0       PWRII    Absent   -      -                 -              - 
+
+Table 3-22 Description of the display power command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+    Slot ID if stacking is not configured. The value is 0.
+    Stack ID if stacking is configured. The value must be set according to the device configuration.
+
+PowerID
+	
+ID of a power supply slot:
+
+    PWRI: slot for a power module, or lead-acid battery board
+    PWRII: slot for a power module
+
+NOTE:
+
+On the S5720I-SI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S series switches, the power supply slots are PWR1 and PWR2.
+
+If a device has only one power supply slot, only PWR1 is displayed.
+
+Online
+	
+Whether a power supply is installed properly.
+
+    Present: indicates that the power supply is installed properly.
+    Absent: indicates that the power supply is not installed properly, or the power supply is a fixed power supply.
+
+Mode
+	
+Type of the power module, or lead-acid battery board:
+
+    AC: AC power module
+    DC: DC power module
+    –: Power supply invalid or absent
+    PBB: Lead-acid battery board
+
+State
+	
+Working status of a power module.
+
+    Supply: Current is output.
+    NotSupply: No current is output.
+    –: Invalid or absent
+
+Power(W)
+	
+
+Rated power of a power supply. If this field displays –, the power supply is invalid or is not installed properly.
+
+CurrentPower(W)
+	
+
+Real-time power of a power supply. If this field displays –, the power supply is not supported.
+display system-software information
+Function
+
+The display system-software information command displays the software versions supported by the device.
+
+Only the S1730S-S1, S200, S2730S-S, S300, S500, S5731-H, S5731S-H, S5731-S, S5731S-S, S5732-H, S5735-L, S5735-L1, S5735S-L1, S5735-S, S5735-S-I, S5735S-H, S5736-S, S6730-H, S6730-S, and S6735-S support this command.
+
+Format
+
+display system-software information
+Parameters
+
+None
+Views
+
+User views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Before upgrading a device, you can run this command to check the software versions supported by the device. This helps you select a software package supported by the device. Some models cannot be downgraded due to component upgrade. Before downgrading a device, run this command to check the software versions supported by the device.
+Example
+
+# Display the software versions supported by the device.
+
+<HUAWEI> display system-software information
+Slot 0:                                                                         
+Device type        : S5735-L48T4X-A                                             
+Supported versions : V200R021C00 and later versions 
+
+Table 3-23 Description of the display system-software information command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Device type
+	
+
+Device model.
+
+Supported versions
+	
+
+Software versions to which the device can be upgraded.
+display software information
+Function
+
+The display software information command displays information about the current system software package.
+Format
+
+display software information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before upgrading a device, you can run this command to check whether the current startup software package is supported by the device.
+Example
+
+# Display the software version supported by the device.
+
+<HUAWEI> display software information
+Startup software name      : xxxx.cc                                                                      
+Startup software file name : xxxx.cc       
+
+Table 3-24 Description of the display software information command output
+
+Item
+	
+
+Description
+
+Startup software name
+	
+
+Name of the software package supported by the device.
+
+Startup software file name
+	
+
+Name of the current startup software package.
+display transceiver
+Function
+
+The display transceiver command displays information about the optical module on an interface.
+
+The command displays only information about optical interfaces.
+Format
+
+display transceiver [ interface interface-type interface-number | slot slot-id ] [ verbose ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface interface-type interface-number
+	
+Specifies the type and number of an interface.
+
+    interface-type specifies the interface type.
+
+    interface-number specifies the interface number.
+
+	
+
+-
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+verbose
+	
+
+Displays detailed information about the optical module on an interface, including the general information, manufacture information, alarm information, and diagnostic information.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command to view general information, manufacture information, and alarm information about an optical module. If you specify the verbose keyword, diagnostic information is also displayed in addition to the preceding information.
+
+If a device does not support optical modules, a message will be displayed after you run this command.
+
+Some parameters including the current and optical power will be displayed for each lane of the 40GE interfaces.
+Example
+
+# Display general information, manufacture information, and alarm information about the optical module on a specified interface.
+
+<HUAWEI> display transceiver interface gigabitethernet 0/0/1
+GigabitEthernet0/0/1 transceiver information:                                   
+-------------------------------------------------------------                   
+Common information:                                                             
+  Transceiver Type               :1000_BASE_SX_SFP                              
+  Connector Type                 :LC                                            
+  Wavelength(nm)                 :850                                           
+  Transfer Distance(m)           :0(9um),300(50um),150(62.5um)                  
+  Digital Diagnostic Monitoring  :YES                                           
+  Vendor Name                    :HUAWEI                              
+  Vendor Part Number             :02315204 
+  Ordering Name                  :                                              
+-------------------------------------------------------------                   
+Manufacture information:                                                        
+  Manu. Serial Number            :CD25HP12M                                  
+  Manufacturing Date             :2013-06-184                                    
+  Vendor Name                    :HUAWEI                              
+-------------------------------------------------------------                   
+
+# Display general information, manufacture information, alarm information and diagnostic information about the optical module on a specified interface.
+
+<HUAWEI> display transceiver interface gigabitethernet 0/0/3 verbose
+GigabitEthernet0/0/3 transceiver information:
+-------------------------------------------------------------
+Common information:                                                                                                                 
+  Transceiver Type               :GPS_SFP                                                                                           
+  Connector Type                 :SMA Coaxial Connector                                                                             
+  Wavelength(nm)                 :-                                                                                                 
+  Transfer Distance(m)           :100(copper)                                                                                       
+  Digital Diagnostic Monitoring  :NO                                                                                                
+  Vendor Name                    :HUAWEI                                                                                            
+  Vendor Part Number             :HUAWEI AE 905S A                                                                                  
+  Ordering Name                  :                                                                                                  
+-------------------------------------------------------------                   
+Manufacture information:                                                                                                            
+  Manu. Serial Number            :031TUX10HB000065                                                                                  
+  Manufacturing Date             :2017-11-28                                                                                        
+  Vendor Name                    :HUAWEI
+-------------------------------------------------------------
+Diagnostic information:
+  Temperature(°C)              :26.00
+  Temp High Threshold(°C)      :85.00
+  Temp Low  Threshold(°C)      :-40.00
+  Voltage(V)                    :3.29
+  Volt High Threshold(V)        :3.64
+  Volt Low  Threshold(V)        :2.95
+  Bias Current(mA)              :4.57
+  Bias High Threshold(mA)       :9.00
+  Bias Low  Threshold(mA)       :2.00
+  RX Power(dBM)                 :-40.00
+  RX Power High Warning(dBM)    :-1.00
+  RX Power Low  Warning(dBM)    :-15.80
+  RX Power High Threshold(dBM)  :0.00
+  RX Power Low  Threshold(dBM)  :-16.99
+  TX Power(dBM)                 :-5.03
+  TX Power High Warning(dBM)    :4.00
+  TX Power Low  Warning(dBM)    :-4.70
+  TX Power High Threshold(dBM)  :-2.22
+  TX Power Low  Threshold(dBM)  :-6.99
+  Transceiver phony alarm       :Yes
+------------------------------------------------------------- 
+ 
+
+<HUAWEI> display transceiver interface xgigabitethernet 0/0/4 verbose
+XGigabitEthernet0/0/4 transceiver information:                                                                                      
+-------------------------------------------------------------                                                                       
+Common information:                                                                                                                 
+  Transceiver Type               :GPS_SFP                                                                                           
+  Connector Type                 :SMA Coaxial Connector                                                                             
+  Wavelength(nm)                 :-                                                                                                 
+  Transfer Distance(m)           :100(copper)                                                                                       
+  Digital Diagnostic Monitoring  :NO                                                                                                
+  Vendor Name                    :HUAWEI                                                                                            
+  Vendor Part Number             :HUAWEI AE 905S A                                                                                  
+  Ordering Name                  :                                                                                                  
+-------------------------------------------------------------                                                                       
+Extended information:                                                                                                               
+  Longitude(° )                  :118.7662952                                                                                        
+  Latitude(° )                   :31.9829019                                                                                       
+  Altitude(mm)                   :75051                                                                                             
+-------------------------------------------------------------                                                                       
+Manufacture information:                                                                                                            
+  Manu. Serial Number            :031TUX10HB000065                                                                                  
+  Manufacturing Date             :2017-11-28                                                                                        
+  Vendor Name                    :HUAWEI                                                                                            
+-------------------------------------------------------------                                                                       
+Diagnostic information:                                                                                                             
+  Transceiver does not support diagnostic information.                                                                              
+-------------------------------------------------------------                
+
+Table 3-25 Description of the display transceiver command output
+
+Item
+	
+
+Description
+
+Common information
+	
+
+Generic information about the optical module.
+
+Transceiver Type
+	
+
+Type of the optical module.
+
+Connector Type
+	
+
+Type of the fiber connector required by the optical module. The value depends on the protocol related to the optical module.
+
+Wavelength (nm)
+	
+
+Wavelength of the optical module. If this field displays -, the optical module does not have wavelength information.
+
+Transfer Distance (m)
+	
+
+Transmission distance of the optical module. 50 um and 62.5 um are fiber diameters. Fibers with a diameter of 50 um or 62.5 um are multimode fibers. Fibers with a diameter of 9 um are single-mode fibers.
+
+For a GPS module, this field indicates the maximum length of the antenna between the GPS module and signal receiver.
+NOTE:
+
+Only the maximum transmission distance of the optical module is displayed if different optical fibers are used.
+
+Digital Diagnostic Monitoring
+	
+
+Whether diagnostic information about the optical module is monitored.
+
+Vendor Name
+	
+
+Vendor name of the optical module. If the system has not determined whether the optical module is a Huawei-customized one, this field displays Judging.
+
+If the vendor name of an optical module is not HUAWEI, check whether the optical module is a Huawei-certified optical module. For details, see "How Can I Determine Whether an Optical Module Is Huawei-Certified?" in the S300, S500, S2700, S5700, and S6700 V200R024C00 Configuration Guide - Device Management – Device Status Query.
+
+Vendor Part Number
+	
+
+Vendor part number or product name. If the system has not determined whether the optical module is a Huawei-customized one, this field displays Judging.
+
+Ordering Name
+	
+
+External name of the optical module. Currently, this field is not supported and is empty.
+
+Extended information
+	
+
+GPS module information. Only the S5720I-SI and S5735-S-I support this item.
+
+Longitude(° )
+	
+
+Longitude of the location of the GPS module. Only the S5720I-SI and S5735-S-I support this item.
+
+Latitude(° )
+	
+
+Latitude of the location of the GPS module. Only the S5720I-SI and S5735-S-I support this item.
+
+Altitude(mm)
+	
+
+Altitude of the location of the GPS module. Only the S5720I-SI and S5735-S-I support this item.
+
+Manufacture information
+	
+
+Manufacture information of the optical module.
+
+Manu. Serial Number
+	
+
+Vendor sequence number of the optical module.
+
+Manufacturing Date
+	
+
+Manufacturing date of the optical module.
+
+Diagnostic information
+	
+
+Diagnostic information about the optical module.
+
+Temperature (°C)
+	
+
+Current temperature of the optical module.
+
+Temp High Threshold (°C)
+	
+
+Upper temperature threshold for the optical module.
+
+Temp Low Threshold (°C)
+	
+
+Lower temperature threshold for the optical module.
+
+Voltage (V)
+	
+
+Current voltage of the optical module.
+
+Volt High Threshold(V)
+	
+
+Upper voltage threshold for the optical module.
+
+Volt Low Threshold(V)
+	
+
+Lower voltage threshold for the optical module.
+
+Bias Current (mA)
+	
+
+Bias current of the optical module.
+
+Bias High Threshold (mA)
+	
+
+Upper threshold for the bias current of the optical module.
+
+Bias Low Threshold (mA)
+	
+
+Lower threshold for the bias current of the optical module.
+
+RX Power (dBM)
+	
+
+Input power of the optical module. When the Input power is 0 W, -Inf is displayed.
+
+RX Power High Warning(dBM)
+	
+
+Upper warning threshold for the receive power of the optical module.
+
+RX Power Low Warning(dBM)
+	
+
+Lower warning threshold for the receive power of the optical module.
+
+RX Power High Threshold (dBM)
+	
+
+Upper input power threshold for the optical module.
+
+RX Power Low Threshold (dBM)
+	
+
+Lower input power threshold for the optical module.
+
+TX Power (dBM)
+	
+
+Output power of the optical module. When the output power is 0 W, -Inf is displayed.
+
+TX Power High Warning(dBM)
+	
+
+Upper warning threshold for the transmit power of the optical module.
+
+TX Power Low Warning(dBM)
+	
+
+Lower warning threshold for the transmit power of the optical module.
+
+TX Power High Threshold (dBM)
+	
+
+Upper output power threshold for the optical module.
+
+TX Power Low Threshold (dBM)
+	
+
+Lower output power threshold for the optical module.
+
+Transceiver phony alarm:Yes
+	
+
+The device has generated an alarm on an optical module not certified for Huawei switches. This field is displayed only when the following conditions are met:
+
+    The device is enabled to generate alarms on non-Huawei-customized optical modules. This alarm function is enabled by default. If it is disabled, you can run the undo transceiver phony-alarm-disable command to enable it.
+    This optical module is a non-Huawei-customized one.
+
+display transceiver diagnosis interface
+Function
+
+The display transceiver diagnosis interface command displays the diagnosis parameters of an optical module.
+Format
+
+display transceiver diagnosis interface [ interface-type interface-number ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-type interface-number
+	
+Specifies the type and number of an interface.
+
+    interface-type specifies the interface type.
+
+    interface-number specifies the interface number.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display transceiver diagnosis interface command to view digital diagnostic monitoring (DDM) information about optical modules installed on all interfaces of a device.
+
+If interface-type interface-number is specified, only diagnostic information about the optical module installed on the specified interface is displayed.
+Example
+
+# Display the diagnosis parameters of the optical module installed in GigabitEthernet0/0/4.
+
+<HUAWEI> display transceiver diagnosis interface gigabitethernet 0/0/4
+Port GigabitEthernet0/0/4 transceiver diagnostic information:                                      
+--------------------------------------------------------------------------------------   
+Item                   Value   HighAlarm    HighWarn    LowAlarm     LowWarn    Status   
+--------------------------------------------------------------------------------------   
+TxPower lane0(dBm)      0.23        7.00        4.00       -7.40       -4.40    Normal   
+TxPower lane1(dBm)     -1.56        7.00        4.00       -7.40       -4.40    Normal   
+RxPower lane0(dBm)      0.06        7.00        4.00      -11.20       -8.20    Normal   
+RxPower lane1(dBm)     -1.42        7.00        4.00      -11.20       -8.20    Normal   
+Current lane0(mA)       7.03       12.00       10.00        3.00        5.00    Normal   
+Current lane1(mA)       6.04       12.00       10.00        3.00        5.00    Normal   
+Temperature(C)         47.97       80.00       70.00      -10.00        0.00    Normal   
+Voltage(V)              3.35        3.63        3.46        2.97        3.13    Normal   
+LaserTemp(C)               -           -           -           -           -    -        
+TecCurrent(mA)             -           -           -           -           -    -        
+MediaSNR(dB)               -           -           -           -           -    -        
+--------------------------------------------------------------------------------------   
+
+Versatile Diagnostics Monitoring:             
+---------------------------------------------------------------------                    
+Item          Minimum     Maximum     Average     Current PriorPeriod                    
+---------------------------------------------------------------------                    
+Ber          5.56e-10    8.22e-10    6.75e-10    7.07e-10    0.00e+00                    
+Fer          0.00e+00    0.00e+00    0.00e+00    0.00e+00    0.00e+00                    
+--------------------------------------------------------------------- 
+
+If the parameter displays -, the parameter value cannot be obtained. If the Status field displays -, this parameter does not support diagnosis.
+Table 3-26 Description of the display transceiver diagnosis interface command output
+
+Item
+	
+
+Description
+
+Item
+	
+
+Parameter type.
+
+Value
+	
+
+Real-time value of a parameter.
+
+HighAlarm
+	
+
+Upper alarm threshold.
+
+HighWarn
+	
+
+Upper warning threshold.
+
+LowAlarm
+	
+
+Lower alarm threshold.
+
+LowWarn
+	
+
+Lower warning threshold.
+
+Status
+	
+Parameter value status:
+
+    Normal: indicates that the current value is within the normal range, that is, the current value does not exceed the upper alarm threshold or fall below the lower upper alarm threshold.
+    Abnormal: indicates that the current value is not within the normal range.
+
+TxPower lane0(dBm)
+
+TxPower lane1(dBm)
+	
+
+Transmit power of an optical module. lanei indicates a physical channel. If an optical module has multiple physical channels, this parameter is displayed multiple times.
+
+RxPower lane0(dBm)
+
+RxPower lane1(dBm)
+	
+
+Indicates the receiving power of the optical module, in dBm.lanei indicates a physical channel. If an optical module has multiple physical channels, this parameter is displayed multiple times.
+
+Current lane0(mA)
+
+Current lane1(mA)
+	
+
+Indicates the current of the optical module, in mA. lanei indicates a physical channel. If an optical module has multiple physical channels, this parameter is displayed multiple times.
+
+Temperature(C)
+	
+
+Indicates the temperature of the optical module, in degree Celsius.
+
+Voltage(V)
+	
+
+Indicates the voltage of the optical module, in V.
+
+LaserTemp(C)
+	
+
+Laser temperature of an optical module. If an optical module has multiple channels, this parameter is displayed for multiple times for lane 0, lane 1, and so on.
+
+TecCurrent(mA)
+	
+
+Indicates the tec current of the optical module.If an optical module has multiple channels, this parameter is displayed for multiple times for lane 0, lane 1, and so on.
+
+MediaSNR(dB)
+	
+
+Indicates the media SNR of the optical module. If an optical module has multiple channels, this parameter is displayed for multiple times for lane 0, lane 1, and so on.
+
+Ber
+	
+
+BER of an optical module. If an optical module has multiple channels, this parameter is displayed for multiple times for lane 0, lane 1, and so on.
+
+Fer
+	
+
+FER of an optical module. If an optical module has multiple channels, this parameter is displayed for multiple times for lane 0, lane 1, and so on.
+
+Minimum
+	
+
+Minimum BER and FER of an optical module.
+
+Maximum
+	
+
+Maximum BER and FER of an optical module.
+
+Average
+	
+
+Average BER and FER of an optical module.
+
+Current
+	
+
+Real-time BER and FER of an optical module.
+
+PriorPeriod
+	
+
+BER and FER of an optical module in the previous period.
+display temperature
+Function
+
+The display temperature command displays the working status temperature information of the device's internal components.
+Format
+
+display temperature { all | slot slot-id }
+Parameters
+Parameter 	Description 	Value
+
+all
+	
+
+Displays the working status temperature information of internal components in all slots on the device.
+	
+
+-
+
+slot slot-id
+	
+
+Displays the working status temperature information of internal components on the specified slot.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+A high or low device temperature may damage the hardware. This command displays the working status temperature information of internal components instead of the operating temperature that indicates the temperature range of the surrounding environment. When the device temperature exceeds the upper threshold or falls below the lower threshold, the device generates an alarm to alert you that the device temperature is abnormal.
+Example
+
+# Display the working status temperature information of internal components in all slots.
+
+<HUAWEI> display temperature all
+-------------------------------------------------------------------------------
+ Slot  Card  Sensor Status    Current(C) Lower(C) Lower     Upper(C) Upper
+                                                  Resume(C)          Resume(C)
+-------------------------------------------------------------------------------
+ 0     NA    NA     Normal            44        0         4       72        68 
+
+Table 3-27 Description of the display temperature command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Card
+	
+
+Subcard ID.
+
+This field is invalid on the device and displays NA.
+
+Sensor
+	
+
+Number of a sensor on a card.
+
+This field is invalid on the device and displays NA.
+
+Status
+	
+Temperature status of a device.
+
+    Normal: The device temperature is within the normal range.
+    Abnormal: The device temperature is out of the normal range.
+
+Current(C)
+	
+
+Working status temperature information of internal components of a device, expressed in the centigrade scale (°C). The temperature value is displayed as an integer, so there may be a maximum of 1°C error between the displayed value and actual temperature.
+
+This field displays - when the sensor is abnormal or the obtained temperature is higher than 200°C or lower than 100°C.
+
+Lower(C)
+	
+
+Low-temperature alarm threshold, expressed in the centigrade scale (°C).
+
+To set the low-temperature alarm threshold, run the temperature threshold command.
+
+Lower Resume(C)
+	
+
+Low-temperature alarm clear threshold, expressed in the centigrade scale (°C).
+
+To set the low-temperature alarm clear threshold, run the temperature threshold command. The low-temperature alarm clear threshold is 4°C higher than the low-temperature alarm threshold.
+
+Upper(C)
+	
+
+High-temperature alarm threshold, expressed in the centigrade scale (°C).
+
+To set the high-temperature alarm threshold, run the temperature threshold command.
+
+On the devices that support fan speed adjustment using the set fan speed-adjust threshold minus command, the default value of this field changes based on the PoE power load.
+
+Upper Resume(C)
+	
+
+High-temperature alarm clear threshold, expressed in the centigrade scale (°C).
+
+To set the high-temperature alarm clear threshold, run the temperature threshold command. The high-temperature alarm clear threshold is 4°C lower than the high-temperature alarm threshold.
+display version
+Function
+
+The display version command displays the device version.
+Format
+
+display version [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can use the display version command to view the device version to determine whether the device needs to be upgraded.
+Example
+
+# Display the device version.
+
+<HUAWEI> display version
+Huawei Versatile Routing Platform Software                                                                                          
+VRP (R) software, Version 5.170 (S6730 V200R024C00)                                                                                 
+Copyright (C) 2000-2020 HUAWEI TECH Co., Ltd.                                                                                        
+HUAWEI S6730-S48X6Q Routing Switch uptime is 0 week, 0 day, 0 hour, 5 minutes                                                
+                                                                                                                                    
+ES5D2S50Q002 1(Master)  : uptime is 0 week, 0 day, 0 hour, 2 minutes                                                                
+DDR             Memory Size : 2048  M bytes                                                                                         
+FLASH Total     Memory Size : 512   M bytes                                                                                         
+FLASH Available Memory Size : 446   M bytes                                                                                         
+Pcb           Version   : VER.B                                                                                                     
+BootROM       Version   : 020b.0001                                                                                                 
+BootLoad      Version   : 020b.0001                                                                                                 
+CPLD          Version   : 0108                                                                                                      
+Software      Version   : VRP (R) Software, Version 5.170 (V200R024C00)                                                             
+FLASH         Version   : 0000 
+CARD1 information                                                                                                                   
+Pcb           Version   : ES5D21Q04Q01 VER.A                                                                                        
+CPLD   Version          : 0105                                                                                                               
+PWR2 information                                                                                                                    
+Pcb           Version   : PWR VER.A  
+PMBus         Version   : 18                                                                                               
+FAN1 information                                                                                                                    
+Pcb           Version   : NA
+
+<HUAWEI> display version
+Huawei Versatile Routing Platform Software                                                                                          
+VRP (R) software, Version 5.170 (S5730 V200R024C00)                                                                           
+Copyright (C) 2000-2020 HUAWEI TECH Co., Ltd.                                                                                       
+HUAWEI S5730-60C-HI-48S Routing Switch uptime is 0 week, 0 day, 13 hours, 49 minutes                                                
+                                                                                                                                    
+ES5D2S52C004 1(Master)  : uptime is 0 week, 0 day, 13 hours, 47 minutes                                                             
+DDR             Memory Size : 4096  M bytes                                                                                         
+FLASH Total     Memory Size : 1024  M bytes                                                                                         
+FLASH Available Memory Size : 842   M bytes                                                                                         
+SSD             Memory Size : 223   G bytes                                                                                         
+Pcb           Version   : VER.A                                                                                                   
+BootROM       Version   : 020d.0000                                                                                                 
+BootLoad      Version   : 020d.0000                                                                                                 
+CPLD          Version   : 0102                                                                                                      
+Software      Version   : VRP (R) Software, Version 5.170 (V200R024C00)                                                       
+FLASH         Version   : 0000 
+CARD1 information                                                                                                                   
+Pcb           Version   : ES5D21X08T00 VER.C                                                                                        
+CPLD          Version   : 010c                                                                                                      
+PWR1 information                                                                                                                    
+Pcb           Version   : PWR VER.A 
+PMBus         Version   : 18                                                                                                   
+FAN1 information                                                                                                                    
+Pcb           Version   : NA  
+
+<HUAWEI> display version
+Huawei Versatile Routing Platform Software
+VRP (R) software, Version 5.170 (S5735 V200R024C00)
+Copyright (C) 2000-2020 HUAWEI TECH Co., Ltd.
+HUAWEI S5735-S8P2X-IA200G1 Routing Switch uptime is 0 week, 0 day, 0 hour, 0 minute
+
+ES5D2V10S005 0(Master)  : uptime is 0 week, 0 day, 0 hour, 0 minute
+DDR             Memory Size : 1024  M bytes
+FLASH Total     Memory Size : 512   M bytes
+FLASH Available Memory Size : 303   M bytes
+Pcb           Version   : VER.A
+BootROM       Version   : 0000.03e8
+BootLoad      Version   : 0213.0000
+CPLD          Version   : 0100 
+MCU           Version   : 1.9.10.1
+Software      Version   : VRP (R) Software, Version 5.170 (V200R024C00)
+FLASH         Version   : 0000.0000
+Power         Version   : 0555 
+
+Table 3-28 Description of the display version command output
+
+Item
+	
+
+Description
+
+Huawei Versatile Routing Platform Software
+	
+
+-
+
+VRP (R) software, Version
+	
+
+Versions of the VRP and the software of the device.
+
+Copyright (C) 2000-2020 HUAWEI TECH Co., Ltd.
+	
+
+Huawei copyright.
+
+Routing Switch uptime
+	
+
+System power-on time.
+
+ES5D2S50Q002 1(Master) : uptime
+	
+
+Hardware type, role, and startup time of the device.
+NOTE:
+
+The names in the instance are taken as an example.
+
+DDR Memory Size
+	
+
+Device's physical memory capacity, which stores data when the program is running.
+
+The System Total Memory field value displayed using the display memory-usage command is part of the physical memory capacity and varies depending on the device model.
+
+FLASH Total Memory Size
+	
+
+Total size of the flash memory.
+
+FLASH Available Memory Size
+	
+
+Available flash memory size.
+
+This value is the total field value displayed using the dir command divided by 1024.
+
+Pcb Version
+	
+
+Version of the printed circuit board (PCB).
+
+MAB Version
+	
+
+MAB version information.
+
+BootROM Version
+	
+
+Version of the BootROM software.
+
+BootLoad Version
+	
+
+Version of the BootLoad software.
+
+CPLD Version
+	
+
+Version of the complex programmable logic device (CPLD).
+
+MCU Version
+	
+
+Micro Control Unit (MCU) version.
+NOTE:
+
+The information is displayed only for the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, and the PoE devices of S5720I-SI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5731-H, S5731-S, S5731S-S, S5732-H, S5735S-H, and S5736-S.
+
+Software Version
+	
+
+Versions of the VRP and the software of the device.
+
+FLASH Version
+	
+
+Version of the flash memory.
+
+Power Version
+	
+
+Firmware version of the power module.
+NOTE:
+
+The information is displayed only for the PoE devices of S5735-S-I.
+
+CARD1 information
+	
+
+Information about a front card. If no front card is available, this field is not displayed.
+
+CARD2 information
+	
+
+Information about a rear card. If no rear card is available, this field is not displayed.
+
+FAN1 information
+	
+
+Information about a pluggable fan module. If no pluggable fan module is available, this field is not displayed. If a pluggable fan module does not have an electronic label, its PCB version is displayed as NA.
+
+PWR2 information
+	
+
+Information about a pluggable power module. If no pluggable power module is available, this field is not displayed. If a pluggable power module does not have an electronic label, its PCB version is displayed as NA.
+
+PMBus Version
+	
+
+Firmware version of a power module. If the firmware version of the power module cannot be obtained, the value is NA.
+
+RPS Version
+	
+
+RPS management software version. If the device does not support RPS, this information is not displayed.
