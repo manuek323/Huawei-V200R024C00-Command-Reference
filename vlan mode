@@ -1,0 +1,67 @@
+vlan mode
+Function
+
+The vlan mode command configures the VLAN mode for an RU.
+
+The undo vlan mode command restores the default VLAN mode for an RU.
+
+By default, an RU uses the transparent VLAN mode.
+Format
+
+vlan mode { manual | transparent }
+
+undo vlan mode
+Parameters
+Parameter 	Description 	Value
+
+manual
+	
+
+Configures the manual VLAN mode. In manual mode, an interface uses VLAN 1 as its default VLAN and joins VLAN 1 in untagged mode.
+	
+
+-
+
+transparent
+	
+
+Configures the transparent VLAN mode.
+	
+
+-
+Views
+
+remote-unit view, remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+An RU can connect to different types of terminals using its downlink interfaces and distinguish terminal services by joining its downlink interfaces to different VLANs. By default, all interfaces on an RU work in transparent VLAN mode. That is, the RU does not change the VLAN IDs of received packets. If services of downlink terminals connected to an RU need to be divided based on VLANs, you need to run the vlan mode manual command to configure the RU to work in manual VLAN mode, and then configure default and allowed VLANs for interfaces on the RU.
+
+An RU saves the VLAN configuration delivered by the central switch to it in its flash memory and forwards traffic based on this VLAN configuration after being powered on. After the RU goes online on the central switch, the central switch synchronizes the latest VLAN configuration to the RU's flash memory.
+
+Follow-up Procedure
+
+    Configure default and allowed VLANs for interfaces on the RU.
+    After you run the commands for configuring the VLAN mode for an RU and VLANs for RU interfaces, run the commit command to deliver the VLAN configuration to the RU or bring the RU offline and then online again for the configuration to take effect.
+
+Precautions
+
+You can configure the VLAN mode of an RU in the remote-unit view or remote-unit N view. If the VLAN mode is configured in both views, the configuration in the remote-unit N view takes effect. If no VLAN mode is configured in the remote-unit N view, the configuration in the remote-unit view takes effect.
+Example
+
+# Configure all connected RUs to work in manual VLAN mode.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] vlan mode manual
+
+# Configure the manual VLAN mode for the RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] vlan mode manual
+
