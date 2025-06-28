@@ -1,0 +1,517 @@
+VLAN Mapping Configuration Commands
+
+    Command Support
+    port vlan-mapping ingress
+    port vlan-mapping vlan inner-vlan
+    port vlan-mapping vlan map-vlan
+    remark cvlan-id
+    remark vlan-id
+    set inner-vlan tag0-remove
+
+Command Support
+Table 5-62 Products supporting the function of VLAN mapping
+
+VLAN Mapping Mode
+	
+
+Supported Model
+
+1:1 mode for 1 to 1 VLAN mapping
+	
+
+All models.
+
+N:1 mode for 1 to 1 VLAN mapping
+	
+
+S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735-S, S500, S5735-S-I, S5735S-L1, S6735-S, , S6720S-S, S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S
+
+1:1 mode for 2 to 1 VLAN mapping
+	
+
+S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, S5731S-H, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+
+N:1 mode for 2 to 1 VLAN mapping
+	
+
+S6735-S, S6720S-S, S5736-S, S5735S-H , S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S
+
+2 to 2
+	
+
+S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, S5731S-H, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+
+port vlan-mapping ingress
+Function
+
+The port vlan-mapping ingress command configures VLAN mapping in the inbound direction.
+
+The undo port vlan-mapping ingress command cancels the configuration.
+
+By default, VLAN mapping is valid for both inbound and outbound directions.
+
+This command is only supported by S1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S6720S-S.
+Format
+
+port vlan-mapping ingress
+
+undo port vlan-mapping ingress
+Parameters
+
+None
+Views
+
+Ethernet interface view, GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After the port vlan-mapping vlan vlan-id1 [ to vlan-id2 ] map-vlan vlan-id3 [ remark-8021p 8021p-value ] command is used on an interface, vlan-id1 [ to vlan-id2 ] is mapped to vlan-id3 in the inbound direction, and vlan-id3 is mapped to vlan-id1 [ to vlan-id2 ] in the outbound direction.
+
+On the S1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S6720S-S, outbound VLAN mapping cannot be used with a traffic policy containing CAR. You can run the port vlan-mapping ingress command to configure VLAN mapping in the inbound direction. The interface configured with VLAN mapping maps vlan-id1 [ to vlan-id2 ] to vlan-id3 in the inbound direction, and does not map vlan-id3 to vlan-id1 [ to vlan-id2 ] in the outbound direction.
+
+Prerequisites
+
+The qinq vlan-translation enable command has been executed.
+
+Precautions
+
+To make VLAN mapping take effect in the inbound direction only, configure the port vlan-mapping ingress and port vlan-mapping vlan map-vlan commands in sequence. To delete the VLAN mapping configuration, delete the port vlan-mapping vlan map-vlan and port vlan-mapping ingress commands in sequence.
+Example
+
+# Configure VLAN mapping in the inbound direction on GE0/0/1 to map VLAN 100 in received frames to VLAN 10.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 10
+[HUAWEI-GigabitEthernet0/0/1] qinq vlan-translation enable
+[HUAWEI-GigabitEthernet0/0/1] port vlan-mapping ingress
+[HUAWEI-GigabitEthernet0/0/1] port vlan-mapping vlan 100 map-vlan 10
+
+port vlan-mapping vlan inner-vlan
+Function
+
+The port vlan-mapping vlan inner-vlan command enables the interface to replace the outer VLAN tag or both VLAN tags of a double-tagged packet.
+
+The undo port vlan-mapping vlan inner-vlan command disables the interface to replace the outer VLAN tag or both VLAN tags of a double-tagged packet.
+
+By default, the interface does not map tags of packets.
+
+Only the S6735-S, S6720S-S, S5736-S, S5735S-H, S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, S5731S-S support this command.
+Format
+
+port vlan-mapping vlan vlan-id1 inner-vlan vlan-id2 [ to vlan-id3 ] map-vlan vlan-id4 [ remark-8021p 8021p-value ]
+
+port vlan-mapping vlan vlan-id1 inner-vlan vlan-id2 map-vlan vlan-id4 [ map-inner-vlan vlan-id5 ] [ remark-8021p 8021p-value ]
+
+undo port vlan-mapping { all | vlan vlan-id1 inner-vlan vlan-id2 [ to vlan-id3 ] [ map-vlan vlan-id4 ] }
+
+undo port vlan-mapping vlan vlan-id1 inner-vlan vlan-id2 map-vlan vlan-id4 map-inner-vlan vlan-id5
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Setting
+
+vlan vlan-id1
+	
+
+Specifies the VLAN ID of the outer tag in a received packet.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+inner-vlan vlan-id2 [ to vlan-id3 ]
+	
+Specifies the VLAN ID of the inner tag in a received packet.
+
+    vlan-id2: specifies the start value of the VLAN ID range of the inner tag in the received packet.
+    vlan-id3: specifies the end value of the VLAN ID range of the inner tag in the received packet. vlan-id3 is optional.
+
+The value of vlan-id3 must be greater than that of vlan-id2.
+	
+
+The value of vlan-id2 or vlan-id3 is an integer that ranges from 1 to 4094.
+
+map-vlan vlan-id4
+	
+
+Specifies the VLAN ID that replaces the VLAN ID of the outer tag in a packet.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+map-inner-vlan vlan-id5
+	
+
+Specifies the VLAN ID that replaces the VLAN ID of the inner tag in a packet.
+
+If the parameter map-inner-vlan is configured, the interface maps the VLAN ID of the inner tag in the packet to the value of vlan-id5 specified by users.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+remark-8021p 8021p-value
+	
+
+Specifies the re-marked 802.1p priority of the outer tag.
+
+The 802.1p priority is specified by a 3-bit PRI (priority) field in an 802.1Q packet. When congestion occurs on a switch, packets with a higher priority are sent first.
+
+If the parameter remark-8021p is configured, the interface changes the 802.1p priority in the packet to the value of 8021p-value specified by users.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority.
+
+all
+	
+
+Specifies all VLAN mapping entries configured on the primary interface.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, Eth-Trunk interface view, MultiGE interface view, port group view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When provider edges (PEs) receive double-tagged packets, the inner tag in the packets indicates the user, and the outer tag indicates the service. To differentiate services entering the ISP network, you can configure 2 to 1 VLAN mapping on PEs. To allow users to communicate with each other, the interface maps tags of different services to outer tags, and inner tags are transparently transmitted to the ISP network.
+
+This command allows an interface to map the VLAN ID in a tagged packet to an S-VLAN ID.
+
+Precautions
+
+VLAN mapping can only be configured on trunk or hybrid ports. Hybrid ports on switches except the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, S6730S-S must be added to the mapped VLAN in tagged mode. On the S5720-LI, S5720S-LI, S5720I-SI, S5735S-H, S5736-S, S6720S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, if a trunk port is added to the mapped VLAN in untagged mode, the port forwards reverse traffic without VLAN tags. As a result, VLAN mapping may not take effect.
+
+Interfaces configured with N:1 VLAN mapping must be added to the original VLAN in tagged mode. On switches except the S5731-S, S5731S-S, S5731-H, S5731S-H, S5732-H, S6730-H, S6730-S, S6730S-S, and S6730S-H, if a trunk port is configured with N:1 VLAN mapping and its PVID is the mapped VLAN ID or it is added to mapped VLANs in untagged mode, the port forwards reverse traffic without VLAN tags. As a result, VLAN mapping may not take effect.
+
+When inner-vlan is set to a VLAN ID range, the interface cannot replace the VLAN ID of the inner tag in packets.
+
+If VLAN mapping and DHCP are configured on the same interface, the interface must be added to the original VLANs (VLANs before mapping) in tagged mode.
+
+When the VLAN tags of a packet match both a single-tag VLAN mapping entry and a double-tag VLAN mapping entry, the double-tag VLAN mapping takes effect.
+
+If DHCP snooping is enabled on the device, do not configure 2:2 VLAN mapping. Otherwise, DHCP users cannot go online.
+
+For the S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S, N:1 VLAN mapping takes effect only when the packets with original VLANs are sent first and MAC address learning is enabled on interfaces and in VLANs. If packets are sent from an S-VLAN first or MAC address learning is disabled on interfaces or in VLANs, the C-VLAN to be mapped cannot be determined because no VLAN mapping information is recorded in MAC address entries. As a result, the packets are discarded. In addition, VLAN mapping cannot be configured together with VPLS or VXLAN tunnels.For the others, N:1 VLAN mapping takes effect only when the packets with original VLANs are sent first. In this case, if packets are sent from an S-VLAN first, the C-VLAN to be mapped cannot be determined because no ACL entry is generated. As a result, the packets are discarded.
+Example
+
+# Configure 2 to 1 VLAN mapping, map VLAN 10 in the outer tag of a packet (with VLAN 10 in the outer tag and VLAN 20 in the inner tag) to VLAN 100.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 100
+[HUAWEI-GigabitEthernet0/0/1] qinq vlan-translation enable
+[HUAWEI-GigabitEthernet0/0/1] port vlan-mapping vlan 10 inner-vlan 20 map-vlan 100
+
+port vlan-mapping vlan map-vlan
+Function
+
+The port vlan-mapping vlan map-vlan command enables the interface to map single tags of packets.
+
+The undo port vlan-mapping command cancels the interface to map single tags of packets.
+
+By default, the interface does not map tags of packets.
+Format
+
+port vlan-mapping vlan vlan-id1 [ to vlan-id2 ] map-vlan vlan-id3 [ remark-8021p 8021p-value ]
+
+undo port vlan-mapping { all | vlan vlan-id1 [ to vlan-id2 ] [ map-vlan vlan-id3 ]}
+
+N:1 VLAN mapping is supported on :
+
+S5720I-SI, S5720-LI, S5720S-LI, S5735S-H, S5736-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735-S, S500, S5735-S-I, S5735S-L1, S6735-S, , S6720S-S, S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Setting
+
+vlan vlan-id1 [ to vlan-id2 ]
+	
+Specifies the VLAN ID in a received packet.
+
+    vlan-id1: specifies the start value of the VLAN ID range of the tag.
+    to vlan-id2: specifies the end value of the VLAN ID range of the tag. The value of vlan-id2 must be greater than that of vlan-id1.
+
+	
+
+The value of vlan-id1 or vlan-id2 is an integer that ranges from 1 to 4094.
+
+map-vlan vlan-id3
+	
+
+Specifies the VLAN ID in the mapped tag.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+remark-8021p 8021p-value
+	
+
+Specifies the re-marked 802.1p priority of the mapped tag.
+
+The 802.1p priority is specified by a 3-bit PRI (priority) field in an 802.1Q packet. When congestion occurs on a switch, packets with a higher priority are sent first.
+
+If the parameter remark-8021p is configured, the interface changes the 802.1p priority in the packet to the value of 8021p-value specified by users.
+	
+
+The value is an integer that ranges from 0 to 7. A larger value indicates a higher priority.
+
+all
+	
+
+Specifies all VLAN mapping entries configured on the interface.
+	
+
+-
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, Eth-Trunk interface view, port group view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+VLAN mapping, also called VLAN translation, implements communication between different VLANs. VLAN mapping takes effect after outbound interfaces on a switch forward the packets received by inbound interfaces. This command allows an interface to map the VLAN ID in a tagged packet to an S-VLAN ID.
+
+After the port vlan-mapping vlan vlan-id1 [ to vlan-id2 ] map-vlan vlan-id3 [ remark-8021p 8021p-value ] command is used on an interface, vlan-id1 [ to vlan-id2 ] is mapped to vlan-id3 in the inbound direction, and vlan-id3 is mapped to vlan-id1 [ to vlan-id2 ] in the outbound direction.
+
+Precautions
+
+VLAN mapping can only be configured on trunk or hybrid ports. Hybrid ports on switches except the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, S6730S-S must be added to the mapped VLAN in tagged mode. On the S5720-LI, S5720S-LI, S5720I-SI, S5735S-H, S5736-S, S6720S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, if a trunk port is added to the mapped VLAN in untagged mode, the port forwards reverse traffic without VLAN tags. As a result, VLAN mapping may not take effect.
+
+Interfaces configured with N:1 VLAN mapping must be added to the original VLAN in tagged mode. On switches except the S5731-S, S5731S-S, S5731-H, S5731S-H, S5732-H, S6730-H, S6730-S, S6730S-S, and S6730S-H, if a trunk port is configured with N:1 VLAN mapping and its PVID is the mapped VLAN ID or it is added to mapped VLANs in untagged mode, the port forwards reverse traffic without VLAN tags. As a result, VLAN mapping may not take effect.
+
+When N:1 VLAN mapping is configured (VLAN IDs can be incontiguous before mapping), the interface needs to be added to these VLANs in tagged mode, and the VLAN specified by map-vlan cannot be a VLAN corresponding to a VLANIF interface.
+
+If VLAN mapping and DHCP are configured on the same interface, it is recommended to add the interface to the original VLANs (VLANs before mapping) in tagged mode.
+
+For the S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S, N:1 VLAN mapping takes effect only when the packets with original VLANs are sent first and MAC address learning is enabled on interfaces and in VLANs. If packets are sent from an S-VLAN first or MAC address learning is disabled on interfaces or in VLANs, the C-VLAN to be mapped cannot be determined because no VLAN mapping information is recorded in MAC address entries. As a result, the packets are discarded. In addition, VLAN mapping cannot be configured together with VPLS or VXLAN tunnels.For the others, N:1 VLAN mapping takes effect only when the packets with original VLANs are sent first. In this case, if packets are sent from an S-VLAN first, the C-VLAN to be mapped cannot be determined because no ACL entry is generated. As a result, the packets are discarded.
+
+N:1 VLAN mapping is not supported in a stack scenario.
+
+A maximum of 16 original VLAN IDs can be specified on an interface.
+
+If the VLANs before and after mapping are the same, return packets may fail to be forwarded. To solve the problem, map the VLAN to itself. For example, packets with VLAN 10 and VLAN 20 (before mapping) need to be sent to the network side and S-VLAN 20 (after mapping) is assigned to users, run the port vlan-mapping vlan 10 map-vlan 20 command. To ensure that return packets are correctly forwarded, run the port vlan-mapping vlan 20 map-vlan 20 command.
+
+The S6730-H, S6730-S, S6730S-S, S6730S-H, S5732-H, S5731-H, S5731S-H, S5731-S, and S5731S-S do not support N:1 VLAN mapping on Eth-Trunk interfaces.
+Example
+
+# Configure VLAN mapping on the GE0/0/1 and map VLAN 100 of a received packet to VLAN 10 before the packet is forwarded.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type trunk
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 10
+[HUAWEI-GigabitEthernet0/0/1] qinq vlan-translation enable
+[HUAWEI-GigabitEthernet0/0/1] port vlan-mapping vlan 100 map-vlan 10
+
+remark cvlan-id
+Function
+
+The remark cvlan-id command configures an action of re-marking the inner VLAN tag in QinQ packets in a traffic behavior.
+
+The undo remark cvlan-id command deletes the configuration.
+
+By default, an action of re-marking the inner VLAN tag in QinQ packets is not configured in a traffic behavior.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+remark cvlan-id cvlan-id
+
+undo remark cvlan-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+cvlan-id
+	
+
+Specifies the inner VLAN tag of QinQ packets to be re-marked.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+Traffic behavior view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can use the remark cvlan-id command to re-mark the inner VLAN tag in QinQ packets in a traffic behavior so that the downstream device can identify packets and provide differentiated services.
+
+Follow-up Procedure
+
+Run the traffic policy command to create a traffic policy and run the classifier behavior command in the traffic policy view to bind the traffic classifier to the traffic behavior containing the action of re-marking the inner VLAN tag in QinQ packets.
+
+Precautions
+
+The remark cvlan-id command is valid for only QinQ packets that carry two or more layers of tags.
+
+After the remark cvlan-id, remark 8021p, add-tag vlan-id, and remark vlan-id commands are used, the system modifies VLAN tags of packets according to the configuration. These actions are called VLAN-based actions.
+
+You must configure the VLAN-based action and non-VLAN-based action in different traffic behaviors bound to the same traffic policy.
+
+If you run the remark cvlan-id command in the same traffic classifier view multiple times, only the latest configuration takes effect.
+Example
+
+# Re-mark the inner VLAN tag in packets with 5 in the traffic behavior b1.
+
+<HUAWEI> system-view
+[HUAWEI] traffic behavior b1
+[HUAWEI-behavior-b1] remark cvlan-id 5
+
+remark vlan-id
+Function
+
+The remark vlan-id command configures an action of re-marking the VLAN tag in VLAN packets in a traffic behavior.
+
+The undo remark vlan-id command deletes the configuration.
+
+By default, an action of re-marking the VLAN tag in VLAN packets is not configured in a traffic behavior.
+Format
+
+remark vlan-id vlan-id
+
+undo remark vlan-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the VLAN tag of packets in a VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+Traffic behavior view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can use the remark vlan-id command to re-mark the VLAN tag in VLAN packets in a traffic behavior so that the downstream device can identify packets and provide differentiated services.
+
+The remark vlan-id command re-marks only the outer VLAN tag of double-tagged packets.
+
+Follow-up Procedure
+
+Run the traffic policy command to create a traffic policy and run the classifier behavior command in the traffic policy view to bind the traffic classifier to the traffic behavior containing VLAN tag re-marking.
+
+Precautions
+
+If the remark vlan-id command is used on an inbound interface, on the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S, add the outbound interfaces to the replaced VLAN and the original VLAN. Otherwise, packets cannot be forwarded correctly. On other models, add the inbound and outbound interfaces to the replaced VLAN and the original VLAN. Otherwise, packets cannot be forwarded correctly.
+
+If a traffic policy containing remark vlan-id is applied to the outbound direction on an interface, the VLAN that the interface belongs to must work in tag mode.
+
+After the remark vlan-id, remark 8021p, remark cvlan-id command is used, the system modifies the VLAN tag of packets based on the device configuration. The behavior configured through these commands is called VLAN-based action.
+
+To perform VLAN-based actions and non-VLAN-based actions in an upstream traffic policy, you need to configure VLAN-based actions and non-VLAN-based actions in different traffic behaviors.
+
+If you run the remark vlan-id command in the same traffic behavior view multiple times, only the latest configuration takes effect.
+Example
+
+# Re-mark the VLAN tag of packets in a VLAN to 200.
+
+<HUAWEI> system-view
+[HUAWEI] traffic behavior tb
+[HUAWEI-behavior-tb] remark vlan-id 200
+
+set inner-vlan tag0-remove
+Function
+
+The set inner-vlan tag0-remove command configures whether interfaces retain the inner VLAN tag 0 when forwarding double-tagged frames.
+
+The undo set inner-vlan tag0-remove disable command restores the default configuration.
+
+By default, interfaces remove the inner VLAN tag 0 when forwarding double-tagged frames.
+
+This command is supported only on the S1720GW-E, S1720GWR-E, S5720-LI, S5720S-LI, S5720I-SI, S6720S-S, S5735S-H, S5736-S.
+Format
+
+set inner-vlan tag0-remove { disable | enable }
+
+undo set inner-vlan tag0-remove disable
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+disable
+	
+
+Configures interfaces to retain the inner VLAN tag 0 when forwarding double-tagged frames.
+	
+
+-
+
+enable
+	
+
+Configures interfaces to remove the inner VLAN tag 0 when forwarding double-tagged frames.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+By default, a QinQ interface removes the inner VLAN tag 0 when forwarding double-tagged frames. You can run the set inner-vlan tag0-remove disable command to configure interfaces to retain the inner VLAN tag 0 when forwarding double-tagged frames.
+Example
+
+# Configure interfaces to retain the inner VLAN tag 0 when forwarding double-tagged frames.
+
+<HUAWEI> system-view
+[HUAWEI] set inner-vlan tag0-remove disable
+
