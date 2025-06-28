@@ -1,0 +1,280 @@
+VLAN Aggregation Configuration Commands
+
+    Command Support
+    access-vlan
+    aggregate-vlan
+    display sub-vlan
+    display super-vlan
+
+Command Support
+
+Only the following switch models support VLAN aggregation:
+
+S5720I-SI, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, S5731S-H, S5732-H, S5735-S, S5735-S-I, S6720S-S, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+access-vlan
+
+Function
+
+The access-vlan command adds one or more sub-VLANs to a super-VLAN.
+
+The undo access-vlan command removes one or more sub-VLANs from a super-VLAN.
+
+By default, no sub-VLAN is added to the super-VLAN.
+Format
+
+access-vlan { vlan-id1 [ to vlan-id2 ] } &<1-10>
+
+undo access-vlan { vlan-id1 [ to vlan-id2 ] } &<1-10>
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Specifies a range of sub-VLAN IDs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. The value of vlan-id2 must be greater than or equal to the value of vlan-id1. If to vlan-id2 is not specified, only one VLAN is added to the super-VLAN.
+
+You can specify a maximum of 10 VLAN ID ranges at a time. The ranges cannot overlap.
+	
+
+    The value of vlan-id1 is an integer that ranges from 1 to 4094.
+    The value of vlan-id2 is an integer that ranges from 1 to 4094.
+
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The VLAN technology is widely applied to packet switching networks because it controls broadcast domains flexibly and is easy to deploy. Generally, a Layer 3 switch usually uses a Layer 3 logical interface in each VLAN to allow user hosts in different broadcast domains to communicate. This wastes IP addresses. The VLAN aggregation function is introduced to save IP addresses while implementing communication between VLANs.
+
+The VLAN aggregation function associates a super-VLAN with multiple sub-VLANs. A VLANIF interface can be created in the super-VLAN and be configured with an IP address. Interfaces in all the sub-VLANs use this IP address as the gateway address to communicate with interfaces in other VLANs. This reduces subnet IDs, subnet default gateway addresses, and subnet broadcast IP addresses. In a word, the VLAN aggregation function allows different broadcast domains to use the same subnet address, implements flexible addressing, and saves IP addresses.
+
+Prerequisites
+
+The super-VLAN has been configured using the aggregate vlan command.
+
+Before running the access-vlan command, delete VLANIF interfaces from all the sub-VLANs.
+
+Follow-up Procedure
+
+Configure the sub-VLANs to implement Layer 2 communication between them.
+
+Precautions
+
+The super-VLAN must be different from all its sub-VLANs.
+
+A VLAN can be added to only one super-VLAN.
+
+If you run the access-vlan command multiple times in the same VLAN view, all the specified VLANs are added to the super-VLAN.
+Example
+
+# Add sub-VLAN20 and sub-VLAN30 to super-VLAN2.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] aggregate-vlan
+[HUAWEI-vlan2] access-vlan 20 30
+
+aggregate-vlan
+Function
+
+The aggregate-vlan command configures a VLAN as a super-VLAN.
+
+The undo aggregate-vlan command cancels the configuration.
+
+By default, no VLAN is configured as a super-VLAN.
+Format
+
+aggregate-vlan
+
+undo aggregate-vlan
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The VLAN technology is widely applied to packet switching networks because it controls broadcast domains flexibly and is easy to deploy. Generally, a Layer 3 switch usually uses a Layer 3 logical interface in each VLAN to allow user hosts in different broadcast domains to communicate. This wastes IP addresses. The VLAN aggregation function is introduced to save IP addresses while implementing communication between VLANs.
+
+The VLAN aggregation function associates a super-VLAN with multiple sub-VLANs. A VLANIF interface can be created in the super-VLAN and be configured with an IP address. Interfaces in all the sub-VLANs use this IP address as the gateway address to communicate with interfaces in other VLANs. This reduces subnet IDs, subnet default gateway addresses, and subnet broadcast IP addresses. In a word, the VLAN aggregation function allows different broadcast domains to use the same subnet address, implements flexible addressing, and saves IP addresses.
+
+Prerequisites
+
+Before configuring a VLAN as a super-VLAN, delete all physical interfaces from the VLAN.
+
+Precautions
+
+VLAN 1 cannot be configured as a super-VLAN.
+
+If a VLAN has been configured as a guest VLAN, it cannot be configured as a super-VLAN.
+
+If a VLAN or the VLAN pool to which a VLAN belongs has been configured as a service VLAN for the WLAN network, the VLAN cannot be configured as a super-VLAN. Similarly, if a VLAN has been configured as a super-VLAN, the VLAN or the VLAN pool to which the VLAN belongs cannot be configured as a service VLAN for the WLAN network. In addition, if a VLAN pool has been configured as a service VLAN for a WLAN network, a super-VLAN cannot be added to the VLAN pool.
+
+The super-VLAN must be different from all its sub-VLANs.
+
+After a VLAN is configured as a super-VLAN, no physical interface can be added to the VLAN.
+
+If too many sub-VLANs are added to the super-VLAN, the ARP broadcast storm degrades the system performance and affects the ARP learning.For S6730-H, S6730-S, S6730S-H, S6730S-S, S5731-H, S5731-S, S5731S-H, S5731S-S, and S5732-H, the number of sub-VLANs that are added to a super-VLAN cannot exceed 24. For other models, the number cannot exceed 16.
+
+Example
+
+# Configure VLAN 2 as a Super-VLAN.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 2
+[HUAWEI-vlan2] aggregate-vlan
+
+display sub-vlan
+Function
+
+The display sub-vlan command displays information about sub-VLAN entries.
+Format
+
+display sub-vlan [ vlan-id ]
+Parameters
+Parameter 	Description 	Value
+
+vlan-id
+	
+
+Specifies the VLAN ID of a sub-VLAN.
+
+When multiple VLANs are configured on a device, you are recommended to specify the VLAN ID so that you can view information about a specific sub-VLAN.
+	
+
+The value is an integer ranging from 1 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After VLAN aggregation is configured on a device, you can determine whether VLAN aggregation has been correctly configured by running the display sub-vlan command to check information about sub-VLANs and check which sub-VLANs are contained in a super-VLAN.
+
+When using the display sub-vlan command, note the following issues:
+
+    If vlan-id is not specified, information about all sub-VLANs on the device is displayed.
+
+    If vlan-id is specified, information about a specific sub-VLAN is displayed.
+
+Before running the display sub-vlan command, ensure that the device is configured with sub-VLANs. Otherwise, no command output is displayed.
+Example
+
+# Display information about all sub-VLANs.
+
+<HUAWEI> display sub-vlan
+
+VLAN ID   Super-VLAN
+------------------------
+10        40
+20        40
+30        40  
+
+Table 5-48 Description of the display sub-vlan command output
+
+Item
+	
+
+Description
+
+VLAN ID
+	
+
+Existing sub-VLAN on the device.
+
+To specify the parameter, run the access-vlan command.
+
+Super-VLAN
+	
+
+Super-VLAN that the sub-VLAN belongs to.
+
+To specify the parameter, run the aggregate-vlan command.
+display super-vlan
+Function
+
+The display super-vlan command displays information about super-VLAN entries.
+Format
+
+display super-vlan [ vlan-id ]
+Parameters
+Parameter 	Description 	Value
+
+vlan-id
+	
+
+Specifies the VLAN ID of a super-VLAN.
+
+When multiple VLANs are configured on a device, you are recommended to specify the VLAN ID so that you can view information about a specific super-VLAN.
+	
+
+The value is an integer ranging from 1 to 4094.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After VLAN aggregation is configured on a device, you can determine whether VLAN aggregation has been correctly configured by running the display super-vlan command to check information about super-VLANs and check which sub-VLANs are contained in a super-VLAN.
+
+When using the display super-vlan command, note the following issues:
+
+    If vlan-id is not specified, information about all super-VLANs on the device is displayed.
+
+    If vlan-id is specified, information about a specific super-VLAN is displayed.
+
+Before running the display super-vlan command, ensure that the device is configured with super-VLANs. Otherwise, no command output is displayed.
+Example
+
+# Display information about all super-VLANs.
+
+<HUAWEI> display super-vlan
+
+VLAN ID   Sub-VLAN
+------------------------
+40        10 20 30
+
+Table 5-49 Description of the display super-vlan command output
+
+Item
+	
+
+Description
+
+VLAN ID
+	
+
+Existing super-VLAN on the device.
+
+To specify the parameter, run the aggregate-vlan command.
+
+Sub-VLAN
+	
+
+Sub-VLAN in the super-VLAN.
+
+To specify the parameter, run the access-vlan command.
