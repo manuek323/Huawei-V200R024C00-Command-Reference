@@ -1,0 +1,848 @@
+Smart Upgrade Commands
+
+    Command Support
+    display smart-upgrade information
+    smart-upgrade { url | https-port }
+    smart-upgrade download
+    smart-upgrade enable
+    smart-upgrade ap enable
+    smart-upgrade right-now
+    smart-upgrade ssl-policy
+    smart-upgrade schedule
+    smart-upgrade verify-server disable
+    smart-upgrade web-prompt disable
+
+Command Support
+
+All models of S300, S500, S2700, S5700, and S6700 series switches (except the S5751-L, S5731-L, and S5731S-L) support Smart Upgrade.
+
+Only the following switch models support Smart AP Upgrade:
+
+S5731-H, S5731S-H, S5732-H, S6730-H, S6730S-H
+display smart-upgrade information
+Function
+
+The display smart-upgrade information command displays details about smart upgrade.
+Format
+
+display smart-upgrade information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+After smart upgrade is enabled, you can run the display smart-upgrade information command to check network connectivity with the HOUP and check whether a new version of software or patch is available for upgrade.
+
+Precautions
+
+This command triggers information exchange between the switch and HOUP. If this command is used frequently, smart upgrade may be affected.
+Example
+
+# Display details about smart switch or AP upgrade.
+
+<HUAWEI> display smart-upgrade information
+Info: Loading the information, please wait .
+
+Configuration:
+    URL                          : s.houp.huawei.com
+    HTTPS port                   : 443
+    Bind SSL policy              : houp
+    Verify HTTPS server          : true
+Version information:
+    Refresh time                 : 2019-01-23 12:24:06
+    Check version result         : needUpdate
+    Recommended software version : V200R024C00                                  
+    Recommended patch version    : V200R020SPH001                               
+    Upgrade description          :                                              
+    Firmware and Patch Description in English:1)description:2)CC+SPH            
+                                                                                
+    Software package name        : S5732-H-V200R024C00.cc                       
+    Software package size(B)     : 120101636                                    
+    Patch package name           : S5732-H-V200R020SPH001.pat                   
+    Patch package size(B)        : 14910                                        
+
+Upgrade information:
+    Upgrade Time                 : 2019-01-23 11:13                             
+    Upgrade status               : success                                      
+    Cancellation status          : -                                            
+    Software download time       : -                                            
+    Software download progress(%): -                                            
+    Software download speed(KB/s): -                                            
+    Patch download time          : -                                            
+    Patch download progress(%)   : -                                            
+    Patch download speed(KB/s)   : -                                            
+    Last upgrade time            : 2019-01-23 11:13                             
+    Last upgrade result          : success                                      
+
+Local information:                                                              
+    Device name                  : S5732-H24UM2CC                             
+    ESN                          : 2102351XFR1*********                         
+    Software version             : V200R020C00                                  
+    Patch version                : V200R020SPH 
+
+Schedule Upgrade Information:
+    Download time                : 2020-2-13 20:01:24
+    Download triggered           : yes
+    Download pre-check result    : succeeded
+    Reboot time                  : 2020-2-13 20:01:24
+    Reboot triggered             : yes
+    Reboot triggered result      : failed
+
+<HUAWEI> display smart-upgrade information
+Info: Loading the information, please wait .
+
+Configuration:
+    URL                          : s.houp.huawei.com
+    HTTPS port                   : 443
+    Bind SSL policy              : houp
+    Verify HTTPS server          : true
+Version information:
+    Refresh time                 : 2020-07-23 12:24:06
+    Check version result         : needUpdate
+    Recommended software version : V200R024C00                                  
+    Recommended patch version    : -                               
+    Upgrade description          : -                                             
+    Firmware and Patch Description in English: -            
+                                                                                
+    Software package name        : AirEngineX760_V200R024C00.bin                       
+    Software package size(B)     : 120101636                                    
+    Patch package name           : xxx.pat                   
+    Patch package size(B)        : 14910                                        
+
+Upgrade information:
+    Upgrade Time                 : 2020-01-23 11:13                             
+    Upgrade status               : success                                      
+    Cancellation status          : -                                            
+    Software download time       : -                                            
+    Software download progress(%): -                                            
+    Software download speed(KB/s): -                                            
+    Patch download time          : -                                            
+    Patch download progress(%)   : -                                            
+    Patch download speed(KB/s)   : -                                            
+    Last upgrade time            : 2020-01-23 11:13                             
+    Last upgrade result          : success                                      
+
+Local information:                                                              
+    Device name                  : AirEngine 8760-X1-PRO                             
+    ESN                          : 2102351XFR1*********                         
+    Software version             : V200R019C10                                  
+    Patch version                : - 
+
+AP information:                                                                                                                     
+    Device Type                  : AirEngine 8760-X1-PRO                                                                                         
+
+Schedule Upgrade Information:
+    Download time                : -
+    Download triggered           : no
+    Download pre-check result    : -
+    Reboot time                  : -
+    Reboot triggered             : no
+    Reboot triggered result      : -
+
+Table 2-63 Description of the display smart-upgrade information command output
+
+Item
+	
+
+Description
+
+Configuration
+	
+
+Configuration information.
+
+URL
+	
+
+Configured proxy server.
+
+HTTPS port
+	
+
+HTTPS port number of the proxy server. The default port number is 443.
+
+Bind SSL policy
+	
+
+Name of the bound SSL policy.
+
+Verify HTTPS server
+	
+Whether to verify the HTTPS server.
+
+    true: The HTTPS server is verified.
+    false: The HTTPS server is not verified.
+
+Version information
+	
+
+Version information.
+
+Refresh time
+	
+
+Time when version information is obtained. Each time the command is run, the time is updated.
+
+Check version result
+	
+Version check result.
+
+    needUpdate: An upgrade is required.
+    netError: The network is unavailable.
+    versionOptimal: The version is optimal.
+
+Recommended software version
+	
+
+Recommended software package version.
+
+Recommended patch version
+	
+
+Recommended patch version.
+
+Upgrade description
+	
+
+Upgrade description.
+
+Firmware and Patch Description in English
+	
+
+Hardware and patch description in English.
+
+Software package name
+	
+
+Software package name.
+
+Software package size(B)
+	
+
+Software package size.
+
+Patch package name
+	
+
+Patch package name.
+
+Patch package size(B)
+	
+
+Patch package size.
+
+Upgrade information
+	
+
+Upgrade information.
+
+Upgrade Time
+	
+
+Upgrade time.
+
+Upgrade status
+	
+Upgrade status:
+
+    success: The upgrade succeeds.
+    running: The upgrade is ongoing.
+    netError: Network error.
+    serverSpecUpLimit: The server specification reached the upper limit of the connection.
+    CertOutDate: The certificate has expired.
+    writeFlashFailed: The system file fails to be saved in the flash memory.
+    fileCheckFailed: The file verification fails.
+    upgradeCancelled: The upgrade is canceled.
+    abnormalReset: The switch is restarted or an active/standby switchover is performed during an upgrade.
+    fileNotMatch: The file does not match.
+    systemError: System error.
+    other: Other status.
+
+Cancellation status
+	
+Upgrade cancellation status:
+
+    Initial: The initialization is generally performed when the loading starts.
+    Cancelling: The upgrade is being canceled.
+    Successful: The upgrade is successfully canceled.
+    Failed: The upgrade fails to be canceled.
+
+Software download time
+	
+
+Time when the software package is downloaded to a device.
+
+Software download progress(%)
+	
+
+Software package download progress, in percentage.
+
+Software download speed(KB/s)
+	
+
+Software package download rate.
+
+Patch download time
+	
+
+Time when a patch is downloaded to a device.
+
+Patch download progress(%)
+	
+
+Patch download progress, in percentage.
+
+Patch download speed(KB/s)
+	
+
+Patch download rate.
+
+Last upgrade time
+	
+
+Last upgrade time.
+
+Last upgrade result
+	
+
+Last upgrade result.
+
+Local information
+	
+
+Local device information.
+
+Device name
+	
+
+Device name.
+
+ESN
+	
+
+Device ESN.
+
+Software version
+	
+
+Software version.
+
+Patch version
+	
+
+Patch version.
+
+AP information
+	
+
+AP information.
+
+Device Type
+	
+
+AP type.
+
+Schedule Upgrade Information
+	
+
+Scheduled upgrade information.
+
+Download time
+	
+
+Scheduled time when system files will be downloaded.
+
+Download triggered
+	
+
+Whether system file download is triggered:
+
+    yes: System file download is triggered.
+    no: System file download is not triggered.
+
+Download pre-check result
+	
+
+Result of the device status pre-check before system files are downloaded:
+
+    failed: The check fails.
+    succeeded: The check is successful.
+
+Reboot time
+	
+
+Scheduled time for a reboot following an upgrade.
+
+Reboot triggered
+	
+
+Check whether the reboot following an upgrade is triggered.
+
+    yes: The reboot following an upgrade is triggered.
+    no: The reboot following an upgrade is not triggered.
+
+Reboot triggered result
+	
+
+Result of the device status pre-check before a restart is performed:
+
+    failed: The check fails.
+    succeeded: The check is successful.
+
+smart-upgrade { url | https-port }
+Function
+
+The smart-upgrade { url | https-port } command configures the URL and HTTPS port number of a proxy server.
+
+The undo smart-upgrade { url | https-port } command cancels the configured URL and HTTPS port number of a proxy server.
+
+By default, the URL and HTTPS port number of a proxy server for connecting to a device are s.houp.huawei.com and 443, respectively.
+Format
+
+smart-upgrade { url host | https-port https-port }
+
+undo smart-upgrade { url | https-port }
+Parameters
+Parameter 	Description 	Value
+
+host
+	
+
+Specifies the URL or IP address of a proxy server.
+	
+
+The value is a string of 1 to 127 characters.
+
+https-port
+	
+
+Specifies the HTTPS port number of a proxy server.
+	
+
+The value is an integer ranging from 1 to 65535.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When a device resides on an intranet, it cannot directly access the HOUP (s.houp.huawei.com). You can run this command to configure the URL and HTTPS port number of a proxy server, so that the device can access public networks through the proxy server.
+
+When the device resides on a public network, it cannot directly access the HOUP (s.houp.huawei.com). You can run this command to configure s.houp.huawei.cn as the URL for connecting to the public network.
+Example
+
+# Configure the URL and HTTPS port number of a proxy server.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade url 10.10.10.20
+[HUAWEI] smart-upgrade https-port 10020
+
+smart-upgrade download
+Function
+
+The smart-upgrade download command configures a smart upgrade-enabled switch to download the system file from the HOUP.
+Format
+
+smart-upgrade download
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+When the smart upgrade status of the switch or AP is displayed as needUpdate, you can run the smart-upgrade download command to configure the switch or AP to download the system file first and then run the smart-upgrade right-now command at the right time to implement smart upgrade.
+
+Precautions
+
+Resumable download is supported during system file download for smart upgrade. If the system file fails to be downloaded due to a network exception, run the smart-upgrade download command to enable the switch to start downloading the system file from the breakpoint.
+
+During the smart upgrade of an AP, if the upgrade file version of the AP does not match the software version of the switch, the system displays an error message.
+Example
+
+# Configure a smart upgrade-enabled switch to download the system file from the HOUP.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade download
+Info: Getting version information from houp, please wait ...                    
+Info: If you want to stop the download, please press CTRL + C.                  
+Info: Downloading file basic-soft.cc ...                               
+Info: Current percent is 100%.                                                  
+Info: 83148260 byte(s) received in 160.618 second(s) 505.54 Kbyte(s)/sec.       
+Info: Downloading file basic-soft.cc.asc ...                           
+Info: The file already exists, check whether it can be resumed from the breakpoint.
+Info: The file content is inconsistent with houp, delete and re-download...     
+Info: Current percent is 100%.                                                  
+Info: 490 byte(s) received in 0.228 second(s) 2.10 Kbyte(s)/sec.                
+Info: Start verifying signature ...                                             
+Info: Signature verification passed.                                            
+Info: Start set next startup file, please wait...                               
+Info: Set next startup file basic-soft.cc successfully. 
+
+smart-upgrade enable
+
+Function
+
+The smart-upgrade enable command enables smart upgrade.
+
+The undo smart-upgrade enable command disables smart upgrade.
+
+By default, smart upgrade is disabled on a switch.
+Format
+
+smart-upgrade enable
+
+undo smart-upgrade enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After the smart-upgrade enable command is run on a switch, the switch queries the latest version information from the HOUP every 24 hours.
+
+Prerequisites
+
+An SSL policy has been bound to smart upgrade using the smart-upgrade ssl-policy command.
+
+Follow-up Task
+After smart upgrade is enabled, perform the following operations according to the actual situation:
+
+    Run the display smart-upgrade information command to check details about smart upgrade.
+    Run the smart-upgrade download command to configure the switch to download the system file from the HOUP.
+    Run the smart-upgrade right-now command to perform a smart upgrade immediately.
+
+Example
+
+# Enable smart upgrade.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade enable
+
+smart-upgrade ap enable
+
+Function
+
+The smart-upgrade ap enable command enables smart upgrade for APs.
+
+The undo smart-upgrade ap enable command disables smart upgrade for APs.
+
+By default, smart upgrade is disabled for APs.
+
+This command is supported only on the following models:
+
+S5731-H, S5731S-H, S5732-H, S6730-H, S6730S-H
+Format
+
+smart-upgrade ap enable
+
+undo smart-upgrade ap enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To upgrade APs to the latest version more conveniently, you can deploy the smart upgrade function to implement one-click upgrade. After the smart-upgrade ap enable command is run to enable smart upgrade for APs, the switch queries the latest version information from the HOUP every 24 hours.
+
+Prerequisites
+
+Smart upgrade has been enabled using the smart-upgrade enable command.
+
+Follow-up Task
+After the smart upgrade function is enabled for APs, perform the following operations as required:
+
+    Run the smart-upgrade download command to download system files.
+    Run the smart-upgrade right-now command to perform a smart upgrade immediately.
+    Run the display smart-upgrade information command to check details about smart upgrade.
+
+Example
+
+# Enable smart upgrade for APs.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade ap enable
+
+smart-upgrade right-now
+
+Function
+
+The smart-upgrade right-now command performs smart upgrade on a switch immediately.
+Format
+
+smart-upgrade right-now
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+When the smart upgrade status of a switch is displayed as needUpdate, you can run the smart-upgrade right-now to implement loading of and upgrade to a new software version in one-click mode.
+
+Before this command is run, you can also run the smart-upgrade download command to configure the switch to download the system file from the HOUP first and then run the smart-upgrade right-now command at the right time to implement smart upgrade. The wait time in this method is shorter than that when the smart-upgrade right-now command is run.
+
+Precautions
+
+Switches cannot be added to or removed from a stack during smart upgrade.
+
+Resumable download is supported during system file download for smart upgrade. If the download is interrupted due to a network exception, run the smart-upgrade right-now command to enable the switch to continue the download from the breakpoint.
+
+During the smart upgrade of an AP, if the upgrade file version of the AP does not match the software version of the switch, the system displays an error message.
+Example
+
+# Perform smart upgrade on a switch immediately.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade right-now
+Info: Getting version information from houp, please wait ...                    
+Info: If you want to stop the upgrade, please press CTRL + C.                   
+Info: Downloading file basic-soft.cc ...                               
+Info: The file already exists, check whether it can be resumed from the breakpoint.
+Info: Resume from the 15728640 bytes breakpoint.                                
+Info: Current percent is 100%.                                                  
+Info: 104372996 byte(s) received in 197.329 second(s) 516.53 Kbyte(s)/sec.      
+Info: Downloading file basic-soft.cc.asc ...                           
+Info: Current percent is 100%.                                                  
+Info: 490 byte(s) received in 0.201 second(s) 2.38 Kbyte(s)/sec.                
+Info: Downloading file basic-patch.pat ...                           
+Info: The file already exists, check whether it can be resumed from the breakpoint.
+Info: The file size is OK and the content is consistent.                        
+Info: Downloading file basic-patch.pat.asc ...                       
+Info: The file already exists, check whether it can be resumed from the breakpoint.
+Info: The file size is OK and the content is consistent.                        
+Info: Start verifying signature ...                                             
+Info: Signature verification passed.                                            
+Info: Set next startup patch basic-patch.pat successfully.           
+Info: Start set next startup file, please wait...                               
+Info: Set next startup file basic-soft.cc successfully.                
+Info: System will rebooting for upgrade...           
+
+smart-upgrade ssl-policy
+
+Function
+
+The smart-upgrade ssl-policy command binds an SSL policy to smart upgrade.
+
+The undo smart-upgrade ssl-policy command unbinds an SSL policy from smart upgrade.
+
+By default, no SSL policy is bound to smart upgrade.
+Format
+
+smart-upgrade ssl-policy policy-name
+
+undo smart-upgrade ssl-policy
+Parameters
+Parameter 	Description 	Value
+
+policy-name
+	
+
+Specifies the name of an SSL policy.
+	
+
+The value is a string of 1 to 23 case-insensitive characters without spaces. The value can contain digits, letters, and underscores (_).
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Because a switch where smart upgrade is to be enabled is connected to the HOUP using HTTPS, an SSL policy must be bound to smart upgrade for the switch to establish HTTPS connection with the HOUP before smart upgrade is enabled on the switch.
+Example
+
+# Bind an SSL policy named houp to smart upgrade.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade ssl-policy houp
+
+smart-upgrade schedule
+Function
+
+The smart-upgrade schedule command configures the scheduled smart upgrade function on a switch.
+
+The undo smart-upgrade schedule command disables the scheduled smart upgrade function on a switch.
+
+By default, the scheduled smart upgrade function is disabled on a switch.
+Format
+
+smart-upgrade schedule download at download-time [ reboot at reboot-time ]
+
+undo smart-upgrade schedule
+Parameters
+Parameter 	Description 	Value
+
+download at download-time
+	
+
+Specifies the time when a switch downloads system files.
+	
+
+The format is YYYY-MM-DD HH:MM:SS.
+
+    YYYY indicates the year. The value is an integer in the range from 2000 to 2099.
+    MM indicates the month. The value is an integer in the range from 1 to 12.
+    DD indicates the day. The value is an integer in the range from 1 to 31.
+    HH specifies the hour. The value is an integer in the range from 0 to 23.
+    MM indicates the minute. The value is an integer in the range from 0 to 59.
+    SS indicates the second. The value is an integer in the range from 0 to 59.
+
+NOTE:
+
+The time when a switch downloads system files must be later than the current time of the switch.
+
+reboot at reboot-time
+	
+
+Specifies the time when a switch restarts after an upgrade.
+	
+
+The format is YYYY-MM-DD HH:MM:SS.
+
+    YYYY indicates the year. The value is an integer in the range from 2000 to 2099.
+    MM indicates the month. The value is an integer in the range from 1 to 12.
+    DD indicates the day. The value is an integer in the range from 1 to 31.
+    HH specifies the hour. The value is an integer in the range from 0 to 23.
+    MM indicates the minute. The value is an integer in the range from 0 to 59.
+    SS indicates the second. The value is an integer in the range from 0 to 59.
+
+NOTE:
+
+    The time when a switch restarts after an upgrade must be later than the time when the switch downloads system files.
+    If you do not specify the time when a switch restarts after an upgrade, the switch only downloads system files. In this case, you need to manually restart the switch to complete the upgrade.
+
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+When a switch requires a smart upgrade, you can run the smart-upgrade schedule command on the switch to configure it to perform a smart upgrade at an off-peak time. This configuration will prevent the upgrade from affecting services running on the switch.
+
+Precautions
+
+    This command takes effect only for smart upgrade of switches instead of APs.
+    During a scheduled smart upgrade, if the switch fails to download system files at the scheduled time due to network problems, the switch attempts to download system files again when the scheduled restart time arrives. If the upgrade still fails, the scheduled smart upgrade fails.
+    The following operations will disable the scheduled smart upgrade function:
+        Resets a switch.
+        Run the undo smart-upgrade enable command to disable smart upgrade.
+        Run the smart-upgrade download command to download system files.
+        Run the smart-upgrade right-now command to perform a smart upgrade immediately.
+        Download system files immediately through the web system.
+        Perform a smart upgrade immediately through the web system.
+
+Example
+
+# Configure the scheduled smart upgrade function.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade schedule download at 2020-12-01 00:00:00
+
+smart-upgrade verify-server disable
+
+Function
+
+The smart-upgrade verify-server disable command disables the server certificate verification function before a switch is connected to a proxy server for smart upgrade.
+
+The undo smart-upgrade verify-server disable command enables the server certificate verification function before a switch is connected to a proxy server for smart upgrade.
+
+By default, the server certificate verification function is enabled before a switch is connected to a proxy server for smart upgrade.
+Format
+
+smart-upgrade verify-server disable
+
+undo smart-upgrade verify-server disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When the certificate for smart upgrade is invalid or no certificate for smart upgrade is available, you can run the smart-upgrade verify-server disable command to temporarily disable the certificate verification function.
+
+Although the certificate verification function is manually disabled, an SSL policy still needs to be bound to smart upgrade. Therefore, after the certificate verification function is disabled, run the ssl policy policy-name command to create an empty SSL policy and run the smart-upgrade ssl-policy command to bind the SSL policy to smart upgrade.
+Example
+
+# Disable the function of verifying the HTTPS certificate of the server.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade verify-server disable
+
+smart-upgrade web-prompt disable
+
+Function
+
+The smart-upgrade web-prompt disable command disables web prompt for smart upgrade.
+
+The undo smart-upgrade web-prompt disable command enables web prompt for smart upgrade.
+
+By default, web prompt for smart upgrade is enabled.
+Format
+
+smart-upgrade web-prompt disable
+
+undo smart-upgrade web-prompt disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+By default, when smart upgrade is disabled on a switch, the web system prompts the user that this function is disabled. After smart upgrade is enabled on the switch and a new software version is available, the web system prompts the user to upgrade the switch to the new version. If such information is not required, you can run this command to disable web prompt for smart upgrade.
+Example
+
+# Disable web prompt for smart upgrade.
+
+<HUAWEI> system-view
+[HUAWEI] smart-upgrade web-prompt disable
+
