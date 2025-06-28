@@ -1,0 +1,53 @@
+reboot
+Function
+
+The reboot command resets an RU.
+
+By default, an RU is not reset.
+Format
+
+reboot [ all ]
+Parameters
+Parameter 	Description 	Value
+
+all
+	
+
+Resets all RUs.
+	
+
+This parameter is supported only in the remote-unit view.
+Views
+
+remote-unit view, remote-unit N view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+    You can run this command to reset a faulty RU.
+    If an RU fails to be upgraded and enters the cooldown period, you can run the reboot command to end the cooldown period.
+
+Precautions
+
+    An RU that has no interconnection interface bound cannot be reset.
+    An RU that fails to be authenticated or is not authenticated cannot be reset.
+    An RU that encounters a communication error will fail to be reset.
+    RUs do not save their configurations. After an RU starts, it goes online on the central switch. After the RU is authenticated successfully, the central switch delivers configurations to the RU for them to take effect. For example, port isolation is required on an RU. After you restart the RU, its downlink interfaces can communicate with each other. The interfaces are isolated after the central switch authenticates the RU successfully and delivers the port isolation configuration.
+
+Example
+
+# Reset a single RU.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] reboot
+
+# Reset all RUs.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] reboot all
+
