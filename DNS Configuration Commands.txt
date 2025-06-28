@@ -1,0 +1,693 @@
+DNS Configuration Commands
+
+    Command Support
+    display dns dynamic-host
+    display dns domain
+    display dns server
+    display ip host
+    dns domain
+    dns resolve
+    dns server
+    dns server source-ip
+    ip host
+    reset dns dynamic-host
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display dns dynamic-host
+Function
+
+The display dns dynamic-host command displays dynamic DNS entries.
+Format
+
+display dns dynamic-host [ vpn-instance vpn-instance-name | all ]
+Parameters
+Parameter 	Description 	Value
+
+vpn-instance vpn-instance-name
+	
+
+Displays dynamic DNS entries of a specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+
+all
+	
+
+Displays all dynamic DNS entries, including both public and private DNS entries.
+NOTE:
+
+If neither vpn-instance vpn-instance-name nor all is specified, only public dynamic DNS entries are displayed.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display dns dynamic-host command to view dynamic DNS entries and check whether domain names match the mapping entries.
+Example
+
+# Display dynamic DNS entries.
+
+<HUAWEI> display dns dynamic-host
+No  Domain-name         IpAddress      TTL    Alias
+1   www.example.com     10.1.1.1       3521
+2   www.huawei.com     10.1.2.1       3000
+
+# Display dynamic DNS entries of the VPN instance vpn1.
+
+<HUAWEI> display dns dynamic-host vpn-instance vpn1
+No  Domain-name                              Alias                   IpAddress            TTL      VPN-Instance
+1   www.example.com                                                   10.1.3.1             3521     vpn1
+2   www.huawei.com                                                   10.1.4.1             3000     vpn1
+
+Table 6-30 Description of the display dns dynamic-host command output
+
+Item
+	
+
+Description
+
+No
+	
+
+Number of a dynamic DNS entry.
+
+Domain-name
+	
+
+Domain name.
+
+IpAddress
+	
+
+IP addresses of the host.
+
+TTL
+	
+
+Remaining lifetime of DNS entries (in seconds).
+
+Alias
+	
+
+Alias of a host.
+
+VPN-Instance
+	
+
+VPN instance name.
+display dns domain
+Function
+
+The display dns domain command displays information about the domain name suffixes.
+Format
+
+display dns domain [ vpn-instance vpn-instance-name | all ]
+Parameters
+Parameter 	Description 	Value
+vpn-instance vpn-instance-name 	
+
+Displays information about domain name suffixes of a specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+all 	
+
+Displays information about all domain name suffixes, including both public and private domain name suffixes.
+NOTE:
+
+If neither vpn-instance vpn-instance-name nor all is specified, only information about public domain name suffixes is displayed.
+	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display dns domain command displays the configuration of domain name suffixes and the order in which they are configured.
+Example
+
+# Display the list of domain name suffixes.
+
+<HUAWEI> display dns domain
+No                    Domain-name
+1                     com
+2                     net
+
+# Display the list of domain name suffixes of the VPN instance vpn1.
+
+<HUAWEI> display dns domain vpn-instance vpn1
+No          Domain-name         VPN-Instance
+1           com.cn              vpn1
+
+Table 6-31 Description of the display dns domain command output
+
+Item
+	
+
+Description
+
+No
+	
+
+Indicates the domain name suffix numbers, that is, the configuration sequence of domain name suffixes.
+
+Domain-name
+	
+
+Indicates the configured domain name suffix. If there are multiple domain name suffixes in the list, during DNS resolution, the first suffix is added and sent to the DNS server. If the DNS server gives no response, the query message is resent; if the DNS server still gives no response, the query message is resent for a third time; if the DNS server still does not respond, the next suffix is added and sent to the DNS server for searching for the mapped address.
+
+The value is set using the dns domain command.
+
+VPN-Instance
+	
+
+VPN instance name.
+
+The value is set using the dns domain command.
+display dns server
+Function
+
+The display dns server command displays information about DNS servers.
+Format
+
+display dns server [ vpn-instance vpn-instance-name | all ]
+Parameters
+Parameter 	Description 	Value
+vpn-instance vpn-instance-name 	
+
+Displays information about DNS servers of a specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+all 	
+
+Displays information about all DNS servers, including both public and private DNS servers.
+NOTE:
+
+If neither vpn-instance vpn-instance-name nor all is specified, only information about public DNS servers is displayed.
+	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring DNS server addresses, you can run the display dns server command to view the configuration and sequence of DNS servers.
+Example
+
+# Display information about DNS servers.
+
+<HUAWEI> display dns server
+IPv4 Dns Servers :
+Domain-server        IpAddress
+     1               10.16.1.1
+     2               10.17.1.1
+
+IPv6 Dns Servers :
+Domain-server        Ipv6Address                              (Interface Name)
+     1               FC00:1::1                                         
+
+# Display information about the DNS servers of the VPN instance vpn1.
+
+<HUAWEI> display dns server vpn-instance vpn1
+IPv4 Dns Servers :
+Domain-server        IpAddress           VPN-Instance
+     1               172.16.1.1          vpn1
+     2               172.16.1.2          vpn1
+
+IPv6 Dns Servers :
+No configured servers.
+
+Table 6-32 Description of the display dns server command output
+
+Item
+	
+
+Description
+
+IPv4 Dns Servers
+	
+
+IPv4 DNS server configuration.
+
+Domain-server
+	
+
+DNS server number, indicating the order in which they were configured.
+
+IpAddress
+	
+
+IP address of the DNS server. During DNS resolution, the first DNS server is used. If this server fails to resolve packets, the second DNS server is used.
+
+The value is set using the dns server command.
+
+IPv6 Dns Servers
+	
+
+IPv6 DNS server configuration.
+
+Ipv6Address
+	
+
+IPv6 address of the IPv6 DNS server.
+
+The value is set using the dns server ipv6 command.
+
+Interface Name
+	
+
+Interface name, which only corresponds to the local IPv6 link address.
+
+The value is set using the dns server ipv6 command.
+
+VPN-Instance
+	
+
+VPN instance name.
+
+The value is set using the dns server command.
+display ip host
+Function
+
+The display ip host command displays the static DNS entries.
+Format
+
+display ip host [ vpn-instance vpn-instance-name | all ]
+Parameters
+Parameter 	Description 	Value
+vpn-instance vpn-instance-name 	
+
+Displays static DNS entries of a specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+all 	
+
+Displays all static DNS entries, including both public and private static DNS entries.
+NOTE:
+
+If neither vpn-instance vpn-instance-name nor all is specified, only public static DNS entries are displayed.
+	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After running the ip host command to configure static DNS entries, you can run this command to check whether mappings between host names and IP addresses are correct. You can run the display ip host command to view static DNS entries.
+Example
+
+# Display static DNS entries.
+
+<HUAWEI> display ip host
+Host                 Age        Flags  Address                                  
+www.3322.org         0          static 10.1.1.1                                 
+members.3322.org     0          static 10.1.2.1                                 
+checkip.dyndns.com   0          static 10.1.3.1                                 
+members.dyndns.org   0          static 10.1.4.1
+
+# Display static DNS entries of VPN instance vpn1.
+
+<HUAWEI> display ip host vpn-instance vpn1
+Host           Age         Flags      Address        VPN-Instance
+RTB            0           static     10.1.5.1       vpn1
+
+Table 6-33 Description of the display ip host command output
+
+Item
+	
+
+Description
+
+Host
+	
+
+Host name.
+
+The value is set using the ip host command.
+
+Age
+	
+
+Aging time. The value 0 indicates a static DNS entry. Static entries are not aged out.
+
+Flags
+	
+
+Status of the domain name. The value static indicates a static domain name.
+
+Address
+	
+
+IP address mapping the domain name.
+
+The value is set using the ip host command.
+
+VPN-Instance
+	
+
+VPN instance name.
+
+The value is set using the ip host command.
+dns domain
+Function
+
+The dns domain command configures a domain name suffix.
+
+The undo dns domain command deletes a domain name suffix.
+
+By default, no domain name suffix is configured.
+Format
+
+dns domain domain-name [ vpn-instance vpn-instance-name ]
+
+undo dns domain [ domain-name [ vpn-instance vpn-instance-name ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+domain-name
+	
+
+Specifies the suffix of a domain name.
+	
+
+The value is a string of 1 to 63 characters without spaces. A combination of digits, letters, underscores (_), hyphens (-), and dots (.) is allowed.
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the name of a VPN instance.
+	
+
+The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Many servers or hosts have the same suffix. In this case, you can configure domain name suffixes. For example, you can configure a suffix com.cn for the host whose domain name is huawei. When a DNS client accesses the host, it enters only "huawei" to send a query message to the DNS server. The DNS client automatically adds the suffix com.cn. Then the DNS server searches for the IP address mapped to "huawei.com.cn" first. If receiving no response, the DNS client sends a query message containing "huawei" to the DNS server to search for the mapped IP address.
+
+Precautions
+
+The switch supports a maximum of 10 domain name suffixes. To configure multiple domain name suffixes, you can run the dns domain command repeatedly.
+
+If the name of the suffix to be deleted is specified, the specified suffix is deleted. Otherwise, all the suffixes are deleted.
+
+If vpn-instance vpn-instance-name is specified, the specified domain name suffix can be used to search for the IP address corresponding to a domain name only when users access the domain name from the specified VPN instance.
+Example
+
+# Configure a domain name suffix as com.cn.
+
+<HUAWEI> system-view
+[HUAWEI] dns domain com.cn
+
+dns resolve
+Function
+
+The dns resolve command enables dynamic domain name resolution.
+
+The undo dns resolve command disables dynamic domain name resolution.
+
+By default, dynamic domain name resolution is disabled.
+Format
+
+dns resolve
+
+undo dns resolve
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To obtain IP addresses mapping domain names using the DNS server, run the dns resolve command to enable dynamic domain name resolution on the device.
+Example
+
+# Enable dynamic domain name resolution.
+
+<HUAWEI> system-view
+[HUAWEI] dns resolve
+
+dns server
+Function
+
+The dns server command configures the IP address of a DNS server.
+
+The undo dns server command deletes the IP address of a DNS server.
+
+By default, no IP addresses of DNS servers are configured.
+Format
+
+dns server ip-address [ vpn-instance vpn-instance-name ]
+
+undo dns server ip-address [ vpn-instance vpn-instance-name ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies the IP address of a DNS server.
+	
+
+The value is in dotted decimal notation.
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the name of a VPN instance.
+	
+
+The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+During dynamic domain name resolution, the DNS client can send a query packet to the DNS server, requesting for the IP address of the specified domain name. The DNS client sends a domain name resolution request to the DNS servers according to the order in which they were configured. If the domain name resolution request on the first DNS server times out, the device sends the request to the second DNS server.
+
+If vpn-instance vpn-instance-name is specified, the system sends domain name resolution requests only to the DNS server bound to the specified VPN instance.
+
+Precautions
+
+A maximum of six DNS server IP (IPv4 and IPv6) addresses can be configured on the switch.
+Example
+
+# Configure two DNS servers with the IP addresses 172.16.1.1 and 10.10.10.10.
+
+<HUAWEI> system-view
+[HUAWEI] dns server 172.16.1.1
+[HUAWEI] dns server 10.10.10.10
+
+dns server source-ip
+Function
+
+The dns server source-ip command configures the source IP address for the DNS client to communicate with a server.
+
+The undo dns server source-ip command deletes the source IP address for the DNS client to communicate with a server.
+
+By default, no source IP address is configured for the DNS client to communicate with a server.
+Format
+
+dns server source-ip ip-address [ vpn-instance vpn-instance-name ]
+
+undo dns server source-ip [ vpn-instance vpn-instance-name ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies the source IP address for the DNS client to communicate with a server.
+	
+
+The value is in dotted decimal notation.
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the name of a VPN instance.
+	
+
+The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When the DNS client communicates with a server, the administrator can specify a source IP address for the client to ensure the communication security. The route from the DNS server to the specified source IP address must be reachable. The DNS server uses the specified source IP address as the destination address and sends a DNS response packet to the client.
+
+If vpn-instance vpn-instance-name is specified, the specified source IP address is used only when the device communicates with the DNS server bound to the specified VPN instance.
+Example
+
+# Specify the source IP address 172.16.1.1 for the DNS client to communicate with a server.
+
+<HUAWEI> system-view
+[HUAWEI] dns server source-ip 172.16.1.1
+
+ip host
+Function
+
+The ip host command configures a static DNS entry.
+
+The undo ip host command deletes a static DNS entry.
+
+By default, no static DNS entry is configured.
+Format
+
+ip host host-name ip-address [ vpn-instance vpn-instance-name ]
+
+undo ip host host-name [ ip-address [ vpn-instance vpn-instance-name ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+host-name
+	
+
+Specifies the host name.
+	
+
+The value is a string of 1 to 255 case-sensitive characters without any space. The value must contain at least one letter, and can consist of letters, digits, hyphens (-), dots (.), and underscores (_).
+
+ip-address
+	
+
+Specifies the IP address mapping the host name.
+	
+
+The value is in dotted decimal notation.
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the name of a VPN instance.
+	
+
+The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A static domain name resolution table is manually set up using the ip host command, describing the mappings between host names and IP addresses. In addition, some common host names are added to the table. Then, static host name resolution can be performed according to the static domain name resolution table. When requiring the IP address corresponding to a host name, the client first searches the static host name resolution table for the specified host name and obtains the corresponding IP address. In this manner, the efficiency of host name resolution is improved.
+
+Precautions
+
+The ip host command configures a maximum of 50 static DNS entries. Each host name can be mapped to only one IP address. When one host name is mapped to multiple IP addresses, only the latest configuration takes effect.
+Example
+
+# Configure a static DNS entry.
+
+<HUAWEI> system-view
+[HUAWEI] ip host www.example.com 10.10.10.4
+
+reset dns dynamic-host
+Function
+
+The reset dns dynamic-host command clears dynamic DNS entries.
+Format
+
+reset dns dynamic-host [ vpn-instance vpn-instance-name | all ]
+Parameters
+Parameter 	Description 	Value
+vpn-instance vpn-instance-name 	
+
+Clears dynamic DNS entries of a specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+all 	
+
+Clears all dynamic DNS entries, including both public and private DNS entries.
+NOTE:
+
+If neither vpn-instance vpn-instance-name nor all is specified, only public dynamic DNS entries are cleared.
+	-
+Views
+
+User view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After confirming the action of deleting dynamic DNS entries, you can run the reset dns dynamic-host command to delete them.
+
+Precautions
+
+Dynamic DNS entries cannot be restored after being deleted. Confirm the action before you run the command.
+Example
+
+# Delete all dynamic DNS entries.
+
+<HUAWEI> reset dns dynamic-host all
+

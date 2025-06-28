@@ -1,0 +1,1053 @@
+mDNS Gateway Configuration Commands
+
+    Command Support
+    display mdns gateway
+    display mdns gateway statistics
+    display mdns group
+    display mdns service
+    mdns gateway enable
+    mdns group
+    mdns probe interval
+    mdns permit service-type
+    mdns source ip
+    mdns whitelist source-ip
+    reset mdns gateway statistics
+    service-vlan
+    user-vlan (mDNS group view)
+
+Command Support
+
+Only the following switch models support mDNS Gateway:
+
+S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+display mdns gateway
+
+Function
+
+The display mdns gateway command displays the mDNS gateway configuration.
+Format
+
+display mdns gateway
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After the mDNS gateway is configured, you can run the display mdns gateway command to view the mDNS gateway configuration.
+Example
+
+# Display the mDNS gateway configuration.
+
+<HUAWEI> display mdns gateway
+mDNS Information:                                                               
+--------------------------------------------------------------------------------
+ mDNS Gateway Status         :  Enable                                          
+ mDNS Source IP              :  -                                               
+--------------------------------------------------------------------------------
+ Gateway Probe Vlan   :  vlan50  vlan101                                        
+--------------------------------------------------------------------------------
+
+Table 6-34 Description of the display mdns gateway command output
+
+Item
+	
+
+Description
+
+mDNS Gateway Status
+	
+mDNS gateway status:
+
+    Enable
+    Disable
+
+To enable the mDNS gateway, run the mdns gateway enable command.
+
+mDNS Source IP
+	
+
+Source IP address in outgoing mDNS request packets when the mDNS gateway is configured to periodically discover services.
+
+To specify the source IP address in outgoing mDNS request packets when the mDNS gateway is configured to periodically discover services, run the mdns source ip command.
+
+Gateway Probe Vlan
+	
+
+ID of the VLAN where the mDNS gateway is enabled to periodically discover services.
+
+To specify the ID of the VLAN where the mDNS gateway is enabled to periodically discover services, run the mdns probe interval command.
+display mdns gateway statistics
+
+Function
+
+The display mdns gateway statistics command displays statistics on the mDNS gateway.
+Format
+
+display mdns gateway statistics
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+During routine maintenance and fault location, you can run the display mdns gateway statistics command to view statistics on mDNS packets received and sent by the mDNS gateway in a given period of time.
+
+To query statistics again, run the reset mdns gateway statistics command to clear existing statistics.
+
+Cleared statistics on the mDNS gateway cannot be restored. Exercise caution when you use the reset mdns gateway statistics command.
+Example
+
+# Display statistics on the mDNS gateway.
+
+<HUAWEI> display mdns gateway statistics
+mDNS Gateway Statistics:                                                        
+------------------------------------                                            
+ Received        : 1120              
+  Query          : 411                                                           
+  Response       : 707                                                           
+  Discarded      : 29                      Query TimeOut : 22                      Bad source IP : 2                                                             
+   Bad Pkt Length: 3            
+   Others        : 2          
+ Sent            : 681                                                           
+  Query          : 678                                                           
+  Response       : 3                                                             
+
+Table 6-35 Description of the display mdns gateway statistics command output
+
+Item
+	
+
+Description
+
+Received
+	
+
+Number of mDNS packets received by the mDNS gateway.
+
+Query
+	
+
+Number of mDNS query packets received by the mDNS gateway.
+
+Response
+	
+
+Number of mDNS response packets received by the mDNS gateway.
+
+Discarded
+	
+
+Number of mDNS packets discarded by the mDNS gateway.
+NOTE:
+
+This field is displayed only when the value is not 0.
+
+Query TimeOut
+	
+
+Number of packets that are discarded after being accumulated in a queue for more than 5 seconds.
+
+Bad source IP
+	
+
+Number of unicast packets that are sent by untrusted mDNS relay agents and discarded by the mDNS gateway.
+NOTE:
+
+This field is displayed only when the value of the Discarded field is not 0.
+
+Bad Pkt Length
+	
+
+Number of mDNS packets discarded because the packet length exceeds the upper limit.
+NOTE:
+
+This field is displayed only when the value of the Discarded field is not 0.
+
+Others
+	
+
+Number of mDNS packets discarded because of other reasons.
+NOTE:
+
+This field is displayed only when the value of the Discarded field is not 0.
+
+Sent
+	
+
+Number of mDNS packets sent by the mDNS gateway.
+
+Query
+	
+
+Number of mDNS query packets sent by the mDNS gateway.
+
+Response
+	
+
+Number of mDNS response packets sent by the mDNS gateway.
+display mdns group
+
+Function
+
+The display mdns group command displays mDNS group information.
+Format
+
+display mdns group [ name group-name | user-vlan vlan-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+name group-name
+	
+
+Displays mDNS group information with a specified name.
+
+If the mDNS group with the specified name is not created on the device, no information is displayed.
+	
+
+The mDNS group name must have been created.
+
+user-vlan vlan-id
+	
+
+Displays mDNS group information with a specified user VLAN.
+
+If the specified user VLAN is not used any mDNS group, no information is displayed.
+	
+
+The user VLAN must have been created.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The device functioning as the mDNS gateway maintains service information lists of all service provisioning devices on a network, and it can use mDNS groups to isolate service resources to provide refined service management. You can run this command to check mDNS group information including the VLANs of the users and service provisioning devices added to the mDNS group.
+
+If name group-name or user-vlan vlan-id is not specified in the command, the information about all mDNS groups is displayed.
+Example
+
+# Display the information about all mDNS groups.
+
+<HUAWEI> display mdns group
+mDNS Group Information:                                                         
+--------------------------------------------------------------------------------
+ Group Name   :  group1                                                         
+ User Vlan    :  10                                                             
+ Service Vlan :  20  30                                                         
+                                                                                
+ Group Name   :  group2                                                         
+ User Vlan    :  20  30                                                         
+ Service Vlan :  20  40                                                         
+--------------------------------------------------------------------------------
+Total: 2    
+
+Table 6-36 Description of the display mdns group command output
+
+Item
+	
+
+Description
+
+Group Name
+	
+
+Name of an mDNS group.
+
+To configure the mDNS group name, run the mdns group command.
+
+User Vlan
+	
+
+VLAN that users in an mDNS group belong to.
+
+To configure the VLAN that users in an mDNS group belong to, run the user-vlan command.
+
+Service Vlan
+	
+
+VLAN that service provisioning devices in an mDNS group belong to.
+
+To configure the VLAN that service provisioning devices in an mDNS group belong to, run the service-vlan command.
+
+Total
+	
+
+Number of mDNS groups that have been configured on the device.
+display mdns service
+
+Function
+
+The display mdns service command displays service information recorded on the mDNS gateway.
+Format
+
+display mdns service { all [ verbose ] | name name | vlan vlan-id }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Displays all service information recorded on the mDNS gateway.
+	
+
+-
+
+name name
+	
+
+Displays information about a specified service name recorded on the mDNS gateway.
+	
+
+The service name must have been created.
+
+vlan vlan-id
+	
+
+Displays service information provided by a specified service VLAN, which is recorded on the mDNS gateway.
+
+The VLAN ID indicates the VLAN that the service provisioning device belongs to.
+	
+
+The service VLAN must have been created.
+
+verbose
+	
+
+Displays detailed service information recorded on the mDNS gateway. If this parameter is not specified, the summary of service information recorded on the mDNS gateway is displayed.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The device functioning as the mDNS gateway maintains service information lists of all service provisioning devices on a network. You can run this command to check service information recorded on the device.
+
+When a service name begins with a space or contains a question mark (?), the name parameter cannot be specified in this command.
+Example
+
+# Display the summary of all services recorded on the mDNS gateway.
+
+<HUAWEI> display mdns service all 
+MDNS Service Info:                                                              
+                                                                                
+Service name : Officejet Pro 8100 [C12FFA] (7)._printer._tcp.local              
+  SRV Info:                                                                     
+      Domain Name : HPC12FFA-156.local                                          
+      Port        : 515
+      Vlan Id     : 200                                          
+  A Info:                                                                       
+      Domain Name : HPC12FFA-156.local                                          
+      IP Address  : 10.1.1.254 
+      Vlan Id     : 200                                                 
+  TXT Info:  
+      Vlan Id     : 200                                                                   
+      Data Length : 297
+Total service: 1
+
+# Display the details of all services recorded on the mDNS gateway.
+
+<HUAWEI> display mdns service all verbose 
+MDNS Service Info:                                                              
+                                                                                
+Service name : Officejet Pro 8100 [C12FFA] (7)._printer._tcp.local              
+  SRV Info:                                                                     
+      Domain Name : HPC12FFA-156.local                                          
+      Port        : 515
+      Vlan Id     : 10                                                         
+      Cache Flush : 1                                                           
+      Class       : 1                                                           
+      TTL         : 120                                                         
+      Aging Time  : 95                                                          
+      Data Length : 264                                                         
+      Priority    : 0                                                           
+      Weight      : 0                                                           
+  A Info:                                                                       
+      Domain Name : HPC12FFA-156.local                                          
+      IP Address  : 10.1.1.254
+      Vlan Id     : 10                                                  
+      Cache Flush : 1                                                           
+      Class       : 1                                                           
+      TTL         : 120                                                         
+      Aging Time  : 115                                                         
+  TXT Info:
+      Vlan Id     : 10                                                                     
+      Data Length : 297                                                         
+      Cache Flush : 1                                                           
+      Class       : 1                                                           
+      TTL         : 4500                                                        
+      Aging Time  : 3400                                                        
+      Text        : ***
+Total service: 1
+
+Table 6-37 Description of the display mdns service command output
+
+Item
+	
+
+Description
+
+MDNS Service Info
+	
+
+Service information recorded on the mDNS gateway.
+
+Service name
+	
+
+Service name recorded on the mDNS gateway.
+
+SRV Info
+	
+
+SRV type information, indicating service record information.
+
+Domain Name
+	
+
+Domain name corresponding to the service name.
+
+Port
+	
+
+Number of the port that provides the service.
+
+A Info
+	
+
+A type information, indicating host record information.
+
+IP Address
+	
+
+IP address corresponding to the domain name.
+
+TXT Info
+	
+
+TXT type information, indicating the description of service record information.
+
+Data Length
+	
+
+TXT data length.
+
+PTR Info
+	
+
+PTR type information, indicating that information is searched reversely; that is, the service provisioning device is searched based on the service type.
+NOTE:
+
+This field is displayed only when the display mdns service command is run in the diagnostic view.
+
+Total
+	
+Number of services recorded on the mDNS gateway.
+
+    When you query all service information or service information provided by a specified service VLAN recorded on the mDNS gateway, this field displays the total number of service names.
+    When you query service information about a specified service name recorded on the mDNS gateway, this field displays the sum of the SRV Info, TXT Info, and PTR Info field values. Type A information and type AAAA information are excluded because they are not service information.
+
+Cache Flush
+	
+
+Cache information about services. The value can be 0 or 1.
+
+    The value 1 indicates that the information is cached information.
+    The value 0 indicates that the information is not cached information.
+
+Class
+	
+
+Service type.
+
+    1: indicates the Internet type.
+    255: indicates any type.
+
+TTL
+	
+
+TTL of the service.
+
+Aging Time
+	
+
+Time elapsed after the mDNS gateway records the service information, in seconds.
+
+Priority
+	
+
+Service priority.
+
+Weight
+	
+
+Service weight.
+
+Text
+	
+
+Service text.
+
+Vlan Id
+	
+
+Service VLAN ID, indicating the VLAN that the service provisioning device belongs to.
+mdns gateway enable
+
+Function
+
+The mdns gateway enable command enables the mDNS gateway.
+
+The undo mdns gateway enable command disables the mDNS gateway.
+
+By default, the mDNS gateway is disabled.
+Format
+
+mdns gateway enable
+
+undo mdns gateway enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Bonjour technology proposed by Apple uses mDNS. The destination multicast address of 224.0.0.251 used by mDNS is only valid in a Layer 2 broadcast domain. That is, information can be forwarded in a VLAN only, but cannot be forwarded across VLANs or Layer 3 devices. Run the mdns gateway enable command on the device to enable the mDNS gateway so that the device can discover services across VLANs or Layer 3. The mDNS gateway records all available service lists and responds to service requests from Bonjour-compliant terminals.
+
+Precautions
+
+The device cannot function as both mDNS relay and gateway. A protection failure will occur if the mdns relay enable and mdns gateway enable commands are both configured on the device.
+Example
+
+# Enable the mDNS gateway.
+
+<HUAWEI> system-view
+[HUAWEI] mdns gateway enable
+
+mdns group
+
+Function
+
+The mdns group command creates an mDNS group and displays the mDNS group view.
+
+The undo mdns group command deletes the created mDNS group.
+
+By default, no mDNS group is created.
+Format
+
+mdns group group-name
+
+undo mdns group group-name
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+group-name
+	
+
+Specifies the name of an mDNS group.
+	
+
+The value is a string of 1 to 31 case-sensitive characters without spaces. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, the mDNS gateway queries service information lists of all service provisioning devices when receiving an mDNS request packet from a user requesting for a service. The mDNS gateway then replies to the user with a message containing the service provisioning devices that can provide the service. All the service provisioning devices mapping the service are visible to the user; therefore, service resources cannot be isolated. You can configure an mDNS group on the mDNS gateway to implement service resource isolation and refined service management. After receiving an mDNS request packet from a user requesting for a service, the mDNS gateway queries the mDNS group based on the user VLAN. If the user VLAN is added to a certain mDNS group, the gateway queries and replies with the requested service from the service list provided by the service VLAN mapping the mDNS group. If no mDNS group is specified for the user VLAN or no service VLAN is configured in the mDNS group, the gateway queries and replies with the requested service from the service lists provided by all service VLANs.
+
+Follow-up Procedure
+
+    Run the user-vlan command to configure the user VLAN for the mDNS group.
+
+    Run the service-vlan command to configure the service VLAN to provide services for the users in the mDNS group.
+
+Precautions
+
+The device supports a maximum of 4096 mDNS groups.
+Example
+
+# Create an mDNS group named group1.
+
+<HUAWEI> system-view
+[HUAWEI] mdns group group1
+
+mdns probe interval
+
+Function
+
+The mdns probe interval command enables the device to periodically discover services and sets the discovery interval.
+
+The undo mdns probe interval command disables the device from periodically discovering services and deletes the discovery interval.
+
+By default, the device is not enabled to periodically discover services and the discovery interval is not set.
+Format
+
+mdns probe interval interval
+
+undo mdns probe interval
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interval
+	
+
+Specifies the discovery interval.
+	
+
+The value is an integer that ranges from 60 to 38400, in seconds.
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+This command is used on an mDNS gateway or mDNS relay. The mDNS gateway maintains service information lists of all service provisioning devices on the network. A service information list records the service name, service type, TTL, host name, and IP address of each service. The TTL is provided by a service provisioning device to the mDNS gateway, and represents the aging time of a service. If the mDNS gateway receives mDNS response packets from a service provisioning device within the aging time, the mDNS gateway updates its service information. If the mDNS gateway does not receive mDNS response packets from a service provisioning device within the aging time, the mDNS gateway deletes its service information. If an mDNS gateway already exists on the network, a service provisioning device connected to the network advertises service information to the mDNS gateway through the mDNS relay. If a service provisioning device already exists before an mDNS gateway connects to the network, the service provisioning device does not advertise service information to the mDNS gateway.
+
+If the device works as an mDNS gateway, you can run the mdns probe interval command to enable the periodical service discovery function and set the service discovery interval. The device then sends a service query message at the specified interval, and updates the service information list after receiving a response message from the service provisioning device.
+
+If the device works as an mDNS relay and the mdns probe interval command is run, the device sends a service query message at the specified interval to request available service update in its VLAN, and forwards the response message from the service provisioning device to the mDNS gateway, ensuring that service information lists on the mDNS gateway are updated immediately.
+
+Precautions
+
+When the device as the mDNS gateway and service provisioning device are located on different network segments, the mDNS relay but not the mDNS gateway needs to be configured to periodically update service lists.
+Only the following types of services can be discovered:
+
+    _services._dns-sd._udp.local
+    _raop._tcp.local
+    _airplay._tcp.local
+    _printer._tcp.local
+    _device-info._tcp.local
+    _rfb._tcp.local
+    _sftp-ssh._tcp.local
+    _ssh._tcp.local
+    _smb._tcp.local
+    _afpovertcp._tcp.local
+    _universal._sub._ipp._tcp.local
+
+Example
+
+# Enable the device to periodically discover services in VLAN 100 and set the discovery interval to 150s.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] mdns probe interval 150
+
+mdns permit service-type
+Function
+
+The mdns permit service-type command configures the service type that can be recorded by an mDNS gateway.
+
+The undo mdns permit id command cancels the configured service type that can be recorded by an mDNS gateway.
+
+By default, an mDNS gateway can record all service types.
+Format
+
+mdns permit service-type service-type id id
+
+undo mdns permit id id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+service-type service-type
+	
+
+Specifies a service type.
+	
+
+The value can be any service type that service provider devices can provide. The value is a string of characters, including digits, case-insensitive letters, and special characters visible on the keyboard, such as underscores (_), periods (.), and hyphens (-).
+
+id id
+	
+
+Specifies a service type ID.
+	
+
+The value is an integer that ranges from 0 to 99.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+By default, an mDNS gateway records all service types on the network and generates a service list. Because a service list size is limited, some uncommonly used services occupy the list space, which may cause entries unable to be generated for commonly used services such as airplay and printer. To reduce the number of service entries in the service list, run the mdns permit service-type command. This command allows service entries to be generated for only the specified service type, reduces the number of service entries in the service list.
+
+    An mDNS gateway can be configured to record airplay and printer services (a maximum of 64 airplay and printer devices are allowed), meeting the requirements in high-density WLANs and enterprise office WLANs as well as the requirements in manufacturing, finance, and government sectors.
+    An mDNS gateway can be configured to record airplay and printer services (a maximum of 256 airplay and printer devices are allowed), meeting the requirements in scenarios where the number of VLANs to which concurrent users belong is less than 36.
+
+Example
+
+# Configure the service type that can be recorded by the mDNS gateway.
+
+<HUAWEI> system-view 
+[HUAWEI] mdns permit service-type _raop._tcp.local id 0 
+[HUAWEI] mdns permit service-type _airplay._tcp.local id 1
+[HUAWEI] mdns permit service-type _printer._tcp.local id 2
+[HUAWEI] mdns permit service-type _device-info._tcp.local id 3
+[HUAWEI] mdns permit service-type _rfb._tcp.local id 4
+[HUAWEI] mdns permit service-type _sftp-ssh._tcp.local id 5
+[HUAWEI] mdns permit service-type _ssh._tcp.local id 6
+[HUAWEI] mdns permit service-type _smb._tcp.local id 7
+[HUAWEI] mdns permit service-type _afpovertcp._tcp.local id 8
+[HUAWEI] mdns permit service-type _universal._sub._ipp._tcp.local id 9
+
+mdns source ip
+Function
+
+The mdns source ip command configures the source IP address in mDNS packets sent by the device that functions as an mDNS gateway or mDNS relay.
+
+The undo mdns source ip command deletes the configuration of the source IP address in mDNS packets sent by the device.
+
+By default, no source IP address is configured.
+Format
+
+mdns source ip ip-address
+
+undo mdns source ip
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies a source IP address.
+	
+
+The value is in dotted decimal notation.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+To ensure normal communication with user terminals and service provisioning devices, run this command to specify the source IP address in mDNS packets sent by the mDNS gateway or mDNS relay.
+
+When the device works as an mDNS relay, it is recommended that the IP address of the interface connecting the device to the mDNS gateway be used as the source IP address.
+
+User terminals and service provisioning devices will ignore the source IP address of multicast mDNS packets received from the mDNS gateway or mDNS relay. As such, the source IP address configured by this command does not need to be on the same network segment as the user terminals or service provisioning devices.
+When the device functions as an mDNS gateway, the configured source IP address in mDNS packets sent by the device applies to the following scenarios:
+
+    When the mDNS gateway is enabled to periodically discover services, it encapsulates mDNS query packets with the source IP address configured by this command, so that it can receive response packets from service provisioning devices. If this command is not run to configure the source IP address, the mDNS gateway uses the IP address of the VLANIF interface corresponding to the VLAN where the periodic service discovery function is enabled as the source IP address of mDNS packets.
+    If an mDNS relay is deployed, the mDNS gateway exchanges packets with the mDNS relay in unicast mode. When sending packets to the mDNS relay, the mDNS gateway uses the next-hop IP address of the outbound interface as the source IP address of the packets based on the routing table. If this command is configured, the device preferentially uses the configured IP address as the source IP address of packets.
+    When receiving a request to discover services from a terminal, the mDNS gateway uses the IP address configured by this command as the source IP address of the response packet. If this command is not run to configure the source IP address, the mDNS gateway uses the IP address of the VLANIF interface corresponding to the VLAN to which the response packet belongs as the source IP address of the response packet.
+
+When the device functions as an mDNS relay, the configured source IP address in mDNS packets sent by the device applies to the following scenarios:
+
+    When the mDNS relay is enabled to periodically discover services, it encapsulates mDNS query packets with the source IP address configured by this command, so that it can receive response packets from service provisioning devices. If this command is not run to configure the source IP address, the mDNS relay uses the IP address of the VLANIF interface corresponding to the VLAN where the periodic service discovery function is enabled as the source IP address of mDNS packets.
+    When the device acting as the mDNS relay forwards mDNS packets to an mDNS gateway, it uses the next-hop IP address of the outbound interface as the source IP address of packets based on the routing table. If this command is configured, the device preferentially uses the configured IP address as the source IP address of packets.
+
+Precautions
+
+When the device acting as an mDNS gateway is configured to periodically discover services, the device periodically sends mDNS query packets to all mDNS service provisioning devices in the VLAN, which are expected to return response packets. The destination IP address is the multicast address 224.0.0.251.
+
+Before the mDNS service TTL expires, the mDNS gateway sends mDNS query packets to service provisioning devices that are expected to return response packets. If an mDNS service is advertised through an mDNS relay, the destination IP address of the query packets is the IP address of the mDNS relay. If an mDNS service is not advertised through an mDNS relay, the destination IP address is the multicast address 224.0.0.251.
+
+When the device acting as an mDNS gateway receives mDNS requests from terminals and the requested services are available, the device returns mDNS response packets. If the mDNS request packets are forwarded through an mDNS relay, the destination IP address of the response packets is the IP address of the mDNS relay. If mDNS request packets are not forwarded through an mDNS relay, the destination IP address is the multicast address 224.0.0.251.
+Example
+
+# Specify the source IP address of 10.1.1.1 in mDNS packets to be sent to periodically discover services and to be forwarded to the mDNS gateway by the device functioning as the mDNS relay.
+
+<HUAWEI> system-view
+[HUAWEI] mdns source ip 10.1.1.1
+
+mdns whitelist source-ip
+Function
+
+The mdns whitelist source-ip command enables the trusted mDNS relay agent function and configures the IP address of the trusted mDNS relay agent.
+
+The undo mdns whitelist source-ip command deletes the IP address of the trusted mDNS relay agent.
+
+By default, the trusted mDNS relay agent function is disabled.
+Format
+
+mdns whitelist source-ip ip-address
+
+undo mdns whitelist source-ip { all | ip-address }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies the IP address of the trusted mDNS relay agent.
+	
+
+The value is in dotted decimal notation.
+
+all
+	
+
+Deletes IP addresses of all trusted mDNS relay agents.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Bogus mDNS relay agents may exist on the network and forge mDNS packets, threatening network security. To prevent this problem, run the mdns whitelist source-ip command on the device functioning as the mDNS gateway to enable the trusted mDNS relay agent function and configure the IP address of the trusted mDNS relay agent. The device then only processes unicast packets from the trusted mDNS relay agent, and discards unicast packets from untrusted mDNS relay agents. If the mDNS relay agent and mDNS gateway are on different network segments, you need to run the mdns whitelist source-ip ip-address command on the mDNS gateway to specify the IP address of the mDNS relay agent.
+Example
+
+# Configure the IP address 192.168.1.1 for the trusted mDNS relay agent.
+
+<HUAWEI> system-view  
+[HUAWEI] mdns whitelist source-ip 192.168.1.1 
+
+reset mdns gateway statistics
+
+Function
+
+The reset mdns gateway statistics command clears statistics on the mDNS gateway.
+Format
+
+reset mdns gateway statistics
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+During routine maintenance and fault location, you can view statistics on mDNS packets received and sent by the mDNS gateway in a given period of time. Before viewing the statistics, run the reset mdns gateway statistics command to delete existing statistics. Then the mDNS gateway recollects statistics on received and sent mDNS packets. You can run the display mdns gateway statistics command to view statistics on mDNS packets received and sent by the mDNS gateway.
+Cleared statistics on the mDNS gateway cannot be restored. Exercise caution when you use the reset mdns gateway statistics command.
+Example
+
+# Clear statistics on the mDNS gateway.
+
+<HUAWEI> reset mdns gateway statistics
+
+service-vlan
+
+Function
+
+The service-vlan command configures service VLANs (that the service provisioning devices belong to) to provide services for users in an mDNS group.
+
+The undo service-vlan deletes the service VLANs that provide services for users in an mDNS group.
+
+By default, no service VLAN is configured to provide services for users in an mDNS group.
+Format
+
+service-vlan vlan-id &<1-32>
+
+undo service-vlan { vlan-id &<1-32> | all }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of the VLAN that the service provisioning devices belong to.
+	
+
+The value is an integer in the range from 1 to 4094.
+
+all
+	
+
+Specifies all service VLANs.
+	
+
+-
+Views
+
+mDNS group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The device functioning as an mDNS gateway maintains service information lists of all service provisioning devices on a network, and it can use mDNS groups to isolate service resources to provide refined service management. You can run the service-vlan command to configure service VLANs to provide services for users in the mDNS group. The users (specified using the user-vlan command in the mDNS group view) in the mDNS group can only obtain services from the service list provided by the service VLAN mapping the mDNS group.
+
+Prerequisites
+
+An mDNS group has been created using the mdns group command.
+
+Precautions
+
+    You can add at most 32 service VLANs to an mDNS group.
+
+    You can add a service VLAN to multiple mDNS groups to provide services for the users in these groups.
+    The service VLAN cannot be configured as a reserved VLAN for a stack.
+
+Example
+
+# Configure the service provisioning devices in VLAN 10 to provide services for the mDNS group group1.
+
+<HUAWEI> system-view
+[HUAWEI] mdns group group1
+[HUAWEI-mdns-group-group1] service-vlan 10
+
+user-vlan (mDNS group view)
+
+Function
+
+The user-vlan command configures user VLANs for an mDNS group.
+
+The undo user-vlan command deletes user VLANs for the mDNS group.
+
+By default, no user VLAN is configured for an mDNS group.
+Format
+
+user-vlan vlan-id &<1-32>
+
+undo user-vlan { vlan-id &<1-32> | all }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of the VLAN that users belong to.
+	
+
+The value is an integer that ranges from 1 to 4094.
+
+all
+	
+
+Specifies all user VLANs.
+	
+
+-
+Views
+
+mDNS group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The device functioning as the mDNS gateway maintains service information lists of all service provisioning devices on a network, and it can use mDNS groups to isolate service resources to provide refined service management. You can run the user-vlan command to configure user VLANs for an mDNS group. The intra-VLAN users who join the mDNS group can only obtain services from the service list provided by the service VLAN (specified using the service-vlan command) mapping the mDNS group.
+
+Prerequisites
+
+An mDNS group has been created using the mdns group command.
+
+Precautions
+
+    You can add at most 32 user VLANs to an mDNS group.
+
+    A user VLAN can belong to only one mDNS group.
+
+    If no mDNS group is specified for the user VLAN or no service VLAN is configured in the mDNS group, the gateway queries and replies with the requested service from the service lists provided by all service VLANs.
+
+Example
+
+# Add the users in VLAN 10 to the mDNS group group1.
+
+<HUAWEI> system-view
+[HUAWEI] mdns group group1
+[HUAWEI-mdns-group-group1] user-vlan 10
+
