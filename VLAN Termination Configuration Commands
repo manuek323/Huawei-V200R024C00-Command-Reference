@@ -1,0 +1,698 @@
+VLAN Termination Configuration Commands
+
+    Command Support
+    arp broadcast enable
+    display dot1q information
+    display qinq information
+    dot1q termination vid
+    qinq termination l2
+    qinq termination pe-vid ce-vid
+
+Command Support
+
+Only the following switch models support VLAN termination:
+
+S5731-H, S5731-S, S5731S-S, S5731S-H, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+arp broadcast enable
+Function
+
+The arp broadcast enable command enables ARP broadcast on a VLAN tag termination sub-interface.
+
+The undo arp broadcast enable command disables ARP broadcast on a VLAN tag termination sub-interface.
+
+By default, ARP broadcast is disabled on a VLAN tag termination sub-interface.
+Format
+
+arp broadcast enable
+
+undo arp broadcast enable
+
+Only S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Parameters
+
+None
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, Eth-Trunk sub-interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+VLAN tag termination sub-interfaces discard broadcast packets after receiving the packets. To permit a VLAN tag termination sub-interface to forward broadcast packets, run the arp broadcast enable command on the sub-interface to enable ARP broadcast.
+
+Configuration Impact
+When IP packets need to be sent out from the termination sub-interface and there is no corresponding ARP entry on the device, the following situations may occur:
+
+    If ARP broadcast is not enabled on the termination sub-interface, the system does not send or forward broadcast ARP packets to learn ARP entries ( gratuitous ARP packets will still be sent normally ). In this case, the IP packets are discarded directly.
+
+    The system tags an ARP broadcast packet and forwards it through the VLAN tag termination sub-interface when ARP broadcast is enabled run on the VLAN tag termination sub-interface.
+
+Precautions
+
+When you enable or disable ARP broadcast on a VLAN tag termination sub-interface, the routing status of the sub-interface becomes Down and then Up. This may result in route flapping on the entire network, affecting services.
+
+After the ARP broadcast function is enabled using the arp broadcast enable command, if a service packet is sent from a termination sub-interface but does not have an ARP entry, an ARP request is copied and sent in all VLANs of the sub-interface. If a large number of VLANs are configured, the number of ARP requests to be copied and sent is large, which may bring a heavy burden on the peer devices that receive the ARP requests. Consequently, the peer devices may encounter exceptions, such as high CPU usage and broadcast suppression. The local device may also fail to immediately send ARP requests as it is busy in processing packet copying, leading to ARP learning failures. To prevent this issue, you are advised to reduce the number of VLANs configured on sub-interfaces.
+Example
+
+# Enable ARP broadcast on XGigabitEthernet0/0/1.1.
+
+<HUAWEI> system-view
+[HUAWEI] vcmp role silent
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-XGigabitEthernet0/0/1] quit
+[HUAWEI] interface xgigabitethernet 0/0/1.1
+[HUAWEI-XGigabitEthernet0/0/1.1] dot1q termination vid 10
+[HUAWEI-XGigabitEthernet0/0/1.1] arp broadcast enable
+
+display dot1q information
+Function
+
+The display dot1q information termination command displays the configuration of a dot1q sub-interface.
+Format
+
+display dot1q information termination [ interface interface-type interface-number [.subinterface-number ] ]
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this configuration.
+Parameters
+Parameter 	Description 	Value
+
+interface interface-type interface-number
+	
+
+Specifies the type and number of an interface.
+	
+
+-
+
+subinterface-number
+	
+
+Specifies the number of a sub-interface.
+	
+
+The value is an integer that ranges from 1 to 4096.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring dot1q termination on sub-interfaces, run the display dot1q information termination command to view the sub-interfaces where dot1q termination is configured and configuration of the dot1q sub-interfaces.
+Example
+
+# Display the configuration of all dot1q sub-interfaces.
+
+<HUAWEI> display dot1q information termination
+  XGigabitEthernet0/0/1.3
+    Total QinQ Num: 1
+    dot1q  termination vid 3
+    Total vlan-group Num: 0
+
+Table 5-51 Description of the display dot1q information command output
+
+Item
+	
+
+Description
+
+XGigabitEthernet0/0/1.3
+	
+
+Sub-interface name.
+
+Total QinQ Num
+	
+
+Number of QinQ entries configured for user packets on a sub-interface.
+
+dot1q termination vid 3
+	
+
+VLAN allowed by a sub-interface.
+
+To specify the parameter, run the dot1q termination vid command.
+
+Total vlan-group Num
+	
+
+Number of VLAN groups configured on a sub-interface.
+display qinq information
+Function
+
+The display qinq information command displays the configuration of all the sub-interfaces configured with QinQ termination, QinQ stacking, or QinQ mapping.
+Format
+
+display qinq information { termination | stacking | mapping } [ interface interface-type interface-number [.subinterface-number ] ]
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this configuration.
+Parameters
+Parameter 	Description 	Value
+
+termination
+	
+
+Displays all the sub-interfaces configured with QinQ termination.
+	
+
+-
+
+stacking
+	
+
+Displays all the sub-interfaces configured with QinQ stacking.
+	
+
+-
+
+mapping
+	
+
+Displays all the sub-interfaces configured with QinQ mapping.
+	
+
+-
+
+interface interface-type interface-number
+	
+
+Displays whether all the sub-interfaces of the specified main interface are configured with QinQ termination, QinQ stacking, or QinQ mapping.
+
+interface-type specifies the interface type.
+
+interface-number specifies the number of the main interface.
+	
+
+-
+
+subinterface-number
+	
+
+Specifies the number of a sub-interface.
+	
+
+The value is an integer that ranges from 1 to 4096.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After configuring QinQ termination, QinQ stacking, and QinQ mapping, run the display qinq information command to view the configuration and the sub-interfaces configured with these functions.
+
+When a large number of QinQ termination, QinQ stacking, and QinQ mapping entries are configured, it is recommended that you specify a QinQ function, a main interface, a sub-interface, or a pipe operator (|) to filter the output. Otherwise, too much information is displayed, which has the following negative effects:
+
+    The displayed information is updated continuously on the display terminal and the required information cannot be obtained.
+
+    The system traverses and retrieves information for a long time. As a result, the system does not respond to any request.
+
+When using this command, note the following points:
+
+    If you specify only termination in the command, all sub-interfaces configured with QinQ termination are displayed.
+
+    If you specify termination and interface interface-type interface-number, the sub-interface configured with QinQ termination on the specified main interface is displayed.
+
+    If you specify termination and interface interface-type interface-number.subinterface-number, the specified sub-interface configured with QinQ termination is displayed.
+
+    If you specify only stacking in the command, all sub-interfaces configured with QinQ stacking are displayed.
+
+    If you specify stacking and interface interface-type interface-number, the sub-interface configured with QinQ stacking on the specified main interface is displayed.
+
+    If you specify stacking and interface interface-type interface-number.subinterface-number, the specified sub-interface configured with QinQ stacking is displayed.
+
+    If you specify only mapping in the command, all sub-interfaces configured with QinQ mapping are displayed.
+
+    If you specify mapping and interface interface-type interface-number, the sub-interface configured with QinQ mapping on the specified main interface is displayed.
+
+    If you specify mapping and interface interface-type interface-number.subinterface-number, the specified sub-interface configured with QinQ mapping is displayed.
+
+Example
+
+# Display all the sub-interfaces configured with QinQ termination.
+
+<HUAWEI> display dot1q information termination
+  XGigabitEthernet0/0/1.30
+    Total QinQ Num: 1
+    qinq termination pe-vid 300 ce-vid 200
+    Total vlan-group Num: 0
+
+# Display all the sub-interfaces configured with QinQ stacking.
+
+<HUAWEI> display qinq information stacking
+  XGigabitEthernet0/0/1.4
+    Total QinQ Num: 1
+      qinq stacking vid 25 pe-vid 35
+    Total vlan-group Num: 0
+
+# Display all the sub-interfaces configured with QinQ mapping.
+
+<HUAWEI>display qinq information mapping
+  XGigabitEthernet0/0/1.5
+    Total QinQ Num: 1
+      qinq mapping vid 55 map-vlan vid 65
+    Total vlan-group Num: 0
+
+Table 5-52 Description of the display qinq information command output
+
+Item
+	
+
+Description
+
+XGigabitEthernet0/0/1.30
+	
+
+Sub-interface name.
+
+Total QinQ Num
+	
+
+Number of QinQ entries configured for user packets on a sub-interface.
+
+Total vlan-group Num
+	
+
+Number of VLAN groups configured on a sub-interface.
+dot1q termination vid
+Function
+
+The dot1q termination vid command sets the single VLAN ID for Dot1q termination on a sub-interface.
+
+The undo dot1q termination vid command deletes the single VLAN ID for Dot1q termination on a sub-interface.
+
+By default, the single VLAN ID for Dot1q termination is not set on a sub-interface.
+Format
+
+dot1q termination vid low-pe-vid [ to high-pe-vid ]
+
+undo dot1q termination vid low-pe-vid [ to high-pe-vid ]
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this configuration.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+low-pe-vid
+	
+
+Specifies the minimum value of the VLAN tag in user packets.
+	
+
+The value is an integer that ranges from 2 to 4094.
+
+high-pe-vid
+	
+
+Specifies the maximum value of the VLAN tag in user packets.
+
+The value of high-pe-vid must be greater than or equal to the value of low-pe-vid.
+	
+
+The value is an integer that ranges from 2 to 4094.
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, VE sub-interface view, Eth-Trunk sub-interface view, MultiGE sub-interface view
+
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+    Communication between VLANs
+    VLANs are widely used because they can separate Layer 2 packets. A physical LAN is divided into multiple logical broadcast domains. Hosts in the same VLAN can communicate with each other but the hosts of different VLANs cannot. The Layer 3 routing technology is used for communication between hosts of different VLANs in the following two methods:
+        Through the VLANIF interface on the Layer 3 switch.
+
+        Through the Layer 3 Ethernet interface on the Layer 3 switch.
+
+        However, when a traditional Layer 3 Ethernet interface receives VLAN packets, the VLAN packets are discarded. To enable communication between hosts of different VLANs, you can create an Ethernet sub-interface on the Layer 3 Ethernet interface and enable QinQ termination on the sub-interface to remove the tag from the VLAN packet.
+
+    Communication between a LAN and a WAN
+
+    Most packets on a LAN have VLAN tags, but some WAN protocols such as ATM, FR, and PPP, cannot identify VLAN packets. To send a VLAN packet from LAN to WAN, the device records VLAN information in the packet, removes the VLAN tag, and forwards the packet.
+
+Based on the number of tags, VLAN packets can be classified into Dot1q packets and QinQ packets. A Dot1q packet carries a single-layer VLAN tag and a QinQ packet carries a double-layer VLAN tag. Accordingly, there are two VLAN tag termination modes:
+
+    Dot1q termination, which terminates tags carried in Dot1q packets
+
+    To configure Dot1q termination, run the dot1q termination vid command.
+
+    QinQ termination, which terminates tags carried in QinQ packets.
+
+    To configure QinQ termination, run the qinq termination pe-vid ce-vid command in the sub-interface view.
+
+After the dot1q termination vid command is run, the sub-interface for VLAN tag termination processes the packet in the following procedures:
+
+    The sub-interface removes the tag in the VLAN packet when receiving the packet and forwards the packet on Layer 3. The outbound interface determines whether the forwarded VLAN packet carries tags.
+    The sub-interface adds VLAN information to the packet and then sends the packet.
+
+Precautions
+
+    The tag values of the user packet received by the sub-interface must be in the range of low-pe-vid to high-pe-vid specified in the command; otherwise, the packet is discarded.
+    The VLANs allowed by a sub-interface cannot be created globally or on main interfaces, and their information cannot be displayed either.The VLANs allowed by a sub-interface cannot be the same as the default VLAN of its main interface.
+    When the sub-interface is used for Layer 3 forwarding, it is recommended that there should be a maximum of 128 VLANs in the VLAN range. When there are more than 128 VLANs, IPv4 addresses can be configured but IPv6 addresses cannot be configured.
+    If the dot1q termination vid command is run more than once, all configurations take effect.
+    VLAN termination sub-interfaces cannot be created on a VCMP client.
+
+Example
+
+# Set the encapsulation mode on XGigabitEthernet0/0/1.1 to Dot1q and allow the packets with the VLAN tag 100 to pass through.
+
+<HUAWEI> system-view
+[HUAWEI] vcmp role silent
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-XGigabitEthernet0/0/1] quit
+[HUAWEI] interface xgigabitethernet 0/0/1.1
+[HUAWEI-XGigabitEthernet0/0/1.1] dot1q termination vid 100
+
+qinq termination l2
+Function
+
+The qinq termination l2 command configures the mode in which a sub-interface for QinQ VLAN tag termination connects to a Pseudo-Wire Emulation Edge to Edge (PWE3)/Virtual Leased Line (VLL)/Virtual Private LAN Service (VPLS) network.
+
+The undo qinq termination l2 command deletes the mode configured for a sub-interface for QinQ VLAN tag termination in which the sub-interface connects to a PWE3/VLL/VPLS network.
+
+By default, access attributes are not configured on a sub-interface for QinQ VLAN tag termination.
+Format
+
+qinq termination l2 { symmetry | asymmetry }
+
+undo qinq termination l2
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, , S6730S-H, and S6730-H support this configuration.
+Parameters
+Parameter 	Description 	Value
+
+symmetry
+	
+
+Configures the sub-interface for QinQ VLAN tag termination to connect to a PWE3/VLL/VPLS network in symmetry mode.
+	
+
+-
+
+asymmetry
+	
+
+Configures the sub-interface for QinQ VLAN tag termination to connect to a PWE3/VLL/VPLS network in asymmetry mode.
+	
+
+-
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, Eth-Trunk sub-interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+More QinQ encapsulation and termination modes are provided to differentiate users and services and save VLAN resources. These modes are widely used for refined operation.
+
+If users communicate over an L2VPN (a PWE3, VLL, or VPLS network), you can run the qinq termination l2 command on the sub-interfaces for QinQ VLAN tag termination of L2VPN edge devices to configure the mode in which the sub-interfaces connect to the L2VPN.
+
+Prerequisites
+
+A VLL, PWE3, or VPLS network-side has been deployed.
+
+For VLL, PWE3, or VPLS configurations, see VLL Configuration, PWE3 Configuration, and VPLS Configuration in the S300, S500, S2700, S5700, and S6700 V200R024C00 Configuration Guide - VPN.
+When a sub-interface for QinQ VLAN tag termination is connected to the L2VPN, the PE processes packets based on the QinQ termination configuration, attributes of the sub-interface for QinQ VLAN tag termination when the sub-interface connects to the PWE3, VLL, or VPLS network, and encapsulation mode.
+
+Select the encapsulation mode according to encapsulation (VSI view) or mpls l2vc.
+Table 5-53 Packet processing on the inbound interface in the VPLS scenario
+
+Inbound Interface Type
+	
+
+Ethernet Encapsulation
+	
+
+VLAN Encapsulation
+
+Symmetrical mode
+	
+
+Removes the outer tag.
+	
+
+Reserves double tags. No action is required.
+
+Asymmetrical mode
+	
+
+Removes double tags.
+	
+
+Removes the outer tag.
+
+Default
+	
+
+Removes double tags.
+	
+
+Reserves double tags. No action is required.
+Table 5-54 Packet processing on the outbound interface in the VPLS scenario
+
+Inbound Interface Type
+	
+
+Ethernet Encapsulation
+	
+
+VLAN Encapsulation
+
+Symmetrical mode
+	
+
+Removes the MPLS label and adds the outer tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+If packets carry the inner tag: removes the MPLS label and replaces the outer tag with the tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+
+If packets do not carry the inner tag: removes the MPLS label and adds the outer tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+
+Asymmetrical mode
+	
+
+S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Other models: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry the inner tag: removes the MPLS label, removes the inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry the inner tag: removes the MPLS label, removes the inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Other models: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry one inner tag: removes the MPLS label, removes one inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry double inner tags: removes the MPLS label, removes double inner tags, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Default
+	
+
+S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H and S6730-H: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Other models: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry the inner tag: removes the MPLS label, removes the inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+Removes the MPLS label and transparently transmits packets.
+Table 5-55 Packet processing on the inbound interface in the VLL or PWE3 scenario
+
+Inbound Interface Type
+	
+
+Raw Encapsulation
+	
+
+Tagged Encapsulation
+
+Symmetrical mode
+	
+
+Removes the outer tag.
+	
+
+Reserves double tags. No action is required.
+
+Asymmetrical mode
+	
+
+Removes double tags.
+	
+
+Removes the outer tag.
+
+Default
+	
+
+Removes the outer tag.
+	
+
+Reserves double tags. No action is required.
+Table 5-56 Packet processing on the outbound interface in the VLL or PWE3 scenario
+
+Inbound Interface Type
+	
+
+Raw Encapsulation
+	
+
+Tagged Encapsulation
+
+Symmetrical mode
+	
+
+Removes the MPLS label and adds the outer tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+If packets carry the inner tag: removes the MPLS label and replaces the outer tag with the tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+
+If packets do not carry the inner tag: removes the MPLS label and adds the outer tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+
+Asymmetrical mode
+	
+
+S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Other models: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry the inner tag: removes the MPLS label, removes the inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730S-H, and S6730-H: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry the inner tag: removes the MPLS label, removes the inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Other models: If packets do not carry the inner tag: removes the MPLS label and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry one inner tag: removes the MPLS label, removes one inner tag, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination. If packets carry double inner tags: removes the MPLS label, removes double inner tags, and adds double tags according to ce-vid and pe-vid configured on the sub-interface for QinQ VLAN tag termination.
+
+Default
+	
+
+Removes the MPLS label and adds the outer tag specified by pe-vid that is configured on the sub-interface for QinQ VLAN tag termination.
+	
+
+If packets carry the inner tag: removes the MPLS label and replaces the outer tag with the tag specified by pe-vid on the sub-interface for QinQ VLAN tag termination. If packets do not carry the inner tag: removes the MPLS label and adds the outer tag specified by pe-vid on the sub-interface for QinQ VLAN tag termination.
+Example
+
+# Configure the sub-interface for QinQ VLAN tag termination XGigabitEthernet0/0/1.1 to connect to an L2VPN in asymmetry mode.
+
+<HUAWEI> system-view
+[HUAWEI] vcmp role silent
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-XGigabitEthernet0/0/1] quit
+[HUAWEI] interface xgigabitethernet 0/0/1.1
+[HUAWEI-XGigabitEthernet0/0/1.1] qinq termination l2 asymmetry
+[HUAWEI-XGigabitEthernet0/0/1.1] qinq termination pe-vid 100 ce-vid 200
+[HUAWEI-XGigabitEthernet0/0/1.1] quit
+
+qinq termination pe-vid ce-vid
+Function
+
+The qinq termination pe-vid ce-vid command configures QinQ termination on a sub-interface.
+
+The undo qinq termination pe-vid ce-vid command cancels QinQ termination on a sub-interface.
+
+By default, QinQ termination is disabled on a sub-interface.
+Format
+
+qinq termination pe-vid pe-vid ce-vid ce-vid1 [ to ce-vid2 ]
+
+undo qinq termination pe-vid pe-vid ce-vid ce-vid1 [ to ce-vid2 ]
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this configuration.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+pe-vid pe-vid
+	
+
+Specifies the outer VLAN ID.
+	
+
+The value is an integer that ranges from 2 to 4094.
+
+ce-vid ce-vid1 [ to ce-vid2 ]
+	
+Specifies the inner VLAN ID.
+
+    ce-vid1: specifies the lower threshold of the inner VLAN tag in the user packet.
+    ce-vid2: specifies the upper threshold of the outer VLAN tag in the user packet.
+    The value of ce-vid2 must be greater than or equal to the value of ce-vid1.
+
+	
+
+The value of ce-vid1 is an integer that ranges from 1 to 4094.
+
+The value of ce-vid2 is an integer that ranges from 1 to 4094.
+Views
+
+GE sub-interface view, XGE sub-interface view, 25GE sub-interface view, 40GE sub-interface view, 100GE sub-interface view, VE sub-interface view, Eth-Trunk sub-interface view, MultiGE sub-interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+    Communication between VLANs
+    VLANs are widely used because they can separate Layer 2 packets. A physical LAN is divided into multiple logical broadcast domains. Hosts in the same VLAN can communicate with each other but the hosts of different VLANs cannot. The Layer 3 routing technology is used for communication between hosts of different VLANs in the following two methods:
+        Through the VLANIF interface on the Layer 3 router.
+
+        Through the Layer 3 Ethernet interface on the router.
+
+        However, when a traditional Layer 3 Ethernet interface receives VLAN packets, the VLAN packets are discarded. To enable communication between hosts of different VLANs, you can create an Ethernet sub-interface on the Layer 3 Ethernet interface and enable QinQ termination on the sub-interface to remove the tag from the VLAN packet.
+
+    Communication between a LAN and a WAN
+
+    Most packets on a LAN have VLAN tags, but some WAN protocols such as ATM, FR, and PPP, cannot identify VLAN packets. To send a VLAN packet from LAN to WAN, the device records VLAN information in the packet, removes the VLAN tag, and forwards the packet.
+
+Based on the number of tags, VLAN packets can be classified into Dot1q packets and QinQ packets. A Dot1q packet carries a single-layer VLAN tag and a QinQ packet carries a double-layer VLAN tag. Accordingly, there are two VLAN tag termination modes:
+
+    Dot1q termination, which terminates tags carried in Dot1q packets
+
+    To configure Dot1q termination, run the dot1q termination vid command in the sub-interface view.
+
+    QinQ termination, which terminates tags carried in QinQ packets.
+
+    To configure Dot1q termination, run the qinq termination pe-vid ce-vid command.
+
+After the qinq termination pe-vid ce-vid command is run, the sub-interface for VLAN tag termination processes the packet in the following procedures:
+
+    The sub-interface removes the tag in the VLAN packet when receiving the packet and forwards the packet on Layer 3. Whether the forwarded VLAN packet carries tags is determined by the outbound interface.
+    The sub-interface adds VLAN information to the packet and then sends the packet.
+
+Precautions
+
+    The tag values of the user packet received by the sub-interface must be in the range specified in the command; otherwise, the packet is discarded.
+    The allowed VLANs on a sub-interface cannot be created in the system view or be displayed by the display command.
+    When the sub-interface is used for Layer 3 forwarding, it is recommended that there should be a maximum of 128 VLANs in the VLAN range. When there are more than 128 VLANs, IPv4 addresses can be configured but IPv6 addresses cannot be configured.
+
+Example
+
+# Set the encapsulation mode on XGigabitEthernet0/0/1.1 to QinQ and allow the packets with the outer VLAN tag 100 and inner VLAN tag 200 to pass through.
+
+<HUAWEI> system-view
+[HUAWEI] vcmp role silent
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-XGigabitEthernet0/0/1] quit
+[HUAWEI] interface xgigabitethernet 0/0/1.1
+[HUAWEI-XGigabitEthernet0/0/1.1] qinq termination pe-vid 100 ce-vid 200
+
