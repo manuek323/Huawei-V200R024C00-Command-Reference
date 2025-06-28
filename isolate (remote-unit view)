@@ -1,0 +1,39 @@
+isolate (remote-unit view)
+Function
+
+The isolate enable command enables interface isolation on RUs globally.
+
+The undo isolate enable command disable interface isolation on RUs globally.
+
+By default, interface isolation is disabled on RUs.
+Format
+
+isolate enable
+
+undo isolate enable
+Parameters
+
+None
+Views
+
+remote-unit view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After an RU is delivered, its downlink interfaces are in the same broadcast domain and are not isolated by default. This allows users connected to the same RU to communicate with each other before being authenticated. To prevent this, you can configure interface isolation on RUs. To isolate downlink interfaces on all RUs, run the isolate enable command in the remote-unit view.
+
+Follow-up Procedure
+
+After running this command, run the commit command to make the configuration take effect.
+Example
+
+# Configure interface isolation on all RUs.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 
+[HUAWEI-remote-unit] isolate enable
+
