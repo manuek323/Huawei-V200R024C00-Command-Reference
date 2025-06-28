@@ -1,0 +1,59 @@
+led off (remote-unit view)
+Function
+
+The led off command turns off indicators on RUs.
+
+The undo led off command restores the default status of indicators on RUs.
+
+By default, indicators on RUs are turned on.
+Format
+
+led off [ time-range time-name ]
+
+undo led off
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+time-range time-name
+	
+
+Specifies the name of a time range. If no time range is specified, the configuration is always valid.
+	
+
+The specified time range must exist.
+Views
+
+remote-unit view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When RUs are deployed in places such as hotels and dormitories, the blinking of indicators on the RUs may affect users' rest at night. You can run the led off command to turn off indicators on RUs to reduce the impact on users, for example, to turn off the indicators from 8:00 p.m. every day to 7:00 a.m. the next day.
+
+Follow-up Procedure
+
+After you run this command to turn on or off indicators on RUs, you need to run the commit command to deliver the configuration to make the configuration take effect.
+
+Precautions
+
+If this command is configured in both the remote-unit view and remote-unit N view, the configuration in the remote-unit N view takes effect.
+Example
+# Turn off indicators on all RUs from 8:00 p.m. every day to 7:00 a.m. the next day.
+
+<HUAWEI> system-view
+[HUAWEI] time-range test 20:00 to 00:00 daily
+[HUAWEI] time-range test 00:00 to 07:00 daily
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] led off time-range test
+[HUAWEI-remote-unit] commit
+
