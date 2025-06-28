@@ -1,0 +1,1019 @@
+Energy-saving Configuration Commands
+
+    Command Support
+    als enable
+    als restart
+    als restart mode manual
+    als restart pulse-interval
+    als restart pulse-width
+    display als configuration
+    display power manage cycle
+    display power manage mode
+    display power manage power-information
+    display power manage sleep configuration
+    energy-efficient-ethernet enable
+    port-auto-sleep enable
+    set power manage cycle
+    set power manage interval
+    set power manage mode
+    set power manage non-awaken-port
+    sleep time-range
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+als enable
+Function
+
+The als enable command enables ALS on an interface.
+
+The undo als enable command disables ALS on an interface.
+
+By default, ALS is disabled on an interface.
+Format
+
+als enable
+
+undo als enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+The constraints on ALS are as follows:
+
+    Only optical interfaces support ALS. Electrical interfaces and combo interface do not support ALS.
+
+    When optical interfaces transmit services unidirectionally, they do not support ALS.
+    When the copper cable, copper module, or GPON optical module is used on the optical port, the ALS function is not supported. In addition, after the copper cable or GPON optical module is inserted, all the ALS-related commands configured on this interface are cleared.
+    When you run the display elabel command to view electronic label information of a port and the command output shows that the component vendor is FCBN410QB1C10-HW, this port does not support ALS.
+
+Example
+
+# Enable ALS on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] als enable
+
+als restart
+Function
+
+The als restart command manually restarts the laser of an interface.
+Format
+
+als restart
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to manually restart the laser of an optical module. After the optical link recovers, the laser is started after a certain interval if the restart mode is automatic restart. To start the laser immediately after the optical link recovers, set the restart mode of the laser to manual restart and run the als restart command. If this command is not executed, the laser automatically sends a pulse after receiving a pulse from the remote end.
+
+Prerequisites
+
+ALS has been enabled on the interface using the als enable command and the restart mode of the laser has been set to manual restart mode using the als restart mode manual command.
+
+Precautions
+
+This command cannot be executed on an interface if the interface has been added to an interface protection group and is in Protect state.
+Example
+
+# Restart lasers on GigabitEthernet0/0/1 manually.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] als enable
+[HUAWEI-GigabitEthernet0/0/1] als restart mode manual
+[HUAWEI-GigabitEthernet0/0/1] als restart
+
+als restart mode manual
+Function
+
+The als restart mode manual command sets the mode of restarting the laser of the optical module to manual.
+
+The undo als restart mode manual command restores the mode of restarting the laser of the optical module to automatic.
+
+By default, a laser works in automatic restart mode.
+Format
+
+als restart mode manual
+
+undo als restart mode manual
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+The laser of an optical module works in automatic restart mode or manual restart mode.
+
+    In automatic restart mode, the laser sends pulses at the interval set using the als restart pulse-interval command to detect whether the link is recovered. The pulse width is set through the als restart pulse-width command.
+
+    In manual restart mode, you must manually start the laser using the als restart command so that the laser can send a pulse. The ALS pulse width is set using the als restart pulse-width command.
+
+If the fiber link recovery is detected in time, you can use the manual restart mode so that the laser can send pulses immediately. Therefore, data communication can be recovered rapidly.
+Example
+
+# Configure lasers on GigabitEthernet0/0/1 to work in manual restart mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] als restart mode manual
+
+als restart pulse-interval
+Function
+
+The als restart pulse-interval command sets the ALS pulse interval for the laser of an optical module.
+
+The undo als restart pulse-interval command restores the default ALS pulse interval of the laser of an optical module.
+
+By default, the ALS pulse interval of the laser is 100s.
+Format
+
+als restart pulse-interval pulse-interval
+
+undo als restart pulse-interval
+Parameters
+Parameter 	Description 	Value
+pulse-interval 	
+
+Specifies the ALS pulse interval of the laser.
+	
+
+The value is an integer that ranges from 100 to 20000, in seconds.
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+In automatic restart mode, the ALS pulse interval affects the frequency of detecting the LOS on the interface. A long ALS pulse interval is beneficial for energy saving, but the fiber link recovery cannot be detected in a timely manner. In contrary, a short ALS pulse interval wastes power but the fiber link recovery can be detected immediately.
+Example
+
+# Set the ALS pulse interval of lasers on GigabitEthernet0/0/1 to 150s.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] als restart pulse-interval 150
+
+als restart pulse-width
+Function
+
+The als restart pulse-width command sets the ALS pulse width for the laser of an optical module.
+
+The undo als restart pulse-width command restores the default ALS pulse width for the laser of an optical module.
+
+By default, the ALS pulse width of the laser is 2s.
+Format
+
+als restart pulse-width pulse-width
+
+undo als restart pulse-width
+Parameters
+Parameter 	Description 	Value
+pulse-width 	
+
+Specifies the ALS pulse width of the laser.
+	
+
+The value is an integer that ranges from 2 to 200, in seconds.
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The ALS pulse width refers to the period between rising edges of pulses. A short ALS pulse width is beneficial for energy saving, but the fiber link recovery cannot be detected immediately. In contrary, a long ALS pulse width consumes more power but the fiber link recovery can be detected immediately.
+Example
+
+# Set the ALS pulse width on GigabitEthernet0/0/1 to 3s.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] als restart pulse-width 3
+
+display als configuration
+Function
+
+The display als configuration command displays ALS configuration.
+Format
+
+display als configuration slot slot-id
+
+display als configuration interface interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Displays ALS configuration in a slot with a specified slot ID.
+	
+
+The value depends on the device configuration.
+interface interface-type interface-number 	
+Displays ALS configuration on a specified interface.
+
+    interface-type specifies the interface type.
+
+    interface-number specifies the interface number.
+
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+If an optical interface connects to a high-speed cable, this command does not have command output.
+Example
+
+# Display ALS configuration on GigabitEthernet0/0/1.
+
+<HUAWEI> display als configuration interface gigabitethernet 0/0/1
+------------------------------------------------------------------------------- 
+Interface               ALS        Laser      Restart    Interval(s)   Width(s) 
+                        Status     Status     Mode                              
+------------------------------------------------------------------------------- 
+GigabitEthernet0/0/1    Disable    On         Auto       100           2
+------------------------------------------------------------------------------- 
+
+Table 3-136 Description of the display als configuration command output
+
+Item
+	
+
+Description
+
+Interface
+	
+
+Interface type and number.
+
+ALS Status
+	
+Whether ALS is enabled.
+
+    Enable: ALS is enabled.
+
+    Disable: ALS is disabled.
+
+ALS is enabled using the als enable command.
+
+Laser Status
+	
+Status of the laser on the interface. The value can be:
+
+    Off: The laser is shut down.
+
+    On: The laser is turned on.
+
+    --: No optical module is present on the interface.
+
+Restart Mode
+	
+ALS restart mode.
+
+    Auto: automatic restart mode.
+
+    Manual: manual restart mode.
+
+The ALS restart mode is set to manual using the als restart mode manual command.
+
+Interval(s)
+	
+
+ALS pulse interval, expressed in seconds. The ALS pulse interval is set using the als restart pulse-interval command.
+
+Width(s)
+	
+
+ALS pulse width, expressed in seconds. The ALS pulse width is set using the als restart pulse-width command.
+display power manage cycle
+Function
+
+The display power manage cycle command displays the interval for updating power consumption data.
+Format
+
+display power manage cycle
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The average power consumption of a device is the average power consumption within a period of time. You can use the display power manage cycle command to view the interval for calculating the average power consumption.
+Example
+
+# Display the interval for updating power consumption data.
+
+<HUAWEI> display power manage cycle
+ 3 : 1 hour 
+
+Table 3-137 Description of the display power manage cycle command output
+
+Item
+	
+
+Description
+
+3 (1 hour)
+	
+The interval for updating power consumption data is 1 hour. You can set the interval to the following values:
+
+    1 : 15 minutes
+
+    2 : 30 minutes
+
+    3 : 1 hour
+
+    4 : 1 day
+
+    5 : 1 week
+
+    6 : 1 month (30 days)
+
+To set the interval for updating power consumption data, use the set power manage cycle command.
+display power manage mode
+Function
+
+The display power manage mode command displays the energy-saving mode of the device.
+Format
+
+display power manage mode
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display power manage mode command to check the currently configured energy-saving mode of the device.
+Example
+
+# Display the energy-saving mode of the device.
+
+<HUAWEI> display power manage mode
+2 (Standard mode)
+
+Table 3-138 Description of the display power manage mode command output
+
+Item
+	
+
+Description
+
+2 (Standard mode)
+	
+Standard energy-saving mode. The device supports the following energy-saving modes:
+
+    1. User-defined mode: user-defined energy-saving mode.
+
+    2. Standard mode: standard energy-saving mode
+
+    3. Basic mode: basic energy-saving mode
+
+    4. Deep mode: depth energy-saving mode
+    5. Standby mode.
+    NOTE:
+
+    The device does not support the user-defined mode.
+
+    Only the S5720-16X-PWH-LI supports the standby mode.
+
+You can set the energy-saving mode using the set power manage mode command.
+display power manage power-information
+Function
+
+The display power manage power-information command displays the power consumption information of a device.
+Format
+
+display power manage power-information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display power manage power-information command enables you to check the system power consumption information, including the accumulative power consumption, average power, real-time power, rated power, and power threshold of the device.
+Example
+
+# Display the system power consumption information.
+
+<HUAWEI> display power manage power-information
+The information of net element power:
+ --------------------------------------------------
+ The total power consumption (Joule) : 3702200060 
+ The average power consumption (mW)  : 67050      
+ The current power consumption (mW)  : 65750      
+ The inbound interface power (mW)    : 81750      
+ The rated power (mW)                : 229000     
+ The threshold of power (mW)         : 600000     
+ The typical power (mW)              : 126000  
+ --------------------------------------------------
+
+Table 3-139 Description of the display power manage power-information command output
+
+Item
+	
+
+Description
+
+The information of net element power
+	
+
+System power consumption information.
+
+The total power consumption (Joule)
+	
+
+Accumulative power consumption, in Joule.
+
+This field displays NA for PoE-incapable models, including the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, and S5735-S-I.
+
+This field displays NA when the device uses the PDC180S12-CR, PDC260S12-DL, PAC60S12-AR or PAC150S12-R power module of which power information cannot be obtained.
+NOTE:
+
+The accumulative power consumption is stored in the device memory and will not be lost when the device is powered off. When the device is running, power consumption is accumulated once every 15 minutes. The accumulated power consumption and accumulative power consumption in the memory are added and recorded in the memory once every 24 hours. If there is no accumulative power consumption in the memory, this field displays 0. If the device is powered off within 24 hours after starting, the power consumption accumulated within 24 hours is not added to the accumulative power consumption in the memory.
+
+The average power consumption (mW)
+	
+
+The average power consumption of a device is the average power consumption within a period of time, including the PoE power, in mW.
+
+This field displays NA for PoE-incapable models, including the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, and S5735-S-I.
+
+This field displays NA when the device uses the PDC180S12-CR, PDC260S12-DL, PAC60S12-AR or PAC150S12-R power module of which power information cannot be obtained.
+
+The current power consumption (mW)
+	
+
+The output power of the system, including the PoE power, in mW.
+
+This field displays NA for PoE-incapable models, including the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, and S5735-S-I.
+
+This field displays NA when the device uses the PDC180S12-CR, PDC260S12-DL, PAC60S12-AR or PAC150S12-R power module of which power information cannot be obtained.
+
+The inbound interface power (mW)
+	
+
+The input power of the system, including the PoE power, in mW.
+
+This field displays NA for PoE-incapable models, including the SS1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, and S5735-S-I.
+
+This field displays NA when the device uses the PDC180S12-CR, PDC260S12-DL, PAC60S12-AR or PAC150S12-R power module of which power information cannot be obtained.
+
+The rated power (mW)
+	
+
+Rated power of the system, excluding the PoE power, in mW.
+
+For a stack, the value of this parameter indicates the maximum power consumption of the stack.
+
+The threshold of power (mW)
+	
+
+Power threshold of the power supply unit, in mW. The value is the rated power of the power supply unit used on the device.
+
+    When there are two power supply units on the device, they work in redundancy mode to supply power to the system. The supplied power is not the accumulated power of the two power supply units. When the rated power of both power supply units can be obtained, this field displays the smaller rated power. If the rated power of one power supply unit cannot be obtained, this field displays the obtained rated power. If the rated power of both power supply units cannot be obtained, this field displays the system rated power.
+    If a built-in power supply is used, the value is the rated power of the system.
+
+The typical power (mW)
+	
+
+Power of the device when 30% of the line rate is used, excluding the PoE power. The unit is mW.
+display power manage sleep configuration
+Function
+
+The display power manage sleep configuration command displays device dormancy information.
+
+Only the S500, S5735-S, S5735-S-I, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735S-H, and S5736-S series switches support the sleep mode.
+Format
+
+display power manage sleep configuration
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display power manage sleep configuration command shows device dormancy information, including the time range, period during which the awakening port status is detected continuously, awakening mode, and non-awakening ports.
+Example
+
+# Display the device dormancy configuration.
+
+<HUAWEI> display power manage sleep configuration
+The device sleep function status: enable                                         
+The device sleep time-range: night-time                                     
+-----------------------------------------------                                 
+Current time is 16:19:45 5-14-2012 Monday                                       
+                                                                                
+Time-range: night-time ( Inactive )                                             
+20:00 to 00:00 working-day                                                      
+00:00 to 08:00 working-day                                                      
+-----------------------------------------------                                 
+The awaken port state check interval (minutes): 20(default)                      
+The configuration of non-awaken port:                                           
+-----------------------------------------------                                 
+ GigabitEthernet0/0/1     GigabitEthernet0/0/2                                  
+ GigabitEthernet0/0/3     GigabitEthernet0/0/4                                  
+ GigabitEthernet0/0/5     GigabitEthernet0/0/6                                  
+ GigabitEthernet0/0/7     GigabitEthernet0/0/8                                  
+ GigabitEthernet0/0/9     GigabitEthernet0/0/10                                 
+-----------------------------------------------                                
+
+Table 3-140 Description of the display power manage sleep configuration command output
+
+Item
+	
+
+Description
+
+The device sleep function status
+	
+
+Device dormancy mode.
+
+    disable: The device dormancy function is disabled. That is, the device energy-saving mode configured using the set power manage mode command is not 4.
+    enable: The device dormancy function is enabled. That is, the device energy-saving mode configured using the set power manage mode command is 4.
+
+The device sleep time-range
+	
+
+Dormancy time range name. If no dormancy time range is specified, the whole day takes effect by default.
+
+To set a dormancy time range, run the sleep time-range command.
+
+Time-range
+	
+Dormancy time range.
+
+    If the field value contains ( Inactive ), the current time is not within the dormancy time range.
+    If the field value contains ( Active ), the current time is within the dormancy time range.
+
+The awaken port state check interval (minutes)
+	
+
+Period during which the awakening port status is detected continuously.
+
+To set the period, run the set power manage interval command.
+
+The configuration of non-awaken port
+	
+
+Configured non-awakening ports.
+
+To configure non-awakening ports, run the set power manage non-awaken-port command.
+energy-efficient-ethernet enable
+Function
+
+The energy-efficient-ethernet enable command enables the Energy Efficient Ethernet (EEE) function on an electrical interface.
+
+The undo energy-efficient-ethernet enable command disables the EEE function on an electrical interface.
+
+By default, EEE is disabled on an electrical interface.
+Format
+
+energy-efficient-ethernet enable
+
+undo energy-efficient-ethernet enable
+Parameters
+
+None
+Views
+
+GE interface view, port group view, MultiGE interface view, XGE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The system provides power for each interface. Even though an interface is idle, it consumes the same power as working interfaces. The energy-efficient-ethernet enable command enables the system to reduce the power on an interface when the interface is idle and restore the power when the interface starts to transmit data. This reduces system power consumption.
+
+Prerequisites
+
+If an electrical interface works in non-auto negotiation mode, run the negotiation auto command to enable auto-negotiation.
+
+Precautions
+
+    The EEE function can be configured only on electrical interfaces (including combo electrical interfaces and excluding electrical interfaces converted from optical interfaces by installing copper modules). Optical interfaces do not support the EEE function.
+    If an electrical interface works at 10 Mbit/s after auto-negotiation, the EEE function does not take effect.
+    The S5731-H, S5731-S (except S5731-S32ST4X-A, S5731-S32ST4X-D, S5731-S24N4X2Q-A, S5731-S24UN4X2Q, S5731-S8UM16UN2Q, and S5731-S32ST4X), S5731S-H, S5731S-S (except S5731S-S32ST4X-A, S5731S-S24N4X2Q-A1, S5731S-S24UN4X2Q-A, S5731S-S8UM16UN2Q-A, and S5731S-S32ST4X-A1), S6735-S, do not support the EEE function.
+    For the S5732-H48XUM2CC, S5732-H24UM2CC and S5732-H48UM2CC, MultiGE interfaces working at 2.5 Gbit/s or 5 Gbit/s do not support the EEE function.
+    Enabling or disabling EEE on an interface will trigger re-negotiation. During the negotiation, the interface may change to Down state, which causes short service interruption. Therefore, determine whether the operation is allowed before you run this command.
+    If auto-negotiation is disabled on an interface, the EEE configuration is automatically deleted.
+
+Example
+
+# Enable the EEE function on electrical interface GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] energy-efficient-ethernet enable
+
+port-auto-sleep enable
+Function
+
+The port-auto-sleep enable command enables the port dormancy function on an Ethernet electrical port to save energy.
+
+The undo port-auto-sleep enable command disables the port dormancy function on an Ethernet electrical port.
+
+By default, the port dormancy function is disabled on an Ethernet electrical port.
+Format
+
+port-auto-sleep enable
+
+undo port-auto-sleep enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The port-auto-sleep enable command enables electrical port dormancy. If this function is enabled on a port, the port enters the energy-saving mode when no carrier wave signals are transmitted on the port. When carrier wave signals are transmitted on the port, the port exits the energy-saving mode. Port sleep does not affect functioning of the port.
+
+Currently, this command can be used on electrical interfaces (excluding MultiGE interfaces) and combo interfaces working as electrical interfaces. Electrical interfaces converted from optical interfaces by installing copper modules do not support this command.
+
+The port sleeping function is enabled by default on the ES5D21X08T00 electrical sub-card supported by the S5731-H, and S5731S-H, and cannot be disabled.
+Example
+
+# Enable the port dormancy function on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port-auto-sleep enable
+
+set power manage cycle
+Function
+
+The set power manage cycle command sets the interval for updating power consumption data.
+
+The undo set power manage cycle command restores the default interval for updating power consumption data.
+
+By default, the interval for updating power consumption data is 1 hour.
+Format
+
+set power manage cycle cycle-id
+
+undo set power manage cycle
+Parameters
+Parameter 	Description 	Value
+cycle-id 	
+
+Sets the interval for updating power consumption data.
+	
+The value is an integer that ranges from 1 to 6.
+
+    1: 15 minutes
+
+    2: 30 minutes
+
+    3: 1 hour
+
+    4: 1 day
+
+    5: 1 week
+
+    6: 30 days
+
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+The average power consumption of a device is the average power consumption within a period of time. You can use the set power manage cycle command to set the interval for calculating the average power consumption. To obtain real-time power consumption, set a short interval.
+Example
+
+# Set the interval for updating power consumption data to 15 minutes.
+
+<HUAWEI> system-view
+[HUAWEI] set power manage cycle 1
+
+set power manage interval
+Function
+
+The set power manage interval command sets the period during which the awakening port status is probed continuously.
+
+The undo set power manage interval command restores the default period during which the awakening port status is probed continuously.
+
+By default, the period is 20 minutes.
+
+Only the S500, S5735-S, S5735-S-I, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735S-H, and S5736-S series switches support the sleep mode.
+Format
+
+set power manage interval interval-time
+
+undo set power manage interval
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interval-time
+	
+
+Specifies the period during which the awakening port status is probed continuously.
+	
+
+The value is an integer ranging from 5 to 60, in minutes.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When the device does not enter the dormancy state in the specified time range, the device continuously probes the status of all awakening ports. The device enters the dormancy state when the device does not probe any awakening port in Up state within the default 20 minutes. Otherwise, the device continues to probe the awakening ports status.
+
+If no time range is applied to the device, the device probes the status of all awakening ports all round the clock. By default, the device enters the dormancy state when the device does not probe any awakening port in Up state within 20 minutes.
+
+In a stack, the set power manage interval command cannot set the period during which the awakening port status is detected continuously. However, you can use the undo set power manage interval command to delete the configuration in standalone mode.
+Example
+
+# Set the period during which the awakening port status is probed continuously to 10 minutes.
+
+<HUAWEI> system-view
+[HUAWEI] set power manage interval 10
+[HUAWEI] quit
+<HUAWEI> save
+
+set power manage mode
+Function
+
+The set power manage mode command sets the energy-saving mode of the device.
+
+The undo set power manage mode command restores the default energy-saving mode of the device.
+
+By default, the standard energy-saving mode is used.
+Format
+
+set power manage mode mode-id
+
+undo set power manage mode
+Parameters
+Parameter 	Description 	Value
+
+mode-id
+	
+
+Specifies the energy-saving mode of the device.
+	
+The value is an integer that ranges from 1 to 5:
+
+    1: indicates the user-defined energy-saving mode. This mode is not supported currently.
+
+    2: indicates the standard energy-saving mode.
+
+    3: indicates the basic energy-saving mode.
+
+    4: indicates the deep energy-saving mode.
+
+    5: indicates the standby energy-saving mode.
+    NOTE:
+
+    Only the S5720-16X-PWH-LI supports the standby energy-saving mode.
+
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+The set power manage mode command sets the energy-saving mode of the device.
+The device can run in the following energy-saving modes:
+
+    Standard mode
+
+    Factory mode and default power saving mode.
+
+    Basic mode
+
+    Components not in use are shut down or switched to the sleep mode when no services are configured or users are not online.
+
+    Deep mode
+
+    Power consumption is dynamically adjusted for running services, and components not in use are shut down or switched to the sleep mode according to service requirements.
+
+    Standby mode
+
+    The device enters the low power consumption mode when it does not need to provide PoE power to PDs and shuts down all the interfaces except GE0/0/13 and GE0/0/14.
+
+    The ALS, EEE, and port dormancy functions are disabled in standard mode by default. However, the port dormancy function is enabled by default on the ES5D21X08T00 electrical sub-card supported by the S5731-H, and S5731S-H, and cannot be disabled.
+    The ALS, EEE, and port dormancy functions are enabled by default in basic or deep mode.
+    The deep mode adds the device dormancy function based on functions of the basic mode.
+    Only the S5720-16X-PWH-LI supports the standby mode. The interfaces that have been shut down in standby mode cannot be enabled manually using a command. To enable these interfaces manually, ensure that the switch exits the standby mode.
+    Before entering the standby mode, the system forcibly saves the configuration to the configuration file that is being used by the device.
+    The configuration restoration function is not configured in the standby mode. That is, after the device restarts, the currently configured standby mode of an interface is automatically restored to the default standard mode.
+    On the S5720-16X-PWH-LI XGE0/0/1 and XGE0/0/2, installing optical modules and configuring the standby mode are mutually exclusive. That is, the two interfaces cannot have the standby mode configured after they have optical modules installed. When they work in standby mode, installing optical modules into them will restore them to the default standard mode or may even restart the device.
+    The minimum interval between configuring and disabling the standby mode is 15s.
+    The standby mode cannot be configured in a stack.
+    When the device is switched from the basic or deep mode to the standby mode, disabling the EEE function may cause interface flapping. Similarly, when the device is switched from the standby mode to the basic or deep mode, enabling the EEE function may cause interface flapping.
+
+After the energy-saving mode is set to basic or deep mode, loopback test on interfaces is disabled. Therefore, before performing a loopback test, set the energy-saving mode to standard mode.
+Example
+
+# Set the energy-saving mode of the device to basic mode.
+
+<HUAWEI> system-view
+[HUAWEI] set power manage mode 3
+Warning: Performance of ALS, EEE, Auto sleep will be enabled, and the EEE function may lead to port flapping. Continue?[Y/N]:y      
+Info: It will take a few seconds. Please wait...
+
+set power manage non-awaken-port
+Function
+
+The set power manage non-awaken-port command configures a port as a non-awakening port.
+
+The undo set power manage non-awaken-port command restores a non-awakening port to be an awakening port.
+
+By default, all ports are awakening ports.
+
+Only the S500, S5735-S, S5735-S-I, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735S-H, and S5736-S series switches support the sleep mode.
+Format
+
+set power manage non-awaken-port interface { interface-type interface-number1 [ to interface-type interface-number2 ] } &<1-10>
+
+undo set power manage non-awaken-port interface { interface-type interface-number1 [ to interface-type interface-number2 ] } &<1-10>
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface { interface-type interface-number1 [ to interface-type interface-number2 ]
+	
+Specifies the type and number of an interface:
+
+    interface-type specifies the type of the interface.
+
+    interface-number1 specifies the number of the first interface.
+
+    interface-number2 specifies the number of the second interface.
+
+	
+
+-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+You can use the set power manage non-awaken-port command to configure some ports as non-awakening ports so that these ports do not affect device dormancy and awakening. This is because device dormancy and awakening depend on the awakening port status.
+
+In a stack, the set power manage non-awaken-port command cannot configure a port as a non-awakening port. However, you can use the undo set power manage non-awaken-port command to delete the configuration in standalone mode.
+Example
+
+# Configure interfaces GigabitEthernet0/0/1 to GigabitEthernet0/0/5 as non-awakening interfaces.
+
+<HUAWEI> system-view
+[HUAWEI] set power manage non-awaken-port interface gigabitethernet 0/0/1 to gigabitethernet 0/0/5
+Info: Succeeded in setting the configuration.
+[HUAWEI] quit
+<HUAWEI> save
+
+sleep time-range
+Function
+
+The sleep time-range command applies a time range to the device in dormancy state.
+
+The undo sleep time-range command deletes the time range.
+
+By default, no time range is applied to the device.
+
+Only the S500, S5735-S, S5735-S-I, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735S-H, and S5736-S series switches support the sleep mode.
+Format
+
+sleep time-range timerange-name
+
+undo sleep time-range timerange-name
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+timerange-name
+	
+
+Specifies the name of a time range that applies to the device.
+	
+
+The value is a string of 1 to 32 case-sensitive characters without spaces and must start with an uppercase or lowercase.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+A device on an enterprise network is not used at certain time. You can apply a time range to the device in dormancy mode to save power. When dormancy conditions are met, the device automatically enters the dormancy state during the time range. When the time range expires, the device is awakened.
+
+When an awakening interface detects a user, the device in dormancy mode is awakened. User services on the device are not affected.
+The device enters the sleeping mode when the following conditions are met:
+
+    The device works in deep mode. By default, the standard energy-saving mode is used.
+    A time range applies to the device in sleeping mode.
+    During the period for continuously detecting awakening port status, the terminals (switches or PCs) connected to awakening ports are shut down.
+
+    If the terminal is a PC, the device can enter the dormancy state only when the PC is shut down and its network adapter is powered off (this can be set in the power management module of BIOS).
+
+The device is awakened when either of the following conditions is met:
+
+    A user logs in to the device through the serial port and presses Ctrl+W.
+    The terminals (switches or PCs) connected to awakening ports are started up.
+    The sleeping time range expires (if a time range is configured).
+    A user presses the mode switching button.
+
+Prerequisites
+
+    The energy-saving mode of the device has been set to deep mode using the set power manage mode command.
+
+    A time range has been specified using the time-range command.
+
+In a stack, the sleep time-range command cannot apply a time range to the device in dormancy state. However, you can use the undo sleep time-range command to delete the configuration in standalone mode.
+Example
+
+# Apply the time range 1:00 to 6:00 am to the device.
+
+<HUAWEI> system-view
+[HUAWEI] set power manage mode 4
+[HUAWEI] time-range test 1:00 to 6:00 daily
+[HUAWEI] sleep time-range test
+[HUAWEI] quit
+<HUAWEI> save
+
