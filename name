@@ -1,0 +1,40 @@
+name
+Function
+
+The name command configures an alias for an RU.
+
+The undo name command deletes the alias of an RU.
+
+By default, no alias is configured for an RU.
+Format
+
+name remote-unit-name
+
+undo name
+Parameters
+Parameter 	Description 	Value
+
+remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value is a string of 1 to 32 case-sensitive characters without spaces.
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If a central switch is connected to multiple RUs, you can configure an alias for each RU to facilitate management, since aliases are easier to remember than IDs. In addition, after specifying an alias for an RU, you can run the remote-unit name remote-unit-name command to enter the view of an RU by its alias directly.
+Example
+
+# Set the alias of RU 0 to access_1.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] name access_1
+
