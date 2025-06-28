@@ -1,0 +1,66 @@
+port default vlan (remote-unit N view)
+Function
+
+The port default vlan command configures the default VLAN for downlink interfaces on an RU.
+
+The undo port default vlan command restores the default setting.
+
+By default, a downlink interface on an RU uses VLAN 1 as its default VLAN.
+Format
+
+port { portid1 [ to portid2 ] } &<1-32> default vlan vlanid
+
+undo port { portid1 [ to portid2 ] } &<1-32> default vlan
+Parameters
+Parameter 	Description 	Value
+
+portid1 [ to portid2 ]
+	
+
+Indicates numbers of downlink interfaces:
+
+portid1 specifies the number of the first interface. to portid2 specifies the number of the last interface. portid2 must be greater than or equal to portid1.
+	
+
+portid1 is an integer that ranges from 1 to 32.
+
+portid2 is an integer that ranges from 1 to 32.
+
+vlanid
+	
+
+Specifies the default VLAN ID for the downlink interfaces on the RU.
+	
+
+The value is an integer in the range from 1 to 4094.
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+An RU can connect to different types of terminals using its downlink interfaces and distinguish terminal services by joining its downlink interfaces to different VLANs. You can run the port default vlan command to configure a downlink interface on an RU as a hybrid interface and configure the default VLAN for the interface. As such, different VLANs can be configured for downlink interfaces of an RU to carry services of different terminals.
+
+An RU saves the VLAN configuration delivered by the central switch to it in its flash memory and forwards traffic based on this VLAN configuration after being powered on. After the RU goes online on the central switch, the central switch synchronizes the latest VLAN configuration to the RU's flash memory.
+
+Prerequisites
+
+You have run the vlan mode manual command to configure the manual VLAN mode for the RU.
+
+Follow-up Procedure
+
+After you run the commands for configuring the VLAN mode for an RU and VLANs for RU interfaces, run the commit command to deliver the VLAN configuration to the RU or bring the RU offline and then online again for the configuration to take effect.
+
+Run the port uplink { tagged | untagged } vlan vlan-id1 command to configure the default VLAN of the downlink interfaces on an RU as an allowed VLAN for the RU's uplink interface.
+Example
+
+# Configure VLAN 2 as the default VLAN for downlink interfaces 1 to 4 on RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] port 1 to 4 default vlan 2
+
