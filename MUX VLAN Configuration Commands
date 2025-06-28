@@ -1,0 +1,380 @@
+MUX VLAN Configuration Commands
+
+    Command Support
+    display mux-vlan
+    mux-vlan
+    port mux-vlan enable
+    subordinate group
+    subordinate separate
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+display mux-vlan
+Function
+
+Using the display mux-vlan command, you can view the MUX VLAN configuration.
+Format
+
+display mux-vlan
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After configuring the MUX VLAN function, you can use the display mux-vlan command to verify the configuration. This command displays the principal VLAN ID, subordinate VLAN ID, VLAN type, and interfaces in each VLAN.
+
+Precautions
+
+If no MUX VLAN is configured by using the mux-vlan command, the display mux-vlan command does not display any information.
+Example
+
+# Display the MUX VLAN configuration.
+
+<HUAWEI> display mux-vlan
+Principal Subordinate Type      Interface
+-----------------------------------------------------------------------------
+100       -           principal    
+100       120         separate     GigabitEthernet0/0/1
+100       130         group        GigabitEthernet0/0/2
+100       140         group        GigabitEthernet0/0/3
+-----------------------------------------------------------------------------
+
+Table 5-50 Description of the display mux-vlan command output
+
+Item
+	
+
+Description
+
+Principal
+	
+
+ID of a principal VLAN.
+
+To specify the parameter, run the mux-vlan command.
+
+Subordinate
+	
+
+ID of a subordinate VLAN
+
+To specify the parameter, run the subordinate group, or subordinate separate command.
+
+Type
+	
+Type of a VLAN.
+
+    principal: indicates a principal VLAN, configured by the mux-vlan command.
+    group: indicates a subordinate group VLAN, configured by the subordinate group command.
+    separate: indicates a subordinate separate VLAN, configured by the subordinate separate command.
+
+Interface
+	
+
+Interfaces in a VLAN.
+mux-vlan
+Function
+
+The mux-vlan command configures a VLAN as a principal VLAN.
+
+The undo mux-vlan command cancels the configuration.
+
+By default, no VLAN is configured as a principal VLAN.
+Format
+
+mux-vlan
+
+undo mux-vlan
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All employees and customers of an enterprise can access servers on the enterprise network. The enterprise allows employees to communicate but expects to isolate customers from one another. To meet this requirement, the enterprise can add the servers to a VLAN, add employees to another VLAN, and add each customer to a different VLAN. This wastes VLAN IDs and increases workload on VLAN configuration.
+
+The MUX VLAN function is introduced to solve this problem. The MUX VLAN function isolates Layer 2 traffic between interfaces in a VLAN. This function involves the following VLANs:
+
+    Principal VLAN: allows member interfaces to communicate with each other and with interfaces in subordinate VLANs.
+    Subordinate VLAN
+        Subordinate separate VLAN: allows member interfaces to communicate with only interfaces in the principal VLAN. An interface in a subordinate separate VLAN cannot communicate with interfaces in the same VLAN or other subordinate VLANs.
+        Subordinate group VLAN: allows member interfaces to communicate with interfaces in the same VLAN and interfaces in the principal VLAN. An interface in a subordinate group VLAN cannot communicate with interfaces in other subordinate VLANs.
+
+According to features of the preceding VLANs, the enterprise can add the servers to the principal VLAN, add employees to a subordinate group VLAN, and add customers to a subordinate separate VLAN. Customers are then allowed to access the servers but isolated from one another. This saves VLAN IDs on the enterprise network and facilitates network management.
+
+Prerequisites
+
+The VLAN to be configured as a principal VLAN is not a super-VLAN, a sub-VLAN, or a subordinate VLAN.
+
+Follow-up Procedure
+
+Configure subordinate VLANs for the principal VLAN and enable the MUX VLAN function on interfaces.
+
+Precautions
+
+The VLAN ID assigned to a principal VLAN cannot be used to configure the super-VLAN or sub-VLAN. Additionally, it is not recommended that this VLAN ID be used to configure VLAN mapping and VLAN stacking.
+
+If a VLAN has been configured as a principal VLAN, it cannot be configured as a subordinate VLAN of another principal VLAN.
+Example
+
+# Configure VLAN 5 as a principal VLAN.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 5
+[HUAWEI-vlan5] mux-vlan
+
+port mux-vlan enable
+Function
+
+The port mux-vlan enable command enables the MUX VLAN function on an interface.
+
+The undo port mux-vlan enable command disables the MUX VLAN function on an interface.
+
+By default, the MUX VLAN function is disabled on an interface.
+Format
+
+port mux-vlan enable vlan { vlan-id1 [ to vlan-id2 ] } &<1-10>
+
+undo port mux-vlan enable vlan { vlan-id1 [ to vlan-id2 ] } &<1-10>
+
+undo port mux-vlan enable
+Parameters
+Parameter 	Description 	Value
+
+vlan { vlan-id1 [ to vlan-id2 ] }
+	
+
+Enables MUX VLAN for specified VLANs. For principal VLANs, a VLAN ID range can be specified. For subordinate group VLANs or separate VLANs, only one VLAN ID can be specified.
+	
+
+The value is an integer ranging from 1 to 4094.
+Views
+
+Ethernet interface view, GE interface view, XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view, MultiGE interface view, VE interface view, Eth-Trunk interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The MUX VLAN function isolates Layer 2 traffic between interfaces in a VLAN. This function involves a MUX VLAN and several subordinate VLANs. Subordinate VLANs are classified into subordinate group VLANs and subordinate separate VLANs. Subordinate VLANs can communicate with the principal VLAN but cannot communicate with each other. Interfaces in a subordinate group VLAN can communicate with each other, and interfaces in a subordinate separate VLAN are isolated from each other.
+
+The MUX VLAN function takes effect only after it is enabled on an interface.
+
+Prerequisites
+
+Before enabling the MUX VLAN function, ensure that the interface has been added to a principal or subordinate VLAN as an access, hybrid, or trunk interface.
+
+Precautions
+
+    Disabling MAC address learning or limiting the number of learned MAC addresses on an interface affects the MUX VLAN function on the interface.
+
+    The MUX VLAN and port security functions conflict on an interface; therefore, the port mux-vlan enable and port-security enable commands are not advised to be used on the same interface.
+    The MUX VLAN and MAC address authentication conflict on an interface; therefore, the port mux-vlan enable and mac-authen commands are not advised to be used on the same interface.
+    The MUX VLAN and 802.1x authentication conflict on an interface; therefore, the port mux-vlan enable and dot1x enable commands are not advised to be used on the same interface.
+
+    You can create a VLANIF interface for a principal VLAN, but cannot create a VLANIF interface for a subordinate group VLAN or separate VLAN.
+
+    The port mux-vlan enable command is not supported on a negotiation-auto or negotiation-desirable port.
+
+    When the interface is enabled with MUX VLAN and configured with the PVID using the port trunk pvid vlan command, do not configure the PVID as the ID of the principal VLAN or subordinate VLAN of the MUX VLAN. For example, VLAN 10 is the principal VLAN, VLAN 11 is a subordinate group VLAN, and VLAN 12 is a subordinate separate VLAN. After the port mux-vlan enable vlan 10 command is used on the interface to enable MUX VLAN, do not run the port trunk pvid vlan command to set the PVID to VLAN 11 or VLAN 12.
+
+Example
+
+# Enable the MUX VLAN function in VLAN 2 on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] port link-type hybrid
+[HUAWEI-GigabitEthernet0/0/1] port mux-vlan enable vlan 2
+
+subordinate group
+Function
+
+The subordinate group command configures subordinate group VLANs for a principal VLAN.
+
+The undo subordinate group command removes subordinate group VLANs from a principal VLAN.
+
+By default, a principal VLAN does not have any subordinate group VLAN.
+Format
+
+subordinate group { vlan-id1 [ to vlan-id2 ] } &<1-10>
+
+undo subordinate group { vlan-id1 [ to vlan-id2 ] } &<1-10>
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id1 [ to vlan-id2 ]
+	
+Specifies a range of VLAN IDs.
+
+    vlan-id1 specifies the start VLAN ID.
+    to vlan-id2 specifies the end VLAN ID. If to vlan-id2 is not specified, only one subordinate group VLAN is configured.
+
+	
+
+    The value of vlan-id1 is an integer that ranges from 1 to 4094.
+    The value of vlan-id2 is an integer that ranges from 1 to 4094 and must be greater than or equal to the value of vlan-id1.
+
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All employees and customers of an enterprise can access servers on the enterprise network. The enterprise allows employees to communicate but expects to isolate customers from one another. To meet this requirement, the enterprise can add the servers to a VLAN, add employees to another VLAN, and add each customer to a different VLAN. This wastes VLAN IDs and increases workload on VLAN configuration.
+
+The MUX VLAN function is introduced to solve this problem. The MUX VLAN function isolates Layer 2 traffic between interfaces in a VLAN. This function involves the following VLANs:
+
+    Principal VLAN: allows member interfaces to communicate with each other and with interfaces in subordinate VLANs.
+    Subordinate VLAN
+        Subordinate separate VLAN: allows member interfaces to communicate with only interfaces in the principal VLAN. An interface in a subordinate separate VLAN cannot communicate with interfaces in the same VLAN or other subordinate VLANs.
+        Subordinate group VLAN: allows member interfaces to communicate with interfaces in the same VLAN and interfaces in the principal VLAN. An interface in a subordinate group VLAN cannot communicate with interfaces in other subordinate VLANs.
+
+According to features of the preceding VLANs, the enterprise can add the servers to the principal VLAN, add employees to a subordinate group VLAN, and add customers to a subordinate separate VLAN. Customers are then allowed to access the servers but isolated from one another. This saves VLAN IDs on the enterprise network and facilitates network management.
+
+After interfaces using by employees are added to the subordinate group VLAN, employees can access servers of the enterprise and communicate with one another.
+
+Prerequisites
+
+The specified subordinate group VLANs are not super-VLANs and do not have any VLANIF interface.
+
+Before configuring a VLAN as a subordinate group VLAN, run the undo subordinate group command to delete all its member interfaces.
+
+Follow-up Procedure
+
+Add interfaces to subordinate group VLANs and enable the MUX VLAN function on the interfaces.
+
+Precautions
+
+Before configuring a VLAN as a subordinate separate VLAN, ensure that the VLAN and its principal VLAN have been created. Otherwise, this command does not take effect even if it is executed successfully.
+
+Subordinate VLANs must be different from the principal VLAN.
+
+A VLAN cannot be configured as a subordinate group VLAN and a subordinate separate VLAN simultaneously.
+
+If you run the subordinate group command multiple times in the same VLAN view, all the specified VLANs are configured as subordinate group VLANs. A maximum of 128 subordinate group VLANs can be configured in a primary VLAN.
+
+The VLAN ID assigned to a group VLAN cannot be used to configure a VLANIF interface, super-VLAN, or sub-VLAN. Additionally, it is not recommended that this VLAN ID be used to configure VLAN mapping and VLAN stacking.
+
+When you configure a subordinate VLAN using the subordinate group or subordinate separate command or create a VLAN with an ID same as an existing subordinate VLAN, the device deletes existing dynamic MAC address entries and duplicated MUX MAC address entries of the principal VLAN of this subordinate VLAN.
+Example
+
+# Configure VLAN 7 as the subordinate group VLAN of VLAN 5.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 5
+[HUAWEI-vlan5] subordinate group 7
+
+subordinate separate
+Function
+
+The subordinate separate command configures a subordinate separate VLAN for a principal VLAN.
+
+The undo subordinate separate command removes the subordinate separate VLAN from a principal VLAN.
+
+By default, a principal VLAN does not have any subordinate separate VLAN.
+Format
+
+subordinate separate vlan-id
+
+undo subordinate separate
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+vlan-id
+	
+
+Specifies the ID of an existing VLAN.
+	
+
+The value is an integer that ranges from 1 to 4094.
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All employees and customers of an enterprise can access servers on the enterprise network. The enterprise allows employees to communicate but expects to isolate customers from one another. To meet this requirement, the enterprise can add the servers to a VLAN, add employees to another VLAN, and add each customer to a different VLAN. This wastes VLAN IDs and increases workload on VLAN configuration.
+
+The MUX VLAN function is introduced to solve this problem. The MUX VLAN function isolates Layer 2 traffic between interfaces in a VLAN. This function involves the following VLANs:
+
+    Principal VLAN: allows member interfaces to communicate with each other and with interfaces in subordinate VLANs.
+    Subordinate VLAN
+        Subordinate separate VLAN: allows member interfaces to communicate with only interfaces in the principal VLAN. An interface in a subordinate separate VLAN cannot communicate with interfaces in the same VLAN or other subordinate VLANs.
+        Subordinate group VLAN: allows member interfaces to communicate with interfaces in the same VLAN and interfaces in the principal VLAN. An interface in a subordinate group VLAN cannot communicate with interfaces in other subordinate VLANs.
+
+According to features of the preceding VLANs, the enterprise can add the servers to the principal VLAN, add employees to a subordinate group VLAN, and add customers to a subordinate separate VLAN. Customers are then allowed to access the servers but isolated from one another. This saves VLAN IDs on the enterprise network and facilitates network management.
+
+After interfaces using by customers are added to the subordinate separate VLAN, customers can neither communicate with each other nor access servers of the enterprise.
+
+Prerequisites
+
+The specified subordinate separate VLANs are not super-VLANs and do not have any VLANIF interface.
+
+Before configuring a VLAN as a subordinate separate VLAN, run the undo subordinate separate command to delete all its member interfaces.
+
+Follow-up Procedure
+
+Add interfaces to the subordinate separate VLAN and enable the MUX VLAN function on the interfaces.
+
+Precautions
+
+Before configuring a VLAN as a subordinate separate VLAN, ensure that the VLAN and its principal VLAN have been created. Otherwise, this command does not take effect even if it is executed successfully.
+
+Subordinate VLANs must be different from the principal VLAN.
+
+A VLAN cannot be configured as a subordinate group VLAN and a subordinate separate VLAN simultaneously.
+
+A principal VLAN can be configured with only one subordinate separate VLAN. Before configuring another VLAN as the subordinate separate VLAN, run the undo subordinate separate command to delete the previous one.
+
+The VLAN ID assigned to a separate VLAN cannot be used to configure a VLANIF interface, super-VLAN, or sub-VLAN. Additionally, it is not recommended that this VLAN ID be used to configure VLAN mapping and VLAN stacking.
+
+When you configure a subordinate VLAN using the subordinate group or subordinate separate command or create a VLAN with an ID same as an existing subordinate VLAN, the device deletes existing dynamic MAC address entries and duplicated MUX MAC address entries of the principal VLAN of this subordinate VLAN.
+Example
+
+# Configure VLAN 6 as the subordinate separate VLAN of VLAN 5.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 5
+[HUAWEI-vlan5] subordinate separate 6
+
