@@ -1,0 +1,57 @@
+remote-unit protect-action error-down
+Function
+
+The remote-unit protect-action error-down enable command enables RU protection by setting interfaces to the Error-Down state.
+
+The remote-unit protect-action error-down disable command disables RU protection.
+
+By default, this function is enabled.
+Format
+
+remote-unit protect-action error-down { disable | enable }
+
+undo remote-unit protect-action error-down disable
+Parameters
+Parameter 	Description 	Value
+
+disable
+	
+
+Disables RU protection.
+	
+
+-
+
+enable
+	
+
+Enables RU protection by setting interfaces to the Error-Down state.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+During RU deployment, a configuration error or link fault may occur (for details, see "Usage Guidelines" in error-down auto-recovery cause remote-unit-link interval). When the central switch detects the fault, it sets the interface connected to the RU to the Error-Down state.
+
+Prerequisites
+
+XLDP has been enabled on all interfaces of the central switch.
+
+Precautions
+
+The undo remote-unit protect-action error-down disable command is equivalent to the remote-unit protect-action error-down enable command.
+Example
+
+# Enable RU protection by setting interfaces to the Error-Down state.
+
+<HUAWEI> system-view
+[HUAWEI] undo remote-unit protect-action error-down disable 
+
