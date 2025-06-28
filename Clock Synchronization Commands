@@ -1,0 +1,905 @@
+Clock Synchronization Commands
+
+    Command Support
+    clock alarm-threshold frequency-offset
+    clock clear
+    clock ethernet-synchronization enable
+    clock freq-deviation-detect enable
+    clock map unk
+    clock priority (interface view)
+    clock source ptp priority (system view)
+    clock run-mode
+    clock source
+    clock source-lost holdoff-time
+    clock source ptp ssm (system view)
+    clock ssm (interface view)
+    clock ssm-control
+    clock switch
+    clock synchronization enable
+    clock source ptp synchronization enable
+    clock wtr
+    display clock
+    display clock source freq-deviation
+
+Command Support
+
+Only the following models support synchronous Ethernet:
+
+Model
+	
+
+Supported Part Number
+	
+
+Unsupported Part Number
+
+S6730-H24X6C
+	
+
+    02352FSG, 02352FSG-001, 02352FSG-003, 02352FSG-005, 02352FSG-006
+    02353GFC, 02353GFC-001, 02353GFC-003
+
+	
+
+    02352FSG-007, 02352FSG-008, 02352FSG-009
+    02353GFC-004
+
+S6730-H48X6C
+	
+
+    02352FSF, 02352FSF-003, 02352FSF-005, 02352FSF-007, 02352FSF-008, 02352FSF-011
+    02353FWL, 02353FWL-003, 02353FWL-005
+
+	
+
+    02352FSF-009, 02352FSF-010, 02352FSF-012
+    02353FWL-006
+
+S6730-H24X4Y4C
+	
+
+None
+	
+
+No part number supports this model.
+
+S6730-H28Y4C
+	
+
+None
+	
+
+No part number supports this model.
+
+S6730S-H24X6C-A
+	
+
+    02353HVK, 02353HVK-001, 02353HVK-003
+
+	
+
+02353HVK-004
+clock alarm-threshold frequency-offset
+Function
+
+The clock alarm-threshold frequency-offset command configures an alarm threshold for frequency offset.
+
+The undo clock alarm-threshold frequency-offset command restores the default alarm threshold of frequency offset.
+
+By default, the alarm threshold of frequency offset is 9200 ppb.
+Format
+
+clock alarm-threshold frequency-offset frequency-offset-value
+
+undo clock alarm-threshold frequency-offset [ frequency-offset-value ]
+Parameters
+Parameter 	Description 	Value
+frequency-offset-value 	Specifies the alarm threshold of frequency offset. 	The value is an integer that ranges from 10 to 92, in 100 ppb. The default value is 92.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Frequency offset can be performed on a list of clock sources. If the frequency offset value of a clock source exceeds the specified threshold, the clock source is abnormal and does not participate in clock source selection. To configure an alarm threshold for frequency offset, run the clock alarm-threshold frequency-offset command.
+Example
+
+# Configure the alarm threshold of frequency offset as 6000 ppb.
+
+<HUAWEI> system-view
+[HUAWEI] clock alarm-threshold frequency-offset 60
+
+clock clear
+Function
+
+The clock clear command restores the automatic clock source selection mode.
+Format
+
+clock clear slot slot-id
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	Specifies a slot ID. 	The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To clear configurations of the manual or forcible clock source selection mode and restore the automatic clock source selection mode, run the clock clear command.
+Example
+# Restore the automatic clock source selection mode for the clock source in slot 0.
+
+<HUAWEI> system-view
+[HUAWEI] clock clear slot 0
+
+clock ethernet-synchronization enable
+Function
+
+The clock ethernet-synchronization enable command enables synchronous Ethernet.
+
+The undo clock ethernet-synchronization enable command disables synchronous Ethernet.
+
+By default, synchronous Ethernet is not enabled.
+Format
+
+clock ethernet-synchronization enable
+
+undo clock ethernet-synchronization enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To enable synchronous Ethernet, run the clock ethernet-synchronization enable command. After synchronous Ethernet is enabled on a switch, the switch selects the clock signal sent through Ethernet interfaces as the clock source.
+
+The synchronous Ethernet function of an interface needs to be enabled both globally and on this interface. If the global synchronous Ethernet configuration is disabled, the synchronous Ethernet configuration on the interface is not deleted, but this function becomes unavailable.
+Example
+
+# Enable synchronous Ethernet on a switch.
+
+<HUAWEI> system-view
+[HUAWEI] clock ethernet-synchronization enable
+
+clock freq-deviation-detect enable
+Function
+
+The clock freq-deviation-detect enable command enables frequency offset check on clock signals.
+
+The undo clock freq-deviation-detect enable command disables frequency offset check on clock signals.
+
+By default, frequency offset check on clock signals is not enabled.
+Format
+
+clock freq-deviation-detect enable
+
+undo clock freq-deviation-detect enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If the clock synchronization network has high requirements for frequency offset of clock signals, run the clock freq-deviation-detect enable command to enable frequency offset check. After this function is enabled, the system performs frequency offset check on clock signals. If the frequency offset value exceeds the specified threshold, the system considers that the clock source is unreliable and triggers another automatic clock source selection.
+
+Frequency offset check on a clock source helps determine whether the quality of the clock source is good or not. If the frequency offset value of a clock source exceeds the specified threshold, the system clock does not trace this clock source any more. To configure the range of frequency offset check, run the clock alarm-threshold frequency-offset frequency-offset-value command.
+Example
+
+# Enable frequency offset check on clock signals.
+
+<HUAWEI> system-view
+[HUAWEI] clock freq-deviation-detect enable
+
+clock map unk
+Function
+
+The clock map unk command maps a clock source with the SSM quality level of UNK to a new SSM quality level.
+Format
+
+clock map unk { prc | ssua | ssub | sec | dnu }
+Parameters
+Parameter 	Description 	Value
+prc 	Indicates G.811 clock signals with the SSM quality level of PRC. 	-
+ssua 	Indicates G.812 transit node clock signals with the SSM quality level of SSUA. 	-
+ssub 	Indicates G.812 local node clock signals with the SSM quality level of SSUB. 	-
+sec 	Indicates SDH clock source signals with the SSM quality level of SEC. 	-
+dnu 	Indicates that the clock with the SSM quality level of DNU cannot function as a clock source. 	-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If the SSM quality level of an upstream clock source is UNK, to allow switches to trace this clock source, run the clock map unk command to map the upstream clock source to a new SSM quality level. By default, a clock source with the SSM quality level of UNK is mapped to the SSM quality level of DNU. In this case, if SSM control is enabled also, the clock source does not participate in clock source selection.
+
+By default, when SSM control is enabled, the clock source with the SSM quality level of UNK does not participate in clock source selection.
+Example
+
+# Map the clock source with the SSM quality level of UNK to the SSM quality level of PRC.
+
+<HUAWEI> system-view
+[HUAWEI] clock map unk prc
+
+clock priority (interface view)
+Function
+
+The clock priority command sets the priority of a clock source.
+
+The undo clock priority command restores the default priority of a clock source.
+
+By default, the priority of a clock source is 0.
+Format
+
+clock priority priority-value
+
+undo clock priority
+Parameters
+Parameter 	Description 	Value
+priority-value 	Specifies the priority of a clock source. 	The value is an integer that ranges from 1 to 255. A smaller value indicates a higher priority.
+Views
+
+XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+By default, the priority of a clock source is 0, indicating that the clock source does not participate in clock source selection.
+
+In automatic clock source selection mode, a clock source can participate in clock source selection only when a priority is configured. In manual and forcible clock source selection modes, clock source switching can be performed regardless of the clock source priority. In this case, whether a priority is configured does not affect the switching result. To set the priority of a clock source, run the clock priority command.
+Example
+
+# Set the priority of the clock source on the interface XGE0/0/1 to 10.
+
+<HUAWEI> system-view
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] clock priority 10
+
+clock source ptp priority (system view)
+Function
+
+The clock source ptp priority command sets the priority of a ptp clock source.
+
+The undo clock source ptp priority command restores the default priority of a ptp clock source.
+
+The default priority of a ptp clock source is 0.
+Format
+
+clock source ptp priority priority-value slot slot-id
+
+undo clock source ptp priority slot slot-id
+Parameters
+Parameter 	Description 	Value
+priority-value 	Specifies the priority of a clock source. 	The value is an integer that ranges from 1 to 255. The default value is 0. A smaller value indicates a higher priority.
+slot slot-id 	Specifies a slot ID. 	The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When PTP is enabled and the PTP clock is a slave clock, the frequency of the PTP clock can be used as a line clock to participate in clock source selection.
+
+In automatic clock source selection mode, a clock source can participate in clock source selection only when a priority is configured. In manual and forcible clock source selection modes, clock source switching can be performed regardless of the clock source priority. In this case, whether a priority is configured does not affect the switching result. To set the priority of a clock source, run the clock source priority command.
+Example
+# Set the priority of the PTP clock source in slot 0 to 15.
+
+<HUAWEI> system-view
+[HUAWEI] clock source ptp priority 15 slot 0
+
+clock run-mode
+Function
+
+The clock run-mode command configures a clock node to work in free, hold, or normal mode.
+
+By default, a clock node works in normal mode.
+Format
+
+clock run-mode { free | hold | normal } slot slot-id
+Parameters
+Parameter 	Description 	Value
+free 	Indicates that a clock node works in free mode. 	-
+hold 	Indicates that a clock node works in hold mode. 	-
+normal 	Indicates that a clock node works in normal mode. 	-
+slot slot-id 	Specifies a slot ID. 	The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+To configure the working mode of a clock node, run the clock run-mode command.
+
+    In free mode, a clock node does not select a clock source using the clock source selection algorithm.
+    In hold mode, a clock node retains the locked frequency.
+    In normal mode, a clock node selects a clock source using the clock source selection algorithm. If no clock source is available, the clock node automatically enters the free or hold mode.
+
+A clock node working in free mode cannot enter the hold mode using this command.
+Example
+
+# Configure the clock node in slot 0 to work in free mode.
+
+<HUAWEI> system-view
+[HUAWEI] clock run-mode free slot 0
+
+clock source
+Function
+
+The clock source command sets the clock source selection mode to manual or forcible and specifies the master clock source.
+
+By default, the automatic clock source selection mode is used.
+Format
+
+clock { manual | force } source { ptp slot slot-id | interface interface-type interface-number }
+Parameters
+Parameter 	Description 	Value
+
+manual
+	
+
+Indicates that the manual clock source selection mode is used.
+	
+
+-
+
+force
+	
+
+Indicates that the forcible clock source selection mode is used.
+	
+
+-
+
+ptp
+	
+
+Indicates that a PTP clock source is used as the clock source.
+	
+
+-
+
+interface interface-type interface-number
+	
+
+Specifies the input interface of the clock source.
+
+    interface-type: specifies the interface type.
+
+    interface-number: specifies the interface number.
+
+	
+
+-
+
+slot slot-id
+	
+
+Specifies the slot ID of the master clock source.
+	
+
+The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To configure the clock source selection mode as manual or forcible, run the clock source command. In manual clock source selection mode, a clock source can be switched to a clock source with a higher SSM quality level, regardless of the clock source priority. In forcible clock source selection mode, a clock can be selected regardless of the SSM quality level and priority.
+
+Precautions
+In manual clock source selection mode, a clock source takes effect only when the following conditions are met:
+
+    The synchronous Ethernet function is enabled.
+    The SSM quality level is the highest and not DNU.
+    The status of the selected clock source is not abnormal or initial.
+
+In forcible clock source selection mode, a clock source takes effect only when the following conditions are met:
+
+    The synchronous Ethernet function is enabled.
+
+If a clock source in manual clock source selection mode does not meet conditions, the clock source automatically switches to the automatic clock source selection mode. If a clock source in forcible clock source selection mode does not meet conditions, for example, the clock source is abnormal, the clock source automatically switches to the hold mode. After the clock source is restored, it is automatically selected again.
+
+A manually selected clock source is used temporarily and no configuration file is generated. To permanently use a clock source, use the forcible clock source selection mode.
+
+The latest configuration of manual clock source selection overrides the previous configuration of manual clock source selection but not forcible clock source selection. The latest configuration of forcible clock source selection overrides the previous configuration of manual or forcible clock source selection.
+Example
+# Set the clock source selection mode to manual and specify the input interface of the master clock source as XGE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] clock manual source interface xgigabitethernet 0/0/1
+
+clock source-lost holdoff-time
+Function
+
+The clock source-lost holdoff-time command configures the holdoff time for the system to consider a clock source lost.
+
+By default, the holdoff time for the system to consider a clock source lost is 1000 ms.
+Format
+
+clock source-lost holdoff-time value
+Parameters
+Parameter 	Description 	Value
+value 	
+
+Specifies the holdoff time for the system to consider a clock source lost.
+	The value is an integer that ranges from 300 to 1800, in milliseconds.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The system considers a clock source lost after a specified holdoff time. Within this period, the system considers that the clock source exists. Setting the holdoff time can avoid some mistakes in determining the clock source caused by occasional signal jitter on the network. To set the holdoff time for the system to consider a clock source lost, run the clock source-lost holdoff-time command.
+
+If clock source switching needs to be implemented as soon as possible, set holdoff-time to a small value. To prevent frequent clock source switching, set holdoff-time to a large value.
+Example
+
+# Set the holdoff time for the system to consider a clock source lost to 400 ms.
+
+<HUAWEI> system-view
+[HUAWEI] clock source-lost holdoff-time 400
+
+clock source ptp ssm (system view)
+Function
+
+The clock source ptp ssm command configures the SSM quality level of a clock source.
+
+The undo clock source ptp ssm command restores the default SSM quality level of a clock source.
+
+By default, the SSM quality level of a clock source is unknown.
+Format
+
+clock source ptp ssm { unk | prc | ssua | ssub | sec | dnu } slot slot-id
+
+undo clock source ptp ssm slot slot-id
+Parameters
+Parameter 	Description 	Value
+ptp 	Indicates a PTP clock source. 	-
+dnu 	Indicates that the clock source is unavailable. 	-
+prc 	Indicates G.811 clock signals with the SSM quality level of PRC. 	-
+sec 	Indicates SDH clock source signals with the SSM quality level of SEC. 	-
+ssua 	Indicates G.812 transit node clock signals with the SSM quality level of SSUA. 	-
+ssub 	Indicates G.812 local node clock signals with the SSM quality level of SSUB. 	-
+unk 	Indicates clock signals with unknown synchronization quality. 	-
+slot slot-id 	Specifies a slot ID. 	The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When SSM control is enabled using the clock ssm-control on command, an SSM quality level needs to be specified for the clock source on an interface. To set the SSM quality level of a clock source, run the clock source ptp ssm command.
+
+In switch stacking scenarios, each switch independently runs synchronous Ethernet and PTP. Therefore, this command needs to be configured for the stacked switch in each slot.
+Example
+
+# Set the SSM quality level of a clock source to PRC.
+
+<HUAWEI> system-view
+[HUAWEI] clock source ptp ssm prc slot 0
+
+clock ssm (interface view)
+Function
+
+The clock ssm command sets the SSM quality level of a clock source.
+
+The undo clock ssm command cancels the configured SSM priority level of a clock source.
+
+By default, no SSM quality level is configured for a clock source. The SSM quality level of a line clock source is transmitted from the peer device.
+Format
+
+clock ssm { unk | prc | ssua | ssub | sec | dnu }
+
+undo clock ssm
+Parameters
+Parameter 	Description 	Value
+dnu 	Indicates that the clock source is unavailable. 	-
+prc 	Indicates G.811 clock signals with the SSM quality level of PRC. 	-
+sec 	Indicates SDH clock source signals with the SSM quality level of SEC. 	-
+ssua 	Indicates G.812 transit node clock signals with the SSM quality level of SSUA. 	-
+ssub 	Indicates G.812 local node clock signals with the SSM quality level of SSUB. 	-
+unk 	Indicates clock signals with unknown synchronization quality. 	-
+Views
+
+XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When SSM control is enabled on a clock source using the clock ssm-control on command in the system view, an SSM quality level needs to be specified for the clock source on an interface. To set the SSM quality level of a clock source, run the clock ssm command. In switch stacking scenarios, each switch independently runs synchronous Ethernet and PTP. Therefore, this command needs to be configured for the stacked switch in each slot.
+Example
+
+# Set the SSM quality level of the clock source on the interface XGE0/0/1 as PRC.
+
+<HUAWEI> system-view
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] clock ssm prc
+
+clock ssm-control
+Function
+
+The clock ssm-control command enables or disables SSM quality levels are used for automatic clock source selection.
+
+By default, SSM quality levels are used for clock source selection.
+Format
+
+clock ssm-control { on | off }
+Parameters
+Parameter 	Description 	Value
+
+on
+	
+
+Enables SSM control.
+	
+
+-
+
+off
+	
+
+Disables SSM control.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When the system clock works in automatic clock source selection mode, if SSM control is enabled, the system clock selects the clock source to trace based on SSM quality levels and then the priorities. If SSM control is disabled, the system clock selects the clock source to trace based on priorities. To configure SSM control, run the clock ssm-control command.
+Example
+
+# Enable SSM control.
+
+<HUAWEI> system-view
+[HUAWEI] clock ssm-control on
+
+clock switch
+Function
+
+The clock switch command configures the recovery mode of a clock node.
+
+By default, clock nodes work in revertive mode.
+Format
+
+clock switch { revertive | non-revertive }
+Parameters
+Parameter 	Description 	Value
+revertive 	Indicates the revertive mode. 	-
+non-revertive 	Indicates the non-revertive mode. 	-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+To configure a clock source to work in revertive or non-revertive mode, run the clock switch command.
+
+    Revertive mode: Switching is performed if the new clock source has a higher SSM quality level. If the new clock source has the same SSM quality level but a higher priority than the old clock source, switching is also performed. In other situations, switching is not performed.
+    Non-revertive mode: Switching is performed if the new clock source has a higher SSM quality level. If the new clock source has the same SSM quality level but a higher priority than the old clock source, switching is not performed. In other situations, switching is not performed.
+
+Example
+
+# Configure a clock node to work in revertive mode.
+
+<HUAWEI> system-view
+[HUAWEI] clock switch revertive
+
+clock synchronization enable
+Function
+
+The clock synchronization enable command enables clock synchronization.
+
+The undo clock synchronization enable command disables clock synchronization.
+
+By default, clock synchronization is not enabled.
+Format
+
+clock synchronization enable
+
+undo clock synchronization enable
+Parameters
+
+None
+Views
+
+XGE interface view, 25GE interface view, 40GE interface view, 100GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+An interface can participate in clock source selection only after clock synchronization is enabled.
+Example
+
+# Enable clock synchronization on the interface XGE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface xgigabitethernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] clock synchronization enable
+
+clock source ptp synchronization enable
+Function
+
+The clock source ptp synchronization enable command enables clock synchronization of a PTP clock source.
+
+The undo clock source ptp synchronization enable command disables clock synchronization from a PTP clock source.
+
+By default, clock synchronization is not enabled for a PTP clock source.
+Format
+
+clock source ptp synchronization enable slot slot-id
+
+undo clock source ptp synchronization enable slot slot-id
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	Specifies a slot ID. 	The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To enable clock synchronization for a PTP clock source, run the clock source ptp synchronization enable command. If a PTP clock source with clock synchronization enabled is selected as the clock source, frequency is transmitted through PTP messages.
+
+An interface can participate in clock source selection after it is enabled with clock synchronization using the clock synchronization enable command.
+Example
+
+# Enable clock synchronization for a PTP clock source.
+
+<HUAWEI> system-view
+[HUAWEI] clock source ptp synchronization enable slot 0
+
+clock wtr
+Function
+
+The clock wtr command sets the wait-to-restore (WTR) time for a clock source.
+
+By default, the WTR time of a clock source is 5 minutes.
+Format
+
+clock wtr wtr-time
+Parameters
+Parameter 	Description 	Value
+wtr-time 	Specifies the WTR time of a clock source. 	The value is an integer that ranges from 0 to 12, in minutes.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When a lost clock source is restored, the system waits for a period of 0 to 12 minutes before considering the clock source available. During this period, the system considers the clock source lost.
+
+Setting the WTR time can avoid some mistakes in determining the clock source caused by occasional signal jitter on the network.
+
+The default WTR time of a clock source is 5 minutes. Generally, you do not need to change the default value. If you want to view the clock source switching result during debugging, set the WTR time to 0.
+Example
+
+# Set the WTR time to 0.
+
+<HUAWEI> system-view
+[HUAWEI] clock wtr 0 
+
+display clock
+Function
+
+The display clock command displays synchronous Ethernet configurations or the attributes of a PTP clock source.
+Format
+
+display clock { config | source [ ptp ] } [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+config 	Displays the current clock configurations. 	-
+source 	Displays the attributes of all clock sources. 	-
+ptp 	Displays the attributes of a PTP clock source. 	-
+slot slot-id 	Displays configurations based on a slot ID. 	The value range depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After a clock source is configured, run the display clock config command to view clock configurations. During routing maintenance, run the display clock source command to view attributes of the clock source being traced or all clock sources.
+Example
+
+# Display synchronous Ethernet configurations on a switch.
+
+<HUAWEI> display clock config 
+
+ ethernet synchronization   :enable                                             
+ clock freq deviation detect:disable                                            
+ clock unk map              :dnu                                                
+ system pll run mode        :normal                                             
+                                                                                
+ switch config                                                                  
+    sys pll                 :auto mode                                          
+    SSM control             :on                                                 
+    switch mode             :revertive                                          
+    wtr                     :5min                                               
+    holdoff time            :1000ms                                             
+                                                                                
+ source config                                                                  
+ ptp                                                                            
+    Sync enable                                                                 
+    Pri(sys)                :1                                                  
+    SSM                     :unk        
+ XGigabitEthernet0/0/4                                                          
+    Sync enable                                                                 
+    Pri(sys)                :10                                                 
+    SSM                     :sec                                         
+
+Table 3-184 Description of the display clock config command output
+
+Item
+	
+
+Description
+
+ethernet synchronization
+	
+
+Whether synchronous Ethernet is enabled globally
+
+clock freq deviation detect
+	
+
+Whether frequency offset check is enabled
+
+clock unk map
+	
+
+SSM quality level mapped to the clock source with the SSM quality level of UNK
+
+system pll run mode
+	
+
+PLL running mode
+
+switch config
+	
+
+Switching configuration
+
+sys pll
+	
+
+Clock source selection mode of the system phase-locked loop
+
+SSM control
+	
+
+Whether the SSM quality level is used in clock source selection
+
+switch mode
+	
+
+Switching mode
+
+wtr
+	
+
+WTR time
+
+holdoff time
+	
+
+Holdoff time
+
+source config
+	
+
+Clock source configuration
+
+ptp
+	
+
+PTP clock source
+
+XGigabitEthernet0/0/4
+	
+
+Line clock source
+
+Sync enable
+	
+
+Whether clock synchronization is enabled
+
+Pri(sys)
+	
+
+Priority
+
+SSM
+	
+
+SSM quality level
+display clock source freq-deviation
+Function
+
+The display clock source freq-deviation command displays the frequency offset value of a clock source.
+Format
+
+display clock source freq-deviation [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	Specifies a slot ID. 	The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To view the frequency offset value of a clock source, run the display clock source freq-deviation command. If the frequency offset value is greater than or equal to the specified threshold, the frequency offset is abnormal. If the frequency offset value is less than the threshold, the frequency offset is normal.
+Precautions
+
+    If frequency offset check is not enabled, this command also displays the frequency offset check result of the clock source. The check result, however, is not used for clock source selection.
+    A clock source that does not pass the frequency offset check is tagged "--".
+
+Example
+
+# Display the frequency offset result of the clock source in slot 2.
+
+<HUAWEI> display clock source freq-deviation slot 2
+ Frequence deviation detect:     enable                                        
+  Source                               Freq-deviation-value                     
+  ----------------------------------------------------------                    
+    XGE2/0/4                            -0.05ppm(normal)                        
+
+Table 3-185 Description of the display clock source freq-deviation command output
+
+Item
+	
+
+Description
+
+Source
+	
+
+Interface clock source or PTP clock source with synchronous Ethernet enabled
+
+Freq-deviation-value
+	
+
+Frequency offset value, which is in the format of symbol (negative sign only) + frequency offset value + unit (ppm) + frequency offset status.
+
+If the value is "---", the frequency offset check cannot be performed on the clock source.
