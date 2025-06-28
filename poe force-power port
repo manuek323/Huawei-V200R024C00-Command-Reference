@@ -1,0 +1,50 @@
+poe force-power port
+Function
+
+The poe force-power port command enables forcible PoE power supply for an interface on an RU.
+
+The undo poe force-power port command disables forcible PoE power supply for an interface on an RU.
+
+By default, forcible PoE power supply is disabled on interfaces of RUs.
+Format
+
+poe force-power port port-id
+
+undo poe force-power port port-id
+Parameters
+Parameter 	Description 	Value
+
+port-id
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 32. If the specified interface index is larger than the largest one on the RU, the command is not issued to the RU.
+Views
+
+remote-unit N view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If the system power is sufficient, you can run this command to enable forcible power supply on RU interfaces connected to non-standard PDs when the RU, as the PSE, cannot detect the PDs.
+
+Precautions
+
+This command forcibly increases the power supplied by the RU. Ensure that the total power of PDs connected to the RU does not exceed the RU's available power.
+
+Follow-up procedure
+
+After running this command, run the commit command to make the configuration take effect.
+Example
+
+# Enable forcible power supply on interface 1 of RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] poe force-power port 1
+
