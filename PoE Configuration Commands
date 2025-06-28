@@ -1,0 +1,2317 @@
+PoE Configuration Commands
+
+    Command Support
+    display poe device
+    display poe information
+    display poe power
+    display poe power-state
+    display poe-power
+    poe af-inrush enable
+    poe anti-interference frequency
+    poe { at-inrush | pre-bt-inrush | bt-inrush } enable
+    poe enable
+    poe fast-on enable
+    poe force-power
+    poe group management enable
+    poe high-inrush enable
+    poe { power-off | power-on } interface
+    poe legacy enable
+    poe lldp-proxy
+    poe max-power
+    poe mps
+    poe power
+    poe power auto-neg enable
+    poe power-management
+    poe power-off time-range
+    poe power-on delay
+    poe power-reserved
+    poe power-threshold
+    poe pse-heartbeat disable
+    poe priority
+    poe-power backup-mode
+    poe single-class enable
+    reset poe slot
+
+Command Support
+Whether switches support PoE depends on the hardware. Non-PoE switches cannot be changed to PoE switches through software upgrades. A switch that meets any of the following conditions is a PoE switch:
+
+    The device name contains PWR or PWH.
+    The switch is released in V200R013C02 or later versions and provides new downlink interface types XUM, UM, P or U.
+
+Only the following switch models support the PoE function:
+
+S1720GW-E, S1720GWR-E, S5720-LI, S5720S-LI, S5720I-SI, S5731-H, S5731-S, S5731S-S, S5732-H, S2730S-S, S5735-L1, S300, S5735-L, S5735-L-I, S5735S-L1, S500, S5735-S, S5735S-H, S5735-S-I, S5736-S
+display poe device
+
+Function
+
+The display poe device command displays information about the device supporting Power over Ethernet (PoE).
+Format
+
+display poe device
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before using the PoE function, run the display poe device command to check whether the device supports the PoE function. If the command output is displayed, the device supports the PoE function.
+Example
+
+# Display information about the device supporting PoE.
+
+<HUAWEI> display poe device
+slot 0   : PoE
+
+Table 3-121 Description of the display poe device command output
+
+Item
+	
+
+Description
+
+Slot 0
+	
+
+The device supports PoE.
+display poe information
+Function
+
+The display poe information command displays PoE running information about the device.
+Format
+
+display poe information [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Displays the PoE running information in a specified slot ID.
+
+If this parameter is not specified, the PoE information about all device is displayed.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+This command displays information including the maximum output power set by the user, current power consumption, peak power consumption, and power management mode.
+Example
+
+# Display the PoE running information about the device. (The actual output information may differ from the following information.)
+
+<HUAWEI> display poe information
+PSE Information of slot 0:
+    User Set Max Power(mW)     : 739200
+    PoE Power Supply(mW)       : 369600
+    Available Total Power(mW)  : 369600
+    Total Power Consumption(mW): 0
+    Power Peak Value(mW)       : 0
+    Power-Management Mode      : auto
+    Power High Inrush          : disable 
+
+<HUAWEI> display poe information
+PSE Information of slot 0:
+MCU 1:
+    User Set Max Power(mW)     : 739200
+    PoE Power Supply(mW)       : 369600
+    Available Total Power(mW)  : 369600
+    Total Power Consumption(mW): 0
+    Power Peak Value(mW)       : 0
+    Power-Management Mode      : auto
+    Power High Inrush          : disable 
+MCU 2: 
+    User Set Max Power(mW)     : 739200
+    PoE Power Supply(mW)       : 369600
+    Available Total Power(mW)  : 369600
+    Total Power Consumption(mW): 0
+    Power Peak Value(mW)       : 0
+    Power-Management Mode      : auto
+    Power High Inrush          : disable 
+
+Table 3-122 Description of the display poe information command output
+
+Item
+	
+
+Description
+
+User Set Max Power(mW)
+	
+
+Maximum output power set by the user.
+
+To set the value, run the poe max-power command. When the value is not set using the command, this field displays the maximum output power that can be provided by the device.
+
+PoE Power Supply(mW)
+	
+
+PoE total power supply, which is determined by the PoE power module configured on the device.
+
+Available Total Power(mW)
+	
+
+Remaining available power
+
+Total Power Consumption(mW)
+	
+
+Total output power.
+
+Power Peak Value(mW)
+	
+
+Peak value of the output power.
+
+Power-Management Mode
+	
+
+Power management mode, including auto and manual modes.
+
+To set the mode, run the poe power-management command.
+
+Power High Inrush
+	
+
+State of power high inrush function, including enabled and disabled state. By default, the power high inrush function is in disabled state.
+
+To set the state, run the poe high-inrush enable command.
+display poe power
+Function
+
+The display poe power command displays current power information on interfaces.
+Format
+
+display poe power [ slot slot-id | interface interface-type interface-number ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Displays the PoE power information in a specified slot ID.
+
+If this parameter is not specified, the PoE power information of all devices in a stack system or the PoE power information of the device in a non-stack system is displayed.
+	
+
+The value depends on the device configuration.
+
+interface interface-type interface-number
+	
+Displays the PoE power information about a specified interface.
+
+    interface-type specifies the interface type.
+    interface-number specifies the interface number.
+
+If this parameter is not specified, the output power of all interfaces on the device is displayed.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display poe power command displays information including the current actual power, maximum output power set for an interface, and class, reference power, and average power of PDs on the interface.
+
+If this parameter is not specified, the output power of all interfaces on the device is displayed.
+
+An interface provides 15400 mW power to PDs based on the power class 0 if non-standard PDs are connected to the interface or forcible power supply is configured on the interface of the switches except the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, S5720I-SI, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, and S5732-H. If you run the display poe power command to check the interface power, the PD class is displayed as 0.
+Example
+# Display the power information of interfaces on the device whose ID is 0.
+
+<HUAWEI> display poe power slot 0
+Codes: REFPW(Reference power), USMPW(User set max power),                       
+       CURPW(Current power), PKPW(Peak power), AVGPW(Average power)             
+                                                                                
+PortName               Class  REFPW(mW) USMPW(mW) CURPW(mW) PKPW(mW)  AVGPW(mW) 
+--------------------------------------------------------------------------------
+GigabitEthernet0/0/1   -      -         15400     0         0         0         
+GigabitEthernet0/0/2   -      -         15400     0         0         0         
+GigabitEthernet0/0/3   -      -         15400     0         0         0         
+GigabitEthernet0/0/4   -      -         15400     0         0         0         
+GigabitEthernet0/0/5   -      -         15400     0         0         0         
+GigabitEthernet0/0/6   -      -         15400     0         0         0         
+GigabitEthernet0/0/7   -      -         15400     0         0         0         
+GigabitEthernet0/0/8   -      -         15400     0         0         0         
+GigabitEthernet0/0/9   -      -         15400     0         0         0         
+GigabitEthernet0/0/10  -      -         15400     0         0         0         
+GigabitEthernet0/0/11  2      7000      15400     3710      3816      3487      
+GigabitEthernet0/0/12  2      7000      15400     2968      3180      2960      
+GigabitEthernet0/0/13  -      -         15400     0         0         0         
+GigabitEthernet0/0/14  -      -         15400     0         0         0         
+GigabitEthernet0/0/15  -      -         15400     0         0         0         
+GigabitEthernet0/0/16  -      -         15400     0         0         0         
+GigabitEthernet0/0/17  -      -         15400     0         0         0         
+GigabitEthernet0/0/18  -      -         15400     0         0         0         
+GigabitEthernet0/0/19  -      -         15400     0         0         0         
+GigabitEthernet0/0/20  -      -         15400     0         0         0         
+GigabitEthernet0/0/21  -      -         15400     0         0         0         
+GigabitEthernet0/0/22  -      -         15400     0         0         0         
+GigabitEthernet0/0/23  -      -         15400     0         0         0         
+GigabitEthernet0/0/24  -      -         15400     0         0         0         
+
+Table 3-123 Description of the display poe power slot command output
+
+Item
+	
+
+Description
+
+PortName
+	
+
+Name of an interface.
+
+Class
+	
+
+Class of a PD on an interface.
+
+The system classifies PDs into nine classes, namely, class 0 to class 8, according to their maximum power. If no PD is connected to interface, "-" is displayed.
+
+REFPW(mW)
+	
+
+Reference power of a PD.
+
+The system can identify the reference power of each PD. The value varies according to types of PDs.
+
+USMPW(mW)
+	
+
+Maximum output power set for an interface.
+
+To set the value, run the poe power command.
+
+CURPW(mW)
+	
+
+Current power of the PDs on an interface.
+
+PKPW(mW)
+	
+
+Peak power of the PDs on an interface.
+
+The value is a statistical value, which equals the current maximum power consumption of the PDs on the interface.
+
+AVGPW(mW)
+	
+
+Average power of the PDs on an interface.
+
+The value is a statistical value, which equals the average power consumption from the power-on of the interface till now.
+# Display the power of interface GigabitEthernet0/0/3.
+
+<HUAWEI> display poe power interface gigabitethernet 0/0/3
+PD power(mW)           : 3710                                              
+PD class               : 2                                                 
+PD reference power(mW) : 7000                                              
+user set max power(mW) : 15400                                             
+PD peak power(mW)      : 3816                                              
+PD average power(mW)   : 3487                                              
+
+Table 3-124 Description of the display poe power interface command output
+
+Item
+	
+
+Description
+
+PD power(mW)
+	
+
+Output power of an interface.
+
+PD class
+	
+
+Class of a PD on an interface.
+
+The system classifies PDs into nine classes, namely, class 0 to class 8, according to their maximum power.
+
+PD reference power(mW)
+	
+
+Reference power of a PD.
+
+The system can identify the reference power of each PD. The value varies according to types of PDs.
+
+user set max power(mW)
+	
+
+Maximum output power set for an interface.
+
+To set the value, run the poe power command.
+
+PD peak power(mW)
+	
+
+Peak power of the PDs on an interface.
+
+The value is a statistical value, which equals the current maximum power consumption of the PDs on the interface.
+
+PD average power(mW)
+	
+
+Average power of the PDs on an interface.
+
+The value is a statistical value, which equals the average power consumption from the power-on of the interface till now.
+display poe power-state
+Function
+
+The display poe power-state command displays the PoE power supply status of a device.
+Format
+
+display poe power-state [ slot slot-id | interface interface-type interface-number ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Displays the PoE power supply status of a specified slot ID.
+
+If the parameter is not specified, the PoE power supply status of all devices in a stack system or the PoE power supply status of a device in a non-stack system is displayed.
+	
+
+The value range depends on the device configuration.
+
+interface interface-type interface-number
+	
+Displays the PoE power supply status of a specified interface.
+
+    interface-type specifies the interface type.
+    interface-number specifies the interface number.
+
+If this parameter is not specified, the PoE power supply status of all interfaces on the device is displayed.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display poe power-state command displays information including whether an interface is enabled to check compatibility of non-standard PDs, power supply status of an interface, class of PDs on an interface, power supply priority, and maximum output power of an interface.
+Example
+# Display the PoE power supply status of GigabitEthernet 0/0/3.
+
+<HUAWEI> display poe power-state interface gigabitethernet 0/0/3
+Legacy detect           : disable
+Power enable state      : enable
+Power fast-on state     : -
+Single-class state      : disable
+Power-up mode           : at
+Power-on delay(s)       : 0
+PD power auto-neg state : enable 
+PD power-up mode        : at 
+PD support mode         : af at 
+Power ON/OFF            : on
+Power status            : Powered
+PD class                : 4
+Reference power(mW)     : 30000
+Power priority          : Low
+Max power(mW)           : 30000
+Current power(mW)       : 8910
+Peak power(mW)          : 10725
+Average power(mW)       : 8779
+Current(mA)             : 162
+Voltage(V)              : 55
+
+Table 3-125 Description of the display poe power-state interface command output
+
+Item
+	
+
+Description
+
+Legacy detect
+	
+
+Whether an interface is enabled to check compatibility of non-standard PDs.
+
+To enable an interface to check compatibility of non-standard PDs, run the poe legacy enable command.
+
+Power enable state
+	
+
+Whether PoE is enabled on an interface.
+
+To enable PoE on an interface, run the poe enable command.
+
+Power fast-on state
+	
+
+Whether PoE fast power-on is enabled on an interface.
+
+To enable PoE fast power-on on an interface, run the poe fast-on enable command.
+
+If this field displays -, the device does not support the poe fast-on enable command.
+
+Single-class state
+	
+Single-class power supply mode of an interface:
+
+    disable: standard power supply mode
+    enable: single-class power supply
+
+To set this parameter, run the poe single-class enable command.
+
+Power-up mode
+	
+
+Power supply mode of an interface.
+
+To set the power supply mode for an interface, run the poe { at-inrush | pre-bt-inrush | bt-inrush } enable command. If this field displays -, this interface does not support this configuration.
+
+Power-on delay(s)
+	
+
+Power supply delay of an interface, in seconds. The value 0 indicates that power supply is not delayed.
+
+To set the power supply delay, run the poe power-on delay command.
+
+PD power auto-neg state
+	
+
+Whether power auto-negotiation is enabled for interfaces.
+
+To enable power auto-negotiation for interfaces, run the poe power auto-neg enable command.
+NOTE:
+
+The S5731-H(except S5731-H48HB4XZ and S5731-H24HB4XZ), S5731-S, S5731S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5720-28TP-PWR-LI-ACL, S5720-28X-PWR-LI-ACF, and S5720S-28TP-PWR-LI-ACL support this field.
+
+PD power-up mode
+	
+Current power supply standards of the PD connected to an interface:
+
+    af: IEEE 802.3af
+    at: IEEE 802.3at
+
+NOTE:
+
+The S5731-H(except S5731-H48HB4XZ and S5731-H24HB4XZ), S5731-S, S5731S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5720-28TP-PWR-LI-ACL, S5720-28X-PWR-LI-ACF, and S5720S-28TP-PWR-LI-ACL support this field.
+
+PD support mode
+	
+Power supply standards supported by the PD connected to an interface:
+
+    af: IEEE 802.3af
+    at: IEEE 802.3at
+    af at: both IEEE 802.3af and 802.3at
+
+NOTE:
+
+The S5731-H(except S5731-H48HB4XZ and S5731-H24HB4XZ), S5731-S, S5731S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5720-28TP-PWR-LI-ACL, S5720-28X-PWR-LI-ACF, and S5720S-28TP-PWR-LI-ACL support this field.
+
+Power ON/OFF
+	
+Whether the interface is providing power:
+
+    on: The interface is providing power.
+    off: The interface is not providing power.
+
+Power status
+	
+
+Power supply status of an interface:
+
+    Test mode: indicates the testing state.
+    Detecting: indicates the detecting state. Possible causes include: no PD is connected (for example, the peer device is a switch), the network cable is damaged, the network cable is loose, the switch is not grounded, and the mains frequency interference affects PoE power-on.
+    Disabled: indicates that PoE is disabled on the interface.
+    Power-deny: indicates that the reference power is greater than the maximum output power of an interface.
+    Classification overcurrent: indicates that the current of the PD connected to the interface exceeds the threshold.
+    Unknown: indicates that the class of the PD is unknown.
+    Power overcurrent: indicates that the current of the PD connected to the interface exceeds the maximum current of the interface.
+    Power-on failed: indicates that the interface fails to provide power.
+    Power-ready: indicates that the interface is ready to provide power.
+    Powering: indicates that the PSE starts to power on the interface.
+    Powered: indicates that the interface is providing power.
+    Overloaded: indicates that the power is overloaded.
+    Time-range power-off: indicates that the interface is in the power-off time range.
+    Unstable voltage: indicates that the interface voltage is unstable.
+    Legacy disable: indicates that the interface detects that a non-standard PD is connected to the interface and the PD compatibility check function is disabled on the interface. If a non-standard PD needs to be powered on, run the poe legacy enable command to configure the function.
+    Class mismatch: indicates that the interface works in standard hierarchical power supply mode.
+
+PD class
+	
+
+Class of a PD connected to an interface.
+
+The system classifies PDs into nine classes, namely, class 0 to class 8, according to their maximum power.
+
+Reference power(mW)
+	
+
+Reference power of an interface.
+
+The system can identify the maximum power of a PD, classify the PD into a certain level, and define the reference power of each level.
+
+Power priority
+	
+Power supply priority of an interface:
+
+    Critical: indicates the highest priority.
+    High: indicates the second highest priority.
+    Low: indicates the lowest priority.
+
+To set the priority, run the poe priority command.
+
+Max power(mW)
+	
+
+Maximum output power of an interface. A maximum output power of 15400 mW indicates that the device complies with IEEE 802.3af. A maximum output power of 30000 mW indicates that the device complies with IEEE 802.3at.
+
+To set the value, run the poe power command.
+
+Current power(mW)
+	
+
+Current output power of an interface.
+
+Peak power(mW)
+	
+
+Peak output power of an interface.
+
+Average power(mW)
+	
+
+Average output power of an interface.
+
+Current(mA)
+	
+
+Output current of an interface.
+
+Voltage(V)
+	
+
+Output voltage of an interface.
+# Display the PoE power supply status of the device.
+
+<HUAWEI> display poe power-state slot 0
+PORTNAME            POWERON/OFF  ENABLED  FAST-ON  PRIORITY STATUS
+--------------------------------------------------------------------------------
+GigabitEthernet0/0/1     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/2     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/3     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/4     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/5     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/6     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/7     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/8     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/9     off     enable   disable  Low      Detecting
+GigabitEthernet0/0/10    off     enable   disable  Low      Detecting
+GigabitEthernet0/0/11    off     enable   disable  Low      Detecting
+GigabitEthernet0/0/12    off     enable   disable  Low      Legacy disable
+
+Table 3-126 Description of the display poe power-state slot command output
+
+Item
+	
+
+Description
+
+PORTNAME
+	
+
+Name of an interface.
+
+POWERON/OFF
+	
+Whether the interface is providing power:
+
+    On: The interface is providing power.
+    Off: The interface is not providing power.
+
+ENABLED
+	
+
+Whether PoE is enabled on an interface.
+
+To enable PoE on an interface, run the poe enable command.
+
+FAST-ON
+	
+
+Whether PoE fast power-on is enabled on an interface.
+
+To enable PoE fast power-on on an interface, run the poe fast-on enable command.
+
+PRIORITY
+	
+Power supply priority of an interface:
+
+    Critical: indicates the highest priority.
+    High: indicates the second highest priority.
+    Low: indicates the lowest priority.
+
+To set the priority, run the poe priority command.
+
+STATUS
+	
+
+Power supply status of an interface:
+
+    Test mode: indicates the testing state.
+    Detecting: indicates the detecting state. Possible causes include: no PD is connected (for example, the peer device is a switch), the network cable is damaged, the network cable is loose, the switch is not grounded, and the mains frequency interference affects PoE power-on.
+    Disabled: indicates that PoE is disabled on the interface.
+    Power-deny: indicates that the reference power is greater than the maximum output power of an interface.
+    Classification overcurrent: indicates that the current of the PD connected to the interface exceeds the threshold.
+    Unknown: indicates that the class of the PD is unknown.
+    Power overcurrent: indicates that the current of the PD connected to the interface exceeds the maximum current of the interface.
+    Power-on failed: indicates that the interface fails to provide power.
+    Power-ready: indicates that the interface is ready to provide power.
+    Powering: indicates that the PSE starts to power on the interface.
+    Powered: indicates that the interface is providing power.
+    Overloaded: indicates that the power is overloaded.
+    Time-range power-off: indicates that the interface is in the power-off time range.
+    Unstable voltage: indicates that the interface voltage is unstable.
+    Legacy disable: indicates that the interface detects that a non-standard PD is connected to the interface and the PD compatibility check function is disabled on the interface. If a non-standard PD needs to be powered on, run the poe legacy enable command to configure the function.
+    Class mismatch: indicates that the interface works in standard hierarchical power supply mode.
+
+display poe-power
+Function
+
+The display poe-power command displays information about the PoE power supply.
+Format
+
+display poe-power [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display poe-power displays information including the available total PoE power, percentage of the reserved power, power alarm threshold, and PoE power module.
+
+If the stack ID is not specified, information about the PoE power supply of all the stack devices is displayed.
+Example
+# Display information about the PoE power supply of a switch (except S5720I-28X-PWH-SI-AC).
+
+<HUAWEI> display poe-power
+Slot 0                                                                          
+Total Available PoE Power(mW)  : 246400                                          
+Reserved PoE Power Percent     : 20 %                                            
+PoE Power Threshold Percent    : 90 %                                            
+    PoE Power 1                                                                 
+    Power Value(mW)           : 123200                                               
+    Type                      : PSA250-A2                                               
+    Supported Mode            : Redundancy, Balance                                               
+    PoE Power 2                                                                 
+    Power Value(mW)           : 123200                                          
+    Type                      : PSA250-A2                                       
+    Supported Mode            : Redundancy, Balance                              
+
+Slot 1                                                                          
+Total Available PoE Power(mW) : 492800                                          
+Reserved PoE Power Percent    : 20 %                                            
+PoE Power Threshold Percent   : 90 %                                            
+    PoE Power 1                                                                 
+    Power Value(mW)           : 123200                                               
+    Type                      : PSA250-A2                                               
+    Supported Mode            : Redundancy, Balance                                                  
+    PoE Power 2                                                                 
+    Power Value(mW)           : 369600                                          
+    Type                      : PSA500-A1                                       
+    Supported Mode            : Redundancy, Balance 
+
+Slot 2                                                                          
+Total Available PoE Power(mW) : 739200                                          
+Reserved PoE Power Percent    : 20 %                                            
+PoE Power Threshold Percent   : 90 %                                            
+    PoE Power 1                                                                 
+    Power Value(mW)           : 369600                                               
+    Type                      : PSA500-A1                                               
+    Supported Mode            : Redundancy, Balance                                                  
+    PoE Power 2                                                                 
+    Power Value(mW)           : 369600                                          
+    Type                      : PSA500-A1                                       
+    Supported Mode            : Redundancy, Balance 
+
+# Display information about the PoE power supply of S5720I-28X-PWH-SI-AC.
+
+<HUAWEI> display poe-power
+Slot 0                                                                                                                              
+Total Available PoE Power(mW) : 369600                                                                                              
+Power backup-mode             : 2+0                                                                                                 
+MCU 1:                                                                                                                              
+Reserved PoE Power Percent    : 20 %                                                                                                
+PoE Power Threshold Percent   : 90 %                                                                                                
+MCU 2:                                                                                                                              
+Reserved PoE Power Percent    : 20 %                                                                                                
+PoE Power Threshold Percent   : 90 %                                                                                                
+                                                                                                                                    
+    PoE Power 1                                                                                                                     
+    Power Value(mW)           : 369600                                                                                              
+    PoE Power 2                                                                                                                     
+    Power Value(mW)           : -
+
+Table 3-127 Description of the display poe-power command output
+
+Item
+	
+
+Description
+
+Total Available PoE Power(mW)
+	
+
+Total power that can be provided for PDs.
+
+Power backup-mode
+	
+PoE power supply backup mode:
+
+    2+0: high power mode
+    1+1: backup mode
+
+MCU 1/MCU 2
+	
+
+MCU ID.
+
+PoE Power 1/PoE Power 2
+	
+
+PoE Power ID.
+
+Reserved PoE Power Percent
+	
+
+Percentage of the reserved power to the total power.
+
+To set the percentage, run the poe power-reserved command.
+
+PoE Power Threshold Percent
+	
+
+Alarm threshold of the power consumption percentage.
+
+To set the threshold, run the poe power-threshold command.
+
+Power Value(mW)
+	
+
+Power of a PoE power supply.
+
+Type
+	
+Type of a PoE power supply. The value can be:
+
+    PSA250-A1: 250 W non-current-balance power supply
+    PSA250-A2: 250 W current balance power supply
+    PSA500-A1: 500 W current balance power supply
+    PAC1000S56-CB: 1000W AC power supply
+    PAC1000S56-DB: 1000W AC power supply
+    PDC1000S56-CB: 1000W DC power supply
+    PAC600S56-CB: 600W AC & 240V DC power module
+    PAC600S56-EB: 600W AC & 240V DC power module
+    PAC1000S56-EB: 1000W AC & 240V DC power module
+    PDC1000S56-EB: 1000W DC power module
+
+Supported Mode
+	
+Supported PoE power supply mode. The value can be:
+
+    Redundancy: redundancy backup mode
+    Balance: current balance mode
+
+poe af-inrush enable
+Function
+
+The poe af-inrush enable command configures the power supply standards of interfaces as 802.3af.
+
+The undo poe af-inrush enable command restores the power supply standards of interfaces to the default value.
+
+By default, interfaces on the devices supporting PoE++ comply with 802.3bt, the other interfaces comply with 802.3at.
+Format
+
+poe af-inrush enable
+
+undo poe af-inrush enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Switches that comply with 802.3at or 802.3bt cannot power some non-standard PDs that do not support inrush current. To power these PDs, configure the power supply standards of interfaces as 802.3af.
+
+Precautions
+
+    The poe af-inrush enable command applies to the scenario where some non-standard PDs cannot be powered on. After this command is executed, some PDs requiring high current may be unable to be powered on.
+    After running the poe af-inrush enable command, remove non-standard PDs and then install them so that they can be powered on.
+    On the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, S5720I-SI, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, and S5732-H, the poe af-inrush enable and poe single-class enable commands are mutually exclusive and cannot be configured on the same interface.
+    In an upgrade to V200R011C10 or later, if the poe af-inrush enable command is configured in the system view before the upgrade, the poe af-inrush enable command configuration is automatically generated on all interfaces after the upgrade.
+
+Example
+
+# Configures the power supply standards of interfaces as 802.3af.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe af-inrush enable
+Warning: This operation will cause PD to be powered off. Continue?[Y/N]:y
+
+poe anti-interference frequency
+Function
+
+The poe anti-interference frequency command configures the PoE anti-interference frequency of the device.
+
+The undo poe anti-interference frequency command restores the default configuration.
+
+By default, the PoE anti-interference frequency of a device is 50 Hz.
+
+PoE models in the S5720-LI, S5720S-LI, and S5720I-SI series do not support this command. PoE models in other series support this command.
+Format
+
+poe anti-interference frequency { 50 | 60 }
+
+undo poe anti-interference frequency
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+50
+	
+
+Sets the anti-interference frequency to 50 Hz.
+	
+
+-
+
+60
+	
+
+Sets the anti-interference frequency to 60 Hz.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The mains frequency varies in different countries and regions. Some are 60 Hz and some are 50 Hz. When a device provide PoE power supply, incorrect grounding may occur. As a result, industrial frequency interference is coupled to network cables, resulting in abnormal PoE detection classification. You can run the poe anti-interference frequency command to modify the PoE anti-interference frequency on the device to make that become the same as the mains frequency, reducing the impact of the mains frequency on PoE detection.
+Example
+
+# Set the PoE anti-interference frequency of a device to 60 Hz.
+
+<HUAWEI> system-view
+[HUAWEI] poe anti-interference frequency 60
+
+poe { at-inrush | pre-bt-inrush | bt-inrush } enable
+Function
+
+The poe { at-inrush | pre-bt-inrush | bt-inrush } enable command changes the power supply mode of interfaces supporting the PoE++ mode.
+
+The undo poe { at-inrush | pre-bt-inrush | bt-inrush } enable command restores the default power supply mode of PoE interfaces.
+
+By default, interfaces supporting the PoE++ mode on devices provide power in PoE++ mode. That is, the power supply mode is bt-inrush, interfaces not supporting the PoE++ mode on devices provide power in at-inrush mode.
+
+Only the MultiGE interface of an S5720-28X-PWH-LI-AC, the first 12 electrical interfaces of an S5720-16X-PWH-LI-AC, the first 8 electrical interfaces of an S5720I-28X-PWH-SI-AC, and electrical interfaces of the S5720I-12X-PWH-SI-DC, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5731-H, S5731S-H, S5731-S, S5731S-S, and S5732-H support this command.
+Format
+
+poe { at-inrush | pre-bt-inrush | bt-inrush } enable
+
+undo poe { at-inrush | pre-bt-inrush | bt-inrush } enable
+Parameters
+Parameter 	Description 	Value
+
+at-inrush
+	
+
+Sets the power supply mode to PoE+.
+	
+
+-
+
+pre-bt-inrush
+	
+
+Sets the power supply mode to PoE++ compatible. That is, except that the PoE power is 60000 mW, interfaces comply with 802.3at.
+NOTE:
+
+The S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5731-H, S5731S-H, S5731-S, and S5731S-S do not support the pre-bt-inrush.
+	
+
+-
+
+bt-inrush
+	
+
+Sets the power supply mode to PoE++.
+NOTE:
+
+The S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5731-H, S5731S-H, S5731-S, and S5731S-S do not support the bt-inrush.
+	
+
+-
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To power the PDs requiring the standard power supply mode, run the poe at-inrush enable command. This command changes the power supply mode of the PoE interface to the PoE+ mode. If most of the parameters supported by the PDs requiring high power comply with 802.3at, run the poe pre-bt-inrush enable command to change the power supply mode of these interfaces to PoE++ compatible.
+
+Precautions
+
+    When the poe bt-inrush enable command is configured after the poe af-inrush enable command is configured in the interface, the poe af-inrush enable command configuration is automatically overwritten.
+    The poe { pre-bt-inrush | bt-inrush } enable and poe single-class enable commands are mutually exclusive and cannot be configured on the same interface.
+    Changing the power supply mode of a PoE interface will power off the PD connected to this PoE interface.
+    After the power supply mode of an interface is set to bt-inrush, forcible PoE power supply and PD compatibility check configured on this interface using the poe force-power and poe legacy enable commands respectively do not take effect on this interface.
+    After the power supply mode of an interface is set to bt-inrush, and the interface detects that it connects to a non-standard PD, confirm whether this interface is connected to a PD. If so, run the poe pre-bt-inrush enable command and the poe legacy enable or poe force-power command to provide power to this PD.
+
+Example
+# Set the power supply mode of GE0/0/1 to PoE+.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe at-inrush enable
+Warning: This operation will cause the PD to be powered off. Continue?[Y/N]:y
+
+# Set the power supply mode of GE0/0/1 to PoE++ compatible.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe pre-bt-inrush enable
+Warning: This operation will cause the PD to be powered off. Continue?[Y/N]:y
+
+poe enable
+Function
+
+The poe enable command enables the PoE function on an interface.
+
+The undo poe enable command disables the PoE function on an interface.
+
+By default, the PoE function is enabled on an interface.
+Format
+
+poe enable
+
+undo poe enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+Before providing power for the PD connected to an interface, ensure that the PoE function has been enabled on the interface. If the PoE function is not enabled on the interface, run the poe enable command to enable the PoE function on the interface.
+
+In automatic mode, PD power-on and power-off on interfaces are determined by the PoE power and interface power priority. When the PoE power is sufficient, the device does not power off the PD connected to any interface. To stop providing power for a PD, run the undo poe enable command on the interface to which the PD is connected.
+
+Precautions
+
+The device only supports PoE power supply on downlink interfaces and does not support PoE power supply on uplink interfaces.
+Example
+# Disable the PoE function on GigabitEthernet0/0/3.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/3
+[HUAWEI-GigabitEthernet0/0/3] undo poe enable
+
+poe fast-on enable
+Function
+
+The poe fast-on enable command enables fast power-on for a PoE interface.
+
+The undo poe fast-on enable command disables fast power-on for a PoE interface.
+
+By default, fast power-on is disabled on a PoE interface.
+
+Only the S5720-28X-PWH-LI-AC, S5720-16X-PWH-LI-AC, S5720I-12X-PWH-SI-DC, S5735S-H, S5736-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5731-H, S5731S-H, S5731-S, S5731S-S, and S5732-H support this command.
+Format
+
+poe fast-on enable
+
+undo poe fast-on enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After a PoE switch is powered off and then restarts, interfaces on this device can be powered on again only after a certain period. As a result, PDs connected to these interfaces are powered off within this period. To shorten the time during which the PDs are powered off, you can run the poe fast-on enable command on the PoE switch. After the PoE switch is powered off and then restarts, PoE interfaces can rapidly resume power supply to PDs.
+
+Precautions
+
+    This command takes effect only during cold startup of the device.
+    The poe fast-on enable command does not generate any configuration but always takes effect after being executed until the undo poe fast-on enable command is executed. To determine whether the fast power-on configuration takes effect, run the display poe power-state command to check the fast-on field.
+
+Example
+
+# Enable fast power-on for GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe fast-on enable
+Warning: This configuration takes effect only after a cold restart. Continue?[Y/N]:y
+Warning: Ensure that the power required by the connected PD does not exceed the rated PoE power provided by the device. Otherwie, the device may not start normally. Continue?[Y/N]:y
+
+# Disable fast power-on for GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo poe fast-on enable
+Warning: This configuration takes effect only after a cold restart. Continue?[Y/N]:y
+
+poe force-power
+Function
+
+The poe force-power command enables forcible powering on a PoE interface.
+
+The undo poe force-power command disables forcible powering on a PoE interface.
+
+By default, forcible powering is disabled on a PoE interface.
+Format
+
+poe force-power
+
+undo poe force-power
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If the power of the system is sufficient, you can run the poe force-power command on the interface connected to PDs when the PSE cannot detect the PDs.
+
+Precautions
+
+After the power supply mode of an interface is set to PoE++ using the poe bt-inrush enable command, the poe force-power command does not take effect on this interface.
+
+The poe force-power command and the poe legacy enable command are mutually exclusive. When configured on the same interface, the later configured command takes effect and the earlier configured command is cleared.
+
+If the interface connects to a non-PD device, configuring forcible powering on the interface may damage the non-PD device. Exercise caution when using the poe force-power command. After forcible powering is configured on a PoE switch, you must delete the forcible powering configuration from the switch if you need to remove the switch from the current networking environment and deploy it in a new networking environment.
+Example
+
+# Enable forcible powering on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe force-power
+Warning: Is there a valid PD connected to this interface? Yes or No?[Y/N]:y
+
+poe group management enable
+Function
+
+The poe group management enable command enables a PoE device's group management of PDs.
+
+The undo poe group management enable command disables a PoE device's group management of PDs.
+
+By default, a PoE device's group management of PDs is disabled.
+
+Among PoE models, the S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5731-H, S5731-S, S5731-S24UN4X2Q, S5731-S8UM16UN2Q, S5731S-S24UN4X2Q-A, S5731S-S8UM16UN2Q-A, S5736-S24UM4XC, and S5731S-S do not support this command.
+Format
+
+poe group management enable
+
+undo poe group management enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Powering on some PDs may affect other PDs, causing other PDs unable to be detected by a PoE device. After group management of PDs is enabled, a PoE device can detect PDs on a per-group basis and power on these PDs in a batch.
+
+Precautions
+
+    To support a PoE device's group management of PDs, every four interfaces on the left are added to one group. For example, interfaces numbered 1 to 4 or numbered 5 to 8 can be added to one group, but interfaces numbered 2 to 5 cannot. That is, the number of the last interface in each group must be the multiple of 4. If the poe group management enable command is configured on any interface in a group, this command is also delivered to the other three interfaces in the same group.
+
+    After group management of PDs is configured on an interface, the other interfaces in the same group use the same power supply priority as this interface and this priority is lower than that of other interfaces that are not added to any group. If some interfaces have this group management function configured, the PoE interface power supply priority configured using the poe priority command does not take effect on these interfaces.
+
+Example
+# Enable group management of PDs on PoE interfaces GE0/0/1 through GE0/0/4.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe group management enable
+Info: 'Poe group management enable' will be executed on interface GigabitEthernet0/0/1 to GigabitEthernet0/0/4. Continue?[Y/N]: y
+
+poe high-inrush enable
+Function
+
+The poe high-inrush enable command configures an interface to allow generation of the high pulse current during power-on.
+
+The undo poe high-inrush enable command configures an interface not to allow generation of the high pulse current during power-on.
+
+By default, interfaces do not allow generation of the high pulse current during power-on.
+Format
+
+poe high-inrush enable [ slot slot-id ]
+
+undo poe high-inrush enable [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+slot slot-id 	
+
+Specifies a slot ID.
+	
+
+The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+High inrush current is generated when a non-standard PD is powered on. In this case, the PSE cuts off the power of the PD to protect itself. If the PSE is required to provide power for the PD, the PSE must allow high inrush current. The high inrush current may damage device components.
+Example
+
+# Enable the device to allow generation of the high pulse current during power-on.
+
+<HUAWEI> system-view
+[HUAWEI] poe high-inrush enable
+
+poe { power-off | power-on } interface
+Function
+
+The poe { power-off | power-on } interface command manually powers on or powers off the PD of an interface.
+
+Among PoE models, the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, S5720I-SI, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, and S5732-H do not support this command.
+Format
+
+poe { power-off | power-on } interface interface-type interface-number
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+power-off
+	
+
+Powers off an interface.
+	
+
+-
+
+power-on
+	
+
+Powers on an interface.
+	
+
+-
+
+interface-type interface-number
+	
+
+Specifies the type and number of the interface that needs to be powered on or powered off manually.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+By default, a PoE device works in automatic power management mode. After a PD is connected to a PoE device, the PoE device automatically provides power for the PD.
+
+After you run the poe power-management command to configure the power management mode of a PoE device to manual, the PoE device does not automatically provide power for PDs when PDs are connected to the PoE device. You need to run the poe power-on interface command to manually power on the interfaces of the PoE device. Check whether the interface is powered on based on the Power ON/OFF field in the display poe power-state command.
+
+Precautions
+
+When the available power of the device is insufficient and the device cannot provide power for a new PD, the poe power-on interface command is invalid.
+
+Pre-configuration Tasks
+
+Before powering on or powering off an interface, ensure that:
+
+    The power management mode has been in manual mode through running the poe power-management command.
+
+    PDs have been connected to the interface.
+
+    The PoE function of the interface has been enabled.
+
+    The classification of the PDs connected to the interface has finished and the PDs have been ready for being powered on.
+
+Example
+# Manually power on PDs connected to GigabitEthernet 0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] poe power-management manual 
+[HUAWEI] poe power-on interface gigabitethernet 0/0/1
+
+poe legacy enable
+Function
+
+The poe legacy enable command enables the power sourcing equipment (PSE) to check the compatibility of power devices (PDs).
+
+The undo poe legacy enable command disables the PSE from checking the compatibility of PDs.
+
+By default, the PSE does not check the capability of PDs.
+Format
+
+poe legacy enable
+
+undo poe legacy enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After the switch is enabled to check the compatibility of PDs, the switch can detect and provide power to the PDs that do not comply with the 802.3af or 802.3at standard or the standard PDs that are detected as non-standard PDs because of the external environment. If compatibility check is disabled, the switch cannot provide power to the non-standard PDs.
+
+After interfaces are enabled to check the compatibility of PDs, the interfaces can provide power to both standard and non-standard PDs. This configuration does not affect the power supply of standard PDs. That is, the interfaces can still provide power to standard PDs after the poe legacy enable command is configured.
+
+Precautions
+
+After the power supply mode of an interface is set to PoE++ using the poe bt-inrush enable command, the poe legacy enable command does not take effect on this interface.
+
+The poe force-power command and the poe legacy enable command are mutually exclusive. When configured on the same interface, the later configured command takes effect and the earlier configured command is cleared.
+
+If the interface is connected to a non-PD device, enabling PD compatibility check may damage this non-PD device. Exercise caution when you use this command. After enabling PD compatibility check on a PoE switch, you need to manually disable this function if you need to remove the switch from the current networking environment and deploy it in a new networking environment.
+Example
+# Enable GigabitEthernet0/0/1 to check the compatibility of the PD.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe legacy enable
+
+poe lldp-proxy
+Function
+
+The poe lldp-proxy command configures a 10GE optical port as a proxy for a MultiGE electrical port to perform LLDP negotiation.
+
+The undo poe lldp-proxy command restores the default configuration.
+
+By default, a 10GE optical port does not act as a proxy for a MultiGE electrical port to perform LLDP negotiation.
+
+Only the S5732-H48XUM2CC supports this command.
+Format
+
+poe lldp-proxy interface multige interface-number
+
+undo poe lldp-proxy
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface multige interface-number
+	
+
+Specifies the number of a MultiGE electrical port.
+	
+
+It must be a MultiGE electrical port on the panel of an S5732-H48XUM2CC switch.
+Views
+
+XGE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+Hybrid optical/electrical cables integrate optical fibers and electrical cables and are used to connect S5732-H48XUM2CC switches to APs. Hybrid optical/electrical cables are often used in the following scenarios:
+
+    One end of the RJ45 cable in a hybrid optical/electrical cable is connected to a MultiGE electrical port of a switch, and the other end is connected to the RJ45 power receiving port of an AP. The RJ45 cable is used only for the switch to provide PoE power supply for the AP and does not transmit data.
+
+    One end of the optical fiber in a hybrid optical/electrical cable is connected to a 10GE optical port on a switch, and the other end is connected to an uplink 10GE optical port on an AP. The optical fiber is used for data transmission between the switch and AP.
+
+Since the MultiGE electrical port connected to a hybrid optical/electrical cable stays in the down state, to use LLDP to negotiate the power supply capability, you must run the poe lldp-proxy command to configure the 10GE optical port on the switch connected to the hybrid optical/electrical cable as a proxy for the MultiGE electrical port to perform LLDP negotiation.
+
+Precautions
+
+    LLDP must be enabled on the 10GE optical port connected to a hybrid optical/electrical cable. This function is enabled by default.
+    If an AP requires PoE++ power supply, run the poe legacy enable command on the 10GE optical port connected to a hybrid optical/electrical cable to enable compatibility check.
+
+Example
+
+# Configure the 10GE 0/0/1 optical port as a proxy for the MultiGE 0/0/1 electrical port to perform LLDP negotiation.
+
+<HUAWEI> system-view
+[HUAWEI] interface XGigabitEthernet 0/0/1
+[HUAWEI-XGigabitEthernet0/0/1] poe lldp-proxy interface MultiGE 0/0/1
+
+poe max-power
+Function
+
+The poe max-power command sets the maximum output power of the device.
+
+The undo poe max-power command restores the default maximum output power of the device.
+
+By default, the maximum output power of a device is the power actually provided by the device. Therefore, the configured maximum output power must be lower than or equal to the total power of PoE power modules. On the S5720I-12X-PWH-SI-DC, the default maximum output power is 220000 mW, and the supported maximum output power is 240000 mW.
+Format
+
+poe max-power max-power [ slot slot-id [ mcu mcu-id ] ]
+
+undo poe max-power max-power slot slot-id
+
+undo poe max-power [ slot slot-id [ mcu mcu-id ] ]
+
+Only the S5720I-28X-PWH-SI-AC supports the mcu mcu-id parameter.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+max-power
+	
+
+Specifies the maximum output power.
+	
+
+The value is an integer that ranges from 15400 to 2880000, in mW.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+mcu mcu-id
+	
+
+Specifies an MCU ID.
+	
+
+The value is 1 or 2.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In a stack, if no stack ID is added to the poe max-power command, this command sets the maximum output power of all stack member switches.
+
+Precautions
+
+    If the configured maximum output power is lower than the total power required by PDs, lower-priority PDs will be powered off or cannot be powered on manually.
+    The configured maximum output power of the device must be lower than the remaining PoE power of the device. Otherwise, the configuration does not take effect.
+
+Example
+# Set the maximum output power of the device with the ID 0 to 45000 mW.
+
+<HUAWEI> system-view
+[HUAWEI] poe max-power 45000 slot 0
+
+poe mps
+Function
+
+The poe mps command sets thresholds of PoE power supply negotiation parameters.
+
+The undo poe mps command restores the default thresholds of PoE power supply negotiation parameters.
+
+By default, the current amplitude within the detection interval is 65 (6.5 mA), the current holding time within the detection interval is 1 second, and the PoE power supply negotiation detection interval is 360 seconds.
+Format
+
+poe mps imps { 20 | 40 | 45 | 65 } tmps { 1 | 7 | 10 | 30 } tmpdo { 360 | 420 | 480 | 540 }
+
+undo poe mps
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+imps { 20 | 40 | 45 | 65 }
+	
+
+Specifies the current amplitude within the PoE power supply negotiation detection interval.
+	
+
+The unit is 0.1 mA.
+
+tmps { 1 | 7 | 10 | 30 }
+	
+
+Specifies the current holding time within the PoE power supply negotiation detection interval.
+	
+
+The unit is second.
+
+tmpdo { 360 | 420 | 480 | 540 }
+	
+
+Specifies the PoE power supply negotiation detection interval.
+	
+
+The unit is second.
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+During PoE power supply negotiation between a PSE and a PD, the PSE considers the PD online and provides power to the PD only when the current holding time and current amplitude within the detection interval are within the specified thresholds according to the protocol standards. However, some non-standard PDs cannot meet the threshold requirements on the current holding time and current amplitude within the detection interval specified in the protocol standards. As a result, the PSE does not provide power to these PDs. In this case, you can run this command to specify the thresholds of PoE power supply negotiation parameters so that the switch can provide power to non-standard PDs.
+
+Precautions
+The following four commands are mutually exclusive. If three of them are configured on the device, the other command cannot be configured.
+
+    poe af-inrush enable
+    poe legacy enable
+    poe power-on delay (The delay is set to a value in the range from 13 to 22.)
+    poe mps
+
+For example, if the poe af-inrush enable, poe legacy enable, and poe power-on delay 14 commands are configured on the device, the poe mps command cannot be configured. If the poe af-inrush enable, poe legacy enable, and poe mps commands are configured on the device, the poe power-on delay 14 command cannot be configured, but the poe power-on delay 10 command can be configured.
+Example
+# Set the thresholds of PoE power supply negotiation parameters.
+
+<HUAWEI> system-view
+[HUAWEI] poe mps imps 45 tmps 7 tmpdo 420
+
+poe power
+Function
+
+The poe power command sets the maximum output power of an interface.
+
+The undo poe power command restores the default maximum output power of an interface.
+This default value varies depending on interfaces of switches:
+
+    The electrical interface of an S5731-S24UN4X2Q, S5731-S8UM16UN2Q, S5731S-S24UN4X2Q-A, S5731S-S8UM16UN2Q-A, S5736-S24UM4XC, S5736-S24U4XC, S5736-S48U4XC, S5735S-H24U4XC-A, or S5735S-H48U4XC-A: 90000 mW
+    The MultiGE interface of an S5720-28X-PWH-LI-AC: 60000 mW; Other electrical interface of an S5720-28X-PWH-LI-AC: 30000 mW
+    First 8 electrical interfaces of an S5720I-28X-PWH-SI-AC: 60000 mW; last 16 electrical interfaces of an S5720I-28X-PWH-SI-AC: 30000 mW
+    The electrical interface of an S5720I-12X-PWH-SI-DC, S5720-16X-PWH-LI-AC, or S5732-H: 60000 mW
+    The electrical interface of other PoE devices: 30000 mW
+
+Format
+
+poe power port-max-power
+
+undo poe power
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+port-max-power
+	
+
+Specifies the maximum output power of an interface.
+	
+The value is an integer, in mW.
+
+    For a electrical interface of S5731-S24UN4X2Q, S5731-S8UM16UN2Q, S5731S-S24UN4X2Q-A, S5731S-S8UM16UN2Q-A, S5736-S24UM4XC, S5736-S24U4XC, S5736-S48U4XC, S5735S-H24U4XC-A, or S5735S-H48U4XC-A, the value ranges from 0 to 90000.
+    For a MultiGE interface of S5720-28X-PWH-LI-AC, the value ranges from 0 to 60000. For other an electrical interface of S5720-28X-PWH-LI-AC, the value ranges from 0 to 30000.
+    For the first 8 electrical interfaces of an S5720I-28X-PWH-SI-AC, the value ranges from 0 to 60000. For the last 16 electrical interfaces of an S5720I-28X-PWH-SI-AC, the value ranges from 0 to 30000.
+    For an electrical interface of S5720I-12X-PWH-SI-DC, S5720-16X-PWH-LI-AC, S5732-H, or the value ranges from 0 to 60000.
+    For electrical interfaces of other PoE devices, the value ranges from 0 to 30000.
+
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+The PD negotiation power may be different from the power required by some non-standard PDs or PDs that cannot be classified. You can run the poe power command to set the maximum output power of the interface, which prevents power overload for PDs and saves energy.
+
+Prerequisites
+
+The PoE function has been enabled on the interface using the poe enable command.
+Example
+# Set the maximum output power on GigabitEthernet0/0/1 to 15400 mW.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe power 15400
+
+poe power auto-neg enable
+Function
+
+The poe power auto-neg enable command enables power auto-negotiation for interfaces.
+
+The undo poe power auto-neg enable command disables power auto-negotiation for interfaces.
+
+By default, power auto-negotiation is disabled for interfaces.
+
+Among PoE models, only the S5731-H(except S5731-H48HB4XZ and S5731-H24HB4XZ), S5731-S, S5731S-S, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5720-28TP-PWR-LI-ACL, S5720-28X-PWR-LI-ACF, and S5720S-28TP-PWR-LI-ACL support this command.
+Format
+
+poe power auto-neg enable
+
+undo poe power auto-neg enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, the switch supplies power to the APs connected to interfaces in compliance with IEEE 802.3at (the maximum output power is 30 W). Some APs support both IEEE 802.3at and 802.3af. The switch can supply power to these APs in accordance with IEEE 802.3af (the maximum output power is 15.4 W). When the APs connected to the switch support both IEEE 802.3at and 802.3af, enable power auto-negotiation on the interfaces connected to these APs. When the total available power of the switch is less than 30 W and the switch detects that the current power supply standards of an AP are IEEE 802.3at, the switch can send an LLDP packet to the AP to enable the AP to set its power supply standards to IEEE 802.3af. Power auto-negotiation changes only the power supply standards of APs but not the interfaces to which the APs are connected.
+
+Enabling power auto-negotiation on interfaces will change the power supply standards of the APs connected to the interfaces, reduce the power consumption of the APs, and enable the switch to supply power to more APs when the rated output power of the switch is fixed.
+
+Precautions
+
+    The poe power auto-neg enable command is mutually exclusive with the lldp dot3-tlv power 802.1ab force and lldp dot3-tlv power 802.3at commands and cannot be configured together.
+    When the total available power of the switch is less than 30 W, the power supply standards of all the APs connected to the interfaces that have power auto-negotiation enabled will be set to IEEE 802.3af. When the total available power of the switch is more than the larger value of 60 W and reserved power, the power supply standards of the APs connected to the interfaces will be restored to IEEE 802.3at based on the power supply priority configured on the interfaces. That is, the power supply standards of the AP connected to the interface with a higher priority are restored to IEEE 802.3at. If the power supply priority of these interfaces is the same, the power supply standards of the AP connected to the interface with a smaller interface number are restored to IEEE 802.3at first.
+    Disabling power auto-negotiation on an interface will restore the power supply standards of the AP connected to the interface to IEEE 802.3at. This operation will power off the APs connected to some interfaces if the total power of the switch is insufficient.
+
+Example
+# Enable power auto-negotiation on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe power auto-neg enable
+Warning: This operation will enable PoE power auto-negotiation of the port, which will change the power-up mode of the PD connected to the port from AT to AF in case of insufficient power. Continue?[Y/N]:y
+
+poe power-management
+Function
+
+The poe power-management command sets the power management mode of the device.
+
+The undo poe power-management command restores the default power management mode of the device.
+
+By default, the device uses the automatic power management mode.
+
+Among PoE models, the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, S5720I-SI, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, and S5732-H do not support this command.
+Format
+
+poe power-management { auto | manual } [ slot slot-id ]
+
+undo poe power-management { auto | manual } slot slot-id
+
+undo poe power-management [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+auto
+	
+
+Specifies the power management mode to automatic mode.
+	
+
+-
+
+manual
+	
+
+Specifies the power management mode to manual mode.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies the slot ID.
+	
+
+The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+In automatic power management mode, the device first provides power for the interfaces with higher priority and powers off the interfaces of lower priority when the power is insufficient. When the power is sufficient, all interfaces connected to PDs are powered on. To stop providing power for some interfaces, run the undo poe enable command to disable the PoE function on the interfaces. If the PoE function is enabled and disabled frequently, faults may occur on the interfaces. To prevent the faults, you can set the power management mode to manual mode. In manual mode, the power-on and power-off of an interface are controlled manually and not affected by the interface power priority.
+
+Precautions
+
+    If all the interfaces are of the same priority, the power supply priority of the interface with a smaller interface number is higher in automatic mode.
+
+    You can view the power management mode by running the display poe information command.
+
+Follow-up Procedures
+
+After setting the power management mode to manual, you need to run the poe { power-off | power-on } interface command to manually power on or off the PDs connected to interfaces of the device. If the device restarts after being powered off, you need to run the power-on command on the interfaces again to power on the PDs connected to the interfaces. If the device restarts without being powered off, you do not need to run the power-on command on the interfaces again to power on the PDs.
+Example
+# Set the power management mode of a device to automatic mode.
+
+<HUAWEI> system-view
+[HUAWEI] poe power-management auto slot 0
+
+poe power-off time-range
+Function
+
+The poe power-off time-range command makes a configured PoE power-off time range effective on an interface.
+
+The undo poe power-off time-range command cancels the configuration.
+
+By default, a device is not configured with PoE power-off time range.
+Format
+
+poe power-off time-range time-range-name
+
+undo poe power-off time-range
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+time-range-name
+	
+
+Specifies a name for a PoE power-off time range.
+	
+
+The value is a string of 1 to 32 case-sensitive characters and must begin with a letter. In addition, the word all cannot be specified as a time range name.
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The poe power-off time-range command makes a PoE power-off time range set in the system view effective on an interface. If the current time is within the specified time range, the PD connected to the interface cannot be powered on.
+
+The undo poe power-off time-range command cancels the configuration. The time range does not take effect on the PD connected to the interface; however, the configuration of the time range is still saved.
+
+Pre-configuration Tasks
+
+Before running the poe power-off time-range command, you must ensure a PoE power-off time range has been configured through running the time-range command in the system view.
+Example
+# Configure a PoE power-off time range from 10:00 to 11:00 for PDs connected to GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] time-range PoE 10:00 to 11:00 daily
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe power-off time-range PoE
+
+poe power-on delay
+Function
+
+The poe power-on delay command sets the PoE power supply delay on an interface.
+
+The undo poe power-on delay command restores the default PoE power supply delay on an interface.
+
+By default, the PoE power supply delay is 0. That is, the PoE power supply is not delayed.
+Format
+
+poe power-on delay delay-time
+
+undo poe power-on delay
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+delay-time
+	
+
+Specifies the PoE power supply delay.
+	
+
+The value is an integer that ranges from 1 to 60, in seconds.
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The maintain current of the used PD is insufficient at the power-on moment, so the PoE switch considers that the PD has been disconnected and powers it off. IEEE standards require that a PD must maintain a current value of more than 10 mA for at least 75 ms in each 325 ms duration. Otherwise, the PoE switch considers that the PD has left and powers off the PD.
+
+To enable the PoE switch to power these non-standard PDs, set the PoE power supply delay on the appropriate interfaces of the switch so that the switch detects the maintain power of the PDs after the specified delay.
+
+Precautions
+
+After the PoE power supply delay is configured on an interface, do not replace the PD connected to this interface within the delay. Otherwise, the new PD cannot work properly.
+Example
+# Set the PoE power supply delay to 5 seconds on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe power-on delay 5
+
+poe power-reserved
+Function
+
+The poe power-reserved command sets the percentage of the reserved PoE power against the total PoE power.
+
+The undo poe power-reserved command restores the default percentage of the reserved PoE power against the total PoE power.
+
+By default, the percentage of the reserved PoE power against the total PoE power is 20%.
+Format
+
+poe power-reserved power-reserved [ slot slot-id [ mcu mcu-id ] ]
+
+undo poe power-reserved power-reserved slot slot-id
+
+undo poe power-reserved [ slot slot-id [ mcu mcu-id ] ]
+
+Only the S5720I-28X-PWH-SI-AC supports the mcu mcu-id parameter.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+power-reserved
+	
+
+Specifies the percentage of the reserved PoE power against the total PoE power.
+	
+
+The value is an integer that ranges from 0 to 100, in percentage.
+
+The default value is 20.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+mcu mcu-id
+	
+
+Specifies an MCU ID.
+	
+
+The value is 1 or 2.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenarios
+
+The device can dynamically allocate power to each interface according to the power consumption of each interface. The power consumption of a PD keeps changing when the PD is running. The system periodically calculates the total power consumption of all the PDs. If the total power consumption exceeds the upper threshold of the device, the system powers off the PDs on the interfaces of low priority. If interfaces have the same priority, the system powers off the PD on the interface with a larger port number.
+
+Sometimes, however, the power consumption increases sharply and the available power of the system cannot support the burst increase of power. At this time, the system has not calculated and found that the total power consumption exceeded the upper threshold; therefore, the system does not cut off power low-priority interfaces in time. As a result, the PoE power supply is shut down for overload protection, and all PDs are powered off.
+
+This problem can be solved by running the poe power-reserved command to set proper reserved power. When there is a burst increase in power consumption, the reserved power can support the system running. Then the system has time to power off interfaces of low priority to ensure stable running of other PDs.
+
+Precautions
+
+    The reserved power should not be set greater than 20%. If the reserved PoE power is greater than 20% of the total PoE power, the power capacity of the device is affected.
+    To set the maximum output power of a device, run the poe max-power command. In this case, the device calculates the reserved power based on the set maximum output power. If the maximum output power is not set, the available PoE power is the power provided by the PoE power module.
+
+Example
+
+# Set the percentage of reserved PoE power to the total PoE power to 30%.
+
+<HUAWEI> system-view
+[HUAWEI] poe power-reserved 30
+Warning: The power for new PDs connected to slot 0 may be insufficient after this operation is performed. Continue?[Y/N]:y
+
+poe power-threshold
+Function
+
+The poe power-threshold command sets the alarm threshold of the PoE power consumption percentage.
+
+The undo poe power-threshold command restores the default alarm threshold of the PoE power consumption percentage.
+
+By default, the alarm threshold is 90%. That is, an alarm is generated when the consumed power accounts for 90% of the total power.
+Format
+
+poe power-threshold threshold-value [ slot slot-id [ mcu mcu-id ] ]
+
+undo poe power-threshold threshold-value slot slot-id
+
+undo poe power-threshold [ slot slot-id [ mcu mcu-id ] ]
+
+Only the S5720I-28X-PWH-SI-AC supports the mcu mcu-id parameter.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+threshold-value
+	
+
+Specifies the alarm threshold of the PoE power consumption percentage. When the power consumption reaches this value, a PoE power alarm is generated.
+	
+
+The value is an integer that ranges from 0 to 100, in percentage.
+
+The default value is 90.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+mcu mcu-id
+	
+
+MCU ID
+	
+
+The value is an integer ranging from 1 to 2.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The poe power-threshold command sets the alarm threshold of the PoE power consumption percentage. If the total PoE power is 369.6 W and the alarm threshold is 90%, an alarm is generated when the power consumption is greater than 332.64 W. When the power consumption falls below 332.64 W, the alarm is cleared.
+Example
+
+# Set the alarm threshold of the PoE power consumption percentage to 80%.
+
+<HUAWEI> system-view
+[HUAWEI] poe power-threshold 80
+
+poe pse-heartbeat disable
+Function
+
+The poe pse-heartbeat disable command disables PSE power supply heartbeat detection.
+
+The undo poe pse-heartbeat disable command enables PSE power supply heartbeat detection.
+
+By default, PSE power supply heartbeat detection is enabled.
+Format
+
+poe pse-heartbeat disable
+
+undo poe pse-heartbeat disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When PSE power supply heartbeat detection of a switch is abnormal because the internal channel of the switch is problematic, the PoE function of the switch triggers firmware loading again. As a result, PDs connected to ports of the switch are powered off. To reduce abnormal PoE power supply caused by an internal channel exception, you can run this command to disable PSE power supply heartbeat detection.
+Example
+# Disable PSE power supply heartbeat detection.
+
+<HUAWEI> system-view
+[HUAWEI] poe pse-heartbeat disable
+
+poe priority
+Function
+
+The poe priority command sets the power priority of a PoE interface.
+
+The undo poe priority command restores the default power priority of a PoE interface.
+
+By default, the power supply priority of an interface is low.
+Format
+
+poe priority { critical | high | low }
+
+undo poe priority
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+critical
+	
+
+Indicates the highest priority.
+	
+
+-
+
+high
+	
+
+Indicates the second highest priority.
+	
+
+-
+
+low
+	
+
+Indicates the lowest priority.
+	
+
+-
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When the output power of a device is insufficient, the device in automatic power management mode provides power for the interfaces of the higher power supply priorities first and cuts off power of the interfaces of the lower power supply priorities. PoE switches provide power to PDs connected to the interfaces in the sequence in which PDs are connected to them.
+Example
+# Set the power supply priority of GigabitEthernet0/0/1 to critical.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe priority critical
+
+poe-power backup-mode
+Function
+
+The poe-power backup-mode command sets the PoE power supply mode to the backup mode.
+
+The undo poe-power backup-mode command restores the PoE power supply mode to the high-power mode.
+
+By default, the PoE power supply mode is the high-power mode.
+
+Only the S5720I-28X-PWH-SI-AC supports this command.
+Format
+
+poe-power backup-mode backup-mode [ slot slot-id ]
+
+undo poe-power backup-mode [ slot slot-id ]
+Parameters
+
+Description
+	
+
+Description
+	
+
+Value
+
+backup-mode
+	
+
+Specifies the backup mode of PoE power supplies.
+	
+
+The value can only be 1.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If this parameter is not specified in Stack, only the PoE power supply mode of the master switch is modified.
+	
+
+The value must be set according to the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+The S5720I-28X-PWH-SI-AC has two built-in power modules, which support two PoE power supply modes:
+
+    High-power mode (default): When two power modules are used, they provide 369.6 W PoE power for the first 8 electrical ports and last 16 electrical ports respectively, and the system provides 739.2 W PoE power. If one of the two power modules is faulty, the first 8 electrical interfaces provide power normally, but the PDs connected to the last 16 electrical ports are powered off and the PoE function becomes unavailable on the last 16 electrical ports. When only one power module is used, only the first 8 electrical interfaces can provide PoE power.
+    PoE backup mode: The PoE power supply mode can be manually set to the backup mode using the poe-power backup-mode command. The backup mode provides 1+1 redundancy. In backup mode, the system provides 369.6 W PoE power, regardless of whether one or two power modules are used. The 369.6 W PoE power is shared by 24 electrical ports. Setting the PoE power supply mode to the backup mode can improve system stability.
+
+Precautions
+
+Changing the PoE power supply mode will power off the PDs connected to all ports.
+Example
+# Set the PoE power supply mode to the backup mode.
+
+<HUAWEI> system-view
+[HUAWEI] poe-power backup-mode 1
+
+poe single-class enable
+Function
+
+The poe single-class enable command configures the single-class power supply mode for an interface.
+
+The undo poe single-class enable command restores the standard hierarchical power supply mode for an interface.
+
+By default, an interface works in standard hierarchical power supply mode.
+Format
+
+poe single-class enable
+
+undo poe single-class enable
+Parameters
+
+None
+Views
+
+Interface view, port group view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, a PoE interface works in standard hierarchical power supply mode. If PoE interfaces provide power to non-standard PDs in standard hierarchical power supply mode, these PDs cannot initiate power requests using LLDP or CDP and can only obtain a low power. As a result, these PDs cannot work normally. To address this issue, run the poe single-class enable command to configure the single-class power supply mode for PoE interfaces. These non-standard PDs can then initiate power requests and obtain the standard power supply to work normally.
+Precautions
+
+    If a standard PD is connected to the interface, this PD may be unable to work normally after the poe single-class enable command is run.
+    On the S5720-16X-PWH-LI-AC, S5720-28X-PWH-LI-AC, S5720I-SI, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-S, and S5732-H, the poe af-inrush enable and poe single-class enable commands are mutually exclusive and cannot be configured on the same interface.
+
+Example
+
+# Configure the single-class power supply mode for GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] poe single-class enable
+
+reset poe slot
+Function
+
+The reset poe slot command resets the PoE chip in a specified slot.
+
+Only the S5720-LI, S5731-H, S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5720S-LI, S5735-S-I, S500, and S5735-S support this command.
+Format
+
+reset poe { all chips | chip chip-id } slot slot-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all chips
+	
+
+Specifies all PoE chips.
+	
+
+-
+
+chip chip-id
+	
+
+Specifies a chip ID.
+	
+
+The value must be set according to the device configuration.
+
+slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If one or multiple PoE chips of a PSE are suspended, the port connected to a PD cannot detect the suspension and fails power the PD. In this case, you can run the reset poe { all chips | chip chip-id } slot slot-id command to reset the PoE chip.
+Example
+
+# Reset PoE chip 0 in slot 1.
+
+<HUAWEI> reset poe chip 0 slot 1
+Warning: This command will cause power cycling for the PD connected to port 1,2,3,4. Continue? [Y/N]:y
+
