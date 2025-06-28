@@ -1,0 +1,78 @@
+remote-unit port default vlan
+Function
+
+The remote-unit port default vlan command configures the default VLAN for downlink interfaces on RUs in batches.
+
+The undo remote-unit port default vlan command restores the default setting.
+
+By default, a downlink interface on an RU uses VLAN 1 as its default VLAN.
+Format
+
+remote-unit { ruid1 [ to ruid2] } &<1-8> port { portid1 [ to portid2 ] } &<1-32> default vlan vlanid
+
+undo remote-unit { ruid1 [ to ruid2] } &<1-8> port { portid1 [ to portid2 ] } &<1-32> default vlan
+Parameters
+Parameter 	Description 	Value
+
+ruid1 [ to ruid2 ]
+	
+
+Specifies IDs of RUs:
+
+ruid1 specifies the ID of the first RU. to ruid2 indicates the ID of the last RU. ruid2 must be greater than or equal to ruid1.
+	
+
+ruid1 is an integer that ranges from 0 to 16777215.
+
+ruid2 is an integer that ranges from 0 to 16777215.
+
+portid1 [ to portid2 ]
+	
+
+Indicates numbers of downlink interfaces:
+
+portid1 specifies the number of the first interface. to portid2 specifies the number of the last interface. portid2 must be greater than or equal to portid1.
+	
+
+portid1 is an integer that ranges from 1 to 32.
+
+portid2 is an integer that ranges from 1 to 32.
+
+vlanid
+	
+
+Specifies the default VLAN ID for the downlink interfaces on the RUs.
+	
+
+The value is an integer in the range from 1 to 4094.
+Views
+
+remote-unit view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+An RU can connect to different types of terminals using its downlink interfaces and distinguish terminal services by joining its downlink interfaces to different VLANs. You can run the remote-unit port default vlan command to configure downlink interfaces on RUs as hybrid interfaces in batches and configure default VLANs for the interfaces, so that different VLANs can be configured to carry services of different terminals.
+
+An RU saves the VLAN configuration delivered by the central switch to it in its flash memory and forwards traffic based on this VLAN configuration after being powered on. After the RU goes online on the central switch, the central switch synchronizes the latest VLAN configuration to the RU's flash memory.
+
+Prerequisites
+
+You have run the vlan mode manual command to configure the manual VLAN mode for the RU.
+
+Follow-up Procedure
+
+After you run the commands for configuring the VLAN mode for an RU and VLANs for RU interfaces, run the commit command to deliver the VLAN configuration to the RU or bring the RU offline and then online again for the configuration to take effect.
+
+Run the port uplink tagged vlan command to configure the default VLAN of the downlink interfaces on the RUs as an allowed VLAN in tagged mode for the uplink interfaces on the RUs.
+Example
+
+# Configure VLAN 2 as the default VLAN for downlink interfaces 1 to 4 on RUs 0 to 4.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] remote-unit 0 to 4 port 1 to 4 default vlan 2
+
