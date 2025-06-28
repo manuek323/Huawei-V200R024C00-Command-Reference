@@ -1,0 +1,308 @@
+display remote-unit port transceiver
+Function
+
+The display remote-unit port transceiver command displays information about the optical module installed on an interface of an RU.
+Format
+
+display remote-unit port [ port-id ] transceiver [ connect-interface interface-type interface-number | name remote-unit-name ]
+Parameters
+Parameter 	Description 	Value
+
+port-id
+	
+
+Specifies the index of an interface on an RU.
+	
+
+The value is an integer that ranges from 1 to 34. If this parameter is not specified, statistics about all interfaces on the RU are displayed.
+
+connect-interface interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value must be an existing RU alias.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command to view general, manufacturing, and diagnostic information about the optical module installed on an interface of an RU.
+Example
+
+# Display information about the optical module installed on the interface with index 6 of all RUs.
+
+<HUAWEI> display remote-unit port 6 transceiver
+ESN                :219801177001xxxxxxxx 
+Name               :- 
+Device type        :S5731-L4P2HW-RUA
+Connect interface  :GigabitEthernet0/0/27 
+-------------------------------------------------------
+GE6 transceiver information: 
+------------------------------------------------------- 
+Common information:  
+  Transceiver type                 :1000_BASE_LX_SFP 
+  Transfer distance(m)             :10000(9um) 
+  Digital diagnostic monitoring    :YES 
+  Vendor name                      :WTD 
+------------------------------------------------------- 
+Manufacture information: 
+  Manu. serial Number              :MF213704450083 
+  Manufacturing date               :2021-10-22 
+  Vendor name                      :WTD 
+------------------------------------------------------- 
+Diagnostic information: 
+  Temperature(Celsius)              :57.04 
+  Temp high threshold(Celsius)      :95.00 
+  Temp low  threshold(Celsius)      :-50.00
+  Voltage(V)                        :3.27 
+  Volt high threshold(V)            :3.63 
+  Volt low  threshold(V)            :2.97 
+  Bias current(mA)                  :32.89 
+  Bias high threshold(mA)           :80.00 
+  Bias low threshold(mA)            :10.00 
+  RX power(dBM)                     :-5.52 
+  RX power high warning(dBM)        :-3.00 
+  RX power low warning(dBM)         :-19.00 
+  RX power high threshold(dBM)      :-1.00 
+  RX power low threshold(dBM)       :-21.02 
+  TX power(dBM)                     :-4.62 
+  TX power high warning(dBM)        :-3.00 
+  TX power low warning(dBM)         :-11.00 
+  TX power high threshold(dBM)      :-1.00 
+  TX power low threshold(dBM)       :-13.00 
+
+------------------------------------------------------- 
+ESN                :QU221A000285 
+Name               :- 
+Device type        :S5731-L8P2HT-RUA 
+Connect interface  :GigabitEthernet0/0/1 
+------------------------------------------------------- 
+GE10 transceiver information: 
+------------------------------------------------------- 
+Common information: 
+  Transceiver type                 :1000_BASE_LX_SFP 
+  Transfer distance(m)             :10000(9um) 
+  Digital diagnostic monitoring    :YES 
+  Vendor name                      :WTD  
+------------------------------------------------------- 
+Manufacture information:  
+  Manu. serial Number              :MF213704450086 
+  Manufacturing date               :2021-10-22  
+  Vendor name                      :WTD   
+-------------------------------------------------------  
+Diagnostic information:   
+  Temperature(Celsius)              :57.04 
+  Temp high threshold(Celsius)      :95.00 
+  Temp low  threshold(Celsius)      :-50.00
+  Voltage(V)                        :3.27 
+  Volt high threshold(V)            :3.63  
+  Volt low  threshold(V)            :2.97 
+  Bias current(mA)                  :32.64 
+  Bias high threshold(mA)           :80.00 
+  Bias low threshold(mA)            :10.00  
+  RX power(dBM)                     :-5.99 
+  RX power high warning(dBM)        :-3.00 
+  RX power low warning(dBM)         :-19.00  
+  RX power high threshold(dBM)      :-1.00  
+  RX power low threshold(dBM)       :-21.02  
+  TX power(dBM)                     :-4.62   
+  TX power high warning(dBM)        :-3.00  
+  TX power low warning(dBM)         :-11.00 
+  TX power high threshold(dBM)      :-1.00   
+  TX power low threshold(dBM)       :-13.00 
+
+-------------------------------------------------------
+
+Table 3-75 Description of the display remote-unit port transceiver command output
+
+Item
+	
+
+Description
+
+ESN
+	
+
+ESN of an RU.
+
+Name
+	
+
+Alias of an RU. This field displays a hyphen (-) if an RU is not configured with an alias.
+
+Device type
+	
+
+Device type of an RU.
+
+Connect interface
+	
+
+Interconnection interface.
+
+GEn transceiver information
+	
+
+Information about the optical module installed on the GEn interface of an RU.
+
+Common information
+	
+
+General information.
+
+Transceiver type
+	
+
+Type of an optical module.
+
+Transfer distance(m)
+	
+
+Transmission distance of an optical module.
+
+    OM1: indicates traditional 62.5 μm/125 μm multimode fibers.
+    OM2: indicates traditional 50 μm/125 μm multimode fibers.
+    OM3: indicates next-generation multimode fibers, with longer transmission distances than OM1 and OM2 fibers.
+
+For a GPS optical module, this field indicates the maximum length of the antenna between the GPS optical module and signal receiver.
+NOTE:
+
+The device displays only the maximum transmission distances supported by different optical fibers of an optical module.
+
+Digital diagnostic monitoring
+	
+
+Whether diagnostic information about an optical module is monitored.
+
+Vendor name
+	
+
+Vendor of an optical module.
+
+Manufacture information
+	
+
+Manufacture information.
+
+Manu. serial Number
+	
+
+Manufacturing sequence number of an optical module.
+
+Manufacturing date
+	
+
+Manufacturing date of an optical module.
+
+Diagnostic information
+	
+
+Diagnostic information.
+
+Temperature(Celsius)
+	
+
+Current temperature of an optical module.
+
+Temp high threshold(Celsius)
+	
+
+Upper temperature threshold of an optical module.
+
+Temp low threshold(Celsius)
+	
+
+Lower temperature threshold of an optical module.
+
+Voltage(V)
+	
+
+Current voltage of an optical module.
+
+Volt high threshold(V)
+	
+
+Upper voltage threshold of an optical module.
+
+Volt low threshold(V)
+	
+
+Lower voltage threshold of an optical module.
+
+Bias current(mA)
+	
+
+Bias current of an optical module.
+
+Bias high threshold(mA)
+	
+
+Upper threshold for the bias current of an optical module.
+
+Bias low threshold(mA)
+	
+
+Lower threshold for the bias current of an optical module.
+
+RX power(dBM)
+	
+
+Receive power of an optical module. When the receive power is 0 W, this field displays -Inf.
+
+RX power high warning(dBM)
+	
+
+Upper warning threshold for the receive power of an optical module.
+
+RX power low warning(dBM)
+	
+
+Lower warning threshold for the receive power of an optical module.
+
+RX power high threshold(dBM)
+	
+
+Upper receive power threshold of an optical module.
+
+RX power low threshold(dBM)
+	
+
+Lower receive power threshold of an optical module.
+
+TX power(dBM)
+	
+
+Transmit power of an optical module. When the transmit power is 0 W, this field displays -Inf.
+
+TX power high warning(dBM)
+	
+
+Upper warning threshold for the transmit power of an optical module.
+
+TX power low warning(dBM)
+	
+
+Lower warning threshold for the transmit power of an optical module.
+
+TX power high threshold(dBM)
+	
+
+Upper transmit power threshold of an optical module.
+
+TX power low threshold(dBM)
+	
+
+Lower transmit power threshold of an optical module.
