@@ -1,0 +1,410 @@
+mDNS Relay Configuration Commands
+
+    Command Support
+    display mdns relay
+    display mdns relay statistics
+    mdns gateway ip
+    mdns probe interval
+    mdns relay enable
+    mdns source ip
+    reset mdns relay statistics
+
+Command Support
+
+Only the following switch models support mDNS Relay:
+
+S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+display mdns relay
+
+Function
+
+The display mdns relay command displays the mDNS relay configuration.
+Format
+
+display mdns relay
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After the mDNS relay is configured, you can run the display mdns relay command to view the mDNS relay configuration.
+Example
+
+# Display the mDNS relay configuration.
+
+<HUAWEI> display mdns relay
+MDNS Relay Information:                                                         
+--------------------------------------------------------------------------------
+ MDNS Gateway IP   :  10.1.1.2                                                  
+ MDNS Source IP    :  192.168.1.1                                                  
+--------------------------------------------------------------------------------
+ Relay Enable Vlan :  vlan100                                                   
+--------------------------------------------------------------------------------
+ Relay Probe Vlan  :  vlan100                                                   
+--------------------------------------------------------------------------------
+
+Table 6-38 Description of the display mdns relay command output
+
+Item
+	
+
+Description
+
+MDNS Gateway IP
+	
+
+IP address of the mDNS gateway specified on the device as the mDNS relay.
+
+To specify the IP address of the mDNS gateway on the device as the mDNS relay, run the mdns gateway ip command.
+
+MDNS Source IP
+	
+
+Source IP address in mDNS packets to be sent to periodically discover services and to be forwarded to the mDNS gateway by the device as the mDNS relay.
+
+To specify the source IP address in mDNS packets to be sent to periodically discover services and to be forwarded to the mDNS gateway by the device as the mDNS relay, run the mdns source ip command.
+
+Relay Enable Vlan
+	
+
+ID of the VLAN where the mDNS relay is enabled.
+
+To enable the mDNS relay, run the mdns relay enable command.
+
+Relay Probe Vlan
+	
+
+ID of the VLAN where the mDNS relay is enabled to periodically discover services.
+
+To specify the ID of the VLAN where the mDNS relay is enabled to periodically discover services, run the mdns probe interval command.
+display mdns relay statistics
+
+Function
+
+The display mdns relay statistics command displays statistics on the mDNS relay.
+Format
+
+display mdns relay statistics
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+During routine maintenance and fault location, you can run the display mdns relay statistics command to view statistics on mDNS packets received, sent and dropped by the mDNS relay in a given period of time.
+
+To query statistics again, run the reset mdns relay statistics command to clear existing statistics.
+
+Cleared statistics on the mDNS relay cannot be restored. Exercise caution when you use the reset mdns relay statistics command.
+Example
+
+# Display statistics on the mDNS relay.
+
+<HUAWEI> display mdns relay statistics
+MDNS relay statistics:                                                          
+------------------------------------                                            
+ Received  : 100                                                                  
+ Sent      : 100                                                                  
+ Dropped   : 0                                                                  
+  Bad Pkt Length : 0                   
+  Other         : 0                  
+------------------------------------   
+
+Table 6-39 Description of the display mdns relay statistics command output
+
+Item
+	
+
+Description
+
+Received
+	
+
+Number of mDNS packets received by the mDNS relay.
+
+Sent
+	
+
+Number of mDNS packets sent by the mDNS relay.
+
+Dropped
+	
+
+Number of mDNS packets dropped by the mDNS relay.
+
+Bad Pkt Length
+	
+
+Number of mDNS packets discarded because the packet length exceeds the upper limit.
+
+Other
+	
+
+Number of mDNS packets discarded because of other reasons.
+mdns gateway ip
+
+Function
+
+The mdns gateway ip command specifies the IP address of the mDNS gateway on the device as the mDNS relay.
+
+The undo mdns gateway ip command deletes the configured IP address of the mDNS gateway on the device as the mDNS relay.
+
+By default, the IP address of the mDNS gateway is not specified on the device as the mDNS relay.
+Format
+
+mdns gateway ip ip-address
+
+undo mdns gateway ip
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies the IP address of the mDNS gateway.
+	
+
+The value is in dotted decimal notation.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The device as the mDNS relay needs to forward mDNS packets from Bonjour-compliant terminals or service provisioning devices to the mDNS gateway. After the mdns gateway ip command is used to specify the IP address of the mDNS gateway on the mDNS relay, the mDNS relay converts mDNS packets from Bonjour-compliant terminals or service provisioning devices into unicast packets and sends them to the mDNS gateway.
+Example
+
+# Specify the IP address of the mDNS gateway as 10.1.1.1 on the device as the mDNS relay.
+
+<HUAWEI> system-view
+[HUAWEI] mdns gateway ip 10.1.1.1
+
+mdns probe interval
+
+Function
+
+The mdns probe interval command enables the device to periodically discover services and sets the discovery interval.
+
+The undo mdns probe interval command disables the device from periodically discovering services and deletes the discovery interval.
+
+By default, the device is not enabled to periodically discover services and the discovery interval is not set.
+Format
+
+mdns probe interval interval
+
+undo mdns probe interval
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interval
+	
+
+Specifies the discovery interval.
+	
+
+The value is an integer that ranges from 60 to 38400, in seconds.
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+This command is used on an mDNS gateway or mDNS relay. The mDNS gateway maintains service information lists of all service provisioning devices on the network. A service information list records the service name, service type, TTL, host name, and IP address of each service. The TTL is provided by a service provisioning device to the mDNS gateway, and represents the aging time of a service. If the mDNS gateway receives mDNS response packets from a service provisioning device within the aging time, the mDNS gateway updates its service information. If the mDNS gateway does not receive mDNS response packets from a service provisioning device within the aging time, the mDNS gateway deletes its service information. If an mDNS gateway already exists on the network, a service provisioning device connected to the network advertises service information to the mDNS gateway through the mDNS relay. If a service provisioning device already exists before an mDNS gateway connects to the network, the service provisioning device does not advertise service information to the mDNS gateway.
+
+If the device works as an mDNS gateway, you can run the mdns probe interval command to enable the periodical service discovery function and set the service discovery interval. The device then sends a service query message at the specified interval, and updates the service information list after receiving a response message from the service provisioning device.
+
+If the device works as an mDNS relay and the mdns probe interval command is run, the device sends a service query message at the specified interval to request available service update in its VLAN, and forwards the response message from the service provisioning device to the mDNS gateway, ensuring that service information lists on the mDNS gateway are updated immediately.
+
+Precautions
+
+When the device as the mDNS gateway and service provisioning device are located on different network segments, the mDNS relay but not the mDNS gateway needs to be configured to periodically update service lists.
+Only the following types of services can be discovered:
+
+    _services._dns-sd._udp.local
+    _raop._tcp.local
+    _airplay._tcp.local
+    _printer._tcp.local
+    _device-info._tcp.local
+    _rfb._tcp.local
+    _sftp-ssh._tcp.local
+    _ssh._tcp.local
+    _smb._tcp.local
+    _afpovertcp._tcp.local
+    _universal._sub._ipp._tcp.local
+
+Example
+
+# Enable the device to periodically discover services in VLAN 100 and set the discovery interval to 150s.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] mdns probe interval 150
+
+mdns relay enable
+
+Function
+
+The mdns relay enable command enables the mDNS relay.
+
+The undo mdns relay enable command disables the mDNS relay.
+
+By default, the mDNS relay is disabled.
+Format
+
+mdns relay enable
+
+undo mdns relay enable
+Parameters
+
+None
+Views
+
+VLAN view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+Bonjour technology proposed by Apple uses mDNS. The destination multicast address of 224.0.0.251 used by mDNS is only valid in a Layer 2 broadcast domain. That is, information can be forwarded in a VLAN only, but cannot be forwarded across VLANs or Layer 3 devices. The mDNS relay and mDNS gateway solution implements service discovery across Layer 3. The device can function as the mDNS relay to forward mDNS packets exchanged between Bonjour-compliant terminals or service provisioning devices and mDNS gateway, implementing service discovery across Layer 3. The mdns relay enable command enables the mDNS relay.
+
+Precautions
+
+The device cannot function as both mDNS relay and gateway. A protection failure will occur if the mdns relay enable and mdns gateway enable commands are both configured on the device.
+Example
+
+# Enable the mDNS relay.
+
+<HUAWEI> system-view
+[HUAWEI] vlan 100
+[HUAWEI-vlan100] mdns relay enable
+
+mdns source ip
+Function
+
+The mdns source ip command configures the source IP address in mDNS packets sent by the device that functions as an mDNS gateway or mDNS relay.
+
+The undo mdns source ip command deletes the configuration of the source IP address in mDNS packets sent by the device.
+
+By default, no source IP address is configured.
+Format
+
+mdns source ip ip-address
+
+undo mdns source ip
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+ip-address
+	
+
+Specifies a source IP address.
+	
+
+The value is in dotted decimal notation.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+To ensure normal communication with user terminals and service provisioning devices, run this command to specify the source IP address in mDNS packets sent by the mDNS gateway or mDNS relay.
+
+When the device works as an mDNS relay, it is recommended that the IP address of the interface connecting the device to the mDNS gateway be used as the source IP address.
+
+User terminals and service provisioning devices will ignore the source IP address of multicast mDNS packets received from the mDNS gateway or mDNS relay. As such, the source IP address configured by this command does not need to be on the same network segment as the user terminals or service provisioning devices.
+When the device functions as an mDNS gateway, the configured source IP address in mDNS packets sent by the device applies to the following scenarios:
+
+    When the mDNS gateway is enabled to periodically discover services, it encapsulates mDNS query packets with the source IP address configured by this command, so that it can receive response packets from service provisioning devices. If this command is not run to configure the source IP address, the mDNS gateway uses the IP address of the VLANIF interface corresponding to the VLAN where the periodic service discovery function is enabled as the source IP address of mDNS packets.
+    If an mDNS relay is deployed, the mDNS gateway exchanges packets with the mDNS relay in unicast mode. When sending packets to the mDNS relay, the mDNS gateway uses the next-hop IP address of the outbound interface as the source IP address of the packets based on the routing table. If this command is configured, the device preferentially uses the configured IP address as the source IP address of packets.
+    When receiving a request to discover services from a terminal, the mDNS gateway uses the IP address configured by this command as the source IP address of the response packet. If this command is not run to configure the source IP address, the mDNS gateway uses the IP address of the VLANIF interface corresponding to the VLAN to which the response packet belongs as the source IP address of the response packet.
+
+When the device functions as an mDNS relay, the configured source IP address in mDNS packets sent by the device applies to the following scenarios:
+
+    When the mDNS relay is enabled to periodically discover services, it encapsulates mDNS query packets with the source IP address configured by this command, so that it can receive response packets from service provisioning devices. If this command is not run to configure the source IP address, the mDNS relay uses the IP address of the VLANIF interface corresponding to the VLAN where the periodic service discovery function is enabled as the source IP address of mDNS packets.
+    When the device acting as the mDNS relay forwards mDNS packets to an mDNS gateway, it uses the next-hop IP address of the outbound interface as the source IP address of packets based on the routing table. If this command is configured, the device preferentially uses the configured IP address as the source IP address of packets.
+
+Precautions
+
+When the device acting as an mDNS gateway is configured to periodically discover services, the device periodically sends mDNS query packets to all mDNS service provisioning devices in the VLAN, which are expected to return response packets. The destination IP address is the multicast address 224.0.0.251.
+
+Before the mDNS service TTL expires, the mDNS gateway sends mDNS query packets to service provisioning devices that are expected to return response packets. If an mDNS service is advertised through an mDNS relay, the destination IP address of the query packets is the IP address of the mDNS relay. If an mDNS service is not advertised through an mDNS relay, the destination IP address is the multicast address 224.0.0.251.
+
+When the device acting as an mDNS gateway receives mDNS requests from terminals and the requested services are available, the device returns mDNS response packets. If the mDNS request packets are forwarded through an mDNS relay, the destination IP address of the response packets is the IP address of the mDNS relay. If mDNS request packets are not forwarded through an mDNS relay, the destination IP address is the multicast address 224.0.0.251.
+Example
+
+# Specify the source IP address of 10.1.1.1 in mDNS packets to be sent to periodically discover services and to be forwarded to the mDNS gateway by the device functioning as the mDNS relay.
+
+<HUAWEI> system-view
+[HUAWEI] mdns source ip 10.1.1.1
+
+reset mdns relay statistics
+
+Function
+
+The reset mdns relay statistics command clears statistics on the mDNS relay.
+Format
+
+reset mdns relay statistics
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+During routine maintenance and fault location, you can view statistics on mDNS packets received and sent by the mDNS relay in a given period of time. Before viewing the statistics, run the reset mdns relay statistics command to delete existing statistics. Then the mDNS relay recollects statistics on received and sent mDNS packets. You can run the display mdns relay statistics command to view statistics on mDNS packets received and sent by the mDNS relay.
+
+Cleared statistics on the mDNS relay cannot be restored. Exercise caution when you use the reset mdns relay statistics command.
+Example
+
+# Clear statistics on the mDNS relay.
+
+<HUAWEI> reset mdns relay statistics
+
