@@ -1,0 +1,362 @@
+display remote-unit
+Function
+
+The display remote-unit command displays RU information.
+Format
+
+display remote-unit [ connect-interface interface-type interface-number | name remote-unit-name ][ verbose ]
+Parameters
+Parameter 	Description 	Value
+
+connect-interface interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value must be an existing RU alias.
+
+verbose
+	
+
+Displays detailed RU information.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to view RU information, including the ESN, alias, MAC address, device type, online duration, and firmware version of an RU.
+
+Precautions
+
+The central switch does not maintain information about RUs that attempt to go online when the number of connected RUs has reached the upper limit.
+
+The display remote-unit command output displays information only about online RUs. You can run the display current-configuration configuration remote-unit command to view global configurations of RUs, or run the display current-configuration configuration remote-unit-n command to view the configuration of a specific RU.
+Example
+
+# Display RU information.
+
+<HUAWEI> system-view
+[HUAWEI] display remote-unit
+------------------------------------------------------------------------------------------------------------------------ 
+ESN                     ID        Type                ConnectInterface  Status      VersionMatch  Name
+------------------------------------------------------------------------------------------------------------------------ 
+219801176601XXXXXXXX    1         S5731-L8P2HT-RUA    XGE0/0/6          Normal      NO            RU1
+219801176601XXXXXXXX    16777214  S5731-L8P2HT-RUA    XGE0/0/7          Normal      NO            RU2
+------------------------------------------------------------------------------------------------------------------------ 
+Total: 2, printed: 2 
+
+Table 3-63 Description of the display remote-unit command output
+
+Item
+	
+
+Description
+
+ESN
+	
+
+ESN of an RU.
+
+ID
+	
+
+ID of an RU. This field displays a hyphen (-) if an RU is not configured with an ID.
+
+Type
+	
+
+Device type of an RU.
+
+ConnectInterface
+	
+
+Interconnection interface.
+
+Status
+	
+
+Status of an RU:
+
+    Normal: The RU is online.
+    Upgrading: The RU is being upgraded.
+    Configuring: The RU is being configured.
+    Idle: The RU is in the initialization state.
+    Abnormal: The link connecting the RU and central switch is faulty, or the RU is an excess one because the number of connected RUs has reached the upper limit.
+
+Name
+	
+
+Alias of an RU. This field displays a hyphen (-) if an RU is not configured with an alias.
+
+VersionMatch
+	
+
+Whether the firmware version of the RU matches that of the central switch.
+
+    YES: The version matches.
+    NO: The version does not match.
+    -: The firmware version of the HUAWEI S5731-L16P2SR-RUA or S5731S-L16P2SR-RUA cannot be upgraded to that of the central switch or that of the patch.
+
+Total: m, printed: n
+	
+
+Total number of RUs (m) and number of RUs whose information is displayed (n).
+
+# Display detailed RU information.
+
+<HUAWEI> display remote-unit verbose 
+Total number: 2 
+------------------------------------------------------------------------ 
+ESN                :219801177001xxxxxxxx 
+Name               :- 
+ID                 :3 
+Device mac         :xxxx-xxxx-xxxx 
+Device type        :S5731-L8P2HT-RUA 
+Item               :98011770 
+Manufacture Date   :2021-12-17 
+Up time            :0 day, 6 hours, 25 minutes, 44 seconds 
+APP version        :220207016 
+APP type           :APP
+POE version        :7812 
+POE type           :POE
+BIOS version       :220225001 
+BIOS type          :BIOS 
+Connect interface  :Eth-Trunk100 
+Disk usage         :44% 
+Memory usage       :22% 
+CPU usage          :-
+Fan speed          :-
+Temperature        :37(Celsius) 
+Mac usage          :0% 
+Disk space(MB)     :16 
+Status             :Normal 
+VersionMatch       :YES
+Version support    :YES
+Authen Result      :Success 
+------------------------------------------------------------------------ 
+ESN                :219801176801xxxxxxxx 
+Name               :- 
+ID                 :2 
+Device mac         :xxxx-xxxx-xxxx 
+Device type        :S5731-L8P2HT-RUA 
+Item               :98011768 
+Manufacture Date   :2021-12-17 
+Up time            :0 day, 0 hour, 48 minutes, 39 seconds 
+APP version        :220123002 
+APP type           :APP
+POE version        :7812 
+POE type           :POE
+BIOS version       :220225001
+BIOS type          :BIOS 
+Connect interface  :GigabitEthernet0/0/1 
+Disk usage         :44% 
+Memory usage       :22% 
+CPU usage          :-
+Fan speed          :-
+Temperature        :39(Celsius) 
+Mac usage          :0% 
+Disk space(MB)     :16 
+Status             :Normal
+VersionMatch       :YES
+Version support    :YES
+Authen Result      :Success 
+------------------------------------------------------------------------ 
+
+Table 3-64 Description of the display remote-unit verbose command output
+
+Item
+	
+
+Description
+
+Total number
+	
+
+Total number of RUs.
+
+ESN
+	
+
+ESN of an RU.
+
+Name
+	
+
+Alias of an RU. This field displays a hyphen (-) if an RU is not configured with an alias.
+
+ID
+	
+
+ID of an RU. If an RU is not configured with an ID, a hyphen (-) is displayed.
+
+Device mac
+	
+
+System MAC address of an RU.
+
+Device type
+	
+
+Device type of an RU.
+
+Item
+	
+
+Code of an RU.
+
+Manufacture Date
+	
+
+Manufacture date of an RU.
+
+Up time
+	
+
+Online duration of an RU.
+
+APP version
+	
+
+APP firmware version.
+
+APP type
+	
+
+APP firmware type:
+
+    APP: APP firmware.
+    APP1: APP1 firmware. Only the S5751-L series RUs support this value.
+
+POE version
+	
+
+PoE firmware version.
+
+POE type
+	
+
+PoE firmware type:
+
+    POE: PoE firmware. Only the S5751-L series RUs support this value.
+    POE3: PoE3 firmware. Only the S5751-L series RUs support this value.
+    POE5: PoE5 firmware. Only the S5751-L series RUs support this value.
+    POE6: PoE6 firmware. Only the S5751-L series RUs support this value.
+    POE7: PoE7 firmware. Only the S5751-L series RUs support this value.
+    POE81: PoE81 firmware. Only the S5751-L series RUs support this value.
+    POE82: PoE82 firmware. Only the S5751-L series RUs support this value.
+    POE83: PoE83 firmware. Only the S5751-L series RUs support this value.
+
+BIOS version
+	
+
+BIOS firmware version.
+
+BIOS type
+	
+
+BIOS firmware type:
+
+    BIOS: BIOS firmware.
+    BIOS1: BIOS1 firmware. Only the S5751-L series RUs support this value.
+
+Connect interface
+	
+
+Interface connecting the central switch to an RU. If the central switch uses a physical Eth-Trunk member interface to connect to an RU, this field displays the Eth-Trunk interface to which the member interface belongs.
+
+Disk usage
+	
+
+Disk usage of an RU.
+
+Memory usage
+	
+
+Memory usage of an RU.
+
+CPU usage
+	
+CPU usage of an RU.
+NOTE:
+
+Only the S5751-L series RUs support the display of CPU usage.
+
+Fan speed
+	
+
+Fan speed percentage of an RU. There are 10 levels ranging from 0% to 100%. Every 10% is a level. If the RU has no fan, a hyphen (-) is displayed.
+
+Temperature
+	
+
+Current temperature of an RU.
+NOTE:
+
+If the temperature value cannot be read properly, this field displays a hyphen (-). In this case, check whether the central switch receives an alarm from the RU, indicating that the IIC channel is faulty. For details, see the description of the hwRuIICFault alarm.
+
+Mac usage
+	
+
+MAC address table usage of an RU.
+
+Disk space(MB)
+	
+
+Disk size of an RU.
+
+Status
+	
+
+Status of an RU:
+
+    Unknown
+    Idle: The RU is in the initialization state.
+    Normal: The RU is online.
+    Upgrading: The RU is being upgraded.
+    Configuring: The RU is being configured.
+    Abnormal: The link connecting the RU and central switch is faulty, or the RU is an excess one because the number of connected RUs has reached the upper limit.
+    Offline: The RU is offline.
+
+VersionMatch
+	
+
+Whether the firmware version of the RU matches that of the central device.
+
+    YES: The version matches.
+
+    NO: The version does not match.
+
+Version support
+	
+
+Whether the RU supports the firmware of the central switch:
+
+    YES: compatible
+    NO: incompatible
+
+Authen Result
+	
+
+Authentication result of an RU:
+
+    Success
+    Authenticating
+    Fail
+    -: The RU is not authenticated.
