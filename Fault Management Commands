@@ -1,0 +1,1269 @@
+Fault Management Commands
+
+    Command Support
+    alarm (system view)
+    alarm-name severity
+    clear alarm active
+    clear alarm manual-clear
+    clear event all
+    clear record device-alarm
+    delay-suppression enable
+    display alarm active
+    display alarm history
+    display alarm information
+    display alarm manual-clear
+    display alarm urgent
+    display event
+    display event information
+    event
+    mask manual-clear alarm
+    reset alarm urgent
+    set alarm resend interval
+    suppression alarm-name
+    suppression event-name
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+alarm (system view)
+Function
+
+Using the alarm command, you can enter the alarm view.
+Format
+
+alarm
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After running the alarm command to enter the alarm view, you can configuration alarm management functions.
+Example
+
+# Enter the alarm view.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm]
+
+alarm-name severity
+Function
+
+The alarm-name severity command sets the severity for an alarm.
+
+The undo alarm-name severity command restores the default setting.
+
+By default, each alarm has a default severity.
+Format
+
+alarm-name alarm-name severity severity
+
+undo alarm-name alarm-name severity
+Parameters
+Parameter 	Description 	Value
+alarm-name 	Specifies the registered alarm name. 	
+
+The value is a string and varies according to the registered device type. To view registered alarm information, run the display alarm information command.
+severity severity 	Specifies the alarm severity. 	
+The value is of enumerated type. Alarms are classified into the following severities:
+
+    critical: indicates that a fault affecting services has occurred and it must be rectified immediately.
+    major: indicates that services are being affected and related measures need to be taken urgently.
+    minor: indicates that a fault occurs but does not affect services. To avoid more serious faults that affect services, related measures must be taken.
+    warning: indicates that a potential or impending service-affecting fault is detected before any significant effect has been felt. Take corrective actions to diagnose and rectify the fault.
+    indeterminate: indicates that the alarm severity cannot be determined.
+    cleared: indicates one or more previous alarm conditions have been cleared.
+
+Views
+
+Alarm view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+You can run the alarm-name severity command to raise or lower the level of an alarm based on the severity and emergency of the alarm. However, the level of a clear alarm cannot be changed unless during the configuration restoration period. You can configure filtering conditions to allow the NMS to receive only alarms of specified alarm severity.
+
+Precautions
+
+The default severity of each alarm is different. To view the default severity of an alarm, run the undo alarm-name severity and display alarm information commands in sequence.
+Example
+
+# Set the severity of the hwSysSlaveHDError alarm to warning.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] alarm-name hwSysSlaveHDError severity warning
+
+clear alarm active
+Function
+
+The clear alarm active command clears active alarms.
+Format
+
+clear alarm active { all | sequence-number sequence-number }
+Parameters
+Parameter 	Description 	Value
+all 	Clears all active alarms. 	-
+sequence-number sequence-number 	Specifies the sequence number of an active alarm. 	
+
+The value is an integer ranging from 1 to 2147483647.
+Views
+
+Alarm view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+Before collecting statistics on alarms generated on the device again, run the clear alarm active to clear active alarms.
+
+Precautions
+
+After the clear alarm active command is used, all active alarms on the device are deleted and cannot be restored.
+Example
+
+# Clear all active alarms on the device.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] clear alarm active all
+
+clear alarm manual-clear
+Function
+
+The clear alarm manual-clear command clears the active alarms that are not reported repeatedly so that these active alarms can be reported again.
+Format
+
+clear alarm manual-clear { all | sequence-number sequence-number }
+Parameters
+Parameter 	Description 	Value
+all 	Specifies all the active alarms that are not reported repeatedly. 	-
+sequence-number sequence-number 	Specifies the sequence number of the active alarm that is not reported repeatedly.
+
+You can run display alarm manual-clear get the sequence number of the active alarm.
+	The value is an integer that ranges from 1 to 2147483647.
+Views
+
+Alarm management view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After the mask manual-clear alarm command is executed to prevent manually cleared active alarms from being reported repeatedly and then the clear alarm active command or MIB table hwAlarmActiveTable is used to manually clear active alarms, active alarms will not be reported repeatedly. To view the active alarms that are not reported repeatedly, run the clear alarm manual-clear command.
+
+To ensure that the active alarms that are not reported repeatedly can be reported again, run the clear alarm manual-clear command. After the clear alarm manual-clear command is executed, running the display alarm manual-clear command does not display corresponding alarm information.
+Example
+
+# Clear the active alarms that are not reported repeatedly.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] clear alarm manual-clear all
+
+clear event all
+Function
+
+The clear event all command clears events on the device.
+Format
+
+clear event all
+Parameters
+
+None
+Views
+
+Event view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+Before collecting statistics on events generated on the device again, run the clear event all to clear events.
+
+Precautions
+
+The clear event all command clears events on the device and cleared events cannot be restored.
+Example
+
+# Clear events on the device.
+
+<HUAWEI> system-view
+[HUAWEI] event
+[HUAWEI-event] clear event all
+
+clear record device-alarm
+Function
+
+The clear record device-alarm command clears hardware alarms.
+Format
+
+clear record device-alarm [ all | slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+all
+	
+
+Clears all hardware alarms of the device.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When current hardware alarms are not required on the device, use the clear record command to clear the hardware alarms of the device.
+Example
+
+# Clear all hardware alarms of the device.
+
+<HUAWEI> clear record device-alarm all
+
+delay-suppression enable
+Function
+
+The delay-suppression enable command enables delayed alarm or event reporting.
+
+The undo delay-suppression enable command disables delayed alarm or event reporting.
+
+By default, delayed reporting is enabled.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+delay-suppression enable
+
+undo delay-suppression enable
+Parameters
+
+None
+Views
+
+Alarm view or event view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+In the event that an alarm or an event is repeatedly generated, you can enable delayed reporting to prevent a large number of repeated alarms or events from being reported to the NMS. You can choose to enable or disable delayed reporting:
+
+    Run the delay-suppression enable command to enable delayed reporting.
+
+    Run the undo delay-suppression enable command to disable delayed reporting.
+
+Run the delay-suppression enable command in the alarm view to enable delayed alarm reporting. Run the delay-suppression enable command in the event view to enable delayed event reporting.
+Example
+
+# Enable delayed alarm reporting.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] delay-suppression enable
+
+display alarm active
+Function
+
+The display alarm active command displays active alarms on the device.
+Format
+
+display alarm active
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display alarm active command to view active alarms on the device to locate faults.
+Example
+
+# Display active alarms on the device.
+
+<HUAWEI> display alarm active
+A/B/C/D/E/F/G/H/I/J                                                                                                                 
+A=Sequence, B=RootKindFlag(Independent|RootCause|nonRootCause)                                                                      
+C=Generating time, D=Clearing time                                                                                                  
+E=ID, F=Name, G=Level, H=State                                                                                                      
+I=Description information for locating(Para info, Reason info)                                                                      
+J=RootCause alarm sequence(Only for nonRootCause alarm)                                                                             
+                                                                            
+  92/Independent/2019-08-09 10:44:58/-/0x502001/linkDown/Critical/Start/OID 1.3.6.1.6.3.1.1.5.3 Interface 58 turned into DOWN state.
+(AdminStatus=1,OperStatus=2,InterfaceName=40GE0/0/5)
+
+Table 3-161 Description of the display alarm active command output
+
+Item
+	
+
+Description
+
+A/B/C/D/E/F/G/H/I/J
+	
+
+Alarm display format
+
+A=Sequence
+	
+
+Sequence number
+
+B=RootKindFlag(Independent|RootCause|nonRootCause)
+	
+
+Flag indicating a root-cause alarm or a non-root-cause alarm:
+
+    Independent: indicates an alarm for which alarm correlation analysis is not performed.
+    RootCause: indicates a root-cause alarm.
+    nonRootCause: indicates a non-root-cause alarm.
+
+C=Generating time
+	
+
+Time when an alarm is generated
+
+D=Clearing time
+	
+
+Time when an alarm is cleared
+
+E=ID
+	
+
+Alarm ID
+
+F=Name
+	
+
+Alarm name
+
+G=Level
+	
+
+Alarm severity level
+
+You can run the alarm-name severity command to set this parameter.
+
+H=State
+	
+
+Alarm status:
+
+    Start
+    End
+
+I=Description information for locating(Para info, Reason info)
+	
+
+Alarm description including alarm parameters and causes for triggering alarms
+
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+	
+
+Sequence number of the root-cause alarm (for non-root-cause alarms only)
+display alarm history
+Function
+
+The display alarm history command displays historical alarms on the device.
+Format
+
+display alarm history
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display alarm history command to view the alarms that are cleared or generated on the device. The display alarm history command displays a maximum of 300 alarm history records.
+Example
+
+# Display historical alarms on the device.
+
+<HUAWEI> display alarm history
+A/B/C/D/E/F/G/H/I/J
+A=Sequence, B=RootKindFlag(Independent|RootCause|nonRootCause)
+C=Generating time, D=Clearing time
+E=ID, F=Name, G=Level, H=State
+I=Description information for locating(Para info, Reason info)
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+
+  3/Independent/2010-07-14 09:40:20-08:00/2010-07-14 09:40:23-08:00/0x502001/linkDown/
+Critical/End/OID 1.3.6.1.6.3.1.1.5.3 Interface 5 turned into DOWN state.
+
+Table 3-162 Description of the display alarm history command output
+
+Item
+	
+
+Description
+
+A/B/C/D/E/F/G/H/I/J
+	
+
+Alarm display format
+
+A=Sequence
+	
+
+Sequence number
+
+B=RootKindFlag(Independent|RootCause|nonRootCause)
+	
+
+Flag indicating a root-cause alarm or a non-root-cause alarm:
+
+    Independent: indicates an alarm for which alarm correlation analysis is not performed.
+    RootCause: indicates a root-cause alarm.
+    nonRootCause: indicates a non-root-cause alarm.
+
+C=Generating time
+	
+
+Time when an alarm is generated
+
+D=Clearing time
+	
+
+Time when an alarm is cleared
+
+E=ID
+	
+
+E=ID
+
+F=Name
+	
+
+Alarm ID
+
+G=Level
+	
+
+Alarm severity level
+
+You can run the alarm-name severity command to set this parameter.
+
+H=State
+	
+
+Alarm status:
+
+    Start
+    End
+
+I=Description information for locating(Para info, Reason info)
+	
+
+Alarm description including alarm parameters and causes for triggering alarms
+
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+	
+
+Sequence number of the root-cause alarm
+display alarm information
+Function
+
+The display alarm information command displays alarm configurations.
+Format
+
+display alarm information [ name alarm-name ]
+Parameters
+Parameter 	Description 	Value
+name alarm-name 	
+
+Displays the configuration of a specified alarm. If this parameter is not set, configurations of all alarms are displayed.
+	
+
+The value is a string and varies according to the registered device type.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To view alarm configurations on the device, run the display alarm information command.
+
+If no alarm name is specified, information about all alarms in the system will be displayed.
+
+In addition, to change the severity level of an alarm, you can run the alarm-name alarm-name severity severity command.
+Example
+# Display the configuration of the alarm named linkUp.
+
+<HUAWEI> display alarm information name linkUp
+**********************************                                              
+  AlarmName: linkUp                                                             
+  AlarmType: Resume Alarm                                                       
+  AlarmLevel: Cleared                                                           
+  Suppress Period: NA                                                           
+  CauseAlarmName: linkDown                                                      
+  Match VB Name: ifIndex                                                        
+**********************************                                              
+
+Table 3-163 Description of the display alarm information command output
+
+Item
+	
+
+Description
+
+AlarmName
+	
+
+Name of an alarm.
+
+AlarmType
+	
+Alarm type:
+
+    Alarm: indicates a fault occurs.
+
+    Resume Alarm: indicates a fault is rectified.
+
+AlarmLevel
+	
+
+Alarm severity.
+
+To set this parameter, run the alarm-name severity command.
+
+Suppress Period
+	
+
+Alarm reporting delay. To set this parameter, run the suppression alarm-name command.
+
+If this field displays NA, this alarm does not support the delayed alarm reporting function.
+
+CauseAlarmName
+	
+
+Name of the root-cause alarm.
+
+Name of the root-cause alarm, namely, paired alarm name.
+
+Match VB Name
+	
+
+Matching content of paired alarms.
+display alarm manual-clear
+Function
+
+The display alarm manual-clear command displays the alarms that are not reported repeatedly after being cleared.
+Format
+
+display alarm manual-clear
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After the mask manual-clear alarm command is executed to prevent manually cleared active alarms from being reported repeatedly and then the clear alarm active command or MIB table hwAlarmActiveTable is used to manually clear active alarms, you can run the display alarm manual-clear command to view the active alarms that are not reported repeatedly after being cleared.
+Example
+
+# Display the alarms that are not reported repeatedly after being cleared.
+
+<HUAWEI> display alarm manual-clear
+A/B/C/D/E/F/G/H/I/J
+A=Sequence, B=RootKindFlag(Independent|RootCause|nonRootCause)
+C=Generating time, D=Clearing time
+E=ID, F=Name, G=Level, H=State
+I=Description information for locating(Para info, Reason info)
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+
+  2/Independent/2016-05-04 10:38:46-08:00/-/0xff14280c/hwEntityOffline/Major/Start/ OID 1
+.3.6.1.4.1.2011.5.25.129.2.1.13 Physical entity changed to the offline state. (E
+ntityPhysicalIndex=16842752, BaseTrapSeverity=5, BaseTrapProbableCause=69120, Ba
+seTrapEventType=5, EntPhysicalContainedIn=16777216, EntPhysicalName="LPU slot 1"
+, RelativeResource="", ReasonDescription="Because of get offline message, the en
+tity of SLOT1 changed to offline state")
+
+Table 3-164 Description of the display alarm manual-clear command output
+
+Item
+	
+
+Description
+
+A/B/C/D/E/F/G/H/I/J
+	
+
+Alarm display format
+
+A=Sequence
+	
+
+Alarm sequence number.
+
+B=RootKindFlag(Independent|RootCause|nonRootCause)
+	
+
+Flag indicating a root-cause alarm or a non-root-cause alarm:
+
+    Independent: indicates an alarm for which alarm correlation analysis is not performed.
+    RootCause: indicates a root-cause alarm.
+    nonRootCause: indicates a non-root-cause alarm.
+
+C=Generating time
+	
+
+Time when an alarm is generated.
+
+D=Clearing time
+	
+
+Time when an alarm is cleared.
+
+E=ID
+	
+
+Alarm ID.
+
+F=Name
+	
+
+Alarm name.
+
+G=Level
+	
+
+Alarm severity.
+
+To set this parameter, run the alarm-name severity command.
+
+H=State
+	
+
+Alarm status:
+
+    Start
+    End
+
+I=Description information for locating(Para info, Reason info)
+	
+
+Alarm description.
+
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+	
+
+Sequence number of a root-cause alarm (for non-root-cause alarms only)
+display alarm urgent
+Function
+
+Using the display alarm urgent command, you can view hardware alarms on the device.
+Format
+
+display alarm urgent [ slot slot-id | time interval ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+time interval
+	
+
+Displays hardware alarms generated in the last period of time. interval specifies the period.
+	
+
+The value is an integer that ranges from 1 to 10000, in minutes.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can use the command to view hardware alarms, including alarms about the abnormality of the temperature, the fan, and the chip.
+
+If no parameter is specified, the command displays all the hardware alarms.
+Example
+
+# Display hardware alarms of the device.
+
+<HUAWEI> display alarm urgent
+ Alarm:                                                                                                                             
+                                                                                                                                    
+Alarm                    Slot      Date        Time(DST)     Location                                                               
+---------------------------------------------------------------------------                                                         
+Temp normal              1         2000/04/09  04:52:47      Slot 1                                                                 
+Temp low                 1         2000/04/09  04:52:14      Slot 1                                                                 
+Temp normal              1         2000/04/09  04:39:05      Slot 1                                                                 
+Temp high                1         2000/04/09  04:37:23      Slot 1                                                                 
+Temp normal              2         2000/04/10  07:13:16      Slot 2                                                                 
+Temp high                2         2000/04/10  07:11:22      Slot 2   
+
+Table 3-165 Description of the display alarm urgent command output
+
+Item
+	
+
+Description
+
+Alarm
+	
+Details about an alarm.
+
+    Fan pulled out: A fan module is removed.
+    Fan plugged in: A fan module is installed.
+    Fan abnormal: A fan module is not working properly.
+    Fan normal: A fan module is working properly.
+    Fan unmatched: A fan module does not match the device model.
+    Fan matched: A fan module matches the device model.
+    Power pulled out: A power module is removed.
+    Power plugged in: A power module is installed.
+    Power abnormal: A power module is not working properly.
+    Power normal: A power module is working properly.
+    PWR Input Vol Low: A power module is in an input power outage or undervoltage condition.
+    PWR Input Vol Low Resume: A power module recovers from an input power outage or undervoltage condition.
+    Built-in power Off: A built-in power module does not provide power.
+    Built-in power On: A built-in power module provides power normally.
+    Temp high: The temperature is too high.
+    Temp low: The temperature is too low.
+    Temp normal: The temperature returns to the normal range.
+    Temp chip abnormal: A temperature sensor is faulty.
+    Temp chip normal: A temperature sensor recovers from a failure.
+    storage abnormal: The storage utilization exceeded 85%.
+
+Slot
+	
+
+Slot ID of the device where alarms are generated.
+
+Date
+	
+
+Date when alarms are generated.
+
+Time(DST)
+	
+
+Time when alarms are generated.
+
+Location
+	
+
+Position where alarms are generated.
+display event
+Function
+
+The display event command displays events on the device.
+Format
+
+display event
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To obtain the contents of events in the system, you can run the display event command.
+Example
+
+# Display events on the device.
+
+<HUAWEI> display event
+A/B/C/D/E/F/G/H/I/J                                                             
+A=Sequence, B=RootKindFlag(Independent|RootCause|nonRootCause)                  
+C=Generating time, D=Clearing time                                              
+E=ID, F=Name, G=Level, H=State                                                  
+I=Description information for locating(Para info, Reason info)                  
+J=RootCause alarm sequence(Only for nonRootCause alarm)                         
+                                                                                
+  1/Independent/2008-10-12 22:42:28-08:00/-/0x40812000/warmStart/Warning/Start/O
+ID 1.3.6.1.6.3.1.1.5.2 warmStart                                                
+  2/Independent/2008-10-12 22:42:28-08:00/-/0x41132002/hgmpMemberStatusChange/Wa
+rning/Start/OID:1.3.6.1.4.1.2011.6.7.1.0.3, DeviceID:0018-8201-0987, Role:17.   
+  3/Independent/2008-10-16 17:50:32-08:00/-/0x41b82000/hwCfgChgNotify/Warning/St
+art/OID 1.3.6.1.4.1.2011.5.25.191.3.1 configurations have been changed. The curr
+ent change number is 2, the change loop count is 0, and the maximum number of re
+cords is 4095.                                                                  
+
+Table 3-166 Description of the display event command output
+
+Item
+	
+
+Description
+
+A/B/C/D/E/F/G/H/I/J
+	
+
+Event display format
+
+A=Sequence
+	
+
+Sequence number of an event
+
+B=RootKindFlag(Independent|RootCause|nonRootCause)
+	
+
+Flag indicating a root-cause alarm or a non-root-cause alarm (The value of this field is Independent for any event.)
+
+C=Generating time
+	
+
+Time when the event is generated
+
+D=Clearing time
+	
+
+Time when the event is cleared (for non-root-cause alarms only)
+
+E=ID
+	
+
+Event ID
+
+F=Name
+	
+
+Event name
+
+G=Level
+	
+
+Event level
+
+H=State
+	
+
+Event status:
+
+    Start
+    End
+
+I=Description information for locating(Para info, Reason info)
+	
+
+Description of an event, including parameters of the event and the reason why the event was triggered.
+
+J=RootCause alarm sequence(Only for nonRootCause alarm)
+	
+
+This parameter is valid only for alarms.
+display event information
+Function
+
+The display event information command displays event configurations.
+Format
+
+display event information [ name event-name ]
+Parameters
+Parameter 	Description 	Value
+name event-name 	Displays the configuration of a specified event. If this parameter is not set, configurations of all events are displayed. 	
+
+The value is a string and varies according to the registered device type.
+Views
+
+All views
+Default Level
+1: Monitoring level
+Usage Guidelines
+
+To view event configurations on the device, run the display event information command.
+
+If no event name is specified, information about all events in the system will be displayed.
+Example
+
+# Display registration information about the hwCfgManEventlog event.
+
+<HUAWEI> display event information name hwCfgManEventlog
+**********************************
+  EventName: hwCfgManEventlog
+  EventType: Critical Event
+  EventLevel: Warning
+  Suppress Period: NA
+  Match VB Name: hwCfgLogSrcCmd hwCfgLogSrcData hwCfgLogDesData
+**********************************
+
+Table 3-167 Description of the display event information command output
+
+Item
+	
+
+Description
+
+EventName
+	
+
+Event name.
+
+EventType
+	
+
+Event type.
+
+EventLevel
+	
+
+Event level, which cannot be configured.
+
+Suppress Period
+	
+
+Event report delay period. To set this parameter, run the suppression event-name command.
+
+If this field displays NA, this event does not support the delayed event reporting function.
+
+Match VB Name
+	
+
+Matching content of repeated events.
+event
+Function
+
+Using the event command, you can enter the event view.
+Format
+
+event
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After running the event command to enter the event view, you can configure event management functions.
+Example
+
+# Enter the event view.
+
+<HUAWEI> system-view
+[HUAWEI] event
+[HUAWEI-event]
+
+mask manual-clear alarm
+Function
+
+The mask manual-clear alarm command prevents manually cleared active alarms from being reported repeatedly.
+
+The undo mask manual-clear alarm command restores the default configuration.
+
+By default, active alarms are reported repeatedly after being manually cleared.
+Format
+
+mask manual-clear alarm
+
+undo mask manual-clear alarm
+Parameters
+
+None
+Views
+
+Alarm management view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+By default, after the clear alarm active command or MIB table hwAlarmActiveTable is used to manually clear active alarms, active alarms are reported repeatedly when being generated again. To prevent manually cleared active alarms from being reported repeatedly, run the mask manual-clear alarm command.
+
+After the mask manual-clear alarm command is executed and then the clear alarm active command or MIB table hwAlarmActiveTable is used, cleared active alarms will not be reported repeatedly before clear alarms of active alarms are reported. To view all the active alarms that are not reported repeatedly, run the display alarm manual-clear command.
+
+Precautions
+
+Before the mask manual-clear alarm command is executed, the active alarms manually cleared using the clear alarm active command or MIB table hwAlarmActiveTable will be reported repeatedly.
+Example
+
+# Prevent manually cleared active alarms from being reported repeatedly.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] mask manual-clear alarm
+
+reset alarm urgent
+Function
+
+The reset alarm urgent command clears all alarm messages.
+Format
+
+reset alarm urgent slot slot-id
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+You can run the reset alarm urgent command to clear all alarm messages. Confirm the action before you run this command.
+Example
+
+# Clear all alarm messages of the device that slot id is 0.
+
+<HUAWEI> system-view
+
+[HUAWEI] reset alarm urgent slot 0
+
+set alarm resend interval
+Function
+
+The set alarm resend interval command set the alarm reporting interval.
+
+The undo set alarm resend interval command restores the default alarm reporting interval.
+
+By default, the alarm interval is 10 minutes.
+Format
+
+set alarm resend interval interval-value
+
+undo set alarm resend interval
+Parameters
+Parameter 	Description 	Value
+interval-value 	Specifies the alarm interval. 	The value is an integer that ranges from 0 to 65535, in minutes.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The set alarm resend interval command sets the interval at which alarms are generated. If the periodic alarm reporting function is not required, set the interval to 0.
+
+Precautions
+
+If the alarm reporting interval is set to 0, the system does not report alarms periodically.
+Example
+
+# Set the alarm reporting interval to 4 minutes.
+
+<HUAWEI> system-view
+[HUAWEI] set alarm resend interval 4
+
+suppression alarm-name
+Function
+
+The suppression alarm-name command modifies a delay period after which a generated alarm is reported.
+
+The undo suppression alarm-name command restores the configured delay period after which a generated alarm is reported.
+
+By default, the system defines a delay period after which a generated alarm is reported. To view this default delay period, run the undo suppression alarm-name command and then the display alarm information command. If the Suppress Period field displays NA for an alarm, this alarm does not support the delayed alarm reporting function.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+suppression alarm-name alarm-name { cause-period cause-seconds | clear-period clear-seconds }
+
+undo suppression alarm-name alarm-name { cause-period | clear-period }
+Parameters
+Parameter 	Description 	Value
+
+alarm-name
+	
+
+Specifies the name of an alarm for which the delay period is set.
+	
+
+The value cannot be the alarm name of which the Suppress Period field in the display alarm information command output displays NA.
+
+cause-period cause-seconds
+	
+
+Specifies the period after which a generated alarm is reported.
+	
+
+The value is an integer ranging from 0 to 600, in seconds. If the value is set to 0s, the alarm management module sends the alarm to the NMS without any delay.
+
+clear-period clear-seconds
+	
+
+Specifies the period after which a generated clear alarm is reported.
+	
+
+The value is an integer ranging from 0 to 600, in seconds. If the value is set to 0s, the alarm management module sends the alarm to the NMS without any delay.
+Views
+
+Alarm view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If a certain alarm is repeatedly generated, you can enable delayed alarm reporting and set a period after which the alarm is reported to prevent the alarm from being reported during this period.
+
+After the period is set for a certain alarm:
+
+    If no clear alarm is generated during the period, the alarm is not reported to the NMS until the period expires.
+    If a clear alarm is generated during this period, the alarm and its clear alarm are both deleted from the alarm queue and will not be reported to the NMS.
+
+If the delay period is too short, alarm reporting is not efficiently delayed. If the delay period is too long, alarm reporting is postponed and the time when the fault occurs cannot be correctly obtained. For most alarms, the default delay period is recommended. For common alarms, such as alarms about hardware and environment, delayed alarm reporting is not recommended.
+
+The value of cause-period cause-seconds is irrelevant to the value of clear-period clear-seconds. The delay in reporting an alarm and the delay in reporting a clear alarm can be configured separately.
+
+Prerequisites
+
+Before running the suppression alarm-name command, ensure that delayed alarm reporting has been enabled using the delay-suppression enable command.
+
+Precautions
+
+    If the delay period is changed when an alarm is being sent, the changed delay period takes effect on the next alarm to be sent.
+    If alarm-name specifies an alarm, you can configure only cause-period cause-seconds. If it specifies a clear alarm, you can configured only clear-period clear-seconds.
+
+Example
+
+# Set the hwsysmasterhderror alarm to be reported 5s after it is generated.
+
+<HUAWEI> system-view
+[HUAWEI] alarm
+[HUAWEI-alarm] delay-suppression enable
+[HUAWEI-alarm] suppression alarm-name hwsysmasterhderror cause-period 5
+
+suppression event-name
+Function
+
+The suppression event-name command modifies a delay period after which a generated event is reported.
+
+The undo suppression event-name command restores the configured delay period after which a generated event is reported.
+
+By default, the system defines a delay period after which a generated event is reported. To view this default delay period, run the undo suppression event-name command and then the display event information command. If the Suppress Period field displays NA for an alarm, this alarm does not support the delayed alarm reporting function.
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support this command.
+Format
+
+suppression event-name event-name period seconds
+
+undo suppression event-name event-name period
+Parameters
+Parameter 	Description 	Value
+
+event-name
+	
+
+Specifies the name of an event for which the delay period is set.
+	
+
+The value cannot be the event name of which the Suppress Period field in the display event information command output displays NA.
+
+period seconds
+	
+
+Specifies the period after which a generated event is reported.
+	
+
+The value is an integer ranging from 0 to 600, in seconds. If the value is set to 0s, the alarm management module sends the event to the NMS without any delay.
+Views
+
+Event view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In the case where a certain event is repeatedly generated, you can enable delayed event reporting and set a period after which a generated event is reported.
+
+After the delay period is set for a certain event, if an event is generated several times during the delay period, the system reports only the first one to the NMS when the delay period expires and discards the following ones.
+
+Prerequisites
+
+Before running the suppression event-name command, ensure that delayed alarm reporting has been enabled using the delay-suppression enable command.
+
+Precautions
+
+If the delay period is changed when an event is being sent, the changed delay period takes effect on the next event to be sent.
+Example
+
+# Set the delay period to 5s after which a generated hwFlhSyncFailNotification event is reported.
+
+<HUAWEI> system-view
+[HUAWEI] event
+[HUAWEI-event] delay-suppression enable
+[HUAWEI-event] suppression event-name hwFlhSyncFailNotification period 5
+
