@@ -1,0 +1,120 @@
+display remote-unit poe realtime
+Function
+
+The display remote-unit poe realtime command displays real-time PoE information about an RU.
+Format
+
+display remote-unit poe { connect-interface interface-type interface-number | name remote-unit-name } realtime
+Parameters
+Parameter 	Description 	Value
+
+name remote-unit-name
+	
+
+Specifies the alias of an RU.
+	
+
+The value must be an existing RU alias.
+
+interface interface-type interface-number
+	
+
+Specifies the type and number of an interface. The interface type and number can be closely next to each other or separated by a space character.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run this command to view real-time PoE information about an RU.
+Example
+
+# Display real-time PoE information about all interfaces on the RU connected to GigabitEthernet0/0/19 on the central switch.
+
+<HUAWEI> system-view
+[HUAWEI] display remote-unit poe connect-interface GigabitEthernet 0/0/19 realtime
+Info: This operation will take several seconds. Please wait....
+ESN                :219801177601XXXXXXXX 
+Name               :- 
+Device type        :S5731-L8P2HT-RUA
+Connect interface  :GigabitEthernet0/0/19 
+------------------------------------------------------ 
+PSE information    : 
+  PoE power supply(mW)                                  :83000 
+  Total available power(mW)                             :46100 
+  Total power consumption(mW)                           :36900 
+  Power peak value(mW)                                  :50300 
+  Power voltage(V)                                      :53 
+  PSE reset times                                       :0 
+  PoE failure                                           :NO 
+------------------------------------------------------
+
+Table 3-68 Description of the display remote-unit port poe command output
+
+Item
+	
+
+Description
+
+ESN
+	
+
+ESN of an RU.
+
+Name
+	
+
+Alias of an RU. This field displays a hyphen (-) if an RU is not configured with an alias.
+
+Device type
+	
+
+Device type of an RU.
+
+Connect interface
+	
+
+Interface connecting the central switch to an RU.
+
+PoE power supply(mW)
+	
+
+Power supply.
+
+Total available power(mW)
+	
+
+Total available power.
+
+Total power consumption(mW)
+	
+
+Total output power.
+
+Power peak value(mW)
+	
+
+Peak output power.
+
+Power voltage(V)
+	
+
+Output voltage.
+
+PSE reset times
+	
+
+Number of times that the PSE chip is reset.
+
+PoE failure
+	
+
+Whether the PoE firmware is abnormal:
+
+    NO: normal
+    YES: abnormal
