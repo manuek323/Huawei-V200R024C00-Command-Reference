@@ -1,0 +1,54 @@
+port uplink default vlan
+Function
+
+The port uplink default vlan command configures the default VLAN for the uplink interface on an RU.
+
+The undo port uplink default vlan command restores the default setting.
+
+By default, the uplink interface on an RU uses VLAN 1 as its default VLAN.
+Format
+
+port uplink default vlan vlan-id
+
+undo port uplink default vlan
+Parameters
+Parameter 	Description 	Value
+
+vlan-id
+	
+
+Specifies the default VLAN ID for the uplink interface on an RU.
+	
+
+The value is an integer in the range from 1 to 4094.
+Views
+
+remote-unit N view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If terminals connected to an RU run the same service, they can reside in the same service VLAN. In this situation, you can run the port uplink default vlan command to configure the service VLAN as the default VLAN for the uplink interface on the RU.
+
+An RU saves the VLAN configuration delivered by the central switch to it in its flash memory and forwards traffic based on this VLAN configuration after being powered on. After the RU goes online on the central switch, the central switch synchronizes the latest VLAN configuration to the RU's flash memory.
+
+Prerequisites
+
+You have run the vlan mode manual command to configure the manual VLAN mode for the RU.
+
+Follow-up Procedure
+
+After you run the commands for configuring the VLAN mode for an RU and VLANs for RU interfaces, run the commit command to deliver the VLAN configuration to the RU or bring the RU offline and then online again for the configuration to take effect.
+
+Run the port uplink untagged vlan command to configure the default VLAN as an allowed VLAN in untagged mode for the uplink interface.
+Example
+
+# Set VLAN 10 as the default VLAN for the uplink interface on RU 0.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit 0
+[HUAWEI-remote-unit-0] port uplink default vlan 10
+
