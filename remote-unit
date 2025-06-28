@@ -1,0 +1,26 @@
+remote-unit
+Function
+
+The remote-unit command displays the remote-unit view.
+Format
+
+remote-unit
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to enter the global RU view to perform global configurations for RUs.
+Example
+
+# Enter the remote-unit view.
+
+<HUAWEI> system-view 
+[HUAWEI] remote-unit 
+
