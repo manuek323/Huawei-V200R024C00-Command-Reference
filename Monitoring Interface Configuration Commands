@@ -1,0 +1,410 @@
+Monitoring Interface Configuration Commands
+
+    Command Support
+    display monitor input
+    display monitor output
+    monitor input
+    monitor input enable
+    monitor output enable
+    monitor output keeptime
+
+Command Support
+
+Only the following switch models support monitoring interfaces:
+
+S5720I-SI, S5735-S-I
+display monitor input
+Function
+
+The display monitor input command displays the status of an input line connected to a monitoring interface.
+
+Only the S5735-S-I supports this command.
+Format
+
+display monitor input { line-id | all } [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+line-id
+	
+
+Displays the status of the specified input line.
+	
+
+The value is an integer that ranges from 1 to 2.
+
+all
+	
+
+Displays the status of all input lines.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies the stack ID if stacking is configured.
+	
+
+The value is determined based on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display monitor input command to check the status of an input line connected to a monitoring interface, including the name, the normal level, and the current status of the input line, and whether the monitoring function is enabled.
+Example
+
+Display the current status of all input lines.
+
+<HUAWEI> display monitor input all
+                                                                                 
+--------------------------------------------------------------------------      
+LineID  LineName                        Enable  NormalStatus  CurrentStatus     
+--------------------------------------------------------------------------      
+1       Input1                          enable  low-level     abnormal          
+2       Input2                          enable  high-level    normal            
+--------------------------------------------------------------------------      
+
+Table 3-128 Description of the display monitor input command output
+
+Item
+	
+
+Description
+
+LineID
+	
+
+ID of the input line connected to a monitoring interface.
+
+LineName
+	
+
+Name of the input line connected to a monitoring interface. To set the name, run the monitor input command.
+
+Enable
+	
+
+Whether an input line connected to a monitoring interface is enabled.
+
+To set the parameter, run the monitor input enable command.
+
+NormalStatus
+	
+Normal level of an input line connected to a monitoring interface:
+
+    low-level: The normal level is low level.
+
+    high-level: The normal level is high level.
+
+To set the normal level, run the monitor input command.
+
+CurrentStatus
+	
+Current status of an input line connected to a monitoring interface:
+
+    normal: The input line is in normal state.
+
+    abnormal: The input line is abnormal state.
+
+display monitor output
+Function
+
+The display monitor output command displays the status of an output line connected to a monitoring interface.
+
+Only the S5735-S-I supports this command.
+Format
+
+display monitor output { line-id | all }
+Parameters
+Parameter 	Description 	Value
+
+line-id
+	
+
+Displays the status of a specified output line.
+	
+
+The value is 1.
+
+all
+	
+
+Displays the status of all output lines.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After running the monitor output enable or undo monitor output enable command, you can run the display monitor output command to check the status of an output line connected to a monitoring interface, including line ID, the initial status of the monitoring function on the output line, and the current status of the monitoring function on the output line. If the initial status of the monitoring function on the output line is the same as the current status, the maintenance compartment door is closed. If they are inconsistent, the maintenance compartment door is opened.
+Example
+
+# Display the status of all output lines.
+
+<HUAWEI> display monitor output all
+-----------------------------------                                                                                                    
+LineID  Config  Current Keeptime(s)                                                                                                    
+-----------------------------------                                                                                                    
+1       enable  enable  3                                                                                                           
+-----------------------------------   
+
+Table 3-129 Description of the display monitor output command output
+
+Item
+	
+
+Description
+
+LineID
+	
+
+ID of the output line connected to a monitoring interface.
+
+Config
+	
+
+Initial status of the monitoring function on the output line.
+
+    enable: The monitor output enable command is run.
+    disable: The undo monitor output enable command is run.
+
+Current
+	
+
+Current status of the monitoring function on the output line.
+
+If the value of this field is the same as that of Config, the maintenance compartment door is closed. If they are inconsistent, the maintenance compartment door is opened.
+
+Keeptime(s)
+	
+
+Hold time of the signals indicating the maintenance compartment door is open or closed when the monitoring function on the output line connecting to a monitoring interface is enabled. The unit is second.
+monitor input
+Function
+
+The monitor input command configures the name and normal level of the input lines connected to a monitoring interface.
+
+The undo monitor input command restores the name and normal level of the input lines connected to a monitoring interface to default value.
+
+By default, the name of a monitored input line is Input1 or Input2. The normal level is low-level.
+
+Only the S5735-S-I supports this command.
+Format
+
+monitor input line-id name line-name normal-state { low-level | high-level } [ slot slot-id ]
+
+undo monitor input line-id [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+line-id
+	
+
+Specifies the ID of an input line.
+	
+
+The value is an integer that ranges from 1 to 2.
+
+name line-name
+	
+
+Specifies the name of an input line.
+	
+
+The name is a string of 1 to 31 case-sensitive characters without spaces.
+
+normal-state { low-level | high-level }
+	
+Specifies the normal level of input lines connected to a monitoring interface.
+
+    low-level: indicates that the normal level is low level.
+
+    high-level: indicates that the normal level is high level.
+
+	
+
+-
+
+slot slot-id
+	
+
+Specifies the stack ID if stacking is configured.
+	
+
+The value is determined based on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run the monitor input command to configure the name and normal level of the input lines connected to a monitoring interface. When the level of the input line changes, the device generates an alarm.
+Example
+
+# Configure the name of input line 1 as line1 and normal level as high-level.
+
+<HUAWEI> system-view
+[HUAWEI] monitor input 1 name line1 normal-state high-level
+
+monitor input enable
+Function
+
+The monitor input enable command enables the monitoring function on an input line.
+
+The undo monitor input enable command disables the monitoring function on an input line.
+
+By default, the monitoring function on an input line is disabled.
+
+Only the S5735-S-I supports this command.
+Format
+
+monitor input line-id enable [ slot slot-id ]
+
+undo monitor input line-id enable [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+line-id
+	
+
+Specifies the ID of an input line.
+	
+
+The value is an integer that ranges from 1 to 2.
+
+slot slot-id
+	
+
+Specifies the stack ID if stacking is configured.
+	
+
+The value is determined based on the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run the monitor input enable command to enable the monitoring function on an input line so that you can monitor the application environment of the device.
+Example
+
+# Enable the monitoring function on input line 1.
+
+<HUAWEI> system-view
+[HUAWEI] monitor input 1 enable
+
+monitor output enable
+Function
+
+The monitor output enable command configures the initial status of the monitoring function on an output line connected to a monitoring interface to enabled.
+
+The undo monitor output enable command configures the initial status of the monitoring function on an output line connected to a monitoring interface to disabled.
+
+By default, the initial status of the monitoring function on an output line is not configured.
+
+Only the S5735-S-I supports this command.
+Format
+
+monitor output line-id enable slot slot-id
+
+undo monitor output line-id enable slot slot-id
+Parameters
+Parameter 	Description 	Value
+
+line-id
+	
+
+Specifies the ID of an output line.
+	
+
+The value is 1.
+
+slot slot-id
+	
+
+Specifies the slot ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After the monitor output enable command is run, the initial status of the monitoring function on an output line (DOUT status for short) is configured to enabled. If the maintenance compartment door is opened, the DOUT status changes to disabled. If the maintenance compartment door is closed, the DOUT status changes to enabled. You can monitor whether the maintenance compartment door is opened based on the DOUT status.
+
+Similarly, after the undo monitor output enable command is run, the initial DOUT status is configured to disabled. If the maintenance compartment door is opened, the DOUT status changes to enabled. If the maintenance compartment door is closed, the DOUT status changes to disabled.
+Example
+
+# Configure the initial status of the monitoring function on output line 1 to enabled.
+
+<HUAWEI> system-view
+[HUAWEI] monitor output 1 enable slot 0
+
+monitor output keeptime
+Function
+
+The monitor output keeptime command sets the hold time of the signals indicating the maintenance compartment door on a device is open or closed when the monitoring function on the output line connecting to a monitoring interface is enabled.
+
+The undo monitor output keeptime command restores the default setting.
+
+By default, the hold time of the signals indicating the maintenance compartment door on a device is open or closed is 3 seconds.
+
+Only the S5735-S-I supports this command.
+Format
+
+monitor output keeptime time slot slot-id
+
+undo monitor output keeptime slot slot-id
+Parameters
+Parameter 	Description 	Value
+
+time
+	
+
+Specifies the hold time.
+	
+
+The value is an integer ranging from 1 to 3600, in seconds.
+
+slot slot-id
+	
+
+Specifies the slot ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+By default, the hold time of the signals indicating the maintenance compartment door on a device is open or closed is three seconds. That is, a camera keeps monitoring the device maintenance compartment door for 3 seconds and then turns to another direction. You can run the monitor output keeptime command to change the hold time based on the actual situation of the camera.
+Example
+
+# Set the hold time to 10 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] monitor output keeptime 10 slot 0  
+
