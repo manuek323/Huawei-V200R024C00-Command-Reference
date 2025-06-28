@@ -1,0 +1,2756 @@
+3 RIP Configuration
+3.1 Overview of RIP
+3.2 Understanding RIP
+3.3 Summary of RIP Configuration Tasks
+3.4 Licensing Requirements and Limitations for RIP
+3.5 Default Settings for RIP
+3.6 Configuring Basic RIP Functions
+3.7 Configuring RIP-2
+3.8 Preventing Routing Loops
+3.9 Controlling RIP Routing
+3.10 Controlling RIP Route Advertisement
+3.11 Controlling Receiving of RIP Routing Information
+3.12 Improving RIP Network Performance
+3.13 Configuring BFD for RIP
+3.14 Configuring the Network Management Function for RIP
+3.15 Maintaining RIP
+3.16 Configuration Examples for RIP
+3.17 Troubleshooting RIP
+3.1 Overview of RIP
+Definition
+RIP is a distance-vector protocol that uses hop count to measure the distance to a
+destination. It is a simple Interior Gateway Protocol (IGP) that is easier to
+implement, configure, and manage than other routing protocols such as OSPF and
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 74
+IS-IS. RIP exchanges routing information using UDP packets through UDP port
+520.
+Two RIP versions are used in IPv4 networks: RIP version 1 (RIP-1) and RIP version
+2 (RIP-2). RIP-2 is an extension to RIP-1.
+Purpose
+RIP is widely used on small-sized networks to discover routes and generate routing
+information. It is not suitable for complex or large-sized networks.
+3.2 Understanding RIP
+3.2.1 RIP Fundamentals
+RIP Routing Table
+When RIP starts on a switch, the RIP routing table on the switch contains only
+direct routes. Neighboring switches on different network segments can
+communicate with each other only after they learn routing entries from each
+other.
+Figure 3-1 shows the process of generating a RIP routing table.
+Figure 3-1 RIP routing table generation
+1. RIP starts on SwitchA and SwitchB.
+2. SwitchA broadcasts a Request packet to neighboring routers.
+3. SwitchB receives the Request packet, encapsulates its RIP routing table into a
+Response packet, and then broadcasts the Response packet to the network
+segment connected to the interface that received the Request packet.
+4. SwitchA receives the Response packet and then generates its RIP routing table
+based on this packet.
+RIP updates and selects routes through route advertisements. In this situation,
+switches do not know the entire network topology and just know the distances to
+destination networks and the direction or interface used to reach destination
+networks. In Figure 3-2, SwitchB receives a route advertisement from SwitchA and
+knows that it can reach the network 192.168.1.0/24 through SwitchA with the hop
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 75
+count 1. Even though information contained in this advertisement becomes
+incorrect, SwitchB still considers that it can reach the network 192.168.1.0/24
+through SwitchA with the hop count 1. This is the root cause for routing loops on
+a RIP network.
+Figure 3-2 RIP route update and selection based on route advertisements
+RIP Metric
+In RIP, the default hop count from a device to its directly connected network is 0,
+and the hop count from a device to a reachable network through another device is
+1. That is, the hop count (the metric) equals the number of devices along the path
+from the local network to the destination network.
+In Figure 3-3, S1 has two paths to the network segment 192.168.10.0/24:
+● One path is S1-S2-S5, passing through two devices: S2 and S5. It has a hop
+count of 2 and bandwidth of 1.544 Mbit/s.
+● The other path is S1-S3-S4-S5, passing through three devices: S3, S4, and S5.
+It has a hop count of 3 and bandwidth of 1 Gbit/s.
+Figure 3-3 RIP metric
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 76
+As required by the RIP metric standards, packets will be forwarded along the path
+passing through S2; however, the link bandwidth of this path is not the highest.
+This causes low bandwidth efficiency on the RIP network and hinders QoS
+management.
+To prevent the hop count from becoming infinite when RIP routes are flooded
+indefinitely on the network, and to limit the convergence time, RIP allows a
+maximum of 15 hops. A hop count of 16 or greater is defined as infinity, making
+the destination network or host unreachable. This design limits the network scale
+that RIP supports. Therefore, RIP is not suitable for large-scale networks.
+RIP Route Update and Maintenance
+RIP uses three timers to update and maintain routing information:
+● Update timer
+When this timer expires, a RIP device immediately sends an Update packet.
+● Age timer
+If a RIP device does not receive any Update packet of a route from a neighbor
+within the Age timer, the RIP device considers this route unreachable.
+● Garbage-collect timer
+If a RIP device does not receive any Update packet of an unreachable route
+within the Garbage-collect timer, the device deletes this route from its RIP
+routing table.
+The interval for sending Update packets is determined by the Update timer, which
+is 30 seconds by default.
+Each routing entry has two timers: Age timer and Garbage-collect timer. When a
+RIP device adds a learned route to the local RIP routing table, the Age timer starts
+for the route. If the RIP device does not receive an Update packet from the
+neighbor within the aging time, the RIP device sets the Cost value of the route to
+16 (unreachable) and starts the Garbage-collect timer. If the RIP device still does
+not receive any Update packet before the Garbage-collect timer expires, the RIP
+device deletes the route from the RIP routing table.
+Triggered Route Update
+When routing information changes, a device immediately sends an Update packet
+to its neighbors without waiting for the Update timer to expire. This function
+prevents routing loops.
+Figure 3-4 shows the process of triggering a route update.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 77
+Figure 3-4 Triggered route update
+SwitchC first learns that network 10.4.0.0 becomes unreachable.
+If SwitchC does not support triggered route update when detecting a network
+fault, it must wait until the Update timer expires. Before this timer expires, if
+SwitchC receives an Update packet from SwitchB, it learns an incorrect route to
+network 10.4.0.0. In this case, SwitchB and SwitchC are each other's next hop to
+network 10.4.0.0. This results in a routing loop.
+If SwitchC supports triggered route update when detecting a network fault, it
+immediately sends to SwitchB an Update packet, preventing a routing loop.
+3.2.2 RIP-2 Enhanced Features
+RIP has two versions: RIP-1 and RIP-2. RIP-2 is an extension to RIP-1.
+Comparison Between RIP-1 and RIP-2
+RIP-1 is a classful routing protocol, whereas RIP-2 is a classless routing protocol. In
+RIP-1, protocol packets can be advertised only in broadcast mode. Because RIP-1
+packets do not carry any mask information, they identify only the routes of
+natural network segments (Class A, Class B, and Class C). Therefore, RIP-1 does
+not support route summarization or discontiguous subnets.
+Figure 3-5 and Figure 3-6 show the RIP-1 and RIP-2 packet formats.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 78
+Figure 3-5 RIP-1 packet format
+Figure 3-6 RIP-2 packet format
+RIP-2 has the following advantages over RIP-1:
+● Supports route tag and can flexibly control routes based on the tag in routing
+policies.
+● Supports mask information and can therefore support route summarization
+and Classless Inter-Domain Routing (CIDR).
+● Supports a next-hop address and can select the optimal next-hop address on
+broadcast networks.
+● Supports the sending of update packets in multicast mode. Only RIP-2 devices
+can receive RIP-2 packets, saving resources.
+● Provides packet authentication to enhance security.
+RIP-2 Route Summarization
+When different subnet routes within the same natural network segment are
+transmitted to other network segments, these routes are summarized into one
+route of the same network segment. This process is called route summarization.
+RIP-2 route summarization improves scalability and efficiency and reduces the size
+of the routing table for large networks.
+RIP-2 route summarization is classified into two types:
+● RIP process-based classful summarization
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 79
+Summarized routes are advertised using natural masks. For example, route
+10.1.1.0/24 (metric=2) and route 10.1.2.0/24 (metric=3) are summarized as
+one route 10.0.0.0/8 (metric=2) in the natural network segment. RIP-2
+supports classful summarization to obtain the optimal metric.
+● Interface-based summarization
+You can specify a summarized address. For example, configure route
+10.1.0.0/16 (metric=2) on an interface as the summarized route of route
+10.1.1.0/24 (metric=2) and route 10.1.2.0/24 (metric=3).
+3.2.3 Split Horizon and Poison Reverse
+Split Horizon
+Split horizon prevents a route learned by RIP on an interface from being sent to
+neighbors through this interface. This function reduces bandwidth consumption
+and avoids routing loops.
+Split horizon provides two models for different networks:
+● Interface-based split horizon
+● Neighbor-based split horizon
+Interface-based split horizon is used on broadcast, point-to-point (P2P), and point-
+to-multipoint (P2MP) networks.
+Figure 3-7 illustrates interface-based split horizon.
+Figure 3-7 Interface-based split horizon
+RouterA sends routing information destined for 10.0.0.0/8 to RouterB. If split
+horizon is not configured, RouterB sends the route learned from RouterA back to
+RouterA. Therefore, RouterA learns two routes destined for 10.0.0.0/8: a direct
+route with hop count 0 and a route with the next hop RouterB and hop count 2.
+However, only the direct route in the RIP routing table of RouterA is active. If the
+route from RouterA to network 10.0.0.0 becomes unreachable, RouterB does not
+receive the route unreachable message immediately and continues to notify
+RouterA that network 10.0.0.0/8 is reachable.
+Therefore, RouterA receives incorrect routing information and considers that
+network 10.0.0.0/8 is reachable through RouterB, and RouterB considers that
+network 10.0.0.0/8 is reachable through RouterA, resulting in a routing loop.
+Using the split horizon function, RouterB does not send the route destined for
+10.0.0.0/8 back to RouterA, avoiding a routing loop.
+On a Non-Broadcast Multiple Access (NBMA) network, an interface connects to
+multiple neighbors; therefore, neighbor-based split horizon is used, as shown in
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 80
+Figure 3-8. Routes are advertised in unicast mode and the routes received by an
+interface are differentiated by neighbors. The route learned from a neighbor will
+not be sent back through the same interface.
+Figure 3-8 Neighbor-based split horizon
+RouterA sends route 172.16.0.0/16 learned from RouterB to RouterC, but does not
+send it back to RouterB.
+Poison Reverse
+Poison reverse enables RIP to set the cost of the route learned through a local
+interface from a neighbor to 16 (unreachable) and then send this route through
+the same interface back to the neighbor. This function deletes invalid routes from
+the neighbor's routing table and prevents routing loops.
+In Figure 3-9, after receiving a route from RouterA, RouterB sends a route
+unreachable message (with the route cost set to 16) to RouterA, avoiding a
+routing loop.
+Figure 3-9 Poison reverse
+3.2.4 Multi-Process and Multi-Instance
+The multi-process feature associates a RIP process with multiple interfaces. This
+ensures that a specific process performs all the protocol-related operations only on
+designated interfaces. In this situation, multiple RIP processes can run on a device
+independently. Route exchange between these RIP processes is similar to route
+exchange between different routing protocols.
+RIP multi-instance associates a VPN instance with a RIP process so that the VPN
+instance can be associated with all the interfaces in this RIP process.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 81
+3.2.5 BFD for RIP
+Bidirectional Forwarding Detection (BFD) detects faults on links between
+neighboring routers. It is often associated with routing protocols so that these
+protocols can be notified of link faults in order to quickly trigger route
+convergence. Traffic loss caused by topology changes is therefore minimized. After
+RIP is associated with BFD, BFD rapidly detects link faults and reports the faults to
+RIP. This ensures that RIP quickly responds to network topology changes.
+Table 3-1 lists link fault detection mechanisms and the convergence speed before
+and after BFD for RIP is enabled.
+Table 3-1 BFD speeds up convergence
+BFD for RIP Link Fault Detection Mechanism Convergence
+Speed
+Disabled The RIP Age timer expires. By default,
+this timer is 180 seconds.
+> 180 seconds
+Enabled The BFD session goes Down. < 30 seconds
+Implementation
+BFD is classified into static BFD and dynamic BFD:
+● Static BFD
+BFD session setup is manually triggered, and BFD session parameters
+(including local and remote discriminators) are manually configured using
+commands. A device can implement static BFD even if the peer device does
+not support BFD.
+● Dynamic BFD
+BFD session setup is dynamically triggered by routing protocols. The local
+discriminator is dynamically allocated and the remote discriminator is
+obtained from the BFD packet of the peer device. Therefore, dynamic BFD is
+more flexible than static BFD. After establishing a new neighbor relationship,
+a routing protocol notifies BFD of the neighbor parameters (including
+destination and source addresses), and then BFD sets up a session based on
+the received parameters. When a link fault occurs, the routing protocol
+quickly detects that the BFD session is Down and switches traffic to the
+backup link, minimizing data loss.
+Application
+After BFD for RIP is enabled, BFD reports link faults to RIP within several
+milliseconds. A RIP router then deletes the route of the faulty link from its RIP
+routing table and starts the backup link.
+Figure 3-10 illustrates the BFD for RIP process.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 82
+Figure 3-10 BFD for RIP
+RouterA, RouterB, RouterC, and RouterD establish RIP neighbor relationships.
+RouterB is the next hop of the route from RouterA to RouterD. A dynamic BFD
+session is set up between RouterA and RouterB, and dynamic BFD for RIP is
+enabled on RouterA and RouterB.
+When the link between RouterA and RouterB becomes faulty, BFD quickly detects
+the fault and notifies RouterA of the fault. RouterA deletes the route with RouterB
+as the next hop from its RIP routing table, and then recalculates a route. The new
+route passes through RouterC and RouterB to reach RouterD.
+When the link between RouterA and RouterB recovers, a dynamic BFD session is
+set up again between RouterA and RouterB. RouterA receives routing information
+from RouterB and selects the optimal route for packet forwarding.
+3.2.6 Hot Standby
+The RIP hot standby feature is supported by devices with distributed architecture.
+During hot standby, a device backs up RIP data from the active main board (AMB)
+to the standby main board (SMB). When the AMB becomes faulty, the SMB
+becomes active and takes over AMB tasks. This ensures normal data forwarding.
+3.3 Summary of RIP Configuration Tasks
+Table 3-2 describes RIP configuration tasks.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 83
+Table 3-2 RIP configuration tasks
+Scenario Description Task
+Configuring basic RIP
+functions
+Basic RIP functions
+include enabling RIP,
+specifying the network
+segment where RIP runs,
+and specifying the RIP
+version. The basic RIP
+functions must be
+configured before you
+use RIP features.
+3.6 Configuring Basic
+RIP Functions
+Configuring RIP-2
+features
+RIP-2 is a classless
+routing protocol, and
+RIP-2 packets carry
+subnet masks. Therefore,
+deploying a RIP-2
+network can save IP
+addresses. Only RIP-2
+can be deployed on a
+network where IP
+addresses are
+discontinuous, and RIP-1
+cannot be used.
+RIP-2 supports
+authentication for
+protocol packets and
+provides multiple
+authentication modes to
+enhance security.
+3.7 Configuring RIP-2
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 84
+Scenario Description Task
+Preventing routing loops RIP is a distance-vector
+routing protocol. RIP
+devices advertise their
+local routing tables to
+neighbors, so routing
+loops may occur.
+RIP uses split horizon
+and poison reverse to
+prevent routing loops:
+● Split horizon: A route
+learnt by RIP through
+an interface is not
+sent to neighbors
+through the interface.
+This saves bandwidth
+and prevents routing
+loops.
+● Poison reverse: RIP
+sets the cost of a
+route learnt through
+an interface to 16
+(unreachable), and
+sends the route to
+neighbors through the
+interface. In this way,
+RIP deletes useless
+routes from the
+neighbor's routing
+table and prevents
+routing loops.
+3.8 Preventing Routing
+Loops
+Controlling RIP routing To use RIP more flexibly
+on the existing network
+and meet various user
+requirements, you can
+configure different
+parameters to control
+RIP routing.
+3.9 Controlling RIP
+Routing
+Controlling the
+advertising and receiving
+of RIP routes
+To meet network
+requirements, you can
+configure different
+parameters to accurately
+control the advertising
+and receiving of RIP
+routes.
+3.10 Controlling RIP
+Route Advertisement
+3.11 Controlling
+Receiving of RIP
+Routing Information
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 85
+Scenario Description Task
+Improving RIP network
+performance
+The following are ways
+of improving RIP
+network performance:
+● Adjust the RIP timer
+to change the RIP
+network convergence
+rate.
+● Adjust the number
+and interval of
+Update packets sent
+by an interface to
+save device resources
+and network
+bandwidth.
+● Enable the replay-
+protect function to
+ensure normal
+communication
+between neighboring
+devices after a RIP
+process restarts.
+● Check packet validity
+to ensure high
+network security.
+3.12 Improving RIP
+Network Performance
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 86
+Scenario Description Task
+Configuring BFD for RIP RIP maintains neighbor
+relationships by
+periodically sending and
+receiving Update
+packets. If a device does
+not receive any Update
+packet from a neighbor
+within the aging time, it
+considers the neighbor
+Down. The default value
+of the aging timer is 180
+seconds, so RIP can
+detect a link fault only
+after 180 seconds. If
+high-speed data services
+are deployed on the
+network, a large amount
+of data will be lost in
+this period.
+BFD provides the
+millisecond-level fault
+detection mechanism. It
+can rapidly detect faults
+on the protected links or
+nodes, and report the
+faults to RIP. BFD
+improves the RIP
+process's response to
+network topology
+changes, which
+implements fast
+convergence of RIP
+routes.
+3.13 Configuring BFD
+for RIP
+Configuring the network
+management function
+for RIP
+By binding RIP to the
+MIB, you can view RIP
+information and
+configure RIP through
+the NMS.
+3.14 Configuring the
+Network Management
+Function for RIP
+3.4 Licensing Requirements and Limitations for RIP
+Involved Network Elements
+Other network elements are required to support RIP.
+Licensing Requirements
+RIP is a basic feature of a switch and is not under license control.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 87
+Feature Support in V200R024C00
+All models of S300, S500, S2700, S5700, and S6700 series switches (except the
+S5751-L, S5731-L and S5731S-L) support RIP.
+NOTE
+For details about the hardware specifications and matched parts of the switch, visit
+Hardware Center. For details about the key specifications and full software specifications of
+the switch, visit Specifications Query.
+The S5751-L, S5731-L, and S5731S-L are remote units and do not support web-based
+management, YANG, or commands. They can be configured only through configuration
+delivery by the central device. For details, see "Simplified Architecture Configuration (the
+Solar System Solution)" in the
+S300, S500, S2700, S5700, and S6700 V200R024C00
+Configuration Guide - Device Management.
+Feature Limitations
+When the maximum number of RIP routes supported by a switch is fixed, the
+maximum number of running RIP routes supported on the switch is limited by the
+CAR value of RIP protocol packets, interval for sending RIP update packets, and
+values of RIP Age and Garbage-collect timers. To increase the maximum number
+of running RIP routes on a switch if there are large numbers of RIP routes running
+on the network, increase the values of the Age timer, Garbage-collect timer, or
+CAR for RIP protocol packets, as well as reducing the interval for sending RIP
+update packets.
+3.5 Default Settings for RIP
+Table 3-3 describes the default settings for RIP.
+Table 3-3 Default settings for RIP
+Parameter Default Setting
+Maximum number of equal-cost
+routes
+By default, the maximum number of
+equal-cost routes on the S5720I-SI,
+S5735-S, S5735-S-I, S5735S-H,
+S6720S-S, and S5736-S is 8, and the
+maximum number of equal-cost
+routes on the S5731-H, S5731-S,
+S5731S-H, S5731S-S, S5732-H, S6735-
+S, S6730-H, S6730S-H, S6730-S, and
+S6730S-S is 16.
+RIP function Disabled
+Split horizon Enabled
+3.6 Configuring Basic RIP Functions
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 88
+Pre-configuration Tasks
+Before configuring basic RIP functions, configure IP addresses for interfaces to
+ensure network-layer communication between neighbor nodes.
+Configuration Procedure
+You must enable RIP before specifying the network segment where RIP runs and
+configuring RIP neighbors and RIP version on an NBMA network.
+3.6.1 Enabling RIP
+Context
+You must enable RIP before performing any RIP configurations. RIP command
+configurations in the interface view take effect only after RIP is enabled.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ] [ vpn-instance
+vpn-instance-name ]
+RIP is enabled, a RIP process is created, and the RIP view is displayed.
+If a VPN instance is specified, the RIP process belongs to this VPN instance. If no
+VPN instance is specified, the RIP process belongs to a public network instance.
+Step 3 (Optional) Run description
+text
+A description is configured for the RIP process.
+----End
+3.6.2 Enabling RIP on the Specified Network Segment
+Context
+After enabling RIP, specify the network segment where RIP runs. RIP runs only on
+the interfaces that reside on the specified network segment. RIP does not receive,
+send, or forward routes on the interfaces that do not reside on the specified
+network segment.
+Procedure
+● Enable RIP to send and receive routes on the specified network segment.
+a. Run system-view
+The system view is displayed.
+b. Run rip [
+process-id ]
+The RIP view is displayed.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 89
+c. (Optional) Run undo verify-source
+Source check is disabled for RIP packets.
+If IP addresses of devices on both ends of a P2P link belong to different
+network segments, the two devices cannot establish a neighbor
+relationship unless source check is disabled.
+d. Run network
+network-address
+RIP is enabled on the specified network segment.
+NOTE
+●
+network-address specifies the address of a natural network segment.
+● An interface can be associated with only one RIP process.
+----End
+3.6.3 (Optional) Configuring RIP Neighbors on an NBMA
+Network
+Context
+RIP often uses a broadcast or multicast address to send packets. If the link running
+RIP does not support broadcast or multicast packets, specify RIP neighbors on
+both ends of the link. This allows packets to be sent between the two ends in
+unicast mode.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run peer
+ip-address
+A RIP neighbor is configured.
+----End
+3.6.4 (Optional) Configuring the RIP Version
+Context
+RIP versions include RIP-1 and RIP-2. The RIP version must be configured on the
+device running RIP. Configure the global RIP version unless you need to specify a
+different RIP version on an interface.
+Procedure
+● Configure the global RIP version.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 90
+a. Run system-view
+The system view is displayed.
+b. Run rip [
+process-id ]
+The RIP view is displayed.
+c. Run version { 1 | 2 }
+The global RIP version is configured.
+NOTE
+By default, an interface sends only RIP-1 packets and receives both RIP-1 and
+RIP-2 packets.
+● Configure the RIP version on an interface.
+a. Run system-view
+The system view is displayed.
+b. Run interface
+interface-type interface-number
+The interface view is displayed.
+c. (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H,
+S6730S-H, S6730-S, and S6730S-S support switching between Layer 2 and Layer
+3 modes.
+d. Run rip version { 1 | 2 [ broadcast | multicast ] }
+The RIP version is configured on the interface.
+NOTE
+● By default, an interface sends only RIP-1 packets and receives both RIP-1 and
+RIP-2 packets.
+● If no RIP version is configured in the interface view, the global RIP version is
+used. The RIP version configured on an interface takes precedence over the
+global RIP version.
+----End
+3.6.5 Verifying the Basic RIP Function Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to view the RIP running status and configuration.
+● Run the display rip
+process-id route command to view all the RIP routes
+learned from other devices.
+● Run the display default-parameter rip command to view default RIP
+configuration.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 91
+● Run the display rip
+process-id statistics interface { all |
+interface-type
+interface-number [ verbose | neighbor
+neighbor-ip-address ] } command to
+view statistics on RIP interfaces.
+----End
+3.7 Configuring RIP-2
+Pre-configuration Tasks
+Before configuring RIP-2, configure basic RIP functions.
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the RIP-2 Configuration) in any sequence.
+3.7.1 Configuring RIP-2 Route Summarization
+Context
+A large RIP network requires significant device memory to maintain large RIP
+routing tables. Transmitting and processing routing information requires large
+amounts of network resources. Route summarization can reduce the routing table
+size and minimize impact of route flapping on a network.
+RIP-2 supports automatic summarization and manual summarization. Manual
+summarization takes precedence over automatic summarization. To advertise all
+subnet routes, disable automatic route summarization.
+NOTE
+By default, if split horizon or poison reverse has been configured, classful route
+summarization becomes invalid. When summarized routes are sent to the natural network
+segment border, split horizon or poison reverse must be disabled.
+Procedure
+● Configure RIP-2 automatic route summarization.
+a. Run the system-view command to enter the system view.
+b. Run the rip [
+process-id ] command to enter the RIP view.
+c. Run the version 2 command to set the RIP version to RIP-2.
+d. Run the summary command to enable RIP-2 automatic route
+summarization.
+e. (Optional) Run the summary always command to enable RIP-2
+automatic route summarization regardless of whether split horizon and
+poison reverse are enabled.
+NOTE
+The summary command is used in the RIP view to enable RIP-2 classful network-
+based route summarization.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 92
+● Configure RIP-2 manual route summarization.
+a. Run the system-view command to enter the system view.
+b. Run the interface
+interface-type interface-number command to enter the
+interface view.
+c. (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H,
+S6730S-H, S6730-S, and S6730S-S support switching between Layer 2 and Layer
+3 modes.
+d. Run the rip summary-address
+ip-address mask [ avoid-feedback ]
+command to configure RIP-2 to advertise the summarized local IP
+address.
+NOTE
+The rip summary-address
+ip-address mask [ avoid-feedback ] command is used
+in the interface view to enable RIP-2 classless network-based route
+summarization.
+----End
+3.7.2 Configuring RIP-2 Packet Authentication
+Context
+Configure RIP-2 packet authentication on a RIP network requiring high security.
+RIP-2 supports simple authentication, MD5 authentication, and HMAC-SHA256
+ciphertext authentication for protocol packets to enhance security. In simple
+authentication, a plaintext authentication key is used. Therefore, simple
+authentication has low security.
+NOTICE
+If plain is selected during the configuration of RIP-2 packet authentication, the
+password is saved in the configuration file in plain text. This brings security risks. It
+is recommended that you select cipher to save the password in cipher text.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 93
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Configure RIP-2 packet authentication.
+● Run the rip authentication-mode simple { plain
+plain-text | [ cipher ]
+password-key } command to set RIP-2 packet authentication to simple
+authentication.
+● Run one of the following commands to set RIP-2 packet authentication to
+MD5 authentication.
+– rip authentication-mode md5 usual { plain
+plain-text | [ cipher ]
+password-key }
+– rip authentication-mode md5 nonstandard { keychain
+keychain-name |
+{ plain
+plain-text | [ cipher ]
+password-key }
+key-id }
+NOTICE
+Simple authentication and MD5 authentication have potential security risks.
+HMAC-SHA256 ciphertext authentication is recommended.
+If MD5 authentication is used, you must set the packet format for MD5
+authentication. If the usual keyword is specified, MD5 ciphertext
+authentication packets use the universal format (private standard). If the
+nonstandard keyword is specified, MD5 ciphertext authentication packets use
+the non-standard format (IETF standard).
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H,
+S6730S-H, S6730-S, and S6730S-S support the keychain
+keychain-name
+parameter.
+● Run the rip authentication-mode hmac-sha256 { plain
+plain-text |
+[ cipher ]
+password-key }
+key-id command to set RIP-2 packet authentication
+to HMAC-SHA256 authentication.
+----End
+3.7.3 Verifying the RIP-2 Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to view the RIP running status and configuration.
+● Run the display rip
+process-id database [ verbose ] command to view all the
+active routes in the RIP database.
+● Run the display rip
+process-id route command to view all RIP routes learned
+from other devices.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 94
+● Run the display rip
+process-id interface [
+interface-type interface-number ]
+[ verbose ] command to view information about the RIP interface.
+----End
+3.8 Preventing Routing Loops
+Pre-configuration Tasks
+Before configuring split horizon and poison reverse, configure basic RIP
+functions.
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the RIP Routing Loop Prevention Configuration) in any sequence.
+3.8.1 Configuring Split Horizon
+Context
+Split horizon can prevent routing loops.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Run rip split-horizon
+Split horizon is configured.
+NOTE
+● By default, split horizon is disabled on an NBMA network.
+● If both split horizon and poison reverse are configured, only poison reverse takes effect.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 95
+3.8.2 Configuring Poison Reverse
+Context
+Poison reverse can prevent routing loops.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Run rip poison-reverse
+Poison reverse is enabled.
+NOTE
+If both split horizon and poison reverse are configured, only poison reverse takes effect.
+----End
+3.8.3 Verifying the RIP Routing Loop Prevention Configuration
+Procedure
+● Run the display rip
+process-id interface [
+interface-type interface-number ]
+[ verbose ] command to view information about the specified RIP interface.
+----End
+3.9 Controlling RIP Routing
+Pre-configuration Tasks
+Before configuring RIP route attributes, configure basic RIP functions.
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the RIP Routing Control Configuration) in any sequence.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 96
+3.9.1 Configuring RIP Preference
+Context
+When different routing protocols discover routes to the same destination, set the
+RIP preference to select the required route.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run preference {
+preference | route-policy
+route-policy-name } *
+The RIP preference is set.
+By default, the RIP preference is 100.
+----End
+3.9.2 Configuring Additional Metrics of an Interface
+Context
+Configuring additional metrics on a RIP interface can change the route selection
+sequence.
+The additional metric is the metric (hop count) to be added to the original metric
+of a RIP route. You can use commands to set additional metrics for incoming and
+outgoing RIP routes.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 97
+Step 4 Run the following commands as required:
+● Run the rip metricin {
+value | {
+acl-number | acl-name
+acl-name | ip-prefix
+ip-prefix-name }
+value1 } command to set the additional metric for receiving
+routes.
+● Run the rip metricout {
+value | {
+acl-number | acl-name
+acl-name | ip-prefix
+ip-prefix-name }
+value1 } command to set the additional metric for
+advertising routes.
+NOTE
+● The rip metricin command is used to add an additional metric to an incoming route.
+After this route is added to the routing table, its metric in the routing table changes.
+Running this command affects route selection on the local device and other devices on
+the network.
+● The rip metricout command is used to add an additional metric to an outgoing route.
+When this route is advertised, an additional metric is added to this route, but the metric
+of the route in the routing table does not change. Running this command does not
+affect route selection on the local device but affects route selection on other devices in
+the network.
+----End
+3.9.3 Setting the Maximum Number of Equal-Cost Routes
+Context
+By setting the maximum number of equal-cost RIP routes, you can change the
+number of routes for load balancing.
+NOTE
+Only the S5720I-SI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S,
+S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and
+S6730S-S support this function.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run maximum load-balancing
+number
+The maximum number of equal-cost routes is set.
+By default, the maximum number of equal-cost routes on the S5720I-SI, S5735-S,
+S500, S5735-S-I, S5735S-H, or S5736-S is 8, and the maximum number of equal-
+cost routes on the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S,
+S6730-H, S6730S-H, S6730-S, or S6730S-S is 16.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 98
+3.9.4 Verifying the RIP Routing Control Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to view the RIP running status and configuration.
+● Run the display rip
+process-id database [ verbose ] command to view all the
+active routes in the RIP database.
+● Run the display rip
+process-id route command to view all RIP routes learned
+from other devices.
+----End
+3.10 Controlling RIP Route Advertisement
+Pre-configuration Tasks
+Before controlling RIP route advertisement, configure basic RIP functions.
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the Route Advertisement Control Configuration) in any sequence.
+3.10.1 Configuring RIP to Advertise Default Routes
+Context
+In a routing table, a default route is the route to the network segment 0.0.0.0
+(with the mask being 0.0.0.0). If the destination address of a packet does not
+match any entry in the routing table, the packet is sent along the default route.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run default-route originate [ cost
+cost | { { match default | route-policy
+route-
+policy-name } [ avoid-learning ] } ]*
+The device is configured to originate a default route or advertise the default route
+in the routing table to neighbors.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 99
+3.10.2 Disabling an Interface from Sending Update Packets
+Context
+Routing loops can be avoided by disabling interfaces from sending Update
+packets.
+There are two ways to prevent interfaces from sending Update packets:
+● Suppress an interface in the RIP process view.
+● Disable an interface from sending RIP packets in the interface view.
+The configuration in the RIP process view has a higher priority than the
+configuration in the interface view.
+Procedure
+● Configuration in a RIP process view
+a. Run system-view
+The system view is displayed.
+b. Run rip [
+process-id ]
+The RIP view is displayed.
+c. Run one of the following commands depending on the site requirements:
+Run silent-interface all
+All interfaces are disabled from sending Update packets.
+Run silent-interface
+interface-type interface-number
+An interface is disabled from sending Update packets,
+You can set an interface to silent so that it only receives Update packets
+to update its routing table. The silent-interface command takes
+precedence over the undo rip output command in the interface view.
+By default, an interface can receive and send Update packets.
+● Configuration in the interface view
+a. Run system-view
+The system view is displayed.
+b. Run interface
+interface-type interface-number
+The interface view is displayed.
+c. (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H,
+S6730S-H, S6730-S, and S6730S-S support switching between Layer 2 and Layer
+3 modes.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 100
+d. Run undo rip output
+The interface is disabled from sending RIP Update packets.
+By running this command, you can determine whether to send RIP
+Update packets on an interface. The silent-interface command takes
+precedence over the undo rip output command. By default, an interface
+is allowed to send RIP Update packets.
+----End
+3.10.3 Configuring RIP to Import Routes
+Context
+A RIP process can import the routes learned by other RIP processes or routing
+protocols.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 (Optional) Run default-cost
+cost
+The default metric for imported routes is set.
+If the metric of imported routes is not specified in step 4, the default metric is
+used.
+Step 4 Run import-route bgp [ permit-ibgp ] [ cost {
+cost | transparent } | route-policy
+route-policy-name ] * or import-route { { static | direct | unr } | { { rip | ospf |
+isis } [
+process-id ] } } [ cost
+cost | route-policy
+route-policy-name ] *
+External routes are imported to RIP.
+NOTE
+When RIP imports IBGP routes, routing loops may occur. Configure this function with
+caution.
+Step 5 (Optional) Run filter-policy {
+acl-number | acl-name
+acl-name | ip-prefix
+ip-
+prefix-name } export [
+protocol [
+process-id ] |
+interface-type interface-number ]
+The imported routes are filtered before being advertised.
+The routing information advertised by RIP may contain the routing information
+imported from other protocols. You can use the
+protocol parameter to filter the
+routing information imported from a specified routing protocol. If the
+protocol
+parameter is not used, all the routes advertised by RIP are filtered, including the
+imported routes and the local routes (direct routes).
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 101
+NOTE
+RIP-2 defines a 16-bit tag, while other routing protocols define 32-bit tags. If the routes of
+other protocols are imported to RIP and the tag is used in the routing policy, the tag value
+cannot exceed 65535. If the tag value exceeds 65535, the routing policy becomes invalid or
+the matching result is incorrect.
+----End
+3.10.4 Verifying the RIP Route Advertisement Control
+Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to view the RIP running status and configuration.
+● Run the display rip
+process-id database [ verbose ] command to view all the
+active routes in the RIP database.
+● Run the display rip
+process-id route command to view all RIP routes learned
+from other devices.
+----End
+3.11 Controlling Receiving of RIP Routing Information
+Pre-configuration Tasks
+Before controlling receiving of RIP routing information, configure basic RIP
+functions.
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the RIP Route Receiving Control Configuration) in any sequence.
+3.11.1 Disabling an Interface from Receiving RIP Update
+Packets
+Context
+Routing loops can be avoided by disabling interfaces from receiving Update
+packets.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 102
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Run undo rip input
+The interface is disabled from receiving RIP Update packets.
+By default, an interface is allowed to receive RIP update packets.
+----End
+3.11.2 Configuring RIP to Deny Host Routes
+Context
+In certain cases, the switch receives a large number of host routes with 32 bits
+from the same network segment. These host routes are unnecessary for routing,
+and they waste network resources. You can configure the switch to reject all the
+host routes it receives.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run undo host-route
+Host routes are not added to the RIP routing table.
+By default, host routes can be added to the routing table on the switch.
+NOTE
+The undo host-route command is invalid for RIP-2.
+----End
+3.11.3 Configuring RIP to Filter Received Routes
+Context
+The filtering policy can be configured on the inbound interface by configuring the
+ACL and IP prefix list to filter received routes. Only the routes not filtered out by
+the filtering policy are added to the local routing table.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 103
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Depending on type of desired filtering, run one of following commands to
+configure RIP to filter the received routes:
+● Run filter-policy {
+acl-number | acl-name
+acl-name } import [
+interface-type
+interface-number ]
+The learned routing information is filtered based on an ACL.
+● Run filter-policy gateway
+ip-prefix-name import
+The routing information advertised by neighbors is filtered based on the IP
+prefix list.
+● Run filter-policy ip-prefix
+ip-prefix-name [ gateway
+ip-prefix-name ] import
+[
+interface-type interface-number ]
+The routes learned by the specified interface are filtered based on the IP
+prefix list and neighbors.
+----End
+3.11.4 Verifying the RIP Route Receiving Control
+Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to check the RIP running status and configuration.
+● Run the display rip
+process-id database [ verbose ] command to check all
+activated RIP routes in the database.
+● Run the display rip
+process-id interface [
+interface-type interface-number ]
+[ verbose ] command to check information about the RIP interface.
+● Run the display rip
+process-id neighbor [ verbose ] command to check
+information about RIP neighbors.
+● Run the display rip
+process-id route command to check all the RIP routes
+that are learned from other switches.
+----End
+3.12 Improving RIP Network Performance
+Pre-configuration Tasks
+Before improving the network performance of RIP, configure basic RIP functions.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 104
+Configuration Procedure
+You can perform the following configuration tasks (excluding the task of Verifying
+the RIP Network Performance Optimization Configuration) in any sequence.
+3.12.1 Configuring RIP Timers
+Context
+RIP uses three timers: Update, Age, and Garbage-collect. Changing the timer
+values affects the convergence speed of RIP routes.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip [
+process-id ]
+The RIP view is displayed.
+Step 3 Run timers rip
+update age garbage-collect
+RIP timers are configured.
+NOTE
+● RIP timers take effect immediately after being changed.
+● Route flapping occurs if the values of the three timers are set improperly. The
+relationship between the values is:
+update must be smaller than both
+age and
+garbage-
+collect. If the update time is longer than the aging time and, for example, a RIP route
+changes within the update time, the switch cannot inform its neighbors of the change
+on time.
+● Configure RIP timers based on the network performance and ensure that these timers
+are consistent on all RIP devices. This avoids unnecessary network traffic or route
+flapping.
+By default, the Update timer is 30s, the Age timer is 180s, and the Garbage-collect
+timer is 120s (four times the Update timer).
+In practice, the Garbage-collect timer is not fixed. If the Update timer is set to 30s,
+the Garbage-collect timer may range from 90s to 120s.
+Before permanently deleting an unreachable route from its RIP routing table, a RIP
+device advertises this route (with the metric set to 16) four times by periodically
+sending Update packets. Subsequently, all the neighbors learn that this route is
+unreachable. Because a route may not always become unreachable at the
+beginning of an Update period, the Garbage-collect timer ranges from three to
+four times the Update timer.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 105
+3.12.2 Setting the Interval for Sending Update Packets and
+Maximum Number of Sent Packets
+Context
+To limit memory resources used to process RIP Update packets, set the interval for
+sending RIP Update packets and the maximum number of Update packets to be
+sent at a time.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Run rip pkt-transmit { interval
+interval | number
+pkt-count } *
+The interval for sending RIP Update packets and the maximum number of Update
+packets to be sent at a time are set.
+----End
+3.12.3 Enabling the Replay Protection Function
+Context
+If an interface goes Down and then goes Up, RIP routing information on both ends
+of a link may be desynchronized or lost. Specifically, if the Identification field in
+the last RIP packet sent before a RIP interface goes Down is X, after the interface
+goes Up, the Identification field in the subsequent RIP packet sent by this interface
+becomes 0. If the peer end does not receive the RIP packet with the Identification
+field being 0, the peer end discards subsequent RIP packets until it receives the RIP
+packet with the Identification field being X+1. This leads to RIP routing
+information on both ends of the link being desynchronized or lost.
+To solve this problem, enable the replay protection function so that RIP can obtain
+the Identification field in the last RIP packet sent before the RIP interface goes
+Down and increase the Identification field in the subsequent RIP packet by 1.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 106
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run interface
+interface-type interface-number
+The interface view is displayed.
+Step 3 (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H,
+S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+Step 4 Run rip authentication-mode md5 nonstandard
+password-key key-id
+RIP-2 is configured to use MD5 authentication, and authentication packets use the
+nonstandard packet format.
+Step 5 Run rip replay-protect
+The replay protection function is enabled.
+NOTE
+If you run the rip replay-protect command in the same view multiple times, only the latest
+configuration takes effect.
+----End
+3.12.4 Configuring RIP to Check the Validity of Update
+Packets
+Context
+Checking the validity of RIP Update packets improves network security. Validity
+check includes zero field check for RIP-1 packets and source address check for RIP
+Update packets.
+● Zero field check
+In RIP-1 packets, the values of some fields must be zero. These fields are zero
+fields. After zero field check is enabled, a switch checks the zero fields in RIP-1
+packets and discards the packets in which the zero field values are not 0.
+● Source address check
+Source address check for RIP Update packets verifies the source IP address of
+received RIP Update packets. Specifically, a switch checks whether the IP
+address of the interface that sends the packet is in the same network
+segment as that of the interface that receives the packet. If the IP addresses
+are not in the same network segment, the switch will not process the RIP
+packet.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 107
+Procedure
+● Configure zero field check for RIP-1 packets.
+a. Run system-view
+The system view is displayed.
+b. Run rip [
+process-id ]
+The RIP view is displayed.
+c. Run checkzero
+Zero field check is configured for RIP-1 packets.
+Zero field check configuration is invalid in RIP-2.
+● Configure source address check for RIP Update packets.
+a. Run system-view
+The system view is displayed.
+b. Run rip [
+process-id ]
+The RIP view is displayed.
+c. Run verify-source
+Source IP address check is configured for RIP Update packets.
+----End
+3.12.5 Verifying the RIP Network Performance Optimization
+Configuration
+Procedure
+● Run the display rip [
+process-id | vpn-instance
+vpn-instance-name ]
+command to view the RIP running status and configuration.
+● Run the display rip
+process-id database [ verbose ] command to view all the
+active routes in the RIP database.
+● Run the display rip
+process-id interface [
+interface-type interface-number ]
+[ verbose ] command to view information about the specified RIP interface.
+● Run the display rip
+process-id neighbor [ verbose ] command to view RIP
+neighbor configuration.
+● Run the display rip
+process-id route command to view all RIP routes learned
+from other devices.
+----End
+3.13 Configuring BFD for RIP
+NOTE
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H,
+S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+support BFD for RIP.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 108
+Pre-configuration Tasks
+Before configuring BFD for RIP, configure basic RIP functions.
+Configuration Procedure
+You can perform the following configuration tasks in any sequence.
+3.13.1 Configuring Dynamic BFD for RIP
+Applicable Environment
+RIP often uses timers to receive and send Update messages to maintain neighbor
+relationships. If a RIP device does not receive an Update message from a neighbor
+after the Age timer expires, the RIP device will announce that this neighbor goes
+Down. The default value of the Age timer is 180s, therefore, if a link fault occurs,
+RIP may detect this fault after 180s. If high-rate data services are deployed on a
+network, a large amount of data will be lost during the aging time.
+BFD provides millisecond-level fault detection. It can rapidly detect faults in
+protected links or nodes and report them to RIP. This speeds up RIP processes'
+responses to network topology changes and achieves rapid RIP route convergence.
+Either of the following methods can be used to configure BFD for RIP:
+● Enable BFD in a RIP process.
+This method is recommended when BFD for RIP needs to be enabled on most
+RIP interfaces.
+● Enable BFD on RIP interfaces.
+This method is recommended when BFD for RIP needs to be enabled on a
+small number of RIP interfaces.
+Procedure
+● Enable BFD in a RIP process.
+a. Run system-view
+The system view is displayed.
+b. Run bfd
+BFD is enabled globally.
+c. Run quit
+Return to the system view.
+d. Run rip [
+process-id ]
+The RIP view is displayed.
+e. Run bfd all-interfaces enable
+BFD is enabled in the RIP process to establish a BFD session.
+If BFD is enabled globally, RIP will use default BFD parameters to
+establish BFD sessions on all the interfaces where RIP neighbor
+relationships are in Up state.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 109
+f. (Optional) Run bfd all-interfaces { min-rx-interval
+min-receive-value |
+min-tx-interval
+min-transmit-value | detect-multiplier
+detect-multiplier-
+value } *
+The values of BFD parameters used to establish the BFD session are set.
+BFD parameter values are determined by the actual network situation
+and network reliability requirement.
+▪ If links have a high reliability requirement, reduce the interval at
+which BFD packets are sent.
+▪ If links have a low reliability requirement, increase the interval at
+which BFD packets are sent.
+Running the bfd all-interfaces command changes BFD session
+parameters on all RIP interfaces.
+g. (Optional) Perform the following operations to prevent an interface in
+the RIP process from establishing a BFD session:
+▪ Run the quit command to return to the system view.
+▪ Run the interface
+interface-type interface-number command to
+enter the view of a specified interface.
+▪ Run the rip bfd block command to prevent the interface from
+establishing a BFD session.
+● Enable BFD on RIP interfaces.
+a. Run system-view
+The system view is displayed.
+b. Run bfd
+BFD is enabled globally.
+c. Run quit
+Return to the system view.
+d. Run interface
+interface-type interface-number
+The view of the specified interface is displayed.
+e. (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H,
+S6730S-H, S6730-S, and S6730S-S support switching between Layer 2 and Layer
+3 modes.
+f. Run rip bfd enable
+BFD is enabled on the interface to establish a BFD session.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 110
+g. (Optional) Run rip bfd { min-rx-interval
+min-receive-value | min-tx-
+interval
+min-transmit-value | detect-multiplier
+detect-multiplier-value }
+*
+The values of BFD parameters used to establish the BFD session are set.
+----End
+Verifying the Configuration
+After enabling BFD for RIP at both ends of a link:
+● Run the display rip
+process-id bfd session { interface
+interface-type
+interface-number |
+neighbor-id | all } command. The command output shows
+that the BFDState field on the local switch displays Up.
+3.13.2 Configuring Static BFD for RIP
+Context
+BFD provides link failure detection featuring light load and high speed. Static BFD
+for RIP is a method to implement the BFD function.
+Establishing BFD sessions between RIP neighbors can rapidly detect faults on links
+and speed up response of RIP to network topology changes. Static BFD
+implements the following functions:
+● One-arm BFD
+If not all devices on a network support BFD, configure one-arm BFD to
+implement fault detection.
+● Two-arm BFD
+If all the devices on a network support BFD, configure two-arm BFD to
+implement fault detection.
+To configure a static BFD session, you need to set parameters for the BFD session.
+Procedure
+Step 1 Enable BFD globally.
+1. Run system-view
+The system view is displayed.
+2. Run bfd
+BFD is enabled globally.
+3. Run quit
+Return to the system view.
+NOTE
+To configure one-arm BFD, go to Step 2. To configure two-arm BFD, go to Step 3.
+Step 2 Configure one-arm BFD.
+1. Run bfd
+session-name bind peer-ip
+peer-ip interface
+interface-type interface-
+number [ source-ip
+source-ip ] one-arm-echo
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 111
+BFD is enabled between the specified interface and peer device.
+If a peer IP address and a local interface are specified, BFD detects only a
+single-hop link, that is, a route with the interface specified in the bfd
+command as the outbound interface and with the peer IP address specified in
+the peer-ip command as the next-hop address.
+NOTE
+When configuring the one-arm Echo function on the device, set the source-ip
+source-
+ip to the IP address of an interface on the device. Ensure that the peer device can ping
+this IP address.
+2. Run discriminator local
+discr-value
+The local discriminator is set.
+3. (Optional) Run min-echo-rx-interval
+interval
+The minimum interval at which BFD packets are received is configured.
+4. Run commit
+The configuration is committed.
+5. Run quit
+Return to the system view.
+Step 3 Configure two-arm BFD.
+1. Run bfd
+session-name bind peer-ip
+ip-address [ interface
+interface-type
+interface-number ] [ source-ip
+ip-address ]
+BFD binding is created.
+If a peer IP address and a local interface are specified, BFD detects only a
+single-hop link, that is, a route with the interface specified in the bfd
+command as the outbound interface and with the peer IP address specified in
+the peer-ip command as the next-hop address.
+2. Set discriminators.
+– Run discriminator local
+discr-value
+The local discriminator is set.
+– Run discriminator remote
+discr-value
+The remote discriminator is set.
+The local discriminator must be the remote discriminator of the device on the
+other end; otherwise, a BFD session cannot be established. The local and
+remote discriminators cannot be modified after being configured.
+NOTE
+local
+discr-value set on the local device is the same as that of remote
+discr-value set
+on the remote device.remote
+discr-value set on the local device is the same as that of
+local
+discr-value set on the remote device.
+3. Run commit
+The configuration is committed.
+4. Run quit
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 112
+Return to the system view.
+Step 4 Enable static BFD on an interface.
+1. Run interface
+interface-type interface-number
+The view of the specified interface is displayed.
+2. (Optional) On an Ethernet interface, run undo portswitch
+The interface is switched to Layer 3 mode.
+By default, an Ethernet interface works in Layer 2 mode.
+NOTE
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-
+H, S6730-S, and S6730S-S support switching between Layer 2 and Layer 3 modes.
+3. Run rip bfd static
+Static BFD is enabled on the interface.
+4. Run quit
+Return to the system view.
+----End
+Verifying the Configuration
+After configuring static BFD for RIP:
+● Run the display rip
+process-id interface [
+interface-type interface-number ]
+verbose command to check BFD for RIP configurations on the specified
+interface.
+3.14 Configuring the Network Management Function
+for RIP
+Pre-configuration Tasks
+Before configuring the network management function for RIP, configure basic RIP
+functions.
+Procedure
+Step 1 Run system-view
+The system view is displayed.
+Step 2 Run rip mib-binding
+process-id
+RIP is bound to the MIB.
+This command is used to bind a RIP process ID to MIBs and specify the ID of the
+RIP process that accepts Simple Network Management Protocol (SNMP) requests.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 113
+Verifying the Configuration
+● Run the display current-configuration command to view the binding
+relationships of RIP.
+3.15 Maintaining RIP
+3.15.1 Resetting RIP
+Context
+To reset RIP connections, run the following reset commands in the user view.
+NOTICE
+The RIP neighbor relationship is deleted after you reset RIP connections with the
+reset rip command. Exercise caution when running this command.
+Procedure
+● Run the reset rip
+process-id configuration command in the user view to reset
+the system parameters of a RIP process. When a RIP process restarts, all the
+parameters of the process retain the default values.
+----End
+3.15.2 Clearing RIP Statistics
+Context
+To clear RIP statistics, run the following reset commands in the user view.
+NOTICE
+RIP information cannot be restored after it is cleared. Exercise caution when
+running the commands.
+Procedure
+● Run the reset rip
+process-id statistics [ interface { all |
+interface-type
+interface-number [ neighbor
+neighbor-ip-address ] } ] command in the user
+view to clear the counters of a RIP process.
+----End
+3.16 Configuration Examples for RIP
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 114
+3.16.1 Example for Configuring Basic RIP Functions
+Networking Requirements
+In Figure 3-11, SwitchA, SwitchB, SwitchC, and SwitchD are located on a small-
+sized network and need to communicate with each other.
+Figure 3-11 Configuring basic RIP functions
+Configuration Roadmap
+RIP-2 is recommended if the network size is small. The configuration roadmap is
+as follows:
+1. Configure VLAN and IP address for each interface to ensure network
+reachability.
+2. Enable RIP on each switch to implement network connections between
+processes.
+3. Configure RIP-2 on each switch to improve RIP performance.
+Procedure
+Step 1 Configure VLANs and add interfaces to the VLANs. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+<HUAWEI> system-view
+[HUAWEI] sysname SwitchA
+[SwitchA] vlan 10
+[SwitchA-vlan10] quit
+[SwitchA] interface gigabitethernet 0/0/1
+[SwitchA-GigabitEthernet0/0/1] port link-type trunk
+[SwitchA-GigabitEthernet0/0/1] port trunk allow-pass vlan 10
+[SwitchA-GigabitEthernet0/0/1] quit
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 115
+Step 2 Configure an IP address to each VLANIF interface. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+[SwitchA] interface vlanif 10
+[SwitchA-Vlanif10] ip address 192.168.1.1 24
+[SwitchA-Vlanif10] quit
+Step 3 Configure basic RIP functions.
+# Configure SwitchA.
+[SwitchA] rip
+[SwitchA-rip-1] network 192.168.1.0
+[SwitchA-rip-1] quit
+# Configure SwitchB.
+[SwitchB] rip
+[SwitchB-rip-1] network 192.168.1.0
+[SwitchB-rip-1] network 172.16.0.0
+[SwitchB-rip-1] network 10.0.0.0
+[SwitchB-rip-1] quit
+# Configure SwitchC.
+[SwitchC] rip
+[SwitchC-rip-1] network 172.16.0.0
+[SwitchC-rip-1] quit
+# Configure SwitchD.
+[SwitchD] rip
+[SwitchD-rip-1] network 10.0.0.0
+[SwitchD-rip-1] quit
+# Check the RIP routing table of SwitchA.
+[SwitchA] display rip 1 route
+Route Flags : R - RIP
+A - Aging, G - Garbage-collect
+----------------------------------------------------------------------------
+Peer 192.168.1.2 on Vlanif10
+Destination/Mask Nexthop Cost Tag Flags Sec
+172.16.0.0/16 192.168.1.2 1 0 RA 14
+10.0.0.0/8 192.168.1.2 1 0 RA 14
+The command output shows that the routes advertised by RIP-1 use natural
+masks.
+Step 4 Configure the RIP version.
+# Configure RIP-2 on SwitchA.
+[SwitchA] rip
+[SwitchA-rip-1] version 2
+[SwitchA-rip-1] quit
+# Configure RIP-2 on SwitchB.
+[SwitchB] rip
+[SwitchB-rip-1] version 2
+[SwitchB-rip-1] quit
+# Configure RIP-2 on SwitchC.
+[SwitchC] rip
+[SwitchC-rip-1] version 2
+[SwitchC-rip-1] quit
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 116
+# Configure RIP-2 on SwitchD.
+[SwitchD] rip
+[SwitchD-rip-1] version 2
+[SwitchD-rip-1] quit
+Step 5 Verify the configuration.
+# Check the RIP routing table of SwitchA.
+[SwitchA] display rip 1 route
+Route Flags : R - RIP
+A - Aging, G - Garbage-collect
+----------------------------------------------------------------------------
+Peer 192.168.1.2 on Vlanif10
+Destination/Mask Nexthop Cost Tag Flags Sec
+172.16.1.0/24 192.168.1.2 1 0 RA 32
+10.1.1.0/24 192.168.1.2 1 0 RA 32
+From the routing table, you can find that the routes advertised by RIP-2 contain
+more accurate subnet masks.
+----End
+Configuration Files
+● SwitchA configuration file
+#
+sysname SwitchA
+#
+vlan batch 10
+#
+interface Vlanif10
+ip address 192.168.1.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+rip 1
+version 2
+network 192.168.1.0
+#
+return
+● SwitchB configuration file
+#
+sysname SwitchB
+#
+vlan batch 10 20 30
+#
+interface Vlanif10
+ip address 192.168.1.2 255.255.255.0
+#
+interface Vlanif20
+ip address 172.16.1.1 255.255.255.0
+#
+interface Vlanif30
+ip address 10.1.1.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 117
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+rip 1
+version 2
+network 192.168.1.0
+network 172.16.0.0
+network 10.0.0.0
+#
+return
+● SwitchC configuration file
+#
+sysname SwitchC
+#
+vlan batch 20
+#
+interface Vlanif20
+ip address 172.16.1.2 255.255.255.0
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+rip 1
+version 2
+network 172.16.0.0
+#
+return
+● SwitchD configuration file
+#
+sysname SwitchD
+#
+vlan batch 30
+#
+interface Vlanif30
+ip address 10.1.1.2 255.255.255.0
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+rip 1
+version 2
+network 10.0.0.0
+#
+return
+3.16.2 Example for Configuring RIP to Import Routes
+Networking Requirements
+In Figure 3-12, two RIP processes, RIP 100 and RIP 200, run on SwitchB. SwitchA
+needs to communicate with network segment 192.168.3.0/24.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 118
+Figure 3-12 Configuring RIP to import external routes
+Configuration Roadmap
+The configuration roadmap is as follows:
+1. Enable RIP on each switch to implement network connections between
+processes.
+2. Import routes between RIP 100 and RIP 200 on SwitchB and set the default
+metric of routes imported from RIP 200 to 3.
+3. Configure an ACL on SwitchB to filter route 192.168.4.0/24 imported from RIP
+200 so that SwitchA can only communicate with network segment
+192.168.3.0/24.
+Procedure
+Step 1 Configure VLANs and add interfaces to the VLANs. The configurations of Switch B,
+and Switch C are similar to the configuration of Switch A, and are not mentioned
+here.
+<HUAWEI> system-view
+[HUAWEI] sysname SwitchA
+[SwitchA] vlan batch 10 50
+[SwitchA] interface gigabitethernet 0/0/1
+[SwitchA-GigabitEthernet0/0/1] port link-type trunk
+[SwitchA-GigabitEthernet0/0/1] port trunk allow-pass vlan 50
+[SwitchA-GigabitEthernet0/0/1] quit
+[SwitchA] interface gigabitethernet 0/0/2
+[SwitchA-GigabitEthernet0/0/2] port link-type trunk
+[SwitchA-GigabitEthernet0/0/2] port trunk allow-pass vlan 10
+[SwitchA-GigabitEthernet0/0/2] quit
+Step 2 Configure an IP address to each VLANIF interface. The configurations of Switch B,
+and Switch C are similar to the configuration of Switch A, and are not mentioned
+here.
+[SwitchA] interface vlanif 10
+[SwitchA-Vlanif10] ip address 192.168.1.1 24
+[SwitchA-Vlanif10] quit
+[SwitchA] interface vlanif 50
+[SwitchA-Vlanif50] ip address 192.168.0.1 24
+[SwitchA-Vlanif50] quit
+Step 3 Configure basic RIP functions.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 119
+# Enable RIP 100 on SwitchA.
+[SwitchA] rip 100
+[SwitchA-rip-100] network 192.168.0.0
+[SwitchA-rip-100] network 192.168.1.0
+[SwitchA-rip-100] quit
+# Enable RIP 100 and RIP 200 on SwitchB.
+[SwitchB] rip 100
+[SwitchB-rip-100] network 192.168.1.0
+[SwitchB-rip-100] quit
+[SwitchB] rip 200
+[SwitchB-rip-200] network 192.168.2.0
+[SwitchB-rip-200] quit
+# Enable RIP 200 on SwitchC.
+[SwitchC] rip 200
+[SwitchC-rip-200] network 192.168.2.0
+[SwitchC-rip-200] network 192.168.3.0
+[SwitchC-rip-200] network 192.168.4.0
+[SwitchC-rip-200] quit
+# View the routing table on SwitchA.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 6 Routes : 6
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+192.168.0.0/24 Direct 0 0 D 192.168.0.1 Vlanif50
+192.168.0.1/32 Direct 0 0 D 127.0.0.1 Vlanif50
+192.168.1.0/24 Direct 0 0 D 192.168.1.1 Vlanif10
+192.168.1.1/32 Direct 0 0 D 127.0.0.1 Vlanif10
+The routing table of SwitchA does not contain the routes imported from other
+processes.
+Step 4 Configure RIP to import external routes.
+# On SwitchB, set the default metric of imported routes to 3 in RIP 100 and
+configure the two RIP processes to import routes into each other's routing table.
+[SwitchB] rip 100
+[SwitchB-rip-100] default-cost 3
+[SwitchB-rip-100] import-route rip 200
+[SwitchB-rip-100] quit
+[SwitchB] rip 200
+[SwitchB-rip-200] import-route rip 100
+[SwitchB-rip-200] quit
+# View the routing table of SwitchA after the routes are imported.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 9 Routes : 9
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 120
+192.168.0.0/24 Direct 0 0 D 192.168.0.1 Vlanif50
+192.168.0.1/32 Direct 0 0 D 127.0.0.1 Vlanif50
+192.168.1.0/24 Direct 0 0 D 192.168.1.1 Vlanif10
+192.168.1.1/32 Direct 0 0 D 127.0.0.1 Vlanif10
+192.168.2.0/24 RIP 100 4 D 192.168.1.2 Vlanif10
+192.168.3.0/24 RIP 100 4 D 192.168.1.2 Vlanif10
+192.168.4.0/24 RIP 100 4 D 192.168.1.2 Vlanif10
+The routing table of SwitchA contains routes 192.168.2.0/24, 192.168.3.0/24, and
+192.168.4.0/24, which are learned by RIP 200 on SwitchB.
+Step 5 Configure RIP to filter imported routes.
+# Configure an ACL on SwitchB and add a rule to the ACL. The rule denies the
+packets sent from 192.168.4.0/24.
+[SwitchB] acl 2000
+[SwitchB-acl-basic-2000] rule deny source 192.168.4.0 0.0.0.255
+[SwitchB-acl-basic-2000] rule permit
+[SwitchB-acl-basic-2000] quit
+# Configure SwitchB to filter route 192.168.4.0/24 imported from RIP 200 based
+on the preceding ACL.
+[SwitchB] rip 100
+[SwitchB-rip-100] filter-policy 2000 export
+[SwitchB-rip-100] quit
+Step 6 Verify the configuration.
+# Display the RIP routing table of SwitchA after the routes are filtered.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 8 Routes : 8
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+192.168.0.0/24 Direct 0 0 D 192.168.0.1 Vlanif50
+192.168.0.1/32 Direct 0 0 D 127.0.0.1 Vlanif50
+192.168.1.0/24 Direct 0 0 D 192.168.1.1 Vlanif10
+192.168.1.1/32 Direct 0 0 D 127.0.0.1 Vlanif10
+192.168.2.0/24 RIP 100 4 D 192.168.1.2 Vlanif10
+192.168.3.0/24 RIP 100 4 D 192.168.1.2 Vlanif10
+The routing table of SwitchA does not contain the route originating from
+192.168.4.0/24.
+----End
+Configuration Files
+● SwitchA configuration file
+#
+sysname SwitchA
+#
+vlan batch 10 50
+#
+interface Vlanif10
+ip address 192.168.1.1 255.255.255.0
+#
+interface Vlanif50
+ip address 192.168.0.1 255.255.255.0
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 121
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 50
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+rip 100
+network 192.168.0.0
+network 192.168.1.0
+#
+return
+● SwitchB configuration file
+#
+sysname SwitchB
+#
+vlan batch 10 20
+#
+acl number 2000
+rule 5 deny source 192.168.4.0 0.0.0.255
+rule 10 permit
+#
+interface Vlanif10
+ip address 192.168.1.2 255.255.255.0
+#
+interface Vlanif20
+ip address 192.168.2.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+rip 100
+default-cost 3
+network 192.168.1.0
+filter-policy 2000 export
+import-route rip 200
+#
+rip 200
+network 192.168.2.0
+import-route rip 100
+#
+return
+● SwitchC configuration file
+#
+sysname SwitchC
+#
+vlan batch 20 30 40
+#
+interface Vlanif20
+ip address 192.168.2.2 255.255.255.0
+#
+interface Vlanif30
+ip address 192.168.3.1 255.255.255.0
+#
+interface Vlanif40
+ip address 192.168.4.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 122
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+rip 200
+network 192.168.2.0
+network 192.168.3.0
+network 192.168.4.0
+#
+return
+3.16.3 Example for Configuring One-Arm Static BFD for RIP
+Networking Requirements
+In Figure 3-13, four switches communicate using RIP on a small-sized network.
+Services are transmitted through the primary link SwitchA→SwitchB→SwitchD.
+Reliability must be improved for data transmitted from SwitchA to SwitchB so that
+services can be rapidly switched to another path when the primary link fails.
+NOTE
+In this scenario, ensure that all connected interfaces have STP disabled. If STP is enabled
+and VLANIF interfaces of switches are used to construct a Layer 3 ring network, an
+interface on the network will be blocked. As a result, Layer 3 services on the network
+cannot run normally.
+Figure 3-13 One-arm static BFD for RIP
+Configuration Roadmap
+The configuration roadmap is as follows:
+1. Configure IP address for each interface to ensure network reachability.
+2. Enable RIP on each switch to implement network connections between
+processes.
+3. Configure one-arm static BFD on SwitchA. BFD can rapidly detect the link
+status and help RIP speed up route convergence to implement fast link
+switching.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 123
+Procedure
+Step 1 Configure VLANs and add interfaces to the VLANs. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+<HUAWEI> system-view
+[HUAWEI] sysname SwitchA
+[SwitchA] vlan batch 10 20
+[SwitchA] interface gigabitethernet 0/0/1
+[SwitchA-GigabitEthernet0/0/1] port link-type trunk
+[SwitchA-GigabitEthernet0/0/1] port trunk allow-pass vlan 10
+[SwitchA-GigabitEthernet0/0/1] quit
+[SwitchA] interface gigabitethernet 0/0/2
+[SwitchA-GigabitEthernet0/0/2] port link-type trunk
+[SwitchA-GigabitEthernet0/0/2] port trunk allow-pass vlan 20
+[SwitchA-GigabitEthernet0/0/2] quit
+Step 2 Configure an IP address to each VLANIF interface. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+[SwitchA] interface vlanif 10
+[SwitchA-Vlanif10] ip address 10.2.2.1 24
+[SwitchA-Vlanif10] quit
+[SwitchA] interface vlanif 20
+[SwitchA-Vlanif20] ip address 10.3.3.1 24
+[SwitchA-Vlanif20] quit
+Step 3 Configure basic RIP functions.
+# Configure SwitchA.
+[SwitchA] rip 1
+[SwitchA-rip-1] version 2
+[SwitchA-rip-1] network 10.0.0.0
+[SwitchA-rip-1] quit
+# Configure SwitchB.
+[SwitchB] rip 1
+[SwitchB-rip-1] version 2
+[SwitchB-rip-1] network 10.0.0.0
+[SwitchB-rip-1] network 172.16.0.0
+[SwitchB-rip-1] quit
+# Configure SwitchC.
+[SwitchC] rip 1
+[SwitchC-rip-1] version 2
+[SwitchC-rip-1] network 10.0.0.0
+[SwitchC-rip-1] quit
+# Configure SwitchD.
+[SwitchD] rip 1
+[SwitchD-rip-1] version 2
+[SwitchD-rip-1] network 172.16.0.0
+[SwitchD-rip-1] quit
+# After completing the preceding operations, run the display rip neighbor
+command. The command output shows that SwitchA, SwitchB, and SwitchC have
+established neighbor relationships with each other. In the following example, the
+display on SwitchA is used.
+[SwitchA] display rip 1 neighbor
+---------------------------------------------------------------------
+IP Address Interface Type Last-Heard-Time
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 124
+---------------------------------------------------------------------
+10.2.2.2 Vlanif10 RIP 0:0:10
+Number of RIP routes : 2
+10.3.3.2 Vlanif20 RIP 0:0:8
+Number of RIP routes : 1
+# Run the display ip routing-table command. The command output shows that
+the devices have imported routes from each other. In the following example, the
+display on SwitchA is used.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 8 Routes : 9
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+10.2.2.0/24 Direct 0 0 D 10.2.2.1 Vlanif10
+10.2.2.1/32 Direct 0 0 D 127.0.0.1 Vlanif10
+10.3.3.0/24 Direct 0 0 D 10.3.3.1 Vlanif20
+10.3.3.1/32 Direct 0 0 D 127.0.0.1 Vlanif20
+10.4.4.0/24 RIP 100 1 D 10.2.2.2 Vlanif10
+RIP 100 1 D 10.3.3.2 Vlanif20
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+172.16.1.0/24 RIP 100 1 D 10.2.2.2 Vlanif10
+The preceding command output shows that the next-hop address and outbound
+interface of the route to destination 172.16.1.0/24 are 10.2.2.2 and VLANIF10, and
+traffic is transmitted over the active link SwitchA->SwitchB.
+Step 4 Configure one-arm static BFD on SwitchA.
+# Configure one-arm BFD on SwitchA.
+[SwitchA] bfd
+[SwitchA-bfd] quit
+[SwitchA] bfd 1 bind peer-ip 10.2.2.2 interface vlanif 10 source-ip 10.1.1.1 one-arm-echo
+[SwitchA-bfd-session-1] discriminator local 1
+[SwitchA-bfd-session-1] min-echo-rx-interval 200
+[SwitchA-bfd-session-1] commit
+[SwitchA-bfd-session-1] quit
+The source IP address 10.1.1.1 can be configured as the IP address of another
+interface (such as loopback interface) on the device. This parameter must be
+configured. Otherwise, the BFD session cannot be set up.
+# Enable static BFD on VLANIF 10.
+[SwitchA] interface vlanif 10
+[SwitchA-Vlanif10] rip bfd static
+[SwitchA-Vlanif10] quit
+# After the configurations are completed, run the display bfd session all
+command on SwitchA. The command output shows that a static BFD session has
+been set up.
+[SwitchA] display bfd session all
+--------------------------------------------------------------------------------
+Local Remote PeerIpAddr State Type InterfaceName
+--------------------------------------------------------------------------------
+1 - 10.2.2.2 Up S_IP_IF Vlanif10
+--------------------------------------------------------------------------------
+Total UP/DOWN Session Number : 1/0
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 125
+Step 5 Verify the configuration.
+# Run the shutdown command on GigabitEthernet0/0/1 of SwitchB to simulate a
+fault in the active link.
+NOTE
+The link fault is simulated to verify the configuration. In actual situations, the operation is
+not required.
+[SwitchB] interface gigabitethernet 0/0/1
+[SwitchB-GigabitEthernet0/0/1] shutdown
+# Check the routing table of SwitchA.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 6 Routes : 6
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+10.3.3.0/24 Direct 0 0 D 10.3.3.1 Vlanif20
+10.3.3.1/32 Direct 0 0 D 127.0.0.1 Vlanif20
+10.4.4.0/24 RIP 100 1 D 10.3.3.2 Vlanif20
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+172.16.1.0/24 RIP 100 2 D 10.3.3.2 Vlanif20
+The preceding command output shows that the standby link SwitchA->SwitchC-
+>SwitchB is used after the active link fails, and the next-hop address and
+outbound interface of the route to destination 172.16.1.0/24 are 10.3.3.2 and
+VLANIF20.
+----End
+Configuration files
+● SwitchA configuration file
+#
+sysname SwitchA
+#
+vlan batch 10 20
+#
+bfd
+#
+interface Vlanif10
+ip address 10.2.2.1 255.255.255.0
+rip bfd static
+#
+interface Vlanif20
+ip address 10.3.3.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+bfd 1 bind peer-ip 10.2.2.2 interface Vlanif10 source-ip 10.1.1.1 one-arm-echo
+discriminator local 1
+min-echo-rx-interval 200
+commit
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 126
+#
+rip 1
+version 2
+network 10.0.0.0
+#
+return
+● SwitchB configuration file
+#
+sysname SwitchB
+#
+vlan batch 10 30 40
+#
+interface Vlanif10
+ip address 10.2.2.2 255.255.255.0
+#
+interface Vlanif30
+ip address 10.4.4.1 255.255.255.0
+#
+interface Vlanif40
+ip address 172.16.1.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+rip 1
+version 2
+network 10.0.0.0
+network 172.16.0.0
+#
+return
+● SwitchC configuration file
+#
+sysname SwitchC
+#
+vlan batch 20 30
+#
+interface Vlanif20
+ip address 10.3.3.2 255.255.255.0
+#
+interface Vlanif30
+ip address 10.4.4.2 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+rip 1
+version 2
+network 10.0.0.0
+#
+return
+● SwitchD configuration file
+#
+sysname SwitchD
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 127
+#
+vlan batch 40
+#
+interface Vlanif40
+ip address 172.16.1.2 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+rip 1
+version 2
+network 172.16.0.0
+#
+return
+3.16.4 Example for Configuring Dynamic BFD for RIP
+Networking Requirements
+In Figure 3-14, four switches communicate using RIP on a small-sized network.
+Services are transmitted through the primary link SwitchA→SwitchB→SwitchD.
+Reliability must be improved for data transmitted from SwitchA to SwitchB so that
+services can be rapidly switched to another path when the primary link fails.
+NOTE
+In this scenario, ensure that all connected interfaces have STP disabled. If STP is enabled
+and VLANIF interfaces of switches are used to construct a Layer 3 ring network, an
+interface on the network will be blocked. As a result, Layer 3 services on the network
+cannot run normally.
+Figure 3-14 Configuring dynamic BFD for RIP
+Configuration Roadmap
+The configuration roadmap is as follows:
+1. Configure IP address for each interface to ensure network reachability.
+2. Enable RIP on each switch to implement network connections between
+processes.
+3. Configure BFD for RIP on interfaces at both ends of the link between SwitchA
+and SwitchB. BFD can rapidly detect the link status and help RIP speed up
+route convergence to implement fast link switching.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 128
+Procedure
+Step 1 Configure VLANs and add interfaces to the VLANs. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+<HUAWEI> system-view
+[HUAWEI] sysname SwitchA
+[SwitchA] vlan batch 10 20
+[SwitchA] interface gigabitethernet 0/0/1
+[SwitchA-GigabitEthernet0/0/1] port link-type trunk
+[SwitchA-GigabitEthernet0/0/1] port trunk allow-pass vlan 10
+[SwitchA-GigabitEthernet0/0/1] quit
+[SwitchA] interface gigabitethernet 0/0/2
+[SwitchA-GigabitEthernet0/0/2] port link-type trunk
+[SwitchA-GigabitEthernet0/0/2] port trunk allow-pass vlan 20
+[SwitchA-GigabitEthernet0/0/2] quit
+Step 2 Configure an IP address to each VLANIF interface. The configurations of SwitchB,
+SwitchC, and SwitchD are similar to the configuration of SwitchA, and are not
+mentioned here.
+[SwitchA] interface vlanif 10
+[SwitchA-Vlanif10] ip address 10.2.2.1 24
+[SwitchA-Vlanif10] quit
+[SwitchA] interface vlanif 20
+[SwitchA-Vlanif20] ip address 10.3.3.1 24
+[SwitchA-Vlanif20] quit
+Step 3 Configure basic RIP functions.
+# Configure SwitchA.
+[SwitchA] rip 1
+[SwitchA-rip-1] version 2
+[SwitchA-rip-1] network 10.0.0.0
+[SwitchA-rip-1] quit
+# Configure SwitchB.
+[SwitchB] rip 1
+[SwitchB-rip-1] version 2
+[SwitchB-rip-1] network 10.0.0.0
+[SwitchB-rip-1] network 172.16.0.0
+[SwitchB-rip-1] quit
+# Configure SwitchC.
+[SwitchC] rip 1
+[SwitchC-rip-1] version 2
+[SwitchC-rip-1] network 10.0.0.0
+[SwitchC-rip-1] quit
+# Configure SwitchD.
+[SwitchD] rip 1
+[SwitchD-rip-1] version 2
+[SwitchD-rip-1] network 172.16.0.0
+[SwitchD-rip-1] quit
+# After completing the preceding operations, run the display rip neighbor
+command. The command output shows that SwitchA, SwitchB, and SwitchC have
+established neighbor relationships with each other. In the following example, the
+display on SwitchA is used.
+[SwitchA] display rip 1 neighbor
+---------------------------------------------------------------------
+IP Address Interface Type Last-Heard-Time
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 129
+---------------------------------------------------------------------
+10.2.2.2 Vlanif10 RIP 0:0:14
+Number of RIP routes : 2
+10.3.3.2 Vlanif20 RIP 0:0:19
+Number of RIP routes : 1
+# Run the display ip routing-table command. The command output shows that
+the switches have imported routes from each other. In the following example, the
+display on SwitchA is used.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 8 Routes : 9
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+10.2.2.0/24 Direct 0 0 D 10.2.2.1 Vlanif10
+10.2.2.1/32 Direct 0 0 D 127.0.0.1 Vlanif10
+10.3.3.0/24 Direct 0 0 D 10.3.3.1 Vlanif20
+10.3.3.1/32 Direct 0 0 D 127.0.0.1 Vlanif20
+10.4.4.0/24 RIP 100 1 D 10.3.3.2 Vlanif20
+RIP 100 1 D 10.2.2.2 Vlanif10
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+172.16.1.0/24 RIP 100 1 D 10.2.2.2 Vlanif10
+The preceding command output shows that the next-hop address and outbound
+interface of the route to destination 172.16.1.0/24 are 10.2.2.2 and VLANIF10, and
+traffic is transmitted over the active link SwitchA->SwitchB.
+Step 4 Configure BFD in RIP processes.
+# Configure BFD on all interfaces of SwitchA. The configuration of SwitchB is
+similar to that of SwitchA, and is not provided here.
+[SwitchA] bfd
+[SwitchA-bfd] quit
+[SwitchA] rip 1
+[SwitchA-rip-1] bfd all-interfaces enable
+[SwitchA-rip-1] bfd all-interfaces min-tx-interval 100 min-rx-interval 100 detect-multiplier 10
+[SwitchA-rip-1] quit
+# After completing the preceding operations, run the display rip bfd session
+command on SwitchA. The command output shows that SwitchA and SwitchB
+have established a BFD session and the BFDState field displays Up. In the
+following example, the display on SwitchA is used.
+[SwitchA] display rip 1 bfd session all
+LocalIp : 10.2.2.1 RemoteIp : 10.2.2.2 BFDState : Up
+TX : 100 RX : 100 Multiplier : 10
+BFD Local Dis : 8192 Interface : Vlanif10
+Diagnostic Info : No diagnostic information
+LocalIp : 10.3.3.1 RemoteIp : 10.3.3.2 BFDState : Down
+TX : 2800 RX : 2800 Multiplier : 0
+BFD Local Dis : 8193 Interface : Vlanif20
+Diagnostic Info : No diagnostic information
+Step 5 Verify the configuration.
+# Run the shutdown command on GigabitEthernet0/0/1 of SwitchB to simulate a
+fault in the active link.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 130
+NOTE
+The link fault is simulated to verify the configuration. In actual situations, the operation is
+not required.
+[SwitchB] interface gigabitethernet 0/0/1
+[SwitchB-GigabitEthernet0/0/1] shutdown
+# Check the routing table of SwitchA.
+[SwitchA] display ip routing-table
+Route Flags: R - relay, D - download to fib, T - to vpn-instance
+------------------------------------------------------------------------------
+Routing Tables: Public
+Destinations : 6 Routes : 6
+Destination/Mask Proto Pre Cost Flags NextHop Interface
+10.3.3.0/24 Direct 0 0 D 10.3.3.1 Vlanif20
+10.3.3.1/32 Direct 0 0 D 127.0.0.1 Vlanif20
+10.4.4.0/24 RIP 100 1 D 10.3.3.2 Vlanif20
+127.0.0.0/8 Direct 0 0 D 127.0.0.1 InLoopBack0
+127.0.0.1/32 Direct 0 0 D 127.0.0.1 InLoopBack0
+172.16.1.0/24 RIP 100 2 D 10.3.3.2 Vlanif20
+The preceding command output shows that the standby link SwitchA->SwitchC-
+>SwitchB is used after the active link fails, and the next-hop address and
+outbound interface of the route to destination 172.16.1.0/24 are 10.3.3.2 and
+VLANIF20.
+----End
+Configuration Files
+● SwitchA configuration file
+#
+sysname SwitchA
+#
+vlan batch 10 20
+#
+bfd
+#
+interface Vlanif10
+ip address 10.2.2.1 255.255.255.0
+#
+interface Vlanif20
+ip address 10.3.3.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+rip 1
+version 2
+network 10.0.0.0
+bfd all-interfaces enable
+bfd all-interfaces min-tx-interval 100 min-rx-interval 100 detect-multiplier 10
+#
+return
+● SwitchB configuration file
+#
+sysname SwitchB
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 131
+#
+vlan batch 10 30 40
+#
+bfd
+#
+interface Vlanif10
+ip address 10.2.2.2 255.255.255.0
+#
+interface Vlanif30
+ip address 10.4.4.1 255.255.255.0
+#
+interface Vlanif40
+ip address 172.16.1.1 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/3
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+rip 1
+version 2
+network 10.0.0.0
+network 172.16.0.0
+bfd all-interfaces enable
+bfd all-interfaces min-tx-interval 100 min-rx-interval 100 detect-multiplier 10
+#
+return
+● SwitchC configuration file
+#
+sysname SwitchC
+#
+vlan batch 20 30
+#
+interface Vlanif20
+ip address 10.3.3.2 255.255.255.0
+#
+interface Vlanif30
+ip address 10.4.4.2 255.255.255.0
+#
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 30
+#
+interface GigabitEthernet0/0/2
+port link-type trunk
+port trunk allow-pass vlan 20
+#
+rip 1
+version 2
+network 10.0.0.0
+#
+return
+● SwitchD configuration file
+#
+sysname SwitchD
+#
+vlan batch 40
+#
+interface Vlanif40
+ip address 172.16.1.2 255.255.255.0
+#
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 132
+interface GigabitEthernet0/0/1
+port link-type trunk
+port trunk allow-pass vlan 40
+#
+rip 1
+version 2
+network 172.16.0.0
+#
+return
+3.17 Troubleshooting RIP
+3.17.1 Failed to Receive RIP Update Packets from Neighbors
+Fault Description
+A device cannot receive RIP Update packets from neighbors when the link runs
+properly.
+Procedure
+Step 1 Run the display current-configuration configuration rip command to check RIP
+configurations.
+● Check whether RIP has been enabled on the interface. Only the RIP-enabled
+interface can receive RIP packets.
+● Check whether the version number in the RIP packet sent by the peer
+interface matches the version number in the RIP packet received by the local
+interface. If not, the two interfaces cannot establish the RIP neighbor
+relationship.
+Step 2 Run the display current-configuration interface
+interface-type interface-number
+command to view the interface configuration.
+● Check whether the undo rip input command has been executed on the
+interface. If the command has been executed, the interface does not receive
+RIP packets.
+● Check whether the authentication modes on the two ends of the link are the
+same. If the authentication modes are different, the interface cannot receive
+RIP packets from the peer.
+----End
+3.17.2 Failed to Send RIP Update Packets to Neighbors
+Fault Description
+A device cannot send RIP Update packets to neighbors when the link runs
+properly.
+Procedure
+Step 1 Run the display current-configuration configuration rip command to check RIP
+configurations.
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 133
+● Check whether RIP has been enabled on the interface. Only the RIP-enabled
+interface can send RIP packets.
+● Check whether the silent-interface command has been executed on the
+interface. If the command has been executed, the interface does not send RIP
+packets.
+Step 2 Run the display current-configuration interface
+interface-type interface-number
+command to view the interface configuration.
+● Check whether the undo rip output command has been executed on the
+interface. If the command has been executed, the interface does not send RIP
+packets.
+● Check whether the authentication modes on the two ends of the link are the
+same. If the authentication modes are different, the interface cannot send RIP
+packets to the peer.
+● Check whether split horizon has been enabled on the interface. If split horizon
+has been enabled, the interface cannot send the route learned by itself to
+neighbors.
+NOTE
+Split horizon is enabled on all interfaces by default, but the display current-
+configuration command output does not show the split horizon option. If the
+command output for an interface connected to an NBMA network does not contain
+the split horizon option, split horizon is disabled on the interface.
+----End
+3.17.3 Route Flapping Occurs on a RIP Network
+Fault Description
+Route flapping occurs on a RIP network when the link runs properly. Some routes
+intermittently disappear in the routing table.
+Procedure
+Step 1 Run the display rip command to check the configuration of RIP timers.
+The RIP timers on the entire network must be consistent; otherwise, route flapping
+occurs. The relationships between the timer values are
+update <
+age,
+update <
+garbage-collect.
+Step 2 Run the timers rip
+update age garbage-collect command to set the RIP timers.
+----End
+S300, S500, S2700, S5700 and S6700 Series Ethernet
+Switches
+Configuration Guide - IP Unicast Routing 3 RIP Configuration
+Issue 01 (2024-09-30) Copyright © Huawei Technologies Co., Ltd. 134
