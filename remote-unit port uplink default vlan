@@ -1,0 +1,64 @@
+remote-unit port uplink default vlan
+Function
+
+The remote-unit port uplink default vlan command configures the default VLAN for uplink interfaces on RUs in batches.
+
+The undo remote-unit port uplink default vlan command restores the default setting.
+
+By default, an uplink interface on an RU uses VLAN 1 as its default VLAN.
+Format
+
+remote-unit { ruid1 [ to ruid2] } &<1-8> port uplink default vlan vlanid
+
+undo remote-unit { ruid1 [ to ruid2] } &<1-8> port uplink default vlan
+Parameters
+Parameter 	Description 	Value
+
+ruid1 [ to ruid2 ]
+	
+
+Specifies IDs of RUs:
+
+ruid1 indicates the ID of the first RU. to ruid2 indicates the ID of the last RU. ruid2 must be greater than or equal to ruid1.
+	
+
+ruid1 is an integer that ranges from 0 to 16777215.
+
+ruid2 is an integer that ranges from 0 to 16777215.
+
+vlanid
+	
+
+Specifies the default VLAN for uplink interfaces on the RUs.
+	
+
+The value is an integer in the range from 1 to 4094.
+Views
+
+remote-unit view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If terminals connected to multiple RUs carry the same service and use the same service VLAN, you can run the remote-unit port uplink default vlan command to configure the service VLAN as the default VLAN for the uplink interfaces on the RUs in batches.
+
+An RU saves the VLAN configuration delivered by the central switch to it in its flash memory and forwards traffic based on this VLAN configuration after being powered on. After the RU goes online on the central switch, the central switch synchronizes the latest VLAN configuration to the RU's flash memory.
+
+Prerequisites
+
+You have run the vlan mode manual command to configure the manual VLAN mode for the RU.
+
+Follow-up procedure
+
+After you run the commands for configuring the VLAN mode for an RU and VLANs for RU interfaces, run the commit command to deliver the VLAN configuration to the RU or bring the RU offline and then online again for the configuration to take effect.
+Example
+
+# Set VLAN 10 as the default VLAN for the uplink interfaces on RUs 0 to 4.
+
+<HUAWEI> system-view
+[HUAWEI] remote-unit
+[HUAWEI-remote-unit] remote-unit 0 to 4 port uplink default vlan 10
+
