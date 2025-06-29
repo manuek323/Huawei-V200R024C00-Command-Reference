@@ -1,0 +1,33 @@
+##### SHOW BGP PEERS #####
+
+
+
+system-view
+
+dispaly bgp peer ?
+
+display bgp peer verbose
+
+display bgp all summary
+
+
+## AUTO REFRESH ##
+
+
+display bgp peer | refresh
+
+
+
+##### VER PEER ADVERTISE ROUTES #####
+
+
+
+display bgp routing-table peer [ip del peer] advertised-routes
+
+
+
+##### VER RUTAS POR COMMUNITY #####
+
+
+
+display bgp routing-table community-filter {ID DEL FILTRO}
