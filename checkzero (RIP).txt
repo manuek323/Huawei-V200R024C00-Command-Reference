@@ -1,0 +1,45 @@
+checkzero (RIP)
+Function
+
+The checkzero command enables the device to check the zero fields in RIP-1 packets.
+
+The undo checkzero command disables the device from checking the zero fields in RIP-1 packets.
+
+By default, the device checks the zero fields in RIP-1 packets.
+Format
+
+checkzero
+
+undo checkzero
+Parameters
+
+None
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In a RIP-1 packet, the values of some fields must be zero. These fields are zero fields. After zero field check is enabled, the device checks the zero fields in the RIP-1 packets and discards the packets in which the zero field values are not 0.
+
+The checkzero command is valid only for RIP-1 packets.
+
+Run the undo checkzero command to reduce CPU usage if there is no zero field to check (all neighbors are trusted).
+
+Configuration Impact
+
+By default, devices reject all RIP-1 packets in which the zero fields are not 0.
+
+RIP-1 implementations vary with device manufacturers. If the third-party peer device allows zero fields in RIP-1 packets to carry non-zero values, run the undo checkzero command on the local device. The undo checkzero command causes potential security risks to network, so it is not recommended.
+Example
+
+# Enable the device to check zero fields in RIP-1 packets.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] checkzero
+

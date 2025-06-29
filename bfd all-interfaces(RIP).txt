@@ -1,0 +1,95 @@
+bfd all-interfaces(RIP)
+Function
+
+The bfd all-interfaces command sets BFD session parameters.
+
+The undo bfd all-interfaces command restores BFD session parameters to default values.
+
+By default, the minimum intervals for receiving and sending BFD packets are 1000 ms and the detection time multiplier is 3.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+bfd all-interfaces { min-rx-interval min-receive-value | min-tx-interval min-transmit-value | detect-multiplier detect-multiplier-value } *
+
+undo bfd all-interfaces { min-rx-interval [ min-receive-value ] | min-tx-interval [ min-transmit-value ] | detect-multiplier [ detect-multiplier-value ] } *
+Parameters
+Parameter 	Description 	Value
+
+min-rx-interval min-receive-value
+	
+
+Specifies the minimum interval for receiving BFD packets from the peer.
+	
+The value is an integer that ranges from 100 to 1000, in milliseconds.
+
+    After the set service-mode enhanced command is configured on the S5731-H, S5731-S, S5731S-H, and S5731S-S, the value ranges from 3 to 1000.
+    After the set service-mode enhanced-bfd command is configured on the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, the value ranges from 3 to 1000.
+
+min-tx-interval min-transmit-value
+	
+
+Specifies the minimum interval for sending BFD packets to the peer.
+	
+The value is an integer that ranges from 100 to 1000, in milliseconds.
+
+    After the set service-mode enhanced command is configured on the S5731-H, S5731-S, S5731S-H, and S5731S-S, the value ranges from 3 to 1000.
+    After the set service-mode enhanced-bfd command is configured on the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, the value ranges from 3 to 1000.
+
+detect-multiplier detect-multiplier-value
+	
+
+Indicates the local detection multiplier.
+	
+
+The value is an integer that ranges from 3 to 50. The default value is 3.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The priority of BFD configured on an interface is higher than that configured for a RIP process. If BFD is enabled on an interface, BFD sessions are established using the BFD parameters set on the interface.
+
+Actual interval at which BFD packets are transmitted on the local device = Max { transmit-value on the local device, receive-value on the peer}.
+
+Actual interval at which BFD packets are received on the local device = Max { transmit-value on the peer, receive-value on the local device}.
+
+Local BFD detection time = Actual interval at which BFD packets are received on the local device x detect-multiplier-value on the peer.
+
+Prerequisites
+
+BFD has been enabled on all the interfaces using the bfd all-interfaces enable command in the RIP view.
+Example
+
+# Configure BFD for a RIP process and set the minimum interval for sending BFD packets to 500 ms.
+
+<HUAWEI> system-view 
+
+[HUAWEI] bfd 
+
+[HUAWEI-bfd] quit 
+
+[HUAWEI] rip 
+
+[HUAWEI-rip-1] bfd all-interfaces enable
+
+[HUAWEI-rip-1] bfd all-interfaces min-tx-interval 500
+

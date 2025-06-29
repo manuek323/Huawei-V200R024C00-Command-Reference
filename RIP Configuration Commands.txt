@@ -1,0 +1,53 @@
+RIP Configuration Commands
+
+    Command Support
+    bfd all-interfaces enable(RIP)
+    bfd all-interfaces(RIP)
+    checkzero (RIP)
+    default-cost (RIP)
+    default-route originate
+    description (RIP)
+    display default-parameter rip
+    display rip
+    display rip bfd session
+    display rip database
+    display rip graceful-restart
+    display rip interface
+    display rip neighbor
+    display rip neighbor last-nbr-down
+    display rip route
+    display rip statistics interface
+    filter-policy export (RIP)
+    filter-policy import (RIP)
+    graceful-restart (RIP)
+    host-route
+    import-route (RIP)
+    maximum load-balancing (RIP)
+    network (RIP)
+    peer (RIP)
+    preference (RIP)
+    reset rip configuration
+    reset rip statistics
+    rip
+    rip authentication-mode
+    rip bfd
+    rip bfd block
+    rip bfd enable
+    rip bfd static
+    rip input
+    rip metricin
+    rip metricout
+    rip mib-binding
+    rip output
+    rip pkt-transmit
+    rip poison-reverse
+    rip replay-protect
+    rip split-horizon
+    rip summary-address
+    rip valid-ttl-hops
+    rip version
+    silent-interface (RIP)
+    summary (RIP)
+    timers rip
+    verify-source (RIP)
+    version (RIP)

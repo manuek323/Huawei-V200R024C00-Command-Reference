@@ -1,0 +1,192 @@
+display default-parameter rip
+Function
+
+The display default-parameter rip command displays the default RIP configuration.
+Format
+
+display default-parameter rip
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+After the default RIP configuration is modified, running the display default-parameter rip command still displays the default configuration during RIP initialization.
+Example
+
+# Display the default RIP configuration.
+
+<HUAWEI> display default-parameter rip
+                                                                                
+--------------------------------------------                                    
+ Protocol Level Default Configurations                                          
+--------------------------------------------                                    
+       RIP version   : 1                                                        
+       Preference    : 100                                                      
+       Checkzero     : Enabled                                                  
+       Default-cost  : 0                                                        
+       Auto Summary  : Enabled                                                  
+       Host-route    : Enabled                                                  
+       Maximum Balanced Paths : 16                                               
+       Update time   : 30 sec              Age time : 180 sec                   
+       Garbage-collect time : 120 sec                                           
+       Default-route     : Disabled                                             
+       Verify-source     : Enabled                                              
+       Graceful restart  : Disabled                                             
+--------------------------------------------                                    
+ Interface Level Default Configurations                                         
+--------------------------------------------                                    
+  Metricin                : 0                                                   
+  Metricout               : 1                                                   
+  Input Packet Processing : Enabled                                             
+  Output Packet Processing: Enabled                                             
+  Poison Reverse          : Disabled                                            
+  Replay Protect          : Disabled                                            
+  Split Horizon                                                                 
+   For Broadcast and P2P Interfaces :  Enabled                                  
+   For NBMA Interfaces              :  Disabled                                 
+  Packet Transmit Interval          :  200 msecs                                
+  Packet Transmit Number            :  50                                       
+  RIP Protocol Version              :  RIPv1 Compatible (Non-Standard)          
+
+Table 7-1 Description of the display default-parameter rip command output
+
+Item
+	
+
+Description
+
+Protocol Level Default Configurations
+	
+
+Default RIP protocol-level configuration.
+
+RIP version
+	
+
+Default global RIP version.
+
+Preference
+	
+
+Default RIP preference.
+
+Checkzero
+	
+
+Whether zero fields in RIP-1 packets are checked by default.
+
+Default-cost
+	
+
+Default metric of routes imported from other routing protocols.
+
+Auto Summary
+	
+
+Whether RIP summarization is enabled by default.
+
+Host-route
+	
+
+Whether host routes are added to routing tables by default.
+
+Maximum Balanced Paths
+	
+
+Default maximum number of equal-cost routes for load balancing.
+
+Update time
+	
+
+Default interval for sending Update packets.
+
+Age time
+	
+
+Default aging time of RIP routes.
+
+Garbage-collect time
+	
+
+Default Garbage-collect time of RIP routes.
+
+Default-route
+	
+
+Whether the default route is used if no entries in the routing table match packets.
+
+Verify-source
+	
+
+Whether source address check is enabled by default.
+
+Graceful restart
+	
+
+Whether RIP GR is enabled by default.
+
+Interface Level Default Configurations
+	
+
+Default RIP configuration on the interface.
+
+Metricin
+	
+
+Default metric added to routes when RIP packets are received.
+
+Metricout
+	
+
+Default metric added to routes when RIP packets are sent.
+
+Input Packet Processing
+	
+
+Whether an interface is allowed to receive RIP packets by default.
+
+Output Packet Processing
+	
+
+Whether an interface is allowed to send RIP packets by default.
+
+Poison Reverse
+	
+
+Whether poison reverse is enabled by default.
+
+Replay Protect
+	
+
+Whether replay-protect is enabled by default.
+
+Split Horizon
+	
+Whether split horizon is enabled for the following interfaces:
+
+    Broadcast and P2P interfaces
+
+    NBMA interfaces
+
+Packet Transmit Interval
+	
+
+Default interval for forwarding packets, in milliseconds.
+
+Packet Transmit Number
+	
+
+Default number of forwarded packets.
+
+RIP Protocol Version
+	
+
+Default RIP version on the interface.

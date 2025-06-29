@@ -1,0 +1,40 @@
+default-cost (RIP)
+Function
+
+The default-cost command changes the default metric of imported routes.
+
+The undo default-cost command restores the default metric of imported routes.
+
+By default, the metric of imported routes is 0.
+Format
+
+default-cost cost
+
+undo default-cost
+Parameters
+Parameter 	Description 	Value
+cost 	Specifies the default metric of imported routes. 	The value is an integer that ranges from 0 to 15. The default value is 0.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run one of the following commands to set the metric of imported routes. The following commands are listed in descending order of priorities.
+
+    Run the apply cost command to set the metric of imported routes.
+
+    Run the import-route (RIP) command to set the metric of imported routes.
+
+    Run the default-cost (RIP) command to set the default metric of imported routes.
+
+Example
+
+# Set the default metric for imported routes to 2.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] default-cost 2
+
