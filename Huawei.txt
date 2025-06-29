@@ -1,0 +1,2018 @@
+filter-policy import (RIP)
+Function
+
+The filter-policy import command filters the received RIP routes.
+
+The undo filter-policy import command cancels route filtering.
+
+By default, no filtering policy is configured.
+Format
+
+filter-policy { acl-number | acl-name acl-name | ip-prefix ip-prefix-name [ gateway ip-prefix-name ] } import [ interface-type interface-number ]
+
+filter-policy gateway ip-prefix-name import
+
+undo filter-policy [ acl-number | acl-name acl-name | ip-prefix ip-prefix-name [ gateway ip-prefix-name ] ] import [ interface-type interface-number ]
+
+undo filter-policy [ gateway ip-prefix-name ] import
+Parameters
+Parameter 	Description 	Value
+
+acl-number
+	
+
+Specifies the number of the basic ACL that is used to filter the destination addresses of routes.
+	
+
+The value is an integer ranging from 2000 to 2999.
+
+acl-name acl-name
+	
+
+Specifies the ACL filtering route destination addresses.
+	
+
+The value is a string of 1 to 64 case-sensitive characters without spaces. The value must start with a letter.
+
+interface-type interface-number
+	
+
+Indicates the type and the number of the interface based on which routes are filtered.
+	
+
+-
+
+ip-prefix
+	
+
+Filters routes by using the IP prefix list.
+	
+
+-
+
+ip-prefix-name
+	
+
+Specifies the address prefix list used to filter route destination addresses.
+	
+
+The name is a string of 1 to 169 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+
+gateway
+	
+
+Filters routes based on the gateway.
+	
+
+-
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The filter-policy import command filters received RIP routes, including:
+
+    Filtering a specified route in the packet
+
+    Not monitoring the Update packets from the device
+
+To cancel route filtering, run the undo filter-policy import command. When you remove an interface-based filtering policy, you must specify interface-type interface-number. The policy on only one interface can be deleted each time.
+
+This command runs in the RIP view. If the filtering policy is based on interfaces, each interface can be configured with only one filtering policy. If the interface is not specified, a global filtering policy is configured. Only one global filtering policy can be configured. If you run the command again when a global policy exists, the new policy overwrites the old one.
+
+For an ACL, when the rule command is used to configure a filtering rule, the filtering rule takes effective only when the source address range is specified by the source parameter and the time period is specified by the time-range parameter.
+Example
+
+# Filter the RIP Update packets that are received from all the interfaces according to the IP prefix list named abc.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] filter-policy ip-prefix abc import
+
+
+
+
+graceful-restart (RIP)
+Function
+
+The graceful-restart command enables RIP GR on the restarter.
+
+The undo graceful-restart command disables RIP GR on the restarter.
+
+By default, RIP GR is disabled.
+Format
+
+graceful-restart [ period period | wait-time time | planned-only time ] *
+
+undo graceful-restart
+Parameters
+Parameter 	Description 	Value
+
+period period
+	
+
+Specifies the period of GR.
+	
+
+It is an integer ranging from 30 to 3600, in seconds. The default value is 180 seconds.
+
+wait-time time
+	
+
+Specifies the period of GR performed between the restarter and the neighbors that do not support GR. The value of wait-time time cannot be greater than the value of period period.
+	
+
+It is an integer ranging from 1 to 3600, in seconds. The default value is 45 seconds.
+
+planned-only time
+	
+
+Specifies the period of GR performed between the restarter and the neighbors that support GR.
+	
+
+It is an integer ranging from 5 to 3600, in seconds. The default value is 60 seconds.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Planned GR indicates the master/slave switchover triggered through the command. Unplanned GR indicates the master/slave switchover triggered because of a fault.
+
+When most switches on a network do not support RIP GR, you are advised to set wait-time time to a larger value. This ensures that the restarter has enough time to learn correct routes.
+
+If the restart switch completes GR before the period specified by period period expires, the restart switch automatically exits from GR. If the restart switch does not complete GR after the period specified by period period expires, the restart switch is forced to exit from GR.
+
+If the period of GR performed between the restarter and the neighbors that do not support GR depends on wait-time, the restarter does not exit from GR regardless of whether GR is finished within wait-time. After wait-time expires, however, the restarter is forced to exit from GR.
+Example
+
+# Enable RIP GR and set the GR period to 200s.
+
+<HUAWEI> system-view
+
+[HUAWEI] rip 1
+
+[HUAWEI-rip-1] graceful-restart period 200
+
+
+
+
+
+host-route
+Function
+
+The host-route command adds host routes with 32 bits into the routing table.
+
+The undo host-route command disables host routes with 32 bits from being added into the routing table.
+
+By default, host routes can be added into the routing table.
+Format
+
+host-route
+
+undo host-route
+Parameters
+
+None
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+This command applies to RIP-1. In RIP-2, host routes are added to the routing table, regardless of whether the command is run.
+Example
+
+# Add host routes into the routing table.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] host-route
+
+
+
+
+import-route (RIP)
+Function
+
+The import-route command configures RIP to import routes from other routing protocols.
+
+The undo import-route command disables RIP from importing routes from other routing protocols.
+
+By default, RIP does not import routes from other routing protocols.
+Format
+
+import-route bgp [ permit-ibgp ] [ cost { cost | transparent } | route-policy route-policy-name ] *
+
+import-route { { static | direct | unr } | { { rip | ospf | isis } [ process-id ] } } [ cost cost | route-policy route-policy-name ] *
+
+undo import-route { { static | direct | bgp | unr } | { { rip | ospf | isis } [ process-id ] } }
+Parameters
+Parameter 	Description 	Value
+bgp | static | direct | rip | ospf | isis | unr 	Specifies the routing protocol from which RIP imports routes. 	-
+permit-ibgp 	Imports routes from IBGP to RIP. 	-
+process-id 	Specifies a process ID. The process ID can be specified when you import routes from RIP, OSPF, or IS-IS to RIP. 	The value is an integer that ranges from 1 to 65535.
+cost cost 	Specifies the metric for imported routes. 	The value is an integer that ranges from 0 to 15.
+cost transparent 	This parameter is valid only when RIP imports routes from BGP. The metric of the imported routes is the MED of the BGP routes. 	-
+route-policy route-policy-name 	Specifies the routing policy for importing routes. 	The name is a string of 1 to 40 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After you run the import-route command to set a routing policy, RIP can import only the specified routes and sets the route attributes.
+
+To import routes from RIP, or IS-IS, you can specify the process ID. If the process ID is specified, RIP imports routes only from the specified process. If no process ID is specified, RIP imports routes from all processes. When a static or direct route is imported, the process ID cannot be specified.
+
+You can run one of the following commands to set the metric of the imported routes. The following commands are listed in the descending order of priorities.
+
+    Run the apply cost command to set route metric.
+
+    Run the import-route (RIP) command to set the metric for imported routes.
+
+    Run the default-cost (RIP) command to set the default metric for routes.
+
+    RIP defines a 16-bit tag, while other routing protocols define 32-bit tags. If the routes of other protocols are imported to RIP and the tag is used in the routing policy, the tag value cannot exceed 65535. If the tag value exceeds 65535, the routing policy becomes invalid or the matching result is incorrect.
+
+    After the import-route direct command is executed, routes to the network segment where the IP address of the management interface belongs are also imported in the RIP routing table. Therefore, use this command with caution.
+    The permit-ibgp parameter cannot be set for the RIP VPN instance.
+    Importing IBGP routes to RIP may cause routing loops.
+
+Example
+
+# Import IBGP routes, which are filtered by policy abc, to RIP process 1 and set the metric to 5.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] import-route bgp permit-ibgp cost 5 route-policy abc
+
+
+
+
+
+maximum load-balancing (RIP)
+Function
+
+The maximum load-balancing command configures the maximum number of equal-cost routes for load balancing.
+
+The undo maximum load-balancing command restores the default setting.
+
+By default, the maximum number of equal-cost routes on the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S6720S-S, and S5736-S is 8, and the maximum number of equal-cost routes on the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S is 16.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+maximum load-balancing number
+
+undo maximum load-balancing
+Parameters
+Parameter 	Description 	Value
+
+number
+	
+
+Specifies the number of equal-cost routes.
+	
+
+The value is an integer that ranges from 1 to 8 on the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S and S6720S-S. The value ranges from 1 to 16 on the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If a network has multiple redundant links, the maximum number of equal-cost routes can be configured to implement load balancing. With load balancing, network resources are fully utilized, situations where some links are overloaded while others are idle can be avoided, and delay in packet transmissions is shortened.
+Example
+
+# Set the maximum number of equal-cost routes to 4.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+
+[HUAWEI-rip-1] maximum load-balancing 4
+
+
+
+
+
+network (RIP)
+Function
+
+The network command enables RIP for the interface on the specified network segment.
+
+The undo network command disables RIP for the interface on the specified network segment.
+
+By default, RIP is disabled for the interface on the specified network segment.
+Format
+
+network network-address
+
+undo network network-address
+Parameters
+Parameter 	Description 	Value
+network-address 	Specifies the network address on which RIP is enabled. It must be the address of the natural network segment. 	The value is in dotted decimal notation.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+An interface can be associated with only one RIP process.
+Example
+
+# Enable RIP routes for the interface on the specified network segment.
+
+<HUAWEI> system-view
+[HUAWEI] rip
+[HUAWEI-rip-1] network 10.0.0.0
+
+
+
+
+
+peer (RIP)
+Function
+
+The peer command specifies the IP addresses of the RIP neighbors. After this command is configured, Update packets are sent to the peer in unicast instead of multicast or broadcast mode.
+
+The undo peer command deletes the specified neighbor IP address.
+
+By default, no RIP neighbor address is specified.
+Format
+
+peer ip-address
+
+undo peer ip-address
+Parameters
+Parameter 	Description 	Value
+
+ip-address
+	
+
+Specifies the IP address of a neighbor.
+	
+
+The value is in dotted decimal notation.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Generally, you are advised to use the peer command because an interface may receive the same packets both in multicast (or broadcast) and unicast mode. You are advised to change the mode of the interface to the silent mode when configuring the peer command.
+Example
+
+# Specify the IP address of the neighbor to 10.0.0.1.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] peer 10.0.0.1
+
+
+
+
+preference (RIP)
+Function
+
+The preference command sets the preference for RIP routes.
+
+The undo preference command restores the default preference of RIP routes.
+
+The default preference for RIP routes is 100.
+Format
+
+preference { preference | route-policy route-policy-name } *
+
+undo preference
+Parameters
+Parameter 	Description 	Value
+
+preference
+	
+
+Specifies the preference for routes.
+	
+
+The value is an integer ranging from 1 to 255. By default, it is 100.
+
+route-policy route-policy-name
+	
+
+Specifies the routing policy that sets preference for the routes meeting conditions.
+	
+
+The name is a string of 1 to 40 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+A small value indicates a high preference. To enable RIP routes to have a higher preference than the routes learned by other IGP protocols, you need to configure a smaller preference value for the RIP routes. The preference determines the algorithm through which the optimal route is obtained among the routes in the IP routing table.
+Example
+
+# Set the preference of RIP routes to 120.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] preference 120
+
+# Set the preference of RIP routes that match the routing policy named rt-policy1 to 120.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] preference 120 route-policy rt-policy1
+
+
+
+
+reset rip configuration
+Function
+
+The reset rip configuration command resets system parameters for a specified RIP process. When a RIP process starts, all the parameters of the process retain the default values.
+Format
+
+reset rip process-id configuration
+Parameters
+Parameter 	Description 	Value
+process-id 	Specifies a RIP process ID. 	The value is an integer that ranges from 1 to 65535.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Restarting RIP processes may interrupt services. Exercise caution when you run this command.
+
+After the command is executed, RIP neighbor relationships are set up again and learned routes are deleted.
+Example
+
+# Reset the parameters of RIP process 100.
+
+<HUAWEI> reset rip 100 configuration
+
+
+
+
+
+reset rip statistics
+Function
+
+The reset rip statistics command resets the counter that is maintained by a particular RIP process. This command allows you to repeatedly record statistics during debugging.
+Format
+
+reset rip process-id statistics [ interface { all | interface-type interface-number [ neighbor neighbor-ip-address ] } ]
+Parameters
+Parameter 	Description 	Value
+process-id 	Specifies a RIP process ID. 	The value is an integer ranging from 1 to 65535.
+all 	Clears statistics of all RIP processes. 	-
+interface all 	Clears statistics on all the interfaces of a specified RIP process. 	-
+interface interface-type interface-number 	Clears statistics on the interface with specified number and type. 	-
+neighbor neighbor-ip-address 	Clears statistics on the RIP process between the local RIP interface and the specified neighbor. 	The value is in dotted decimal notation.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Statistics cannot be restored after being cleared. Exercise caution when you run this command.
+Example
+
+# Clear statistics in RIP process 100.
+
+<HUAWEI> reset rip 100 statistics
+
+# Clear statistics on all interfaces in RIP process 100.
+
+<HUAWEI> reset rip 100 statistics interface all
+
+
+
+
+rip
+Function
+
+The rip command starts the specified RIP in the system view.
+
+The undo rip command stops the specified RIP process.
+
+By default, no RIP process is started.
+Format
+
+rip [ process-id ] [ vpn-instance vpn-instance-name ]
+
+undo rip process-id
+Parameters
+Parameter 	Description 	Value
+process-id 	Specifies the ID of a RIP process. 	The value is an integer that ranges from 1 to 65535. The default value is 1.
+vpn-instance vpn-instance-name 	Specifies the name of a VPN instance. 	The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If no VPN instance is specified, a RIP process is run globally or in the default VPN instance. Before configuring each global RIP parameter, you need to start RIP. This restriction is not applicable when you configure interface-related parameters.
+Example
+
+# Start RIP process 1.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1]
+
+# Start RIP process 100 in the VPN instance named abc.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100 vpn-instance abc
+[HUAWEI-rip-100]
+
+
+
+rip authentication-mode
+Function
+
+The rip authentication-mode command sets the RIP-2 authentication mode and authentication parameters. Only one authentication password is used for each authentication. If multiple authentication passwords are configured, the latest one takes effect.
+
+The undo rip authentication-mode command cancels authentication.
+
+By default, no authentication is configured.
+Format
+
+rip authentication-mode simple { plain plain-text | [ cipher ] password-key }
+
+rip authentication-mode keychain keychain-name
+
+rip authentication-mode md5 usual { plain plain-text | [ cipher ] password-key }
+
+rip authentication-mode md5 nonstandard { keychain keychain-name | { plain plain-text | [ cipher ] password-key } key-id }
+
+rip authentication-mode hmac-sha256 { plain plain-text | [ cipher ] password-key } key-id
+
+undo rip authentication-mode
+
+Only the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support the keychain keychain-name parameter.
+Parameters
+Parameter 	Description 	Value
+
+simple
+	
+
+Specifies simple authentication.
+NOTE:
+
+Simple authentication mode carries potential risks. HMAC-SHA256 ciphertext authentication is recommended.
+	
+
+-
+
+md5
+	
+
+Specifies MD5 authentication.
+NOTE:
+
+MD5 ciphertext authentication carries potential risks. HMAC-SHA256 ciphertext authentication is recommended.
+	
+
+-
+
+usual
+	
+
+Indicates that MD5 ciphertext authentication packets use the universal format (private standard).
+	
+
+-
+
+nonstandard
+	
+
+Indicates that MD5 ciphertext authentication packets use non-standard packet format (IETF standard).
+	
+
+-
+
+plain
+	
+
+Indicates that only plain text can be entered and only plain text is displayed when the configuration file is viewed.
+NOTICE:
+
+If plain is selected, the password is saved in the configuration file in plain text. This brings security risks. You are advised to select cipher to save the password in cipher text.
+	
+
+-
+
+plain-text
+	
+
+Specifies the authentication password that is displayed in plain text.
+	
+
+The value is a string of case-sensitive characters. It contains letters and digits without spaces. When the authentication mode is simple or md5 usual, the password consists of 1 to 16 characters. When the authentication mode is md5 nonstandard or hmac-sha256, the password consists of 1 to 255 characters.
+
+cipher
+	
+
+Indicates that either plain text or cipher text can be entered and cipher text is displayed when the configuration file is viewed.
+	
+
+-
+
+password-key
+	
+
+Specifies the authentication password that is displayed in cipher text.
+	
+
+The value is a string of case-sensitive characters. It contains letters and digits without spaces.
+
+    When the authentication mode is simple or md5 usual, the password is in plain text (1 to 16 characters) or in cipher text (24 or 32 or 48 characters). If the source version supports a ciphertext password which is a string of 24 or 32 characters, the target version also supports this type of password.
+    When the authentication mode is md5 nonstandard or hmac-sha256, the password is in plain text (1 to 255 characters) or in cipher text (20 to 392 characters).
+
+keychain keychain-name
+	
+
+Specifies keychain authentication.
+	
+
+The value is a string of 1 to 47 case-insensitive characters. Except the question mark (?) and space. However, when double quotation marks (") are used around the string, spaces are allowed in the string.
+
+key-id
+	
+
+Specifies the identifier of Cryptographic authentication.
+	
+
+The value is an integer that ranges from 1 to 255.
+
+hmac-sha256
+	
+
+Indicates Keyed-Hash Message Authentication Code (HMAC) for Secure Hash Algorithm 256 (SHA256).
+	
+
+-
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Keychain authentication improves UDP connection security. Keychain authentication must be configured on both ends of a link. Encryption algorithms and passwords configured on both ends must be the same; otherwise, the UDP connection cannot be set up and RIP messages cannot be transmitted.
+Example
+
+# Set HMAC-SHA256 authentication on VLANIF100, with the authentication password YsHsjx_202206 and key-id 255.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip authentication-mode hmac-sha256 cipher YsHsjx_202206 255 
+
+# Set HMAC-SHA256 authentication on GE0/0/1, with the authentication password YsHsjx_202206 and key-id 255.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip authentication-mode hmac-sha256 cipher YsHsjx_202206 255 
+
+
+
+
+rip bfd
+Function
+
+The rip bfd command sets BFD session parameters on the specified interface.
+
+The undo rip bfd command restores BFD session parameters set on the specified interface.
+
+By default, the minimum intervals for receiving and sending BFD packets are 1000 ms and the detection time multiplier is 3.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+rip bfd { min-rx-interval min-receive-value | min-tx-interval min-transmit-value | detect-multiplier detect-multiplier-value } *
+
+undo rip bfd { min-rx-interval [ min-receive-value ] | min-tx-interval [ min-transmit-value ] | detect-multiplier [ detect-multiplier-value ] } *
+Parameters
+Parameter 	Description 	Value
+
+min-rx-interval min-receive-value
+	
+
+Specifies the minimum interval at which BFD packets are received from the remote device.
+	
+The value is an integer that ranges from 100 to 1000, in milliseconds.
+
+    After the set service-mode enhanced command is configured on the S5731-H, S5731-S, S5731S-H, and S5731S-S, the value ranges from 3 to 1000.
+    After the set service-mode enhanced-bfd command is configured on the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, the value ranges from 3 to 1000.
+
+min-tx-interval min-transmit-value
+	
+
+Specifies the minimum interval at which BFD packets are sent to the remote device.
+	
+The value is an integer that ranges from 100 to 1000, in milliseconds.
+
+    After the set service-mode enhanced command is configured on the S5731-H, S5731-S, S5731S-H, and S5731S-S, the value ranges from 3 to 1000.
+    After the set service-mode enhanced-bfd command is configured on the S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S, the value ranges from 3 to 1000.
+
+detect-multiplier detect-multiplier-value
+	
+
+Specifies the local detection multiplier.
+	
+
+The value is an integer ranging from 3 to 50.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The min-receive-value value is obtained after the local min-rx-interval value and a neighbor's min-tx-interval value are negotiated. For detailed negotiation policies, see bfd all-interfaces. If the switch does not receive BFD packets from the neighbor at the interval of min-receive-value x detect-multiplier-value, the neighbor will go Down.
+
+Prerequisites
+
+Enable BFD globally and run the rip bfd enable command before establishing a BFD session.
+
+Precautions
+
+BFD session parameters configured in a RIP process take effect only after BFD is enabled on the interface.
+
+The BFD priority configured on an interface is higher than the BFD priority configured in a RIP process. If BFD session parameters are configured on an interface, establish a BFD session based on the configured parameters.
+Example
+
+# Enable BFD on VLANIF100 and set the minimum sending interval to 600 ms and local detection multiplier to 4.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+
+[HUAWEI-Vlanif100] rip bfd enable
+
+[HUAWEI-Vlanif100] rip bfd min-tx-interval 600 detect-multiplier 4
+
+# Enable BFD on GE0/0/1 and set the minimum sending interval to 600 ms and local detection multiplier to 4.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip bfd enable
+[HUAWEI-GigabitEthernet0/0/1] rip bfd min-tx-interval 600 detect-multiplier 4
+
+
+
+
+rip bfd block
+Function
+
+The rip bfd block command blocks BFD on a specified interface.
+
+The undo rip bfd block command disables the blocking function.
+
+By default, the blocking function is disabled.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+rip bfd block
+
+undo rip bfd block
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+This command can be used to block the specified interface from enabling BFD on some links where no BFD session is needed.
+
+Precautions
+
+The rip bfd block and rip bfd enable commands are mutually exclusive. If both of them are configured, only the later configured one takes effect.
+Example
+
+# Block BFD on VLANIF100.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+
+[HUAWEI-Vlanif100] rip bfd block
+
+# Block BFD on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip bfd block
+
+
+
+
+rip bfd enable
+Function
+
+The rip bfd enable command enables BFD on the specified interface to establish a BFD session with default parameters.
+
+The undo rip bfd enable command disables BFD on the specified interface.
+
+By default, BFD is disabled on a RIP interface.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+rip bfd enable
+
+undo rip bfd enable
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If BFD is not enabled globally, you can set BFD parameters on the specified interface but you cannot establish a BFD session on this interface.
+
+The rip bfd block and rip bfd enable commands are mutually exclusive. If both of them are configured, only the later configured one takes effect.
+Example
+
+# Enable BFD on VLANIF100.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+
+[HUAWEI-Vlanif100] rip bfd enable
+
+# Disable BFD on VLANIF100.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+
+[HUAWEI-Vlanif100] undo rip bfd enable
+
+# Enable BFD on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip bfd enable
+
+# Disable BFD on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] undo rip bfd enable
+
+
+
+
+rip bfd static
+Function
+
+The rip bfd static command enables static BFD on a specified RIP interface.
+
+The undo rip bfd static command disables static BFD on a specified RIP interface.
+
+By default, static BFD is disabled on a RIP interface.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+rip bfd static
+
+undo rip bfd static
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a network deployed with high-speed data services, if a fault occurs on a link, a large amount of data is lost because it takes too long time for RIP to detect the fault. Deploying BFD for RIP to accelerate fault detection is necessary.
+
+The rip bfd static command is used to enable BFD for RIP on a specified link to rapidly detect the fault on the link.
+
+In addition, because many devices do not support BFD on the live network, this command can be also used to implement BFD between a BFD-capable device and a BFD-incapable device.
+
+Prerequisites
+
+BFD has been enabled globally using the bfd command.
+
+Precautions
+
+If rip bfd static, rip bfd enable, and rip bfd block are simultaneously configured, the latest configuration overrides the previous ones.
+Example
+# Enable static BFD on VLANIF100.
+
+<HUAWEI> system-view
+[HUAWEI] bfd
+[HUAWEI-bfd] quit
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip bfd static
+
+# Enable static BFD on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip bfd static
+
+
+
+
+rip input
+Function
+
+The rip input command enables the specified interface to receive RIP packets.
+
+The undo rip input command disables the specified interface from receiving RIP packets.
+
+By default, interfaces can receive RIP packets.
+Format
+
+rip input
+
+undo rip input
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The priority of silent-interface is higher than the priority of rip input or rip output configured in the interface view. By default, an interface does not work in the silent state.
+Example
+
+# Enable the specified interface VLANIF100 to receive RIP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip input
+
+# Enable the specified interface GE0/0/1 to receive RIP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip input
+
+
+
+
+rip metricin
+Function
+
+The rip metricin command sets the metric that is added to the route when an interface receives a RIP packet.
+
+The undo rip metricin command restores the additional metric to the default value.
+
+By default, there is no metric added to the route when an interface receives a RIP packet.
+Format
+
+rip metricin { value | { acl-number | acl-name acl-name | ip-prefix ip-prefix-name } value1 }
+
+undo rip metricin
+Parameters
+Parameter 	Description 	Value
+value 	Specifies the metric that is added to the received route. 	The value is an integer ranging from 0 to 15. By default, it is 0.
+acl-number 	Specifies the basic ACL number. 	The value is an integer ranging from 2000 to 2999.
+acl-name acl-name 	Specifies the ACL name. 	The value is a string of 1 to 64 case-sensitive characters without spaces. The value must start with a letter.
+ip-prefix ip-prefix-name 	Specifies the IP prefix list. 	The name is a string of 1 to 169 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+value1 	Specifies the metric that is added to the route that passes the filtering of the ACL or IP prefix list. 	The value is an integer ranging from 1 to 15.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When an interface receives a route, RIP adds the additional metric of the interface to the route, and then installs the route into the routing table. Therefore, increasing the metric of an interface also increases the metric of the RIP route received by the interface.
+
+Adjust RIP route selection by increasing the metrics of received routes.
+Example
+
+# Set the additional metric to 12 when VLANIF100 receives RIP routes.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricin 12
+
+# Set the additional metric to 12 when GE0/0/1 receives RIP routes.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricin 12
+
+# Set the additional metric to 12 using acl-name.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricin acl-name abcd 12
+
+# Set the additional metric to 12 using ip-prefix.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricin ip-prefix ip1 12
+
+
+
+
+rip metricout
+Function
+
+The rip metricout command sets the metric that is added to the route when an interface sends a RIP packet.
+
+The undo rip metricout command restores the additional metric to the default value.
+
+By default, the metric that is added to the route when an interface sends a RIP packet is 1.
+Format
+
+rip metricout { value | { acl-number | acl-name acl-name | ip-prefix ip-prefix-name } value1 }
+
+undo rip metricout
+Parameters
+Parameter 	Description 	Value
+value 	Specifies the metric that is added to the sent route. 	The value is an integer ranging from 1 to 15. By default, it is 1.
+acl-number 	Specifies the number of a basic ACL. 	The value is an integer ranging from 2000 to 2999.
+acl-name acl-name 	Specifies the name of an ACL. 	The value is a string of 1 to 64 case-sensitive characters without spaces. The value must start with a letter.
+ip-prefix ip-prefix-name 	Specifies the name of the IP prefix list. The name must be exclusive. 	The name is a string of 1 to 169 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+value1 	Specifies the metric that is added to the route that passes the filtering of the ACL or IP prefix list. 	The value is an integer ranging from 2 to 15.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When a RIP route is advertised, the additional metric is added to the route. Therefore, increasing the metric of an interface also increases the metric of the RIP route sent on the interface. However, the metric of the route in the routing table remains unchanged.
+
+You can specify the metric to be added to the RIP route that passes the filtering of the ACL or IP prefix list by specifying value1. If a RIP route does not pass the filtering, its metric is increased by 1.
+
+For an ACL, when the rule command is used to configure a filtering rule, the filtering rule is effective only with the source address range that is specified by the source parameter and with the time period that is specified by the time-range parameter.
+Example
+
+# Set the metric that is added when the interface sends RIP routes to 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout 12
+
+# Set the metric that is added when the interface sends RIP routes to 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout 12
+
+# Increase the metric of a RIP route that passes the filtering of ACL 2050 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout 2050 12
+
+# Increase the metric of a RIP route that passes the filtering of ACL 2050 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout 2050 12
+
+# Increase the metric of a RIP route that passes the filtering of the IP prefix list named p1 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] ip ip-prefix p1 permit 10.10.10.1 24
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout ip-prefix p1 12
+
+# Increase the metric of a RIP route that passes the filtering of the IP prefix list named p1 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout ip-prefix p1 12
+
+
+
+
+rip metricout
+Function
+
+The rip metricout command sets the metric that is added to the route when an interface sends a RIP packet.
+
+The undo rip metricout command restores the additional metric to the default value.
+
+By default, the metric that is added to the route when an interface sends a RIP packet is 1.
+Format
+
+rip metricout { value | { acl-number | acl-name acl-name | ip-prefix ip-prefix-name } value1 }
+
+undo rip metricout
+Parameters
+Parameter 	Description 	Value
+value 	Specifies the metric that is added to the sent route. 	The value is an integer ranging from 1 to 15. By default, it is 1.
+acl-number 	Specifies the number of a basic ACL. 	The value is an integer ranging from 2000 to 2999.
+acl-name acl-name 	Specifies the name of an ACL. 	The value is a string of 1 to 64 case-sensitive characters without spaces. The value must start with a letter.
+ip-prefix ip-prefix-name 	Specifies the name of the IP prefix list. The name must be exclusive. 	The name is a string of 1 to 169 case-sensitive characters, with spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string.
+value1 	Specifies the metric that is added to the route that passes the filtering of the ACL or IP prefix list. 	The value is an integer ranging from 2 to 15.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When a RIP route is advertised, the additional metric is added to the route. Therefore, increasing the metric of an interface also increases the metric of the RIP route sent on the interface. However, the metric of the route in the routing table remains unchanged.
+
+You can specify the metric to be added to the RIP route that passes the filtering of the ACL or IP prefix list by specifying value1. If a RIP route does not pass the filtering, its metric is increased by 1.
+
+For an ACL, when the rule command is used to configure a filtering rule, the filtering rule is effective only with the source address range that is specified by the source parameter and with the time period that is specified by the time-range parameter.
+Example
+
+# Set the metric that is added when the interface sends RIP routes to 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout 12
+
+# Set the metric that is added when the interface sends RIP routes to 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout 12
+
+# Increase the metric of a RIP route that passes the filtering of ACL 2050 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout 2050 12
+
+# Increase the metric of a RIP route that passes the filtering of ACL 2050 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout 2050 12
+
+# Increase the metric of a RIP route that passes the filtering of the IP prefix list named p1 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] ip ip-prefix p1 permit 10.10.10.1 24
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip metricout ip-prefix p1 12
+
+# Increase the metric of a RIP route that passes the filtering of the IP prefix list named p1 by 12.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip metricout ip-prefix p1 12
+
+
+
+rip mib-binding
+Function
+
+The rip mib-binding command sets the binding between the Management Information Base (MIB) and RIP process ID, and specifies the ID of the RIP process that receives SNMP requests.
+
+The undo rip mib-binding command cancels the binding.
+
+By default, there is no binding between the Management Information Base and RIP process ID.
+Format
+
+rip mib-binding process-id
+
+undo rip mib-binding
+Parameters
+Parameter 	Description 	Value
+process-id 	Specifies the ID of a RIP process. 	The value is an integer ranging from 1 to 65535. The default value is 1.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+All SNMP requests are sent to the bound RIP process.
+
+Prerequisites
+
+A RIP process has been created using the rip command.
+Example
+
+# Configure RIP process 100 to receive SNMP requests.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] quit
+[HUAWEI] rip mib-binding 100
+
+
+
+rip output
+Function
+
+The rip output command enables an interface to send RIP packets.
+
+The undo rip output command disables an interface from sending RIP packets.
+
+By default, an interface can send RIP packets.
+Format
+
+rip output
+
+undo rip output
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When a device running RIP is connected to a network running other routing protocols, you can run the rip output command on the interface that connects the device to the network to prevent the interface from sending useless packets to the network.
+
+The priority of silent-interface is higher than the priority of rip input or rip output that is configured in the interface view. By default, an interface does not work in the silent state.
+Example
+
+# Enable the interface VLANIF100 to send RIP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip output
+
+# Enable the interface GE0/0/1 to send RIP packets.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip output
+
+
+
+rip pkt-transmit
+Function
+
+The rip pkt-transmit command sets the interval for sending Update packets and the number of packets sent each time on the specified interface.
+
+The undo rip pkt-transmit command restores the default values on an interface.
+
+By default, the interval for sending RIP Update packets is 200 ms and 50 packets are sent each time.
+Format
+
+rip pkt-transmit { interval interval | number pkt-count } *
+
+undo rip pkt-transmit
+Parameters
+Parameter 	Description 	Value
+interval interval 	Specifies the interval for sending Update packets. 	The value is an integer ranging from 50 to 500, in milliseconds. The default value is 200.
+number pkt-count 	Specifies the number of packets sent each time. 	The value is an integer and ranges from 25 to 100. The default value is 50.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The rip pkt-transmit command can be used on an interface to control the interval for sending Update packets and the number of sent packets. This improves RIP performance.
+Example
+
+# Set the interval for sending packets on VLANIF100 to 100 milliseconds and the number of the packets sent each time to 50.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+
+[HUAWEI-Vlanif100] rip pkt-transmit interval 100 number 50
+
+# Set the interval for sending packets on GE0/0/1 to 100 milliseconds and the number of the packets sent each time to 50.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip pkt-transmit interval 100 number 50
+
+
+
+
+rip poison-reverse
+Function
+
+The rip poison-reverse command enables poison reverse.
+
+The undo rip poison-reverse command disables poison reverse.
+
+By default, poison reverse is disabled.
+Format
+
+rip poison-reverse
+
+undo rip poison-reverse
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After poison reverse is enabled, RIP sets the cost of the routes learned from a specified interface to 16 (indicating unreachable), and then sends the routes to neighbors through the same interface.
+
+When both split horizon and poison reverse are configured, only poison reverse takes effect.
+Example
+
+# Enable poison reverse.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip poison-reverse
+
+# Enable poison reverse on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip poison-reverse
+
+
+
+
+rip replay-protect
+Function
+
+The rip replay-protect command enables the replay-protect function.
+
+The undo rip replay-protect command disables the replay-protect function.
+
+By default, the replay-protect function is disabled.
+Format
+
+rip replay-protect [ window-range ]
+
+undo rip replay-protect
+Parameters
+Parameter 	Description 	Value
+
+window-range
+	
+
+Specifies the size of the connection-oriented transmission buffer.
+	
+
+It is an integer ranging from 50 to 50000. The default value is 50.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If the Identification field in the last RIP packet sent before a RIP interface goes Down is X, after the interface goes Up, the Identification field in the RIP packet sent by this interface becomes 0. If the remote end does not receive the RIP packet with the Identification field being 0, subsequent RIP packets will be discarded until the remote end receives the RIP packet with the Identification field being X+1. As a result, RIP routing information of both ends is inconsistent. To solve this problem, you need to configure the rip replay-protect command so that RIP can obtain the Identification field in the RIP packet sent before the RIP packet goes Down and increases the Identification field of the subsequently sent RIP packet by one.
+
+Before configuring the rip replay-protect command, you need to configure the rip authentication-mode command in the RIP interface view to configure the authentication mode and authentication parameters of RIP-2.
+
+If you configure the rip replay-protect command in the same view for multiple times, only the last configuration takes effect.
+Example
+
+# Enable the replay-protect function on VLANIF100.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip replay-protect
+
+# Enable the replay-protect function on GE0/0/1.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip replay-protect
+
+
+
+
+rip split-horizon
+Function
+
+The rip split-horizon command enables split horizon.
+
+The undo rip split-horizon command disables split horizon.
+
+By default, split horizon is enabled.
+Format
+
+rip split-horizon
+
+undo rip split-horizon
+Parameters
+
+None
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If a route is advertised through the interface from which the route is learned, the route is blocked by split horizon. Split horizon is used to avoid routing loops between neighboring devices.
+
+Generally, it is not recommended that you disable split horizon.
+
+If split horizon is enabled on the interface that is configured with secondary IP addresses, RIP Update packets may not be sent by each secondary address. An Update packet does not regard every network as the source unless split horizon is disabled.
+
+If an interface is connected to a Non Broadcast Multiple Access (NBMA) network, split horizon on the interface is disabled by default.
+
+If both poison reverse and split horizon are configured, simple split horizon (the route is suppressed by the interface through which the route is learned) is substituted by poison reverse. Here, simple split horizon means that the route is suppressed when it is advertised through the interface from which it is learned.
+Example
+
+# Enable split horizon.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip split-horizon
+
+# Enable split horizon.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip split-horizon
+
+
+
+rip summary-address
+Function
+
+The rip summary-address command configures a RIP switch to advertise a local summarized IP address.
+
+The undo rip summary-address command disables a RIP switch from advertising a local summarized IP address.
+
+By default, a RIP switch does not advertise local summarized IP addresses.
+Format
+
+rip summary-address ip-address mask [ avoid-feedback ]
+
+undo rip summary-address ip-address mask
+Parameters
+Parameter 	Description 	Value
+ip-address 	Specifies the network IP address to be summarized. 	The value is in dotted decimal notation.
+mask 	Specifies the network mask. 	The value is in dotted decimal notation.
+avoid-feedback 	Specifies that learning the same summarized route from an interface is not allowed. 	-
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+After the keyword avoid-feedback is specified, an interface no longer learns the summarized route with the same IP address as the advertised summarized IP address. This avoids routing loops.
+Example
+
+# Configure the switch to advertise a local summarized IP address.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip summary-address 10.0.0.0 255.0.0.0
+
+# Configure the switch to advertise a local summarized IP address.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip summary-address 10.0.0.0 255.0.0.0
+
+
+
+
+rip valid-ttl-hops
+Function
+
+The rip valid-ttl-hops command enables the RIP GTSM functions and sets the TTL value to be detected.
+
+The undo rip valid-ttl-hops command cancels the function.
+
+By default, the RIP GTSM functions are disabled.
+Format
+
+rip valid-ttl-hops valid-ttl-hops-value [ vpn-instance vpn-instance-name ]
+
+undo rip valid-ttl-hops [ valid-ttl-hops-value ] [ vpn-instance vpn-instance-name ]
+Parameters
+Parameter 	Description 	Value
+valid-ttl-hops-value 	
+
+Specifies the number of TTL hops to be detected.
+
+The valid TTL range of the detected packets is [ 255 -valid-ttl-hops-value + 1, 255 ].
+	The value is an integer ranging from 1 to 255.
+vpn-instance vpn-instance-name 	
+
+Specifies the name of the VPN instance.
+
+If this parameter is used, you need only to specify the TTL value to be detected by the VPN instance.
+	The value must be an existing VPN instance name.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+In a network demanding higher security, you can enable GTSM to improve the security of the RIP network. GTSM defends against attacks by checking the TTL value. If an attacker simulates RIP unicast packets and keeps sending them to a switch, a switch receives the packets and directly sends them to the main control board for RIP processing, without checking the validity of the packets. In this case, the switch is busy processing these packets, causing high usage of the CPU. GTSM protects the routers and enhances the system security by checking whether the TTL value in the IP packet header is in a pre-defined range.
+
+The rip valid-ttl-hops command is used to enable RIP GTSM.
+
+Precautions
+
+GTSM configurations must be symmetrical. That is, GTSM must be enabled on devices at both ends.
+
+If GTSM is enabled on a device, after the device receives a RIP packet, it checks whether the TTL value in the packet is in a pre-defined range. If the TTL value is beyond the pre-defined range, the device considers the packet as an attack packet and discards it.
+Example
+
+# Enable the RIP GTSM functions, and configure the maximum number of TTL hops to 5 for the packets that a switch is allowed to receive.
+
+<HUAWEI> system-view
+
+[HUAWEI] rip valid-ttl-hops 5
+
+
+
+
+rip version
+Function
+
+The rip version command sets the RIP version of an interface.
+
+The undo rip version command restores the default setting.
+
+By default, an interface sends only RIP-1 packets, but it can receive both RIP-1 and RIP-2 packets.
+Format
+
+rip version { 1 | 2 [ broadcast | multicast ] }
+
+undo rip version
+Parameters
+Parameter 	Description 	Value
+1 	Indicates RIP-1 packets. 	-
+2 	Indicates RIP-2 packets. 	-
+broadcast 	Indicates that RIP-2 packets are sent in broadcast mode. 	-
+multicast 	Indicates that RIP-2 packets are sent in multicast mode.
+NOTE:
+
+By default, RIP-2 packets are sent in multicast mode.
+	-
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+The versions of the request packets and response packets vary with the configured RIP version.
+
+    If the version of RIP is not set, a device sends RIP-1 packets in broadcast mode and receives the RIP-1 and RIP-2 packets that are sent in broadcast mode.
+    If the RIP version is set to RIP-1, a device sends only RIP-1 packets in broadcast mode and receives the RIP-1 packets that are sent in broadcast mode.
+    If the RIP version is set to RIP-2, a device sends only RIP-2 packets in multicast mode and receives RIP-2 packets that are sent in multicast or broadcast mode.
+    If the RIP version is set to multicast RIP-2, a device sends RIP-2 packets in multicast mode and receives RIP-2 packets that are sent in multicast mode.
+    If the RIP version is set to broadcast RIP-2, a device sends RIP-2 packets in broadcast mode and receives RIP-1 and RIP-2 packets.
+
+Precautions
+
+You can also set a RIP version in a RIP process, but the RIP version that is set on an interface has a higher priority.
+Example
+
+# Send RIP-2 packets in broadcast mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface vlanif 100
+[HUAWEI-Vlanif100] rip version 2 broadcast
+
+# Send RIP-2 packets in broadcast mode.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo portswitch
+[HUAWEI-GigabitEthernet0/0/1] rip version 2 broadcast
+
+
+
+
+silent-interface (RIP)
+Function
+
+The silent-interface command controls an interface only to receive packets to update its routing table and prevent it from sending RIP packets.
+
+The undo silent-interface command enables an RIP interface to send Update packets.
+
+The silent-interface disable command enables an RIP interface to send Update packets.
+
+The undo silent-interface disable command controls an interface only to receive packets to update its routing table and prevent it from sending RIP packets.
+
+By default, silent interface not enabled.
+Format
+
+silent-interface { all | interface-type interface-number }
+
+undo silent-interface { all | interface-type interface-number }
+
+silent-interface disable interface-type interface-number
+
+undo silent-interface disable interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+all 	Indicates that all interfaces are suppressed. 	-
+interface-type interface-number 	Specifies the type and the number of the interface. 	-
+disable 	Disables the suppression of the RIP interface so that the interface can send Update packets. 	-
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a switch running RIP is connected to a network running other routing protocols, you can run the silent-interface command on the interface that connects the switch to the network to prevent the interface from sending useless packets to the network.
+
+The silent-interface command is used together with the peer (RIP) command to advertise routes to the specified equipment.
+
+Configuration Impact
+
+If an interface is suppressed, the direct routes of the network segment where the interface resides can still be advertised to other interfaces.
+
+Precautions
+
+When the silent-interface command is used to suppress the specified interface, the priority of the silent-interface command is higher than the priority of the rip input and rip output command that is configured in the interface view.
+
+After you configure all interfaces as silent interfaces, you can run the silent-interface disable interface-type interface-number command to activate a specified silent interface.
+Example
+
+# Configure all the interfaces as silent interfaces.
+
+<HUAWEI> system-view
+
+[HUAWEI] rip 100
+
+[HUAWEI-rip-100] silent-interface all
+
+# Configure the RIP interface VLANIF100 as a silent interface and enable it to send routes to the neighbor with the IP address of 10.1.1.1/24.
+
+<HUAWEI> system-view
+
+[HUAWEI] rip 100
+
+[HUAWEI-rip-100] silent-interface vlanif 100
+
+[HUAWEI-rip-100] peer 10.1.1.1
+
+# Configure all interfaces as silent interfaces, and then activate the interface VLANIF100.
+
+<HUAWEI> system-view
+
+[HUAWEI] rip 100
+
+[HUAWEI-rip-100] silent-interface disable vlanif 100
+
+
+
+summary (RIP)
+Function
+
+The summary command enables RIP classful summarization. The summarized routes are advertised using natural masks.
+
+The undo summary command disables classful summarization so that routing between subnets can be performed. The subnet information is then advertised. Route summarization reduces the routing table size.
+
+By default, classful summarization is enabled for RIP-2.
+Format
+
+summary [ always ]
+
+undo summary
+Parameters
+Parameter 	Description 	Value
+always 	Enables classful summarization no matter whether split horizon is configured. 	-
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+RIP-1 does not support classful summarization. When using RIP-2, you can use the undo summary command to disable classful summarization.
+
+RIP-2 route summarization improves scalability and efficiency on large networks. IP address summarization means that there is no sub-routing entry in the routing table. That is, there is no routing entry composed of single IP address. In addition to reducing the routing table size, route summarization enables the switch to handle more routes.
+
+When classful summarization is enabled, the switch summarizes subnet addresses to the natural network segment border while advertising routes to the natural network segment border. When split horizon or poison reverse is enabled, route summarization will be invalid if the always parameter is not specified. When summarized routes are sent outside the natural network segment, split horizon or poison reverse must be disabled.
+
+    By default, classful summarization is enabled for RIP-2. If split horizon or poison reverse has been configured, classful summarization is invalid. When summarized routes are sent to the network border, split horizon and poison reverse must be disabled.
+    The summary always command can enable classful summarization no matter whether split horizon or poison reverse is enabled.
+
+    The summarization preference on interfaces is higher than the summarization preference in RIP processes. That is, the preference of rip summary-address is higher than the preference of summary. When summarization is configured on both interface and RIP process, the summarized route is advertised only when a few specific routes are beyond the summarization range configured on the interface.
+
+Example
+
+# Enable RIP-2 classful summarization.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] version 2
+[HUAWEI-rip-1] summary
+
+# Enable RIP-2 classful summarization when split horizon is enabled.
+
+<HUAWEI> system-view
+[HUAWEI] rip 1
+[HUAWEI-rip-1] summary always
+
+
+
+timers rip
+Function
+
+The timers rip command sets the values of RIP timers.
+
+The undo timers rip command restores the values of RIP timers to the default value.
+
+By default, the interval for sending Update packets is 30s, the time for aging routes is 180s, the time for deleting a route from the routing table is 120s.
+Format
+
+timers rip update age garbage-collect
+
+undo timers rip
+Parameters
+Parameter 	Description 	Value
+
+update
+	
+
+Specifies the interval for sending Update packets.
+	
+
+The value is an integer ranging from 1 to 86400, in seconds.
+
+age
+	
+
+Specifies the time for aging routes.
+	
+
+The value is an integer ranging from 1 to 86400, in seconds.
+
+garbage-collect
+	
+
+Specifies the time for deleting a route from the routing table, that is, the standard garbage collection time.
+	
+
+The value is an integer ranging from 1 to 86400, in seconds.
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+By adjusting the RIP timers, you can improve routing protocol performance to meet network requirements. If the values of the preceding three timers are set improperly, route flapping occurs.
+
+The relationship of the values of the three timers is: update < age and update < garbage-collect. For example, if the update time is longer than the aging time, switches cannot inform neighbors on time if RIP routes change during the update time.
+
+Generally, the default values of the timers do not need to be changed, and thus the timers rip command must be used with caution.
+Example
+
+# Set values for RIP timers.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] timers rip 35 170 240
+
+
+
+verify-source (RIP)
+Function
+
+The verify-source command enables check on source IP addresses in RIP Update packets.
+
+The undo verify-source command disables check on source IP addresses in RIP Update packets.
+
+By default, the source IP addresses in RIP Update packets are checked.
+Format
+
+verify-source
+
+undo verify-source
+Parameters
+
+None
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After the verify-source command is executed, RIP checks whether the IP addresses of interfaces that send and receive the Update packets are on the same network segment. If not, the device does not process the packets.
+
+It is not recommended that you disable source address check.
+Example
+
+# Enable source address check in RIP 100.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] verify-source
+
+
+
+
+version (RIP)
+Function
+
+The version command specifies a global RIP version.
+
+The undo version command restores the default global RIP version.
+
+By default, an interface sends only RIP-1 packets, and receives both RIP-1 and RIP-2 packets.
+Format
+
+version { 1 | 2 }
+
+undo version
+Parameters
+Parameter 	Description 	Value
+1 	
+
+Sets the global RIP version to RIP-1.
+	-
+2 	
+
+Sets the global RIP version to RIP-2.
+	-
+Views
+
+RIP view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Two versions are available for RIP: RIP-1 and RIP-2. RIP-2 is an extension to RIP-1. You can run the version command to specify a global RIP version.
+Example
+
+# Send and receive RIP-2 packets.
+
+<HUAWEI> system-view
+[HUAWEI] rip 100
+[HUAWEI-rip-100] version 2
+
+
+
+
