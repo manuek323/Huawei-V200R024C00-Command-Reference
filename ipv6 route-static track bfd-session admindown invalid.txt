@@ -1,0 +1,81 @@
+ipv6 route-static track bfd-session admindown invalid
+Function
+
+The ipv6 route-static track bfd-session admindown invalid command disables a switch from selecting an IPv6 static route if the BFD session associated with the route is in the AdminDown state.
+
+The undo ipv6 route-static track bfd-session admindown invalid command restores the default configuration.
+
+By default, an IPv6 static route can participate in route selection even if the BFD session associated with it is in the AdminDown state.
+
+Product
+	
+
+Support
+
+S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+	
+
+Supported
+
+S1720GW-E, S1720GWR-E, S5720-LI, S2730S-S, S5735-L-I, S5735-L1,S300, S500, S5735-L, S5735S-L1, and S5720S-LI
+	
+
+Not supported
+Format
+
+ipv6 route-static track bfd-session session-name bfd-name admindown invalid
+
+undo ipv6 route-static track bfd-session [ session-name bfd-name ] admindown invalid
+Parameters
+Parameter 	Description 	Value
+
+session-name bfd-name
+	
+
+Specifies a BFD session bound to an IPv6 static route.
+	
+
+The value is a string of 1 to 15 case-insensitive characters without spaces. The string can contain spaces if it is enclosed with double quotation marks (").
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+By default, if a BFD session associated with an IPv6 static route is in the AdminDown state, the route can participate in route selection on Huawei switches, but is not allowed for route selection on some non-Huawei devices. As a result, Huawei switches cannot communicate with such non-Huawei devices.
+
+To address this problem, run the ipv6 route-static track bfd-session admindown invalid command to configure the switch not to select the IPv6 static route if the BFD session associated with it is in the AdminDown state.
+
+Prerequisites
+
+The BFD session specified by bfd-name has been created.
+
+Precautions
+
+The undo ipv6 route-static track bfd-session admindown invalid command enables all IPv6 static routes to participate in route selection even if the BFD sessions associated with them are in the AdminDown state.
+Example
+
+# Disable a switch from selecting an IPv6 static route if the BFD session associated with the route is in the AdminDown state.
+
+<HUAWEI> system-view
+
+[HUAWEI] bfd
+
+[HUAWEI-bfd] quit
+
+[HUAWEI] bfd bfda bind peer-ipv6 2001:db8:1::1
+
+[HUAWEI-bfd-session-bfda] discriminator local 20
+
+[HUAWEI-bfd-session-bfda] discriminator remote 10
+
+[HUAWEI-bfd-session-bfda] commit
+
+[HUAWEI-bfd-session-bfda] quit
+
+[HUAWEI] ipv6 route-static track bfd-session session-name bfda admindown invalid
+

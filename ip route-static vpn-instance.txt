@@ -1,0 +1,198 @@
+ip route-static vpn-instance
+Function
+
+The ip route-static vpn-instance command configures a static route for a VPN instance.
+
+The undo ip route-static vpn-instance command deletes static routes from a VPN instance.
+
+By default, no static route is configured for a VPN instance.
+Format
+
+ip route-static vpn-instance vpn-source-name destination-address { mask | mask-length } { nexthop-address [ public ] | interface-type interface-number [ nexthop-address ] | vpn-instance vpn-destination-name nexthop-address } [ preference preference | tag tag ] * [ track { bfd-session cfg-name | efm-state interface-type interface-number | nqa admin-name test-name } | permanent ] [ description text ]
+
+ip route-static vpn-instance vpn-source-name destination-address { mask | mask-length } { public | vpn-instance vpn-destination-name } [ preference preference | tag tag ] * [ description text ] (supported only by the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S)
+
+undo ip route-static vpn-instance vpn-source-name destination-address { mask | mask-length } [ nexthop-address | interface-type interface-number [ nexthop-address ] ] [ preference preference | tag tag ] * [ track { bfd-session | efm-state } | permanent ]
+
+undo ip route-static vpn-instance vpn-source-name all
+
+undo ip route-static vpn-instance vpn-source-name destination-address { mask | mask-length } { public | vpn-instance vpn-destination-name } (supported only by the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S)
+Parameters
+Parameter 	Description 	Value
+
+vpn-instance vpn-source-name
+	
+
+Specifies the name of the source VPN instance. Each VPN instance has its own routing table. The configured static routes are added to the routing table of the specified VPN instance.
+	
+
+The value must be an existing VPN instance name.
+
+destination-address
+	
+
+Specifies the destination IP address of a static route.
+	
+
+The value is in dotted decimal notation.
+
+mask
+	
+
+Specifies the subnet mask of the destination IP address.
+	
+
+The value is in dotted decimal notation.
+
+mask-length
+	
+
+Specifies the mask length of the destination IP address.
+	
+
+The value is an integer that ranges from 0 to 32.
+
+interface-type interface-number
+	
+
+Specifies the type and number of the outbound interface of a static route.
+	
+
+-
+
+nexthop-address
+	
+
+Specifies the next-hop address of a static route. If the outbound interface of a static route is a broadcast interface, the next-hop address must be specified for the static route.
+	
+
+The value is in dotted decimal notation.
+
+public
+	
+
+Specifies the next-hop address as a public network address but not an address in the source VPN instance. If the nexthop-address parameter is not specified, a device searches another outbound interface in the public IP routing table if the device fails to find a forwarding path in the current VPN instance forwarding table.
+	
+
+-
+
+preference preference
+	
+
+Specifies the preference of a static route.
+	
+
+The value is an integer that ranges from 1 to 255. If this parameter is not specified, the default preference of a static route is 60.
+
+tag tag
+	
+
+Specifies the tag value of a static route. By configuring different tag values, you can classify static routes to implement different routing policies. For example, routing protocols can import static routes with specified tag values through routing policies.
+	
+
+The value is an integer that ranges from 1 to 4294967295. The default value is 0.
+
+track bfd-session cfg-name
+	
+
+Binds a static BFD session to a static route for fast fault detection.
+	
+
+cfg-name is a string of 1 to 15 characters without spaces.
+
+track efm-state interface-type interface-number
+	
+
+Detects the EFM OAM state of a specified interface.
+	
+
+-
+
+track nqa admin-name test-name
+	
+
+Specifies the administrator name of an NQA test instance bound to a static route, and the name of the test instance.
+	
+
+The values of admin-name and test-name are both a string of 1 to 32 case-sensitive characters without spaces.
+
+permanent
+	
+
+Configures permanent advertisement of static routes.
+	
+
+-
+
+description text
+	
+
+Specifies the description of a static route. You can specify description to add a description for static routes, facilitating static route query and maintenance.
+	
+
+The value is a string of 1 to 80 characters that can contain spaces.
+
+vpn-instance vpn-destination-name
+	
+
+Specifies the name of the destination VPN instance. The system searches the routing table of the VPN instance for the outbound interface of a static route according to the configured next-hop address. If the nexthop-address parameter is not specified, a device searches another specified VPN instance forwarding table if the device fails to find a forwarding path in the current VPN instance forwarding table. If vpn-instance vpn-destination-name is specified, devices can communicate with each other between VPNs.
+	
+
+The value is a string of 1 to 31 case-sensitive characters with spaces. If the string is enclosed in double quotation marks (" "), the string can contain spaces.
+
+all
+	
+
+Deletes all static routes from a VPN instance.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+You need to configure static routes for a VPN instance on a PE in the following scenarios:
+
+    The PE connects to a CE.
+    The specified VPN connects to the Internet.
+
+Follow-up Procedure
+
+After a static route is configured, import the static route to BGP running between PEs if the static route needs to be sent to the peer PE.
+
+Precautions
+
+    During the configuration of a static route for a VPN instance, the next-hop address can belong to the VPN instance or a public network. When the next-hop address of the static route is a public network address, specify public after nexthop-address.
+    If the outbound interface of a static route is a broadcast interface, you must specify the next-hop address for the static route.
+    You can specify description text to add a description for a static route so that the administrator can easily query and maintain the static route. To view the description of static routes, run the display this command in the system view or run the display current-configuration command.
+    If two static routes with the same destination IP address are configured, one of the routes is specified with a next hop IP address or outbound interface, and the other static route is configured with a next-hop VPN instance, without an outbound interface or next hop IP address, the latest configuration overwrites the previous one.
+
+Example
+
+# Configure a static route for VPN instance named vpn1, and set the destination address of the static route to 10.1.1.0/24 and next-hop address to 192.168.1.2 (IP address of VPN instance vpn2).
+
+<HUAWEI> system-view
+
+[HUAWEI] ip vpn-instance vpn1
+
+[HUAWEI-vpn-instance-vpn1] route-distinguisher 100:200
+
+[HUAWEI-vpn-instance-vpn1-af-ipv4] quit
+
+[HUAWEI-vpn-instance-vpn1] quit
+
+[HUAWEI] ip vpn-instance vpn2
+
+[HUAWEI-vpn-instance-vpn2] route-distinguisher 300:400
+
+[HUAWEI-vpn-instance-vpn2-af-ipv4] quit
+
+[HUAWEI-vpn-instance-vpn2] quit
+
+[HUAWEI] ip route-static vpn-instance vpn1 10.1.1.0 24 vpn-instance vpn2 192.168.1.2
+

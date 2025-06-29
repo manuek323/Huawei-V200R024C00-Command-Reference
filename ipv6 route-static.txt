@@ -1,0 +1,141 @@
+ipv6 route-static
+Function
+
+The ipv6 route-static command configures an IPv6 static route.
+
+The undo ipv6 route-static command deletes configured IPv6 static routes.
+
+By default, no IPv6 static route is configured.
+Format
+
+ipv6 route-static dest-ipv6-address prefix-length { interface-type interface-number [ nexthop-ipv6-address ] | nexthop-ipv6-address | vpn-instance vpn-destination-name nexthop-ipv6-address } [ preference preference | tag tag ] * [ track { bfd-session cfg-name | nqa admin-name test-name } ] [ description text ]
+
+ipv6 route-static dest-ipv6-address prefix-length vpn-instance vpn-destination-name [ preference preference | tag tag ] * [ description text ] (support only by the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S)
+
+undo ipv6 route-static dest-ipv6-address prefix-length [ interface-type interface-number [ nexthop-ipv6-address ] | nexthop-ipv6-address ] [ preference preference | tag tag ] * [ track bfd-session ]
+
+undo ipv6 route-static [ track bfd-session ] all
+
+undo ipv6 route-static dest-ipv6-address prefix-length vpn-instance vpn-destination-name [ preference preference | tag tag ] * (support only by the S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S)
+Parameters
+Parameter 	Description 	Value
+
+dest-ipv6-address
+	
+
+Specifies a destination IPv6 address.
+	
+
+The value is a 32-bit hexadecimal number, in X:X:X:X:X:X:X:X format.
+
+prefix-length
+	
+
+Specifies the length of an IPv6 prefix.
+	
+
+The value is an integer that ranges from 0 to 128.
+
+interface-type interface-number
+	
+
+Specifies the type and number of an outbound interface.
+	
+
+-
+
+vpn-instance vpn-destination-name
+	
+
+Specifies the name of a VPN instance. If the VPN instance name is specified, a switch searches the routing table of the VPN instance for the outbound interface of a static route according to the configured next-hop address. If the nexthop-ipv6-address parameter is not specified, a device searches a specified VPN instance forwarding table to find a forwarding path.
+	
+
+The value is a string of 1 to 31 case-sensitive characters with spaces. If the string is enclosed in double quotation marks (" "), the string can contain spaces.
+
+nexthop-ipv6-address
+	
+
+Specifies the next-hop IPv6 address.
+	
+
+The value is a 32-bit hexadecimal number, in X:X:X:X:X:X:X:X format.
+
+preference preference
+	
+
+Specifies the preference of an IPv6 static route.
+	
+
+The value is an integer that ranges from 1 to 255. The default value is 60.
+
+tag tag
+	
+
+Specifies the tag value of a static route. By configuring different tag values, you can classify static routes to implement different routing policies. For example, routing protocols can import static routes with specified tag values through routing policies.
+	
+
+The value is an integer that ranges from 1 to 4294967295. The default value is 0.
+
+track bfd-session cfg-name
+	
+
+Binds a static BFD session to a static route for fast fault detection.
+	
+
+cfg-name is a string of 1 to 15 characters without spaces. The string can contain spaces if it is enclosed with double quotation marks (").
+
+track nqa admin-name test-name
+	
+
+Specifies the administrator name of an NQA test instance bound to a static route, and the name of the test instance.
+	
+
+The values of admin-name and test-name are both a string of 1 to 32 case-sensitive characters without spaces.
+
+description text
+	
+
+Specifies the description of a static route.
+	
+
+The value is a string of 1 to 80 characters that can contain spaces.
+
+all
+	
+
+Deletes all IPv6 static routes.
+	
+
+-
+
+Only the S5720I-SI, S5735-S, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support track bfd-session cfg-name parameters.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+On a simple network, you can configure static routes to ensure network connectivity. If a device cannot use dynamic routing protocols for network connectivity, static routes can also be configured on the device.
+
+You can specify description text to add a description for a static route so that the administrator can easily query and maintain the static route. To view the description of static routes, run the display this command in the system view or run the display current-configuration command.
+
+Precautions
+
+When configuring unicast static routes, note the following:
+
+    If no preference is set for a static route, the static route uses the default preference 60.
+    The outbound interface of a static route cannot be a Layer 2 interface.
+
+    If the destination address and mask of a static route are all 0s, the static route is a default route.
+
+Example
+
+# Configure an IPv6 static route on a public network.
+
+<HUAWEI> system-view
+[HUAWEI] ipv6 route-static fc00:0:0:2001::1 128 fc00:0:0:2002::2
+

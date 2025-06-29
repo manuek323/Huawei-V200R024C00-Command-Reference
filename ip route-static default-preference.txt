@@ -1,0 +1,43 @@
+ip route-static default-preference
+Function
+
+The ip route-static default-preference command sets a default preference for an IPv4 static route.
+
+The undo ip route-static default-preference command restores the default preference of IPv4 static routes.
+
+By default, the default preference of IPv4 static routes is 60.
+Format
+
+ip route-static default-preference preference
+
+undo ip route-static default-preference
+Parameters
+Parameter 	Description 	Value
+preference 	Specifies a default preference for IPv4 static routes. A smaller value indicates a higher preference. 	The value is an integer that ranges from 1 to 255.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can change the status of a route by changing the preference of the route. You can use the ip route-static default-preference command to change the default preference of all the new IPv4 static routes.
+
+Configuration Impact
+
+After the ip route-static default-preference command is used, all the new IPv4 static routes that use the default preference are restored to a new default preference.
+
+Precautions
+
+After a default preference is specified, the new default preference is valid for subsequent rather than existing IPv4 static routes.
+Example
+
+# Set the default preference of IPv4 static routes to 70.
+
+<HUAWEI> system-view
+
+[HUAWEI] ip route-static default-preference 70
+

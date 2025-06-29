@@ -1,0 +1,41 @@
+ipv6 route-static default-preference
+Function
+
+The ipv6 route-static default-preference command sets a default preference for an IPv6 static route.
+
+The undo ipv6 route-static default-preference command restores the default preference of IPv6 static routes.
+
+By default, the default preference of IPv6 static routes is 60.
+Format
+
+ipv6 route-static default-preference preference
+
+undo ipv6 route-static default-preference
+Parameters
+Parameter 	Description 	Value
+preference 	Specifies the default preference of IPv6 static routes. A smaller value indicates a higher preference. 	The value is an integer that ranges from 1 to 255.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can change the activation status of routes by changing their preference. To change the default preference of a new IPv6 static route, run the ipv6 route-static default-preference command.
+
+Configuration Impact
+
+After the ipv6 route-static default-preference command is used, the default preference of all the new IPv6 static routes is changed.
+
+The new default preference is valid only for new IPv6 static routes but not for existing IPv6 static routes.
+Example
+
+# Set the default preference of IPv6 static routes to 70.
+
+<HUAWEI> system-view
+
+[HUAWEI] ipv6 route-static default-preference 70
+
