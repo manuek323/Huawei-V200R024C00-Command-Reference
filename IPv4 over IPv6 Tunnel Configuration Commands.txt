@@ -1,0 +1,425 @@
+IPv4 over IPv6 Tunnel Configuration Commands
+
+    Command Support
+    display interface tunnel
+    tunnel ipv4-ipv6 encapsulation-limit
+    tunnel ipv4-ipv6 flow-label
+    tunnel ipv4-ipv6 hop-limit
+    tunnel ipv4-ipv6 traffic-class
+
+Command Support
+
+Only the following switch models support IPv4 over IPv6 Tunnel:
+
+S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S
+display interface tunnel
+Function
+
+The display interface tunnel command displays details of the tunnel interface.
+Format
+
+display interface tunnel [ interface-number | main ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+interface-number
+	
+
+Specifies the number of the tunnel interface. If this parameter is not specified, the command displays information about all tunnel interfaces.
+	
+
+The value must be the number a tunnel interface that has been created.
+
+main
+	
+
+Displays status and traffic statistics about main interface. The interface has no sub-interfaces. Status and traffic statistics about the interface are displayed whether you specify the main parameter or not.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+To check status of tunnels or diagnose the fault in these tunnels, run the display interface tunnel command. You can run this command to obtain tunnel interface information when configuring tunnels or when locating the fault on these tunnels.
+
+Prerequisites
+
+Before running the display interface tunnel command, ensure that a tunnel interface has been created using the interface tunnel command.
+Example
+
+# Display the details of the tunnel interface.
+
+<HUAWEI> display interface tunnel 1
+Tunnel1 current state : UP             
+Line protocol current state : UP                                                
+Last line protocol up time : 2012-11-16 19:16:33 UTC+08:00                      
+Description:                                                                    
+Route Port,The Maximum Transmit Unit is 1500                                    
+Internet Address is 10.3.1.2/24                                                 
+Encapsulation is TUNNEL, loopback not set                                       
+Tunnel source 10.2.1.2 (Vlanif1234), destination 10.2.1.1                       
+Tunnel protocol/transport GRE/IP, key disabled                                  
+keepalive enable period 5 retry-times 3                                         
+Checksumming of packets disabled                                                
+Current system time: 2012-11-16 19:17:39+08:00                                  
+Last 300 seconds input rate 16 bits/sec, 0 packets/sec                          
+Last 300 seconds output rate 0 bits/sec, 0 packets/sec                          
+Input:  5 packets, 650 bytes                                                    
+Output:  0 packets, 0 bytes                                                     
+    Input bandwidth utilization  :    0%                                        
+    Output bandwidth utilization :    0%    
+
+Table 6-92 Description of the display interface tunnel command output
+
+Item
+	
+
+Description
+
+Tunnel1 current state
+	
+Physical layer status of the tunnel interface:
+
+    UP: The interface is in normal state.
+
+    Administratively DOWN: The network administrator executes the shutdown command on the interface.
+
+After a tunnel interface is created, its physical layer status is Up.
+
+Line protocol current state
+	
+Link protocol status:
+
+    UP: The link layer protocol of the tunnel interface works normally.
+
+    Down: The link layer protocol of the tunnel interface is abnormal.
+
+Last line protocol up time
+	
+
+Last time the link layer protocol of the tunnel interface goes UP.
+NOTE:
+
+This field is displayed only when the link layer protocol status of the tunnel interface is UP.
+
+Description
+	
+
+Description of the tunnel interface.
+
+Route Port
+	
+
+Indicates the Layer 3 interface.
+
+The Maximum Transmit Unit is 1500
+	
+
+MTU of tunnel interfaces, which is 1500 bytes by default. Any packet larger than the MTU is fragmented before being sent. If non-fragmentation is configured, the packet is discarded.
+
+Internet Address is 10.3.1.2/24
+	
+
+IP address of the tunnel interface is 10.3.1.2.
+
+The mask is 24 bits, that is, 255.255.255.0.
+
+Encapsulation is TUNNEL,
+	
+
+Encapsulation type of packets on a tunnel interface.
+
+Packet encapsulation protects a whole IP packet.
+
+loopback not set
+	
+
+The tunnel interface does not support a loopback test.
+
+Tunnel source 10.2.1.2 (Vlanif1234)
+	
+
+The source address of the tunnel is 10.2.1.2. That is, the IP address of the VLANIF 1234 interface sending packets at the source side is 10.2.1.2.
+
+destination 10.2.1.1
+	
+
+Destination address of the tunnel.
+
+Tunnel protocol/transport GRE/IP, key disabled
+	
+
+The tunnel encapsulation protocol is the GRE protocol, and the transport protocol is the IP protocol.
+
+Encapsulation protocol types of a tunnel are as follows:
+
+    GRE: indicates Generic Routing Encapsulation.
+
+    MPLS: encapsulates packets into MPLS packets.
+
+    IPv6 over IPv4: encapsulates IPv6 packets into IPv4 packets.
+
+    IPv4 over IPv6: encapsulates IPv4 packets into IPv6 packets.
+
+    none: indicates no encapsulation. This is the default mode of the tunnel interface.
+
+key disabled: the key word recognition function of GRE is not enabled.
+
+keepalive enable period 5 retry-times 3
+	
+
+The keepalive function of GRE.
+
+Checksumming of packets disabled
+	
+
+The check sum function of GRE is not enabled.
+
+Current system time
+	
+
+Current system time.
+
+If the time zone is configured and the daylight saving time is used, the time is in YYYY/MM/DD HH:MM:SS UTC±HH:MM DST format.
+
+Last 300 seconds input rate
+	
+
+Incoming packet rate (bits per second and packets per second) within the last 300 seconds.
+
+Last 300 seconds output rate
+	
+
+Outgoing packet rate (bits per second and packets per second) within the last 300 seconds.
+
+Input
+	
+
+Total number of received packets.
+
+Output
+	
+
+Total number of sent packets.
+
+Input bandwidth utilization : --
+	
+
+Input bandwidth usage.
+
+Output bandwidth utilization : --
+	
+
+Output bandwidth usage.
+tunnel ipv4-ipv6 encapsulation-limit
+Function
+
+The tunnel ipv4-ipv6 encapsulation-limit command configures the maximum number of times that IPv6 encapsulation can be performed on embedded nodes of the IPv4 over IPv6 tunnel after an IPv4 packet is encapsulated the first time.
+
+The undo tunnel ipv4-ipv6 encapsulation-limit command closes the function of IPv6 encapsulation on embedded nodes of the IPv4 over IPv6 tunnel.
+
+By default, a maximum of four times of IPv6 encapsulation can be performed on embedded nodes of the IPv4 over IPv6 tunnel.
+Format
+
+tunnel ipv4-ipv6 encapsulation-limit encapsulation-limit
+
+undo tunnel ipv4-ipv6 encapsulation-limit
+Parameters
+Parameter 	Description 	Value
+encapsulation-limit 	Specifies the maximum number of times for performing IPv6 encapsulation on embedded nodes of the IPv4 over IPv6 tunnel. 	The value is an integer that ranges from 0 to 255.
+Views
+
+System view, tunnel interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The maximum number of times that IPv6 encapsulation can be performed on embedded nodes of the IPv4 over IPv6 tunnel is the value of the tunnel encapsulation limit option carried in the destination option extension header in the IPv6 tunnel header.
+
+    If this command is configured in the tunnel interface view, it takes effect only on the current tunnel interface.
+
+    If this command is configured in the system view, it takes effect only on the mobile IPv6 network.
+
+Prerequisites
+
+Before running the tunnel ipv4-ipv6 encapsulation-limit command in the tunnel interface view, run the tunnel-protocol ipv4-ipv6 command in the same view to set the tunnel mode to the IPv4 over IPv6 manual tunnel.
+
+Precautions
+
+The configuration in the system view and the configuration in the tunnel interface view are independent of each other.
+
+When Huawei devices communicate with non-Huawei devices, you must run the undo tunnel ipv4-ipv6 encapsulation-limit command to restore the maximum number of times that IPv6 encapsulation on embedded nodes of the IPv4 over IPv6 tunnel can be performed after an IPv4 packet is encapsulated the first time to the default value.
+Example
+
+# Set the maximum number of times of IPv6 encapsulation to be performed on the embedded nodes of the specified IPv4 over IPv6 tunnel to 3.
+
+<HUAWEI> system-view
+[HUAWEI] interface tunnel 1
+[HUAWEI-Tunnel1] tunnel-protocol ipv4-ipv6
+[HUAWEI-Tunnel1] tunnel ipv4-ipv6 encapsulation-limit 3
+
+# Set the maximum number of times of IPv6 encapsulation to be performed on the embedded nodes of all specified IPv4 over IPv6 tunnels to 3 on the local device.
+
+<HUAWEI> system-view
+[HUAWEI] tunnel ipv4-ipv6 encapsulation-limit 3
+
+tunnel ipv4-ipv6 flow-label
+Function
+
+The tunnel ipv4-ipv6 flow-label command sets the flow label value.
+
+The undo tunnel ipv4-ipv6 flow-label command restores the default flow label value.
+
+The default flow label value is 0.
+Format
+
+tunnel ipv4-ipv6 flow-label label-value
+
+undo tunnel ipv4-ipv6 flow-label
+Parameters
+Parameter 	Description 	Value
+label-value 	Specifies the flow label value. 	The value is an integer that ranges from 0 to 1048575.
+Views
+
+Tunnel interface view, system view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The flow label value of the tunnel refers to the value specified in the flow label field in the IPv6 packet header on the inbound interface of the tunnel.
+
+    If this command is configured in the tunnel interface view, it takes effect only on the current tunnel interface.
+
+    If this command is configured in the system view, it takes effect only on the mobile IPv6 network.
+
+Before running the tunnel ipv4-ipv6 flow-label command in the tunnel interface view, run the tunnel-protocol ipv4-ipv6 command in the same view to set the tunnel mode to the IPv4 over IPv6 manual tunnel.
+
+The configuration in the system view and the configuration in the tunnel interface view are independent of each other.
+Example
+
+# Set the flow label value of a specified IPv4 over IPv6 tunnel to 10.
+
+<HUAWEI> system-view
+[HUAWEI] interface tunnel 1
+[HUAWEI-Tunnel1] tunnel-protocol ipv4-ipv6
+[HUAWEI-Tunnel1] tunnel ipv4-ipv6 flow-label 10
+
+# Set the flow label value of all the IPv4 over IPv6 tunnels on the local device to 10.
+
+<HUAWEI> system-view
+[HUAWEI] tunnel ipv4-ipv6 flow-label 10
+
+tunnel ipv4-ipv6 hop-limit
+Function
+
+The tunnel ipv4-ipv6 hop-limit command sets the hop limit of the IPv6 tunnel packets.
+
+The undo tunnel ipv4-ipv6 hop-limit command restores the hop limit of the IPv6 tunnel packets to the default value.
+
+By default, the hop limit of the IPv6 tunnel packets is 64.
+Format
+
+tunnel ipv4-ipv6 hop-limit hop-limit
+
+undo tunnel ipv4-ipv6 hop-limit
+Parameters
+Parameter 	Description 	Value
+hop-limit 	Specifies the hop limit of the IPv6 tunnel packets. 	The value is an integer that ranges from 1 to 255.
+Views
+
+system view, Tunnel interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Setting the hop limit of the IPv6 tunnel packets can terminate the packet transmission when routing loops occur on the IPv6 tunnel. To make IPv6 tunnel packets reach the egress of the tunnel, the tunnel hop limit cannot be set too small.
+
+    If this command is configured in the tunnel interface view, it takes effect only on the current tunnel interface.
+
+    If this command is configured in the system view, it takes effect only on the mobile IPv6 network.
+
+Before running the tunnel ipv4-ipv6 hop-limit command in the tunnel interface view, run the tunnel-protocol ipv4-ipv6 command in the same view to set the tunnel mode to the IPv4 over IPv6 manual tunnel.
+
+The configuration in the system view and the configuration in the tunnel interface view are independent of each other.
+Example
+
+# Set the hop limit of the specified tunnel interface to 100.
+
+<HUAWEI> system-view
+[HUAWEI] interface tunnel 1
+[HUAWEI-Tunnel1] tunnel-protocol ipv4-ipv6
+[HUAWEI-Tunnel1] tunnel ipv4-ipv6 hop-limit 100
+
+tunnel ipv4-ipv6 traffic-class
+Function
+
+The tunnel ipv4-ipv6 traffic-class command sets the traffic level of the IPv4 over IPv6 tunnel.
+
+The undo tunnel ipv4-ipv6 traffic-class command restores the traffic level to the default value.
+
+By default, the traffic level of the IPv4 over IPv6 tunnel is 0.
+Format
+
+tunnel ipv4-ipv6 traffic-class { original | class-value }
+
+undo tunnel ipv4-ipv6 traffic-class
+Parameters
+Parameter 	Description 	Value
+original 	Indicates that the value of the Traffic Class field in the IPv6 field of the IPv4 over IPv6 tunnel header uses the value in Traffic Class field of the original packet. 	-
+class-value 	Specifies the traffic level of the IPv4 over IPv6 tunnel. 	The value is an integer that ranges from 0 to 255.
+Views
+
+Tunnel interface view, system view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+The traffic level of the IPv4 over IPv6 tunnel packets refers to the value of the traffic class field in the tunnel packet header of the ingress on the tunnel.
+
+    If this command is configured in the tunnel interface view, it takes effect only on the current tunnel interface.
+
+    If this command is configured in the system view, it takes effect only on the mobile IPv6 network.
+
+Prerequisites
+
+Before running the tunnel ipv4-ipv6 traffic-class command in the tunnel interface view, run the tunnel-protocol ipv4-ipv6 command in the same view to set the tunnel mode to the IPv4 over IPv6 manual tunnel.
+
+Precautions
+
+The configuration in the system view and the configuration in the tunnel interface view are independent of each other.
+Example
+
+# Set the traffic level of the specified IPv4 over IPv6 tunnel to 10.
+
+<HUAWEI> system-view
+[HUAWEI] interface tunnel 1
+[HUAWEI-Tunnel1] tunnel-protocol ipv4-ipv6
+[HUAWEI-Tunnel1] tunnel ipv4-ipv6 traffic-class 10
+
+# Set the traffic level of all the IPv4 over IPv6 tunnels on the local device to 10.
+
+<HUAWEI> system-view
+[HUAWEI] tunnel ipv4-ipv6 traffic-class 10
+

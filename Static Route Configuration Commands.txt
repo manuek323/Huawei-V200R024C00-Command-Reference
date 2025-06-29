@@ -1,0 +1,15 @@
+Static Route Configuration Commands
+
+    Command Support
+    ip route recursive-lookup bgp-vpnv4-route
+    ip route recursive-lookup blackhole protocol static
+    ip route recursive-lookup inherit-label-route enable
+    ip route-static
+    ip route-static default-preference
+    ip route-static track bfd-session admindown invalid
+    ip route-static vpn-instance
+    ipv6 route recursive-lookup inherit-label-route enable
+    ipv6 route-static
+    ipv6 route-static default-preference
+    ipv6 route-static track bfd-session admindown invalid
+    ipv6 route-static vpn-instance

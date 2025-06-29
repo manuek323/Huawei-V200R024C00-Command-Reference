@@ -1,0 +1,68 @@
+ip route recursive-lookup blackhole protocol static
+Function
+
+The ip route recursive-lookup blackhole protocol static disable command disables a device from recursing static routes to blackhole routes.
+
+The ip route recursive-lookup blackhole protocol static enable command allows a device to recurse static routes to blackhole routes.
+
+The undo ip route recursive-lookup blackhole protocol static disable command allows a device to recurse static routes to blackhole routes.
+
+By default, static routes can recurse to blackhole routes.
+Format
+
+ip route recursive-lookup blackhole protocol static { disable | enable }
+
+undo ip route recursive-lookup blackhole protocol static disable
+Parameters
+Parameter 	Description 	Value
+
+disable
+	
+
+Disables a device from recursing static routes to blackhole routes.
+	
+
+-
+
+enable
+	
+
+Allows a device to recurse static routes to blackhole routes.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If IGP, static, and blackhole routes exist on a network and a link fault occurs, services may be interrupted because static routes may recurse to blackhole routes and remain active. To ensure uninterrupted services, run the ip route recursive-lookup blackhole protocol static disable command. This command will prevent static routes from recursing to blackhole routes so that static routes will become inactive and IGP routes will be selected.
+
+Precautions
+
+The ip route recursive-lookup blackhole protocol static enable and undo ip route recursive-lookup blackhole protocol static disable commands have the same function. You only need to run one of them.
+Example
+
+# Disable a device from recursing static routes to blackhole routes.
+
+<HUAWEI> system-view
+
+[HUAWEI] ip route recursive-lookup blackhole protocol static disable
+
+# Allow a device to recurse static routes to blackhole routes.
+
+<HUAWEI> system-view
+
+[HUAWEI] ip route recursive-lookup blackhole protocol static enable
+
+# Allow a device to recurse static routes to blackhole routes.
+
+<HUAWEI> system-view
+
+[HUAWEI] undo ip route recursive-lookup blackhole protocol static disable
+
