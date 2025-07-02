@@ -1,0 +1,1277 @@
+CLI Overview Commands
+
+    Command Support
+    assistant task
+    command-privilege level
+    command-privilege level rearrange
+    diagnose
+    display assistant task history
+    display component
+    display history-command
+    display this
+    display this include-default
+    header
+    if-match timer cron
+    perform batch-file
+    quit
+    reset history-command
+    return
+    system-view
+    terminal command forward matched upper-view
+    terminal echo-mode
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+assistant task
+Function
+
+The assistant task command creates an assistant task.
+
+The undo assistant task command deletes an assistant task.
+
+By default, no assistant task is created.
+Format
+
+assistant task task-name
+
+undo assistant task task-name
+Parameters
+Parameter 	Description 	Value
+task-name 	
+
+Specifies the name of an assistant task.
+	The value is a string of 1 to 15 characters. It can consist of only underscores (_), letters, and digits, and must start with a letter.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+An assistant task is a virtual assistant on a device to realize automatic maintenance and management. After you create an assistant task and bind it to a batch of files to be processed, the device performs operations or configurations when it is unattended. Assistant tasks are mainly used for scheduled system upgrade or configuration.
+
+You can create a maximum of five assistant tasks on a device.
+Example
+
+# Create an assistant task.
+
+<HUAWEI> system-view
+
+[HUAWEI] assistant task test
+
+command-privilege level
+Function
+
+The command-privilege level command sets a command privilege level in a specified view.
+
+The undo command-privilege command restores the default level.
+
+By default, each command in each view has a default command privilege level.
+Format
+
+command-privilege level level view view-name command-key
+
+undo command-privilege [ level level ] view view-name command-key
+Parameters
+Parameter 	Description 	Value
+
+level level
+	
+
+Specifies a command privilege level.
+	
+
+The value is an integer that ranges from 0 to 15.
+
+view view-name
+	
+
+Specifies a view name. You can enter a question mark (?) in the terminal GUI to obtain all view names in the command view.
+For example:
+
+    shell: user view
+    system: system view
+    vlan: VLAN view
+
+	
+
+-
+
+command-key
+	
+
+Specifies a command. The command must be entered manually because automatic command line completion is not supported.
+	
+
+-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The system divides commands into levels for management. Each command in views has a specified level. The device administrator can change a command privilege level as required so that a lower-level user can use certain high-level commands. The device administrator can also increase the command privilege level to a larger value to improve device security.
+
+Precautions
+
+    The rules for using this command to set the command privilege level of a specified view are as follows:
+        When you degrade the target command, all keywords in the command are degraded.
+        When you upgrade the target command, only the last keyword in the command is upgraded.
+        When you set a level for the target command, the levels of all commands (in the same view) starting with this command are changed.
+        When you set a level for the target command, the keyword level in other commands having the same index as the keyword whose level is changed is also changed.
+        If the level of keywords that have the same index is modified for multiple times, the latest configured level takes effect.
+    Do not change the default command privilege level. If you need to change it, consult with professional personnel to ensure that routine operation and maintenance are not affected and security risks are avoided.
+    If parameters are specified in the command whose privilege level is configured using the command-privilege level command, enter these parameters, for example, command-privilege level 1 view shell tftp 10.1.1.1 get vrpcfg.txt cfcard:/vrpcfg.bak.
+
+Example
+# Set the privilege level of the save command to 5.
+
+<HUAWEI> system-view
+
+[HUAWEI] command-privilege level 5 view shell save
+
+command-privilege level rearrange
+Function
+
+The command-privilege level rearrange command upgrades command privilege levels in batches.
+
+The undo command-privilege level rearrange command restores the default command privilege levels in batches.
+
+By default, the command privilege levels assigned by the system during registration are used.
+Format
+
+command-privilege level rearrange
+
+undo command-privilege level rearrange
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+Each command registered on a device is assigned a default level 0, 1, 2, or 3. These levels correspond to the visit level, monitoring level, configuration level, and management level. You can run the command-privilege level rearrange command to upgrade all the level-2 and level-3 commands to level-10 and level-15 commands in batches. The level-0 and level-1 commands remain unchanged.
+
+Precautions
+
+    You can change the levels of the commands that are not separately changed by the command-privilege level command. The levels of the commands that are separately changed by the command-privilege level command cannot be upgraded.
+    You can restore the levels of the commands that are upgraded in batches. The levels of the commands that are separately changed by the command-privilege level command cannot be upgraded.
+    After the command-privilege level rearrange command is run, users at Level 2 to Level 9 are not allowed to run commands defaulted to Level 2, and users at Level 3 to Level 14 are not allowed to run commands defaulted to Level 3. If some users are required to have the same command privilege as that before the command privilege level promotion, you are advised to adjust the levels of all users on the device.
+    After the undo command-privilege level rearrange command is run, users at level 3 to level 14 are allowed to run commands defaulted to level 3, and users at level 2 to level 9 are allowed to run commands defaulted to level 2. If some users are required to have the same command privilege as that before the command privilege level decrease, you are advised to adjust the levels of all users on the device.
+    You can use the command-privilege level rearrange command only when your user privilege level is 15.
+    After the levels of the commands are upgraded in batches and before the levels of the commands are restored, upgrading the levels of the commands is invalid and does not change the current status of the commands.
+
+Example
+
+# Change the levels of the current commands in batches.
+
+<HUAWEI> system-view
+
+[HUAWEI] command-privilege level rearrange
+
+diagnose
+Function
+
+The diagnose command enables a device to enter the diagnostic view from the system view.
+Format
+
+diagnose
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+Diagnostic commands are mainly used for fault diagnosis. However, running certain commands may cause device faults or service interruptions. Therefore, use these diagnostic commands under the instruction of technical support personnel.
+Example
+
+# Enable a device to enter the diagnostic view.
+
+<HUAWEI> system-view
+
+[HUAWEI] diagnose
+
+[HUAWEI-diagnose]
+
+display assistant task history
+Function
+
+The display assistant task history command displays operation records of assistant tasks.
+Format
+
+display assistant task history [ task-name ]
+Parameters
+Parameter 	Description 	Value
+task-name 	
+
+Specifies the name of an assistant task.
+	The value is a string of 1 to 15 characters consisting only of underscores (_), letters, and digits, and must start with a letter.
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+The five latest operations of each assistant task are displayed in order from earliest to latest.
+Example
+
+# Displays operation records of assistant tasks.
+
+<HUAWEI> display assistant task history
+
+--------------------------------------------------------------------------------
+Assistant task name: nemo
+--------------------------------------------------------------------------------
+Assistant task name: song
+ Action type    : Batch file
+ Batch file name: reboottest.bat
+ Start time     : 2012-07-16 09:25:00
+ End time       : 2012-07-16 09:25:00
+ State          : Finished
+
+ Action type    : Batch file
+ Batch file name: reboottest.bat
+ Start time     : 2012-07-16 09:24:00
+ End time       : 2012-07-16 09:24:00
+ State          : Finished
+
+--------------------------------------------------------------------------------
+Assistant task name: xu
+ Action type    : Batch file
+ Batch file name: reboottest.bat
+ Start time     : 2012-07-16 09:25:00
+ End time       : 2012-07-16 09:25:00
+ State          : Finished
+
+ Action type    : Batch file
+ Batch file name: reboottest.bat
+ Start time     : 2012-07-16 09:24:00
+ End time       : 2012-07-16 09:24:00
+ State          : Finished
+
+ Action type    : Batch file
+ Batch file name: reboottest.bat
+ Start time     : 2012-07-16 09:23:00
+ End time       : 2012-07-16 09:23:00
+ State          : Finished
+
+--------------------------------------------------------------------------------
+
+Table 2-1 Description of the display assistant task history command output
+
+Item
+	
+
+Description
+
+Assistant task name
+	
+
+Task name.
+
+This parameter is configured using the assistant task command.
+
+Action type
+	
+
+Operation that an assistant task performs.
+
+Batch file name
+	
+
+Name of the batch file used by an assistant task.
+
+This parameter is configured using the perform batch-file command.
+
+Start time
+	
+
+Operation start time of an assistant task.
+
+End time
+	
+
+Operation end time of an assistant task.
+
+State
+	
+Running status of an assistant task.
+
+    Running indicates that the assistant task is in operating.
+    Finished indicates that the assistant task has finished operating.
+
+display component
+Function
+
+The display component command displays information about a registered component.
+Format
+
+display component [ component-name ] [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+component-name 	Displays information about a component with a specified ID. 	The value ranges from 0 to FFFFFFFF, in hexadecimal notation. 0 indicates brief information about all components, and FFFFFFFF indicates detailed information about all components. The default value is FFFFFFFF.
+slot slot-id 	
+
+    Displays information about registered components on a specified slot if stacking is not configured.
+    Displays information about registered components on a specified stack member device if stacking is configured.
+
+	-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+The display component command displays information about a registered component.
+Example
+
+# Display brief information about all registered components.
+
+<HUAWEI> display component 0
+
+
+                                                            
+*******************************************************      
+ No.   CompID      CompVer          CompName          
+ 0     0x00003391  1.0.0.0          DNS                      
+ 1     0x000001f4  1.0.0.0          COMMON               
+ 2     0x00002ee1  1.0.0.0          NSPCOMMON           
+ 3     0x0000332d  1.0.0.0          NSPNOLIBCOMMON      
+ 4     0x000032c9  1.0.0.0          NFPCOMMON            
+ 5     0x00002c89  1.0.0.0          SECAPP            
+ 6     0x000027da  1.0.0.0          TRUNK              
+ 7     0x00002775  1.0.0.0          L2IF             
+ 8     0x00002af9  1.0.0.0          NQAC_BASIC       
+ 9     0x00002b5d  1.0.0.0          NQAS_BASIC      
+ 10    0x00002e19  1.0.0.0          VPLS BASIC   
+ 11    0x000000c8  1.0.0.0          PPMNG       
+ 12    0x000000ce  1.0.0.0          ND          
+ 13    0x000000cf  1.0.0.0          ADDR       
+ 14    0x000000c9  1.0.0.0          ICMP6         
+ 15    0x000000cd  1.0.0.0          PMTU        
+ 16    0x000000df  1.0.0.0          IPSEC6-IPV6      
+ 17    0x000000de  1.0.0.0          IPSEC6-POLICY     
+ 18    0x000000dc  1.0.0.0          IPSEC6-SAPRO       
+ 19    0x000000cb  1.0.0.0          UDP6                
+ 20    0x000000cc  1.0.0.0          RIP6              
+  ---- More ---- 
+
+Table 2-2 Description of the display component command output
+
+Item
+	
+
+Description
+
+No.
+	
+
+Number.
+
+CompID
+	
+
+Component ID.
+
+CompVer
+	
+
+Component version.
+
+CompName
+	
+
+Component name.
+display history-command
+Function
+
+The display history-command command displays the historical commands stored on a device.
+Format
+
+display history-command [ all-users ]
+Parameters
+Parameter 	Description 	Value
+all-users 	
+
+Displays information about the successfully matched commands that are executed by all users.
+
+If all-users is not specified, successfully matched historical commands executed by the current user are displayed.
+	-
+Views
+
+All views
+Default Level
+
+display history-command: 0: Visit level
+
+display history-command all-users: 3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The terminal automatically saves the history commands entered by the user, that is, records any keyboard entry of the user with Enter as the unit.
+
+By default, the display history-command command displays a maximum of 10 historical commands. If the number of historical commands is less than 10, the display history-command command output displays all of them. Run history-command max-size command to set the size of the historical command buffer.
+
+Precautions
+
+Commands run by users are automatically saved on the terminal. Any input that ends with Enter is saved as a historical command.
+
+    Commands are saved in the same format as those users entered. If an entered command is incomplete, the saved command is also incomplete.
+
+    If a command is run several times, only the latest one is saved. If the command is run in different formats, they all saved as different commands.
+
+You can check historical commands using the following methods:
+
+    To check a previous historical command, press the Up arrow key or Ctrl+P.
+
+    To check a next historical command, press the Down arrow key or Ctrl+N.
+
+To check the previous historical commands on a Windows 9X HyperTerminal, press Ctrl+P. The Up arrow key does not take effect.
+Example
+
+# Display the historical commands that have been executed on a terminal.
+
+<HUAWEI> display history-command
+
+  system-view
+  user-interface vty 0 4
+  user privilege level 15
+  quit 
+
+display this
+Function
+
+The display this command displays the running configurations in the current view.
+Format
+
+display this
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After configurations are complete in a certain view, run the display this command to check the current configurations.
+
+Precautions
+
+If a configuration parameter uses the default value, this parameter is not displayed. Configurations for functions that do not take effect are not displayed.
+
+If you run the display this command in an interface view, configurations of the interface view are displayed. If you run this command in a protocol view, configurations of the protocol view are displayed.
+Example
+
+# Display the running configuration in the current view.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/1
+[HUAWEI-GigabitEthernet0/0/1] display this
+#    
+interface GigabitEthernet0/0/1    
+ port link-type trunk     
+#
+return
+
+display this include-default
+Function
+
+The display this include-default command displays the valid configurations in the current view, including the unchanged default configurations.
+
+This command does not display the default configurations that are not modified in the WLAN view.
+Format
+
+display this include-default
+Parameters
+
+None.
+Views
+
+All views
+Default Level
+
+2: Configuration level
+Usage Guidelines
+You can use this command to view the default configurations of physical attributes, basic Ethernet protocols, routing, multicast, QoS, and security features on Ethernet interfaces. The following features are included:
+
+    VLAN management: port-based VLAN assignment, other VLAN assignment methods, PVID, link type, QinQ protocol type, port priority, discard tagged-pkt, and port bridge
+    MUX VLAN, voice VLAN, VLAN mapping/stacking, VT enable, and VT miss-drop
+    MAC address learning status and priority, port security, sticky MAC, MAC address limiting, and MAC flapping detection
+    MSTP, L2PT, DLDP, LLDP, loopback detection, RRPP, SmartLink, SEP, and ERPS
+    Ethernet interface physical attributes: speed/duplex, speed auto-negotiation, negotiation, flow control, flow control negotiation, flow-control receive/flow-control negotiation receive, loopback, MDI, jumbo frame, trap/log alarm thresholds, link flapping, EEE, link Up/Down report delay, VCT, inter-frame gap statistics, error packet statistics, URPF, and copper module information
+    ARP, ND, Eth-Trunk, and port isolation
+    BFD: single-hop BFD, multi-hop BFD, BFD for LSP, and multicast BFD
+    Unicast route management, static routes, RIP, OSPF, IS-IS, BGP, and VRRP
+    Multicast routing, PIM, IGMP, MLD, IGMP snooping, and MLD snooping
+    QoS, ACL, storm suppression, ARP security, IP security, and MFF
+    DHCP, DHCPv6, ND Snooping, NAC, and RADIUS
+
+This command can also display the following default global configurations: enabling of the function that sends ICMP host/port unreachable packets, enabling of the function that discards ICMP packets with TTL value 1, rate limit for ARP Miss packets, enabling of ICMP packet rate limiting, and interval for collecting CAR-based traffic statistics. For the support for default settings of the features, see the corresponding device model.
+Example
+
+# Display the valid configurations and default configurations on VLANIF 10. The following command output is used for reference. The command output on your device may differ from that provided in this example.
+
+<HUAWEI> system-view
+[HUAWEI] interface Vlanif 10
+[HUAWEI-Vlanif10] display this include-default
+#
+interface Vlanif10
+ undo shutdown
+ undo set flow-stat interval
+ mtu 1500
+ undo arp detect-mode unicast
+ arp-fake expire-time 3
+ undo arp learning disable
+ undo arp purge slowly
+ undo ipv6 enable
+ icmp host-unreachable send
+ icmp redirect send
+ icmp port-unreachable send
+ icmp ttl-exceeded send
+ undo ip verify source-address
+ undo ip forward-broadcast
+ undo clear ip df
+ undo discard srr
+ undo discard rr
+ undo discard ra
+ undo discard ts
+ damping time 0
+ arp learning strict trust
+ undo ntp-service in-interface disable
+ undo mpls                                
+ undo arp-proxy enable
+ undo arp-proxy inter-sub-vlan-proxy enable
+ undo arp-proxy inner-sub-vlan-proxy enable
+ undo arp broadcast disable
+ undo rrpp snooping enable
+ nd optimized-passby enable
+ undo urpf
+ diffserv-mode uniform
+ undo statistic enable both
+ undo ipv4 statistic enable both
+ undo ipv6 statistic enable both
+ undo arp gratuitous-arp send enable
+ undo arp anti-attack entry-check enable
+ undo arp learning double-tag disable
+ arp optimized-passby enable
+ undo dhcp select global
+ undo dhcp select interface
+ undo dhcp select relay
+ undo ip address bootp-alloc
+ undo ip address dhcp-alloc
+ undo arp learning dhcp-trigger
+#
+return
+
+header
+Function
+
+The header command configures the header information displayed on a terminal when users log in to a connected device.
+
+The undo header command deletes the header information displayed on a terminal when users log in to a connected device.
+
+By default, no header information is displayed on terminals when users log in to a connected device.
+Format
+
+header { login | shell } { information text | file file-name }
+
+undo header { login | shell }
+Parameters
+Parameter 	Description 	Value
+
+login
+	
+
+Indicates header information displayed on a terminal when a user logs in to the device and a connection between the terminal and the device is activated.
+	
+
+-
+
+shell
+	
+
+Indicates the header displayed on a terminal when the session is set up after the user logs in to the connected device.
+	
+
+-
+
+information text
+	
+
+Specifies the header and content.
+	
+
+The value is a string with spaces and carriage returns supported. The maximum length of the string that can be entered at one time is 480 characters.
+
+file file-name
+	
+
+Specifies the file name that the header uses.
+	
+
+The value is a string of 1 to 64 characters without spaces. Only the absolute path is supported. The file name must be in the [drive] [path] [file name] format, where [path] is the absolute path of the file. The maximum header file size that can be configured is 2 KB.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To provide some prompts or alarms to users, run the header command to configure a title on the device. If a user logs in to the device, the title is displayed.
+
+Procedure
+
+If information is specified, the header text starts and ends with the same character. You can set the header text in either of the following modes:
+
+    Non-interactive: enter the header text behind the start character.
+
+    Use the same character at the beginning and end of the header and press Enter. If the start and end characters are inconsistent, the system prompts an error message.
+
+    Interactive: enter the start character and press Enter to enter the interactive process.
+
+    The system displays a message asking you to enter the correct header information. After you enter the information, enter the same character as the start character. Press Enter. The system quits the interactive process.
+
+    During interaction, you can press Enter at any time to enter information in the next line.
+
+Precautions
+
+    Before setting the login parameter, you must set login authentication parameters; otherwise, no header information about authentication is displayed.
+    Before setting the file parameter, ensure that the file containing the header exists; otherwise, the file name cannot be obtained. If you change header information after login, the header information that has been displayed in the system does not change, even if you exit and log in to the system again. The header information changes in either of the following cases:
+        You have successfully changed the header information. Before the system restarts, you run this command again. Then you exit and log in to the system again.
+        You have successfully changed the header information. Then you restart the system.
+    If you use SSH1.X to log in to the device, only the shell header is displayed.
+    If you use SSH2.0 to log in to the device, both login and shell headers are displayed in the login process.
+    If the header command is configured several times, only the latest configuration takes effect.
+    After configuring the login header, any user that logs in to the system can view the header.
+    In the system view, run the execute batch-filename batch processing command. If the batch processing command contains the header { login | shell } information text command and text contains line feed character \r\n, you need to use third-party software to change the hexadecimal value (0D 0A) of the line feed character \r\n to (1B 19).
+
+Example
+
+# Configure a shell header in non-interactive mode.
+
+<HUAWEI> system-view
+
+[HUAWEI] header shell information &Hello! Welcome to system!&      # Enter the header text behind the start character '&' and enter '&' at the end of the header text, and press Enter.
+
+# Display the shell header if the login succeeds.
+
+Hello! Welcome to system!
+
+# Configure a shell header in interactive mode.
+
+<HUAWEI> system-view
+
+[HUAWEI] header shell information %      # Press Enter after entering the start character '%' to start the interactive process.
+
+The banner text supports 480 characters max, including the start and the end cha
+racter.If you want to enter more than this, use banner file instead.Input banner
+ text, and quit with the character '%':
+Hello!
+Welcome to system!%      # Press Enter after entering the end character '%' to quit the interactive process.
+
+[HUAWEI] quit
+
+<HUAWEI> quit      // Log off.
+
+# Press Enter. The shell header is displayed when the user logs in again.
+
+Hello!
+Welcome to system!
+
+<HUAWEI>
+
+# Specify the file that stores a login header.
+
+<HUAWEI> system-view
+[HUAWEI] header login file flash:/header-file.txt
+
+if-match timer cron
+Function
+
+The if-match timer cron command sets the time to perform an assistant task.
+
+The undo if-match timer cron command cancels the time configured for performing an assistant task.
+
+By default, the time to perform an assistant task is not specified.
+Format
+
+if-match timer cron seconds minutes hours days-of-month months days-of-week [ years ]
+
+undo if-match timer cron
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+seconds
+	
+
+Sets second.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,). Currently, the device supports only asterisks (*), indicating that the value is accurate to the minute but not the second.
+
+minutes
+	
+
+Sets minute.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,).
+
+hours
+	
+
+Sets hour.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,).
+
+days-of-month
+	
+
+Sets date.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,). This parameter is exclusive with the days-of-week parameter. At least one of the two contains asterisks (*).
+
+months
+	
+
+Sets month.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,).
+
+days-of-week
+	
+
+Sets week.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,). The parameter is exclusive with the days-of-month parameter. At least one of the two contains asterisks (*).
+
+years
+	
+
+Sets year.
+	
+
+The value is a string of 1 to 64 characters in the cron time format. The string consists of digits 0 to 9 and special characters asterisks (*), hyphens (-), slashes (/), and commas (,). If this parameter is not specified, it refers to all the years between 2000 to 2099.
+Views
+
+Assistant task template view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The if-match timer cron command is used to set the time to perform an assistant task. The time is expressed in the cron format defined in UNIX or Linux.
+The commonly used time and date format (hh:mm:ss dd-mm-yyyy) can specify only one specific time value. The cron time format is more flexible and can display single or multiple time points, time ranges, and time intervals. The following table describes the expression mode of the cron format.
+
+Expression Mode
+	
+
+Format
+	
+
+Description
+	
+
+Example
+
+Single time point
+	
+
+<time>
+	
+
+<time>: The value is an integer that specifies a specific time value.
+
+The value range is dependent on a specific parameter. The range of minutes is 0 to 59. The range of hours is 0 to 23. The range of days-of-month depends on the number of days in a specific month. The range of months is 1 to 12. The range of days-of-week is 0 to 7. The range of years is 2000 to 2099.
+	
+
+Command: if-match timer cron * 0 1 2 5 * 2012
+
+Meaning: perform an assistant task at 1:00 on May 2, 2012.
+
+Multiple time points
+	
+
+<time1>,<time2>,...,<timen>
+	
+
+<timen>: The value is an integer. The value range depends on a specific parameter.
+
+Multiple time points are separated by a comma (,) with no space before or after it. The time values in a list can be arranged in any sequence.
+	
+
+Command: if-match timer cron * 0 1,2,3 2 3 * 2012
+Meaning: perform an assistant task at the following time points:
+
+    1:00, March 2, 2012
+    2:00, March 2, 2012
+    3:00, March 2, 2012
+
+Specific time point
+	
+
+<time>/<step>
+	
+
+<time>: The value is an integer that specifies a specific time value.
+
+<step>: The value is an integer that specifies the time incremental.
+
+The two values are separated by a slash (/) with no space before or after it.
+
+The format: <time>,<time>+<step>,<time>+2*<step>,...,<time>+n*<step>. The maximum time (<time>+n*<step>) depends on a specific parameter in the command line.
+	
+
+Command: if-match timer cron * 0 0/10 * 3 * 2012
+Meaning: perform an assistant task at the following time points:
+
+    0:00, March 1, 2012
+    10:00, March 1, 2012
+    20:00, March 1, 2012
+    0:00, March 2, 2012
+    ...
+    10:00, March 31, 2012
+    20:00, March 31, 2012
+
+Duration
+	
+
+<time1>-<time2>
+	
+
+<time1> and <time2>: The values are integers, specifying the start and end time respectively. <time2> must be later than or equal to <time1>.
+
+The two values are separated by a hyphen (-) with no space before or after it.
+
+the <time1>-<time2> is same as <time1>,<time1>+1,<time1>+2,……,<time2>. If <time1> and <time2> are the same, they specify the same time point.
+	
+
+Command: if-match timer cron *0 0-3 1 3 * 2012
+Meaning: perform an assistant task at the following time points:
+
+    0:00, March 1, 2012
+    1:00, March 1, 2012
+    2:00, March 1, 2012
+    3:00, March 1, 2012
+
+Period
+	
+
+*
+	
+
+If the parameter in the command line is set to *, the parameter may refer to any time point.
+
+By setting the parameter to *, you can configure the system to periodically perform an assistant task every year, week, month, day, hour, or minute.
+	
+
+Command: if-match timer cron * 30 10 * 1 1 2012
+
+Meaning: perform an assistant task at 10:30, Monday every week in January, 2012.
+
+Combination
+	
+
+Combination format
+	
+
+All the expression modes can be combined except "period". The expression modes are separated by a comma (,) with no space before or after it.
+	
+
+Command: if-match timer cron * 0 0/10,2,4-5 1 3 * 2012
+Meaning: perform an assistant task at the following time points:
+
+    0:00, March 1, 2012
+    2:00, March 1, 2012
+    4:00, March 1, 2012
+    5:00, March 1, 2012
+    10:00, March 1, 2012
+    20:00, March 1, 2012
+
+Precautions
+
+    If you run the if-match timer cron command multiple times in the same view, only the latest configuration takes effect.
+
+    The days-of-month and days-of-week parameters are exclusive. Set one or both of them to "*". If one parameter is set to *, the other one specifies a specific date. If both parameters are set to *, they can refer to any date.
+
+    The minimum unit supported is minute, so set the second parameter to *. The specified assistant task works only once every minute.
+
+    Since the system can perform only one assistant task at a time, the time when one assistant task finished working may be later than the time when the next task is schedule to start. There may be a time span between the time when an assistant task is scheduled to work and the time when it actually starts to work. The if-match timer cron command specifies the time when an assistant task is scheduled to work.
+
+    When you enter digits, such as 000002012, the numeric string means the same as 2012.
+
+Example
+
+# Configure an assistant task to work at 20:00, 2012-05-04.
+
+<HUAWEI> system-view
+
+[HUAWEI] assistant task test
+
+[HUAWEI-assistant-task-test] if-match timer cron * 0 20 4 5 * 2012
+
+[HUAWEI-assistant-task-test] perform 1 batch-file sys.bat
+
+# Cancel the time for an assistant task to start to work.
+
+<HUAWEI> system-view
+
+[HUAWEI] assistant task test
+
+[HUAWEI-assistant-task-test] undo if-match timer cron
+
+perform batch-file
+Function
+
+The perform batch-file command configures an assistant task to process a batch file.
+
+The undo perform command disables an assistant task from processing a batch file.
+
+By default, no batch file is configured for an assistant task.
+Format
+
+perform priority batch-file filename
+
+undo perform priority
+Parameters
+Parameter 	Description 	Value
+
+priority
+	
+
+Specifies a priority for an assistant task.
+	
+
+The value is fixed at 1 because one assistant task can process only one batch file.
+
+filename
+	
+
+Specifies the name of the batch file processed by the assistant task.
+	
+
+The file is in *.bat file.
+NOTE:
+
+The file must be stored in the flash:/user/bat directory.
+Views
+
+Assistant task template view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+After you successfully create an assistant task and specify the execution time, you can run this command to configure the device to process a batch file at the specified time.
+
+Prerequisites
+
+An assistant task has been created using the assistant task command and the execution time has been specified using the if-match timer cron command.
+
+Precautions
+
+To delete an assistant task that is being executed, stop it first. To delete an assistant task to be executed, directly delete it. The device will not execute the assistant task.
+Example
+
+# Configure the assistant task huawei to process the batch file sys.bat at 20:00 on 2012-05-04.
+
+<HUAWEI> system-view
+[HUAWEI] assistant task huawei
+[HUAWEI-assistant-task-huawei] if-match timer cron * 0 20 4 5 * 2012
+[HUAWEI-assistant-task-huawei] perform 1 batch-file sys.bat
+
+# Disable an assistant task from processing a batch file.
+
+<HUAWEI> system-view
+[HUAWEI] assistant task huawei
+[HUAWEI-assistant-task-huawei] undo perform 1
+Info: Start to delete the action. 
+[HUAWEI-assistant-task-huawei] display this
+#
+assistant task huawei
+ if-match timer cron * 0 20 4 5 * 2012
+#
+return
+
+quit
+Function
+
+The quit command returns a device from the current view to a lower-level view. If the current view is the user view, this command exits from the system.
+Format
+
+quit
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+0: Visit level
+Usage Guidelines
+
+Usage Scenario
+
+Three types of views are available (listed from a lower level to a higher level):
+
+    User view
+
+    System view
+
+    Service view, such as the interface view
+
+Run the quit command to return to a lower-level command view from the current view. Running this command in the user view quits from the system.
+Example
+
+# Return to the system view from the AAA view and then return to the user view. Quit the system after this.
+
+<HUAWEI> system-view
+[HUAWEI] aaa
+[HUAWEI-aaa] quit
+[HUAWEI] quit
+<HUAWEI> quit
+
+reset history-command
+Function
+
+The reset history-command command deletes historical commands from a device.
+Format
+
+reset history-command [ all-users ]
+Parameters
+Parameter 	Description 	Value
+all-users 	
+
+Deletes historical commands entered by all users.
+
+If this parameter is not specified, the historical commands entered only by the current user are deleted.
+	-
+Views
+
+All views
+Default Level
+
+reset history-command: 0: Visit level
+
+reset history-command all-users: 3: Management level
+Usage Guidelines
+
+To delete historical commands entered by the current user, run the reset history-command command. If a level 3 (or higher) user runs the reset history-command all-users command, historical commands entered by all users are deleted.
+Example
+
+# Delete historical commands entered by the current user.
+
+<HUAWEI> reset history-command
+
+return
+Function
+
+The return command returns to the user view from other views (except the user view).
+Format
+
+return
+Parameters
+
+None
+Views
+All views
+Default Level
+
+0: Visit level
+Usage Guidelines
+
+Use the return command in other views to return to the user view.
+
+    This command returns to the user view if the current view is another view (but not the user view).
+    No change occurs after running this command if the current view is the user view.
+    The shortcut keys Ctrl+Z functions similarly as the return command.
+
+Example
+
+# Return to the user view from the user interface view.
+
+<HUAWEI> system-view
+[HUAWEI] user-interface vty 0
+[HUAWEI-ui-vty0] return
+<HUAWEI>
+
+system-view
+Function
+
+The system-view command enables you to enter the system view from the user view.
+Format
+
+system-view
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You must configure the device in the system view. Run this command in the user view to enter the system view.
+Example
+
+# Enter the system view.
+
+<HUAWEI> system-view
+Enter system view, return user view with Ctrl+Z.
+[HUAWEI]
+
+terminal command forward matched upper-view
+Function
+
+The terminal command forward matched upper-view command enables forward commands (not in the undo form) to automatically match the upper-level view and return to the upper-level view.
+
+The undo terminal command forward matched upper-view command disables forward commands from automatically matching the upper-level view.
+
+By default, forward commands are enabled to automatically match the upper-level view.
+Format
+
+terminal command forward matched upper-view
+
+undo terminal command forward matched upper-view
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If forward commands are enabled to automatically match the upper-level view and you run a forward command not registered in the current view, the system automatically switches to the upper-level view to search for the command. If the command is found in that view, the system runs the command. If the command is not found in that view, the system continues the search in the next upper-level view until the system view.
+
+Precautions
+
+The terminal command forward matched upper-view command takes effect only for the current login user who runs this command.
+Example
+
+# Enable forward commands to automatically match the upper-level view.
+
+<HUAWEI> terminal command forward matched upper-view
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] sysname ABC
+
+[ABC]
+
+# Disable forward commands from automatically matching the upper-level view.
+
+<HUAWEI> undo terminal command forward matched upper-view
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] sysname ABC
+
+                              ^
+
+Error: Unrecognized command found at '^' position.
+
+terminal echo-mode
+Function
+
+The terminal echo-mode command sets a command output mode.
+
+The default command output mode is character.
+Format
+
+terminal echo-mode { character | line }
+Parameters
+Parameter 	Description 	Value
+character 	
+
+Specifies a character mode.
+
+The system displays the character that you enter in the command line.
+	-
+line 	
+
+Specifies a line mode.
+
+The system displays the character that you enter in the command line only after you press Enter, Tab or ?.
+
+If you press a shortcut key, such as Backspace, Page Up, or Ctrl+A, it still takes effect.
+	-
+Views
+
+User view
+Default Level
+
+0: Visit level
+Usage Guidelines
+
+Usage Scenario
+
+When operating a device using the NMS, run this command to change the command output mode to line to improve operation efficiency. Common users typically use the character mode, so use this mode for common users to improve operation efficiency.
+
+Precautions
+
+    After a user runs this command to set the line mode, this mode takes effect only for this user. Other users still use the character mode.
+    After a user changes the command output mode to line, the command output mode automatically switches to character when the user exits the device or the device restarts or performs an active/standby switchover.
+    This command does not affect interactive inputs for the command line.
+
+Example
+
+# Set the command output mode to line.
+
+<HUAWEI> terminal echo-mode line
+
