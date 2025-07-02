@@ -1,0 +1,4440 @@
+Hardware Configuration Commands
+
+    Command Support
+    assign resource-mode
+    backup elabel
+    cpu-usage monitor
+    cpu-usage threshold
+    clear battery-group esmu communication-failure
+    clear battery-group module-missing alarm
+    display device ac-output status
+    display device fault-light
+    display fan speed-adjust threshold minus
+    display flash threshold
+    display otdr capture history-record interface
+    display otdr certificate interface
+    display resource-mode configuration
+    display root-key configuration
+    display service-mode configuration
+    display switchover state
+    display system resource-template
+    display wavelength-map
+    mib-data optical-module sample-interval
+    otdr capture interface
+    otdr certificate interface
+    reset battery esmu
+    reset cpu-usage record
+    reset integrated-power output
+    reset power-detect status
+    reset otdr capture history-record
+    reset otdr certificate
+    reset slot
+    set battery-group
+    set battery-group charge current-limit
+    set battery-group install date
+    set device ac-output 24v enable
+    set ddr isolation disable
+    set device fault-light
+    set fan speed auto min-speed
+    set fan speed-adjust threshold minus
+    set fan speed mandatory
+    set flash threshold
+    set integrated-power
+    set memory-usage threshold
+    set power protocol modbus
+    set root-key
+    set rtc to power
+    set service-mode
+    slave restart
+    slave switchover
+    slave switchover { disable | enable }
+    system memory-usage monitor disable
+    temperature threshold
+    transceiver diagnosis threshold rx-power
+    transceiver diagnosis threshold tx-power
+    transceiver phony-alarm-disable
+    wavelength-channel
+    wavelength-channel frequency
+    wavelength-channel wavelength
+    wavelength-channel trust sfp
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+assign resource-mode
+Function
+
+The assign resource-mode command configures the resource allocation mode of the device.
+
+The undo assign resource-mode command restores the default resource allocation mode of the device.
+
+By default, the resource allocation mode of the S5731-H, S5731S-H, S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1,S5735S-L1, S5732-H, S5731-S, S5731S-S, S6730-S, S6730S-S, S6730-H, S6730S-H, S6735-S is enhanced-arp.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1,S5735S-L1, S6730-S, S6730S-S, S6730-H, S6730S-H, S6735-S support this command.
+Format
+
+assign resource-mode { enhanced-mac | enhanced-arp | enhanced-ipv4 | super-arp } [ slot slot-id | all ] (S6735-S)
+
+assign resource-mode { enhanced-arp | enhanced-sac | enhanced-sipfpm | eca | sac } [ slot slot-id | all ] (S5731-H, S5731S-H, S5731-S, and S5731S-S)
+
+assign resource-mode { enhanced-arp | enhanced-sac | enhanced-sipfpm | sac } [ slot slot-id | all ] (S6730-S, S6730S-S, and S5732-H)
+
+assign resource-mode { enhanced-mac | enhanced-arp | enhanced-fib | enhanced-sac | sac | enhanced-sipfpm } [ slot slot-id | all ] (S6730-H and S6730S-H)
+
+assign resource-mode { enhanced-mac | enhanced-arp } global (S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1, and S5735S-L1)
+
+undo assign resource-mode global (S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1, and S5735S-L1)
+
+undo assign resource-mode [ slot slot-id | all ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+enhanced-mac
+	
+
+Sets the resource allocation mode to enhanced-mac.
+	
+
+-
+
+enhanced-ipv4
+	
+
+Sets the resource allocation mode to enhanced-ipv4.
+	
+
+-
+
+enhanced-ipv6
+	
+
+Sets the resource allocation mode to enhanced-ipv6.
+	
+
+-
+
+enhanced-arp
+	
+
+Sets the resource allocation mode to enhanced-arp.
+	
+
+-
+
+enhanced-fib
+	
+
+Sets the resource allocation mode to enhanced-fib.
+	
+
+-
+
+enhanced-sac
+	
+
+Sets the resource allocation mode to enhanced-sac.
+	
+
+-
+
+enhanced-sipfpm
+	
+
+Sets the resource allocation mode to enhanced-sipfpm.
+	
+
+-
+
+ipv4-ipv6 6:1
+	
+
+Sets the resource allocation mode to ipv4-ipv6 6:1.
+	
+
+-
+
+super-arp
+	
+
+Sets the resource allocation mode to super-arp.
+	
+
+-
+
+eca
+	
+
+Sets the resource allocation mode to eca.
+	
+
+-
+
+sac
+	
+
+Sets the resource allocation mode to sac.
+	
+
+-
+
+slot slot-id
+	
+
+    Specifies a slot ID on a standalone switch where stacking is not enabled.
+    Specifies a stack ID in a stack.
+
+	
+
+In a stack, the value is an integer and must be set according to the configuration in the stack. On a standalone switch where stacking is not enabled, the default value is 0.
+
+all
+	
+
+Configures a resource allocation mode for all devices that are present in slots.
+	
+
+-
+
+global
+	
+
+Configures the resource allocation mode of the system.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If a device's MAC address entries, FIB entries, or ARP entries are insufficient to meet service requirements, you can use this command to change the resource allocation mode so as to extend the entry space.
+Precautions
+
+    The configured resource allocation mode takes effect only after the configuration is saved and the device is restarted. To view the resource allocation modes that take effect currently and take effect after the device restarts, run the display resource-mode configuration command.
+    The requirements for different entry spaces will change when service configuration is adjusted. In this case, you can change the resource allocation mode to meet the new service requirements. Subsequently, entry spaces in different resource allocation modes will change. Therefore, before changing the resource allocation mode, consider the benefit and loss that the new mode will bring.
+    In versions earlier than V200R012C00, the resource allocation mode used by the device is recorded in only the flash memory but not the configuration file. In V200R012C00 and later versions, the resource allocation mode used by the device is recorded in both the flash memory and configuration file. If the resource allocation mode used by the device is not the default mode, and the save command is executed to save the configuration after the device is upgraded to V200R012C00 or later, the corresponding configuration is added to the configuration file.
+    In a stack, member switches synchronize MAC addresses with each other. Therefore, the MAC address specifications of the stack are not the sum of MAC address specifications of multiple member switches.
+        If member switches have the same MAC address specifications, the MAC address specifications of the stack are those of any member switch.
+        If member switches have different MAC address specifications, when uplink and downlink traffic is forwarded by the same member switch, the MAC address specifications of the stack are those of the member switch. When uplink and downlink traffic is forwarded across member switches, the MAC address specifications of the stack are those of the member switch with smaller MAC address specifications.
+
+When the resource allocation mode of the following models is changed, the specifications of MAC, FIB, ARP, ND, or multicast entries will be modified.
+Table 3-29 Number of entries supported in different resource allocation modes on the S5731-H and S5731S-H
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp
+	
+
+288K
+	
+
+512K(share)
+	
+
+64K(share)
+	
+
+128K(share)
+	
+
+64K(share)
+	
+
+16K(share)
+	
+
+16K(share)
+	
+
+10000
+
+enhanced-sac
+	
+
+288K
+	
+
+512K(share)
+	
+
+64K(share)
+	
+
+128K(share)
+	
+
+64K(share)
+	
+
+16K(share)
+	
+
+16K(share)
+	
+
+10000
+
+enhanced-sipfpm
+	
+
+288K
+	
+
+512K(share)
+	
+
+64K(share)
+	
+
+128K(share)
+	
+
+64K(share)
+	
+
+16K(share)
+	
+
+16K(share)
+	
+
+10000
+
+eca
+	
+
+288K
+	
+
+512K(share)
+	
+
+64K(share)
+	
+
+128K(share)
+	
+
+64K(share)
+	
+
+16K(share)
+	
+
+16K(share)
+	
+
+10000
+
+sac
+	
+
+288K
+	
+
+512K(share)
+	
+
+64K(share)
+	
+
+128K(share)
+	
+
+64K(share)
+	
+
+16K(share)
+	
+
+16K(share)
+	
+
+10000
+
+On the S5731-H and S5731S-H, when the resource allocation mode is set to enhanced-sipfpm, the specifications of MAC, FIB, ARP, ND, and multicast entries will not be modified, and NetStream aggregation flows cannot be configured.
+Table 3-30 Number of entries supported in different resource allocation modes on the S5731-S and S5731-S-S
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp
+	
+
+64K
+	
+
+32K
+	
+
+8K
+	
+
+16K
+	
+
+8K
+	
+
+1K
+	
+
+1K
+	
+
+10000
+
+enhanced-sac
+	
+
+64K
+	
+
+32K
+	
+
+8K
+	
+
+16K
+	
+
+8K
+	
+
+1K
+	
+
+1K
+	
+
+10000
+
+enhanced-sipfpm
+	
+
+64K
+	
+
+16K
+
+32K
+	
+
+8K
+	
+
+16K
+	
+
+8K
+	
+
+1K
+	
+
+1K
+	
+
+10000
+
+eca
+	
+
+64K
+	
+
+32K
+	
+
+8K
+	
+
+16K
+	
+
+8K
+	
+
+1K
+	
+
+1K
+	
+
+10000
+
+sac
+	
+
+64K
+	
+
+32K
+	
+
+8K
+	
+
+16K
+	
+
+8K
+	
+
+1K
+	
+
+1K
+	
+
+10000
+
+On the S5731-S and S5731-S-S, when the resource allocation mode is set to enhanced-sipfpm, the specifications of MAC, FIB, ARP, ND, and multicast entries will not be modified, and NetStream aggregation flows cannot be configured.
+Table 3-31 Number of entries supported in different resource allocation modes on the S5732-H
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp (default)
+	
+
+128K
+	
+
+192K (shared)
+	
+
+80K (shared)
+	
+
+140K (shared)
+	
+
+80K (shared)
+	
+
+64K-1 (shared)
+	
+
+4K
+	
+
+10000
+
+sac
+	
+
+96K
+	
+
+192K (shared)
+	
+
+80K (shared)
+	
+
+96K (shared)
+	
+
+80K (shared)
+	
+
+64K-1 (shared)
+	
+
+4K
+	
+
+10000
+
+enhanced-sac
+	
+
+96K
+	
+
+64K(Share)
+	
+
+24K(Share)
+	
+
+96K(Share)
+	
+
+80K(Share)
+	
+
+20(Share)
+	
+
+4K
+	
+
+10000
+
+enhanced-sipfpm
+	
+
+32K
+	
+
+128K(Share)
+	
+
+64K(Share)
+	
+
+128K(Share)
+	
+
+64K(Share)
+	
+
+4K(Share)
+	
+
+4K
+	
+
+10000
+
+On the S5732-H, IPv4 FIB, IPv6 FIB, ARP, ND, and Multicast IPv4 share hardware resources. The specifications listed in the preceding table indicate the maximum number of entries of a single type and cannot reach the maximum value simultaneously.
+Table 3-32 Number of entries supported in different resource allocation modes on the S500, S5735-S
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp(Default)
+	
+
+16512
+	
+
+8192
+	
+
+3072
+	
+
+8180(share)
+	
+
+3072(share)
+	
+
+1500(Share)
+	
+
+1500(Share)
+	
+
+N/A
+
+enhanced-mac
+	
+
+32896(Share)
+	
+
+128
+	
+
+64
+	
+
+128(share)
+	
+
+64(share)
+	
+
+128
+	
+
+64(Share with Multicast Ipv4)
+	
+
+N/A
+Table 3-33 Number of entries supported in different resource allocation modes on the S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1,and S5735S-L1
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp(Default)
+	
+
+16512
+	
+
+4096
+	
+
+1024
+	
+
+4096
+	
+
+1024
+	
+
+1500
+	
+
+1500
+	
+
+N/A
+
+enhanced-mac
+	
+
+32896(Share)
+	
+
+128
+	
+
+64
+	
+
+128(share)
+	
+
+64(share)
+	
+
+128
+	
+
+64(Share with Multicast Ipv4)
+	
+
+N/A
+Table 3-34 Number of entries supported in different resource allocation modes on the S6735-S
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB (0-64 Bits Mask)
+	
+
+IPv6 FIB (Over 64 Bits Mask)
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4&IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp (default)
+	
+
+160K
+	
+
+12K
+	
+
+6K (shared with IPv4 FIB)
+	
+
+1K
+	
+
+48K
+	
+
+44K (shared with ARP)
+	
+
+4000
+	
+
+2K
+
+enhanced-mac
+	
+
+288K
+	
+
+12K
+	
+
+6K (shared with IPv4 FIB)
+	
+
+1K
+	
+
+16K
+	
+
+8K (shared with ARP)
+	
+
+4000
+	
+
+2K
+
+enhanced-ipv4
+	
+
+32K
+	
+
+256000
+	
+
+128K (shared with IPv4 FIB)
+	
+
+0K
+	
+
+16K
+	
+
+8K (shared with ARP)
+	
+
+4000
+	
+
+2K
+
+super-arp
+	
+
+96K
+	
+
+12K
+	
+
+6K (shared with IPv4 FIB)
+	
+
+1K
+	
+
+128K
+	
+
+48K (shared with ARP)
+	
+
+4000
+	
+
+2K
+
+    On the S6735-S, ARP and ND share hardware resources. The value listed in the preceding table indicates the maximum number of entries of a single type. Numbers of the two types of entries cannot reach the maximum value simultaneously.
+    When the S6735-S works in enhanced-arp, enhanced-mac, enhanced-ipv4, or super-arp mode, IPv4 FIB and IPv6 FIB (0-64 bits mask) share hardware resources. The value listed in the preceding table indicates the maximum number of FIB entries of a single type. Numbers of the two types of FIB entries cannot reach the maximum value simultaneously.
+    On the S6735-S, if the assign resource-mode command sets the resource allocation mode to enhanced-ipv4, and the ipv4 destination-unreachable drop or ipv6 destination-unreachable drop command has been executed, the function that dropping the packets that do not match routing entries does not take effect.
+    On the S6735-S, redirection to a low-priority next hop is not supported in enhanced-ipv4 resource allocation mode.
+    On the S6735-S, MPLS and Layer 3 VXLAN Gateway are not supported in super-arp resource allocation mode.
+
+Table 3-35 Number of entries supported in different resource allocation modes on the S6730-S and S6730S-S
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp(Default)
+	
+
+64K
+	
+
+64K
+	
+
+32K
+	
+
+64K
+	
+
+32K
+	
+
+4K
+	
+
+4K
+	
+
+N/A
+
+enhanced-sac
+	
+
+64K
+	
+
+64K
+	
+
+32K
+	
+
+64K
+	
+
+32K
+	
+
+4K
+	
+
+4K
+	
+
+N/A
+
+enhanced-sipfpm
+	
+
+64K
+	
+
+64K
+	
+
+32K
+	
+
+64K
+	
+
+32K
+	
+
+4K
+	
+
+4K
+	
+
+N/A
+
+sac
+	
+
+64K
+	
+
+64K
+	
+
+32K
+	
+
+64K
+	
+
+32K
+	
+
+4K
+	
+
+4K
+	
+
+N/A
+
+On the S6730-S and S6730S-S, when the resource allocation mode is set to sac, enhanced-sipfpm, or enhanced-sac, the specifications of MAC, FIB, ARP, ND, and multicast entries will not be modified.
+Table 3-36 Number of entries supported in different resource allocation modes on the S6730-H and S6730S-H
+
+Resource Allocation Mode
+	
+
+MAC
+	
+
+IPv4 FIB
+	
+
+IPv6 FIB
+	
+
+ARP
+	
+
+ND
+	
+
+Multicast IPv4
+	
+
+Multicast IPv6
+	
+
+Number of NAC Users
+
+enhanced-arp (default)
+	
+
+128K
+	
+
+192K (shared)
+	
+
+80K (shared)
+	
+
+140K (shared)
+	
+
+80K (shared)
+	
+
+64K-1 (shared)
+	
+
+4K
+	
+
+10000
+
+enhanced-mac
+	
+
+384K
+	
+
+32K
+	
+
+8K
+	
+
+32K (shared with FIBv4)
+	
+
+8K (shared with FIBv6)
+	
+
+4K
+	
+
+4K
+	
+
+8K
+
+enhanced-fib
+	
+
+32K
+	
+
+256K (shared)
+	
+
+80K (shared)
+	
+
+128K (shared)
+	
+
+80K (shared)
+	
+
+4K
+	
+
+4K
+	
+
+8K
+
+enhanced-sac
+	
+
+96K
+	
+
+148K(Share)
+	
+
+80K(Share)
+	
+
+96K(Share)
+	
+
+80K(Share)
+	
+
+64K-1(Share)
+	
+
+4K
+	
+
+10000
+
+sac
+	
+
+96K
+	
+
+192K (shared)
+	
+
+80K (shared)
+	
+
+96K (shared)
+	
+
+80K (shared)
+	
+
+64K-1 (shared)
+	
+
+4K
+	
+
+10000
+
+enhanced-sipfpm
+	
+
+32K
+	
+
+128K(Share)
+	
+
+64K(Share)
+	
+
+128K(Share)
+	
+
+64K(Share)
+	
+
+4K
+	
+
+4K
+	
+
+8K
+
+On the S6730-H and S6730S-H, the value listed in the preceding table indicates the maximum number of entries of a single type. Numbers of the two types of entries cannot reach the maximum value simultaneously. For example, ARP and FIBv4 share hardware resources, while ND and FIBv6 share hardware resources.
+Example
+
+# Set the resource allocation mode to enhanced-ipv4.
+
+<HUAWEI> system-view
+[HUAWEI] assign resource-mode enhanced-ipv4
+Info: It is executing, please wait...                                                                                               
+Info: The resource mode in slot 0 has been set to enhanced-ipv4 successfully.                                                       
+Warning: It will take effect after rebooting this device.   
+
+backup elabel
+Function
+
+The backup elabel command backs up electronic labels of the device to the flash memory. The default file name format is elabel-slotslotid.fls, for example, elabel-slot0.fls.
+
+The backup elabel ftp command backs up electronic labels of the device to a specified FTP server.
+
+The backup elabel sftp command backs up electronic labels of the device to a specified SFTP server.
+Format
+
+backup elabel [ slot slot-id [ subcard-id ] ]
+
+backup elabel ftp ftp-server-address filename username password [ slot slot-id [ subcard-id ] ]
+
+backup elabel sftp sftp-server-address filename username password [ slot slot-id [ subcard-id ] ]
+Parameters
+Parameter 	Description 	Value
+
+ftp-server-address
+	
+
+Specifies the IP address of the FTP server that stores electronic labels.
+	
+
+The value is in dotted decimal notation.
+
+sftp-server-address
+	
+
+Specifies the IP address of the SFTP server that stores electronic labels.
+	
+
+The value is in dotted decimal notation.
+
+filename
+	
+
+Specifies the name of the file that stores electronic labels.
+	
+
+The value is a string of 5 to 28 case-sensitive characters without spaces, in the format of elabel-slotslotid.fls, for example, elabel-slot0.fls.
+
+username
+	
+
+Specifies the user name used to log in to the FTP or SFTP server.
+	
+
+The value is a string of 1 to 64 case-sensitive characters without spaces.
+
+password
+	
+
+Specifies the password used to log in to the FTP or SFTP server.
+	
+
+The value is a string of 1 to 16 case-sensitive characters without spaces.
+
+slot slot-id
+	
+
+Specifies the slot ID.
+	
+
+The value must be set according to the device configuration.
+
+subcard-id
+	
+
+Specifies the subcard ID.
+	
+
+The value must be set according to the device configuration.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When electronic labels are stored on a device, run the backup elabel command to save electronic labels to a file. This file can be saved to the flash memory, to the FTP or SFTP server using FTP or SFTP. FTP cannot ensure secure file transfer. SFTP is recommended on networks that require high security.
+Example
+
+# Save electronic labels of the device to the elabel-slot0.fls file in the flash memory.
+
+<HUAWEI> backup elabel slot 0
+Info: Output information to file: flash:/elabel-slot0.fls. Please wait for a mom
+ent...                                                                          
+                                                                                
+Info: Put file to flash successfully. 
+
+# Save electronic labels of the device to FTP server 192.168.12.91. Set the FTP user name to user and password to 123. Save electronic labels in the elabel-slot0.fls file.
+
+<HUAWEI> backup elabel ftp 192.168.12.91 elabel-slot0.fls user 123
+Warning: FTP is not a secure protocol, and it is recommended to use SFTP.       
+Info: It is executing, please wait...                                           
+                                                                                
+Info: Put file to FTP server successfully.                                      
+
+# Save electronic labels of the device to SFTP server 192.168.12.91. Set the SFTP user name to client001 and password to YsHsjx_202206. Save electronic labels in the elabel-slot0.fls file.
+
+<HUAWEI> backup elabel sftp 192.168.12.91 elabel-slot0.fls client001 YsHsjx_202206
+Info: It is executing, please wait...                                           
+                                                                                
+Info: Put file to SFTP server successfully.                                      
+
+cpu-usage monitor
+Function
+
+The cpu-usage monitor command enables the CPU usage monitoring.
+
+The undo cpu-usage monitor command disables the monitoring function.
+
+By default, the CPU usage monitoring is enabled.
+Format
+
+cpu-usage monitor [ { slot slot-id } | slave ]
+
+undo cpu-usage monitor [ { slot slot-id } | slave ]
+
+Devices that do not support the stack function or do not have the stack function enabled do not support the slave parameter.
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+slave 	
+
+Indicates information about the CPU usage of the slave device. This Parameter is invalid.
+	-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If you want to check the status and performance of the device, run the cpu-usage monitor command to enable the CPU usage monitoring, and then run the display cpu-usage command to check information about the CPU usage.
+Example
+
+# Enable the CPU usage monitoring.
+
+<HUAWEI> system-view
+
+[HUAWEI] cpu-usage monitor
+
+cpu-usage threshold
+Function
+
+Using the cpu-usage threshold command, you can set the alarm threshold and alarm recovery threshold of CPU usage.
+
+Using the undo cpu-usage threshold command, you can restore the alarm threshold and alarm recovery threshold of CPU usage.
+
+By default, the alarm threshold of CPU usage is 95% and alarm recovery threshold is 80%.
+Format
+
+cpu-usage threshold threshold-value [ restore restore-threshold-value ] [ slot slot-id ]
+
+undo cpu-usage threshold [ threshold-value [ restore [ restore-threshold-value ] ] ] [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+threshold threshold-value 	
+
+Specifies the alarm threshold of CPU usage.
+	
+
+The value is an integer that ranges from 2 to 100. The default value is 95.
+restore restore-threshold-value 	
+
+Specifies the alarm recovery threshold of CPU usage.
+	
+
+The value is an integer that ranges from 1 to 99. The alarm recovery threshold must be smaller than the alarm threshold.
+slot slot-id 	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When the CPU usage exceeds the alarm threshold, a log is recorded. When the CPU usage reduces by equal to or smaller than 5% and exceeds the threshold again, no log is recorded. A log is recorded only when the CPU usage is reduced by greater than 5% and reaches the threshold again. Through log information, you can know the CPU usage more conveniently.
+
+If slot slot-id is not configured, the alarm threshold and alarm recovery threshold of CPU usage are set. In addition, the system automatically synchronizes the threshold on the master switch with those on the member switches.
+Example
+
+# Set the alarm threshold of CPU usage to 85% and alarm recovery threshold to 70% of the switch.
+
+<HUAWEI> system-view
+[HUAWEI] cpu-usage threshold 85 restore 70
+
+clear battery-group esmu communication-failure
+Function
+
+The clear battery-group esmu communication-failure command clears alarms indicating that a battery module fails to communicate with its connected ESMUs.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+clear battery-group esmu communication-failure
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+An Energy Storage System Management Unit (ESMU) is a unit for monitoring lithium batteries. You can run this command to clear alarms indicating that a battery module fails to communicate with its connected ESMUs.
+Example
+
+# Clear alarms indicating that a battery module fails to communicate with its connected ESMUs.
+
+<HUAWEI> system-view
+[HUAWEI] clear battery-group esmu communication-failure
+
+clear battery-group module-missing alarm
+Function
+
+The clear battery-group module-missing alarm command clears alarms indicating that a lithium battery group module is lost.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+clear battery-group module-missing alarm
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to clear alarms indicating that a lithium battery group module is lost.
+Example
+
+# Clear alarms indicating that a lithium battery group module is lost.
+
+<HUAWEI> system-view
+[HUAWEI] clear battery-group module-missing alarm
+
+display device ac-output status
+Function
+
+The display device ac-output status command displays AC output status of the switch.
+
+Only the S5735-S8P2X-IA200H1, S5735-S4T2X-IA150G1, and S5735-S8P2X-IA200G1 support this command.
+Format
+
+display device ac-output status
+Parameters
+None.
+Views
+All views
+Default Level
+1: Monitoring level
+Usage Guidelines
+
+When PDs require AC power supply, check whether the AC output function has been enabled on the switch based on the device AC output status displayed using the display device ac-output status command.
+Example
+# Display AC output status of the Switch.
+
+<HUAWEI> display device ac-output status
+-----------------------------------------------------                                                                               
+OutputLine       ConfiguredState       PowerStatus                                                                                  
+-----------------------------------------------------                                                                               
+ 24V              Enable                On                                                                                          
+----------------------------------------------------- 
+
+Table 3-37 Description of the display device ac-output status command output
+
+Item
+	
+
+Description
+
+OutputLine
+	
+
+AC output line.
+
+24V: 24 V AC output line.
+
+ConfiguredState
+	
+AC output configuration:
+
+    Enable: AC output is enabled.
+    Disable: AC output is disabled.
+
+To enable AC output, run the set device ac-output 24v enable command.
+
+PowerStatus
+	
+
+AC output power status:
+
+    On: Power is being supplied.
+    Off: No power is supplied.
+
+display device fault-light
+Function
+
+The display device fault-light command displays status of fault indicator on a device.
+Format
+
+display device fault-light
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After using the display device fault-light command to check the fault indicator status, you can determine whether to set the fault indicator on a device to indicate that the device is faulty using the set device fault-light command.
+Example
+
+# Display the fault indicator status.
+
+<HUAWEI> display device fault-light
+---------------------------------------------------------------                                                                     
+Slot      Status      Keeptime(s)                                                                                                   
+---------------------------------------------------------------                                                                     
+0         UnderRepair    45                                                                                                         
+---------------------------------------------------------------     
+
+Table 3-38 Description of the display device fault-light command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Status
+	
+
+Status of the fault indicator.
+
+    Normal: Indicate that the device is running normally.
+    UnderRepair: Indicate that the device is faulty.
+
+Keeptime(s)
+	
+
+Time during which the fault indicator indicates that the device is faulty. When the Status displays Normal, the value displays "--".
+display fan speed-adjust threshold minus
+Function
+
+The display fan speed-adjust threshold minus command displays the temperature thresholds for fan speed adjustment.
+Format
+
+display fan speed-adjust threshold minus [ slot slot-id ]
+
+The following switches do not support this command:
+
+    S2730S-S series
+    S5720-LI series: S5720-16X-PWH-LI-AC
+    S5735-L, S5735-L1, S5735S-L1 series: S5735-L12T4S-A, S5735-L24T4S-A, S5735-L24T4S-A1, S5735S-L24T4S-A1, S5735-L8T4S-QA1, S5735-L24T4X-QA1, and S5735-L24T4S-QA1
+    S5720I-SI series: S5720I-12X-SI-AC and S5720I-12X-PWH-SI-DC
+    S5735-S-I series
+    S5731-H series, S5731S-H series, S5731-S series, S5731S-S series, S5732-H series
+    S6730-H series, S6730S-H series, S6730-S series, S6730S-S series
+    S6735-S
+
+If one of the preceding switches can set up a stack with other switch models that support this command, this switch also supports this command so that this command can be executed and delivered in the stack.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If this parameter is not specified, the threshold settings in all slots are displayed.
+	
+
+The value depends on the device configuration.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+This command displays the temperature thresholds for fan speed adjustment, including the default values and current values.
+
+In some situations, the higher the device temperature, the slower the fan speed may be. This is because the device temperature range when the fan speed increases overlaps with that when the fan speed decreases.
+
+For example, if the threshold for fan speed adjustment is as follows:
+
+    When the fan speed is 55%, the device temperature may be lower than or equal to 60°C.
+    When the fan speed is 60%, the device temperature may be in the range from 55°C to 60°C.
+    When the fan speed is 65%, the device temperature may be in the range from 56°C to 58°C.
+    When the fan speed is 70%, the device temperature may be in the range from 54°C to 56°C.
+    When the fan speed is 80%, the device temperature may be in the range from 52°C to 56°C.
+    When the fan speed is 90%, the device temperature may be in the range from 53°C to 56°C.
+    When the fan speed is 100%, the device temperature may be higher than 54°C.
+
+The fan speed remains at 55% before the device temperature reaches 60°C from the startup temperature. If the temperature exceeds 60°C, the fan speed increases to 60%.
+
+    If the temperature decreases to a value between 55°C and 60°C, the fan speed remains at 60%. If the temperature decreases to lower than 55°C, the fan speed reduces to 55% accordingly.
+    If the temperature is still higher than 60°C, the fan speed increases to 65%.
+
+The same rule applies to other temperatures.
+Example
+
+# Display the temperature thresholds for fan speed adjustment.
+
+<HUAWEI> display fan speed-adjust threshold minus 
+
+-----------------------------------------------------------                     
+ Slot     Default Range  Current Range  Speed Rate Adjusted                     
+-----------------------------------------------------------                     
+  0          NA - 56         NA - 56        35%                                 
+             53 - 58         53 - 58        40%                                 
+             55 - 58         55 - 58        45%                                 
+             55 - 58         55 - 58        50%                                 
+             52 - 57         52 - 57        60%                                 
+             54 - 56         54 - 56        70%                                 
+             54 - 57         54 - 57        80%                                 
+             55 - 58         55 - 58        90%                                 
+             56 - NA         56 - NA        100% 
+
+Table 3-39 Description of the display fan speed-adjust threshold minus command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Default Range
+	
+
+Default temperature thresholds, which change based on the PoE power load.
+
+Current Range
+	
+
+Current temperature thresholds.
+
+To set temperature thresholds, run the set fan speed-adjust threshold minus command. The new thresholds are the fixed temperature thresholds minus the configured value. After this command is executed, both the threshold for increasing the fan speed and the threshold for lowering the fan speed are reduced.
+
+Speed Rate Adjusted
+	
+
+Fan speed adjustment range.
+display flash threshold
+Function
+
+The display flash threshold command displays the alarm threshold for flash memory usage.
+Format
+
+display flash threshold
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+To view the configured alarm threshold for flash memory usage, run the display flash threshold command.
+Example
+
+# Display the alarm threshold for flash memory usage.
+
+<HUAWEI> display flash threshold 
+Info: The current flash usage threshold is 80%.
+
+display otdr capture history-record interface
+Function
+
+The display otdr capture history-record interface command displays historical Optical Time Domain Reflectometer (OTDR) test results on an interface.
+Format
+
+display otdr capture history-record interface interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After running the otdr capture interface command to perform an OTDR test on a specified interface, you can run the display otdr capture history-record interface command to view historical OTDR test results on the interface. Each test result displays reflection distances of 16 optical fibres, and the command output can display the latest 10 OTDR test results at most. If the reflection distance of an optical fiber is 0, the optical module connected to the optical fiber does not support OTDR testing.
+
+After the device is restored to factory settings or the reset otdr capture history-record command is executed, historical OTDR test results are cleared and cannot be queried by running the display otdr capture history-record interface command.
+Example
+
+# Display historical OTDR test results on GE0/0/1.
+
+<HUAWEI> display otdr capture history-record interface gigabitethernet 0/0/1
+-------------------------------------------------------------------------------------------------                                   
+Index     Reflections Distance(m)                                             Time                                                  
+-------------------------------------------------------------------------------------------------                                   
+ 0         2027       0       0       0       0       0       0       0       2019-12-31 14:34:03                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 1         2021       0       0       0       0       0       0       0       2019-12-26 20:14:05                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 2         2019       0       0       0       0       0       0       0       2019-12-26 20:14:04                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 3         2021       0       0       0       0       0       0       0       2019-12-26 20:14:03                                                     
+              0       0       0       0       0       0       0       0                                                             
+ 4         2021       0       0       0       0       0       0       0       2019-12-25 20:14:03                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 5         2021       0       0       0       0       0       0       0       2019-12-24 17:15:08                                                     
+              0       0       0       0       0       0       0       0                                                             
+ 6         2021       0       0       0       0       0       0       0       2019-12-24 15:26:08                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 7         2021       0       0       0       0       0       0       0       2019-12-23 11:22:38                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 8         2021       0       0       0       0       0       0       0       2019-12-23 10:46:55                                                      
+              0       0       0       0       0       0       0       0                                                             
+ 9         2021       0       0       0       0       0       0       0       2019-12-23 09:33:48                                                      
+              0       0       0       0       0       0       0       0   
+
+Table 3-40 Description of the display otdr capture history-record interface command output
+
+Item
+	
+
+Description
+
+Index
+	
+
+Sequence number of an OTDR test result.
+
+Reflections Distance(m)
+	
+
+Reflection distance, in meters.
+
+Time
+	
+
+Time when an OTDR test is performed.
+display otdr certificate interface
+Function
+
+The display otdr certificate interface command displays the OTDR test result which is configured as the OTDR birth certificate on an interface.
+Format
+
+display otdr certificate interface interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After you run the otdr certificate interface command to configure an OTDR test result as the OTDR birth certificate for an interface, you can run the display otdr certificate interface command to view the OTDR birth certificate.
+
+After the device is restored to factory settings or the reset otdr certificate command is executed, OTDR birth certificates of interfaces are cleared and cannot be queried using the display otdr certificate interface command.
+Example
+
+# Display the OTDR birth certificate on GE0/0/1.
+
+<HUAWEI> display otdr certificate interface gigabitethernet 0/0/1
+-------------------------------------------------------------------------------------------------                                   
+Reflections       Distance(m)                                                   Time                                                      
+-------------------------------------------------------------------------------------------------                                   
+       2021       0       0       0       0       0       0       0             2019-12-31 14:34:03                                                      
+          0       0       0       0       0       0       0       0                               
+   
+
+Table 3-41 Description of the display otdr certificate interface command output
+
+Item
+	
+
+Description
+
+Reflections Distance(m)
+	
+
+Reflection distance, in meters.
+
+Time
+	
+
+Time when an OTDR test is performed.
+display resource-mode configuration
+Function
+
+The display resource-mode configuration command displays the resource allocation mode configuration on the device.
+
+Only the S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S500, S5735-S, S300, S5735-L, S5735-S-I, S5735-L-I, S5735-L1,S5735S-L1, S6730-S, S6730S-S, S6730-H, S6730S-H, S6735-S support this command.
+Format
+
+display resource-mode configuration
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before configuring or modifying the resource allocation mode, run the display resource-mode configuration command to check the resource allocation mode configuration.
+Example
+
+# Display the resource allocation mode.
+
+<HUAWEI> display resource-mode configuration
+Slot       Current Mode    Next Mode
+- - - - - - - - - - - - - - - - - - - - - - - 
+0          enhanced-mac    enhanced-mac 
+
+Table 3-42 Description of the display resource-mode configuration command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Current Mode
+	
+
+Current resource allocation mode.
+
+Next Mode
+	
+
+Resource allocation mode configured using the assign resource-mode command.
+NOTE:
+
+If the Next Mode is different from the Current Mode, the device is not restarted after the resource allocation mode is modified.
+display root-key configuration
+Function
+The display root-key configuration command displays information about the currently used root key.
+Format
+display root-key configuration
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+You can use the display root-key configuration command to check information about the currently used root key.
+Example
+
+# Display information about the currently used root key.
+
+<HUAWEI> display root-key configuration
+Master:
+  Current root-key:  User-configured
+  Next root-key:     System default
+
+Table 3-43 Description of the display root-key configuration command output
+
+Item
+	
+
+Specification
+
+Current root-key
+	
+
+Information about the currently used root key:
+
+    User-configured: user-configured root key
+    System default: system default root key
+
+Next root-key
+	
+
+Information about the root key used after the device restarts:
+
+    User-configured: user-configured root key
+    System default: system default root key
+
+To set the root key, run the set root-key command.
+display service-mode configuration
+Function
+
+The display service-mode configuration command displays the working mode of the device.
+
+This command is supported only by S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S.
+Format
+
+display service-mode configuration
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+To view the working mode of the device, run the display service-mode configuration command.
+Example
+# Display the working mode of the device.
+
+<HUAWEI> display service-mode configuration
+Service mode status: Normal
+
+# Display the working mode of the S6730-H.
+
+<HUAWEI> display service-mode configuration
+Service mode status: BFD-enhanced, OAM-normal, PTP-normal
+
+Table 3-44 Description of the display service-mode configuration command output
+
+Item
+	
+
+Description
+
+Service mode status
+	
+Working mode of the device:
+
+    Normal
+    Enhanced
+    BFD-normal
+    BFD-enhanced
+    OAM-normal
+    OAM-enhanced
+    PTP-normal
+    PTP-enhanced
+
+To set the working mode, run the set service-mode command.
+display switchover state
+Function
+
+The display switchover state command displays information about active/standby switchover, which helps check whether the stack meets switchover requirements.
+Format
+
+display switchover state
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+In a stack containing multiple switches, you can run the display switchover state command to view the status of master and standby switches to determine whether to perform an active/standby switchover. When performing active/standby switchover, ensure that the standby switch is in real-time backup state.
+Example
+
+# Display information about active/standby switchover, which helps check whether the stack meets switchover requirements. The requirements for an active/standby switchover are met only when the value of HA FSM State(master) is realtime or routine backup and the value of HA FSM State(slave) is receiving realtime or routine data. This indicates that data is consistent on the master and standby switches
+
+<HUAWEI> display switchover state
+Slot 1 HA FSM State(master): waiting for the slave to be inserted.
+
+Table 3-45 Description of the display switchover state command output
+
+Item
+	
+
+Description
+
+HA FSM State(master)
+	
+Master switch status:
+
+    The slave has been inserted: The slave switch has been inserted.
+
+    waiting for the slave to be inserted: The master switch is waiting for the slave switch to be inserted.
+
+    waiting the batch backup request from the slave: The master switch is waiting for the batch backup request from the slave switch.
+
+    batch global data: Backup global data in batch
+
+    batch backup: Backup data in batch
+
+    batch check: Check the backup data in batch
+
+    realtime or routine backup: Backup data periodically or promptly
+
+    data smooth: Synchronize data
+
+HA FSM State(slave)
+	
+Standby switch status:
+
+    ready: The standby switch is started and ready for receiving the batch backup data.
+
+    receiving batch data: The standby switch is receiving the batch backup data.
+
+    receiving realtime or routine data: The standby switch is ready for receiving data in real time.
+
+display system resource-template
+Function
+
+The display system resource-template command displays system resource template information.
+
+Only the S1720GW-E, S1720GWR-E, S5720I-SI, S5720-LI, S5720S-LI, S6735-S, S5735S-H, S5736-S, and S6720S-S support this command.
+Format
+
+display system resource-template [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+    Specifies a slot ID on a standalone device.
+    Specifies the stack ID in a stack.
+
+	
+
+The value is an integer. In a stack, the value must be set according to the device configuration. On a standalone device, the default value is 0.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the display system resource-template command to view system resource template information, including the resource type, currently running resource template information and resource template for the next startup.
+Example
+
+# Display information about the system resource template. For example, the S5720-LI.
+
+<HUAWEI> display system resource-template
+Resource Template Information:                               
+--------------------------------------------------------------
+ Slot    Type        RunningTemplate     NextTemplate         
+--------------------------------------------------------------
+ 0       acl-mode    dual-ipv4-ipv6      dual-ipv4-ipv6       
+-------------------------------------------------------------- 
+
+Table 3-46 Description of the display system resource-template command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Slot ID.
+
+Type
+	
+
+Resource type. Currently, only one system resource template (acl-mode) is supported.
+
+RunningTemplate
+	
+
+Currently running resource template information.
+
+To configure a resource template, run the assign resource-template acl-mode command.
+
+NextTemplate
+	
+
+Resource template for the next startup.
+display wavelength-map
+Function
+
+The display wavelength-map command displays the mapping between the wavelength channel, wavelength, and frequency.
+Format
+
+display wavelength-map
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before using the wavelength-channel command to add an optical module to a specific wavelength channel, run the display wavelength-map command to view the mapping between the wavelength channel, wavelength, and frequency.
+Example
+
+# Display the mapping between the wavelength channel, wavelength, and frequency.
+
+<HUAWEI> system-view
+[HUAWEI] display wavelength-map
+--------------------------------------------                                    
+Channel     Frequency(THz)   Wavelength(nm)                                     
+--------------------------------------------                                    
+1           192.10           1560.606                                           
+2           192.15           1560.200                                           
+3           192.20           1559.794                                           
+4           192.25           1559.389                                           
+5           192.30           1558.983                                           
+6           192.35           1558.578                                           
+7           192.40           1558.173                                           
+8           192.45           1557.768                                           
+9           192.50           1557.363                                           
+10          192.55           1556.959                                           
+11          192.60           1556.555                                           
+12          192.65           1556.151                                           
+13          192.70           1555.747                                           
+14          192.75           1555.344                                           
+15          192.80           1554.940                                           
+16          192.85           1554.537                                           
+17          192.90           1554.134                                           
+18          192.95           1553.731                                           
+19          193.00           1553.329                                           
+20          193.05           1552.927                                           
+21          193.10           1552.524                                           
+22          193.15           1552.122                                           
+23          193.20           1551.721                                           
+24          193.25           1551.319                                           
+25          193.30           1550.918                                           
+26          193.35           1550.517                                           
+27          193.40           1550.116                                           
+28          193.45           1549.715                                           
+29          193.50           1549.315                                           
+30          193.55           1548.915                                           
+31          193.60           1548.515                                           
+32          193.65           1548.115                                           
+33          193.70           1547.715                                           
+34          193.75           1547.316                                           
+35          193.80           1546.917                                           
+36          193.85           1546.518                                           
+37          193.90           1546.119                                           
+38          193.95           1545.720                                           
+39          194.00           1545.322                                           
+40          194.05           1544.924                                           
+41          194.10           1544.526                                           
+42          194.15           1544.128                                           
+43          194.20           1543.730                                           
+44          194.25           1543.333                                           
+45          194.30           1542.936                                           
+46          194.35           1542.539                                           
+47          194.40           1542.142                                           
+48          194.45           1541.746                                           
+49          194.50           1541.349                                           
+50          194.55           1540.953                                           
+51          194.60           1540.557                                           
+52          194.65           1540.162                                           
+53          194.70           1539.766                                           
+54          194.75           1539.371                                           
+55          194.80           1538.976                                           
+56          194.85           1538.581                                           
+57          194.90           1538.186                                           
+58          194.95           1537.792                                           
+59          195.00           1537.397                                           
+60          195.05           1537.003                                           
+61          195.10           1536.609                                           
+62          195.15           1536.216                                           
+63          195.20           1535.822                                           
+64          195.25           1535.429                                           
+65          195.30           1535.036                                           
+66          195.35           1534.643                                           
+67          195.40           1534.250                                           
+68          195.45           1533.858                                           
+69          195.50           1533.465                                           
+70          195.55           1533.073                                           
+71          195.60           1532.681                                           
+72          195.65           1532.290                                           
+73          195.70           1531.898                                           
+74          195.75           1531.507                                           
+75          195.80           1531.116                                           
+76          195.85           1530.725                                           
+77          195.90           1530.334                                           
+78          195.95           1529.944                                           
+79          196.00           1529.553                                           
+80          196.05           1529.163                                           
+--------------------------------------------
+
+Table 3-47 Description of the display wavelength-map command output
+
+Item
+	
+
+Description
+
+Channel
+	
+
+Channel ID.
+
+Frequency(THz)
+	
+
+Frequency, in THz.
+
+Wavelength(nm)
+	
+
+Wavelength, in nm.
+mib-data optical-module sample-interval
+Function
+
+The mib-data optical-module sample-interval command sets the sampling interval for optical module information in the MIB performance module.
+
+The undo mib-data optical-module sample-interval command restores the default setting.
+
+By default, the interval is 30 seconds.
+Format
+
+mib-data optical-module sample-interval interval-value
+
+undo mib-data optical-module sample-interval
+Parameters
+Parameter 	Description 	Value
+
+interval-value
+	
+
+Specifies a sampling interval for optical module information in the MIB performance module.
+	
+
+The value is an integer in the range from 10 to 300, in seconds.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+It takes a long time for the NMS to query real-time optical module information on a device using hwOpticalModuleInfoTable in the MIB, especially when the device has a large number of optical modules installed. To solve this problem, you can configure devices to periodically sample optical module information. Then, the NMS can directly obtain sampling information about optical modules, which improves efficiency.
+
+Precautions
+
+    When you run the mib-data optical-module sample-interval command multiple times, only the latest configuration takes effect.
+
+    The shorter the sampling interval, the higher the CPU usage.
+
+Example
+
+# Set the sampling interval of optical module information in the MIB performance module to 35 seconds.
+
+<HUAWEI> system-view
+[HUAWEI] mib-data optical-module sample-interval 35
+
+otdr capture interface
+Function
+
+The otdr capture interface command triggers an optical time domain reflectometer (OTDR) test on an interface.
+Format
+
+otdr capture interface interface-type interface-number
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface.
+	
+
+-
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+To perform an OTDR test to obtain reflection distances of optical fibers, run the otdr capture interface command. The reflection distances are used for fiber fault diagnosis. To query historical OTDR test results, run the display otdr capture history-record interface command.
+
+To ensure that historical OTDR test results are not lost after the device is restarted, historical OTDR test results are recorded in the flash:/otdr_capture.bin file. This file is set as a system file and cannot be deleted. To clear historical OTDR test results, you need to run the reset otdr capture history-record command. After the reset otdr capture history-record command is executed and the device is restarted, historical OTDR test results are cleared and cannot be queried by running the display otdr capture history-record interface command.
+
+Precautions
+
+    The command can be run multiple times.
+    This command can be configured only when a specific optical module is installed on an interface. For details about the optical module, contact Huawei technical support.
+
+Example
+
+# Trigger an OTDR test on GE0/0/1.
+
+<HUAWEI> otdr capture interface gigabitethernet 0/0/1
+
+otdr certificate interface
+Function
+
+The otdr certificate interface command configures an OTDR test result as the OTDR birth certificate on an interface.
+Format
+
+otdr certificate interface interface-type interface-number capture-number
+Parameters
+Parameter 	Description 	Value
+
+interface-type interface-number
+	
+
+Specifies the type and number of an interface.
+	
+
+-
+
+capture-number
+	
+
+Specifies the sequence number of an OTDR test result.
+	
+
+The value is an integer ranging from 0 to 9.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Usage Scenario
+
+To configure an OTDR test result as the OTDR birth certificate, run the otdr certificate interface command. The OTDR birth certificate is used as a baseline for fault detection. You can run the display otdr certificate interface command to view the OTDR birth certificate. By comparing the fiber reflection distances in OTDR test results (in the display otdr capture history-record interface command output) and the OTDR birth certificate (in the display otdr certificate interface command output), you can determine whether a fault occurs on an optical fiber.
+
+To ensure that birth certificates of interfaces are not lost after the device restarts, the birth certificates are recorded in the flash:/otdr_certificate.bin file. This file is set as a system file and cannot be deleted. To clear OTDR birth certificates of interfaces, you need to run the reset otdr certificate command. After the reset otdr certificate command is executed and the device is restarted, OTDR birth certificates of interfaces are cleared and cannot be queried by running the display otdr certificate interface command.
+
+Precautions
+
+    This command can be run multiple times, but the latest configuration takes effect.
+    This command can be configured only when a specific optical module is installed on an interface. For details about the optical module, contact Huawei technical support.
+
+Example
+
+# Configure the second OTDR test result as the OTDR birth certificate on GE0/0/1.
+
+<HUAWEI> otdr certificate interface gigabitethernet 0/0/1 2
+port_no=GigabitEthernet0/0/1                                                                                                      
+capture_no=2     
+
+reset battery esmu
+Function
+
+The reset battery command resets ESMUs that monitor a specific battery.
+
+Only the S5735-S8P2X-IA200H1 supports this command. This command takes effect only when the backup lithium battery is unavailable.
+Format
+
+reset battery battery-id esmu
+Parameters
+Parameter 	Description 	Value
+
+battery-id
+	
+
+Specifies the battery number.
+	
+
+The value is an integer and must be set according to the device configuration.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+An ESMU is a unit for monitoring a lithium battery. You can run this command to reset ESMUs.
+Example
+
+# Reset the ESMUs that monitor the battery whose number is 1.
+
+<HUAWEI> system-view
+[HUAWEI] reset battery 1 esmu
+
+reset cpu-usage record
+Function
+
+The reset cpu-usage record command clears CPU usage records.
+Format
+
+reset cpu-usage record [ slot slot-id | slave | all ]
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Specifies the slot ID.
+	
+
+Set the value according to the device configuration.
+slave 	
+
+Clears CPU usage records on the slave switch.
+	
+
+-
+all 	
+
+Clears CPU usage records on all switches
+	
+
+-
+Views
+
+System view, User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If the slot slot-id or slave parameter is not specified, CPU usage records of the master switch is cleared.
+Example
+
+# Clear CPU usage records of the master switch.
+
+<HUAWEI> system-view
+[HUAWEI] reset cpu-usage record
+Waiting for clearing . . . Done
+
+reset integrated-power output
+Function
+
+The reset integrated-power output command resets the outputs of a PC510 power supply.
+Format
+
+reset integrated-power output
+
+This command is supported only by the S5735-L8P4X-IA1, S5735-L8T4X-IA1.
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+After the switch is connected to a PC510 power supply through a network cable, the PC510 power supply can provide 12 V DC and 24 V AC outputs. When the power outputs are abnormal or the downstream devices of the switch need to be restarted, you can run this command on the switch to reset the PC510 power supply outputs.
+
+Resetting the outputs of the PC510 power supply does not reset the output to the switch. Therefore, the switch does not restart.
+
+Precautions
+
+Before running this command, run the set power protocol modbus command on the switch to set up a connection with the PC510 power supply. If the connection fails to be set up, this command does not take effect.
+Example
+
+# Reset the outputs of the PC510 power supply.
+
+<HUAWEI> reset integrated-power output
+
+reset power-detect status
+Function
+
+The reset power-detect status command restores the power supply to its factory defaults.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+reset power-detect status
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to restore the power supply to its factory defaults.
+Example
+
+# Restore the power supply to its factory defaults.
+
+<HUAWEI> system-view
+[HUAWEI] reset power-detect status
+
+reset otdr capture history-record
+Function
+
+The reset otdr capture history-record command clears historical OTDR test results on an interface.
+Format
+
+reset otdr capture history-record
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the otdr capture interface command to obtain the fiber reflection distance for fiber fault diagnosis. You can run the display otdr capture history-record interface command to view historical OTDR test results.
+
+To ensure that historical OTDR test results are not lost after the device is restarted, historical OTDR test results are recorded in the flash:/otdr_capture.bin file. This file is set as a system file and cannot be deleted. To clear historical OTDR test results, you need to run the reset otdr capture history-record command. After the reset otdr capture history-record command is executed and the device is restarted, historical OTDR test results are cleared and cannot be queried by running the display otdr capture history-record interface command.
+Example
+
+# Clear historical OTDR test results on interfaces.
+
+<HUAWEI> reset otdr capture history-record
+
+reset otdr certificate
+Function
+
+The reset otdr certificate command clears the OTDR test results configured as birth certificates on interfaces.
+Format
+
+reset otdr certificate
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can run the otdr certificate interface command to configure a historical OTDR test result as the OTDR birth certificate for an interface and run the display otdr certificate interface command to view the OTDR birth certificate of an interface.
+
+To ensure that birth certificates of interfaces are not lost after the device restarts, the birth certificates are recorded in the flash:/otdr_certificate.bin file. This file is set as a system file and cannot be deleted. To clear OTDR birth certificates of interfaces, you need to run the reset otdr certificate command. After the reset otdr certificate command is executed and the device is restarted, OTDR birth certificates of interfaces are cleared and cannot be queried by running the display otdr certificate interface command.
+
+Example
+
+# Clear the OTDR test results used as birth certificates on interfaces.
+
+<HUAWEI> reset otdr certificate
+
+reset slot
+Function
+
+The reset slot command resets a device.
+Format
+
+reset slot slot-id [ cold ]
+
+Only the following devices support cold reset. Other devices that support the cold parameter do not support cold reset.
+
+    S5735-S8P2X-IA200H1, S5735-L24P4S-A, S5735-L24P4S-A1, S5735S-L24P4S-A1, S5735-L24P4X-A, S5735-L24P4X-A1, S5735S-L24P4X-A1, S5735-S4T2X-IA150G1, S5735-S8P2X-IA200G1
+
+    Devices that use a 300 W AC power module (PAC300S12-CL)
+    Devices that use a 600 W AC power module (PAC600S12-CB, PAC600S12-EB, PAC600S12-DB, and PAC600S56-CB)
+    Devices that use a 600 W AC PoE power module (PAC600S56-EB)
+    Devices that use a 1000 W DC power module (PDC1000S12-DB)
+    Devices that use a 1000 W DC Poe power module (PDC1000S56-CB and PDC1000S56-EB)
+    Devices that use a 1000 W AC PoE power module (PAC1000S56-CB, PAC1000S56-EB, and PAC1000S56-DB)
+
+The cold parameter is supported only in the user view.
+Parameters
+Parameter 	Description 	Value
+
+slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value must be set according to the device configuration.
+
+cold
+	
+
+Indicates cold reset.
+	
+
+-
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In a stack, you can restart stack members. Restarting a stack member will interrupt services on this device, but the configuration of this device still exists.
+
+Precautions
+
+    Before commands have been executed, if a master/standby switchover occurs because the reset slot command is used to reset the master switch, you need to execute the commands that have not been executed on the new master switch again after the standby switch becomes the new master switch.
+    For the S5735-S8P2X-IA200H1, after this command is run, the switch will not restart, but its output power supply will be reset.
+    Due to the component upgrade of some device models, some devices cannot be downgraded. If the message "Error: The hardware version VER.B of slot %u does not support the configured system software package." (%u indicates the actual slot number) is displayed after the command is run, you can solve this problem by installing the patch that matches the version. For details about the first supported version of the device and matching patch version, see the device overview in the "Hardware Description".
+
+Example
+
+# Restart the switch with the slot ID 0.
+
+<HUAWEI> reset slot 0
+Warning: Confirm to reset slot 0? [Y/N]:y  
+Info: The board 0 is reset successfully.
+
+# Perform a cold reset on the switch with the slot ID 0.
+
+<HUAWEI> reset slot 0 cold
+Warning: The device in slot 0 will be cold reset. Ensure that the configuration has been saved. Otherwise, the configuration will be lost after cold restart. Continue? [Y/N]: y        
+Info: Succeeded in cold resetting the device in slot 0.
+
+set battery-group
+Function
+
+The set battery-group command configures the float charging voltage or equalized charging voltage for the lithium battery group.
+
+The undo set battery-group command restores the default float charging voltage or equalized charging voltage of the lithium battery group.
+
+By default, the float charging voltage of the lithium battery group is 54.50 V, and the equalized charging voltage is 56.40 V.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+set battery-group { equalized-charge-voltage | float-charge-voltage } value
+
+undo set battery-group { equalized-charge-voltage | float-charge-voltage }
+Parameters
+Parameter 	Description 	Value
+
+equalized-charge-voltage
+	
+
+Configures the float charging voltage.
+	
+
+-
+
+float-charge-voltage
+	
+
+Configures the equalized charging voltage.
+	
+
+-
+
+value
+	
+
+Indicates the voltage value.
+	
+
+The value range is as follows:
+
+    equalized-charge-voltage: The value ranges from 43.20 to 56.40, in volts (V).
+    float-charge-voltage: The value ranges from 43.20 to 56.40, in volts (V).
+
+NOTE:
+
+The equalized charging voltage must be greater than or equal to the float charging voltage.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to configure the float charging voltage or equalized charging voltage for the lithium battery group.
+Example
+# Configure the float charging voltage of the lithium battery group to 55.11 V.
+
+<HUAWEI> system-view
+[HUAWEI] set battery-group equalized-charge-voltage 55.11
+
+set battery-group charge current-limit
+Function
+
+The set battery-group charge current-limit command configures the charge current limiting coefficient for the lithium battery group.
+
+The undo set battery-group charge current-limit command restores the default charge current limiting coefficient for the lithium battery group.
+
+By default, the charge current limiting coefficient for the lithium battery group is 0.30.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+set battery-group charge current-limit value
+
+undo set battery-group charge current-limit
+Parameters
+Parameter 	Description 	Value
+
+value
+	
+
+Specifies the charge current limiting coefficient for the lithium battery group.
+	
+
+The value ranges from 0.05 to 1.00, in C10.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to configure the charge current limiting coefficient for the lithium battery group.
+Example
+# Set the charge current limiting coefficient of the lithium battery group to 0.61.
+
+<HUAWEI> system-view
+[HUAWEI] set battery-group charge current-limit 0.61
+
+set battery-group install date
+Function
+
+The set battery-group install date command sets the installation date of the lithium battery group.
+
+The undo set battery-group date command restores the default installation date of the lithium battery group.
+
+By default, the installation date of the lithium battery group is 2014-01-01.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+set battery-group install date date-value
+
+undo set battery-group install date
+Parameters
+Parameter 	Description 	Value
+
+date-value
+	
+
+Specifies the installation date of the lithium battery group.
+	
+
+The value is in YYYY-MM-DD format. It ranges from 2014-01-01 to 2037-12-31.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to record the installation date of the lithium battery group.
+Example
+# Set the installation date of the lithium battery group to November 11, 2021.
+
+<HUAWEI> system-view
+[HUAWEI] set battery-group install date 2021-11-11
+
+set device ac-output 24v enable
+Function
+
+The set device ac-output 24v enable command enables the 24 V AC output function on a switch.
+
+The undo set device ac-output 24v enable command disables the 24 V AC output function on a switch.
+
+By default, the 24 V AC output function is enabled on switches.
+
+Only the S5735-S8P2X-IA200H1, S5735-S4T2X-IA150G1, and S5735-S8P2X-IA200G1 support this command.
+Format
+
+set device ac-output 24v enable
+
+undo set device ac-output 24v enable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+If PDs require AC power supply, enable the AC output function on the switch.
+
+Precautions
+
+    For the S5735-S4T2X-IA150G1 and S5735-S8P2X-IA200G1, when the sum of the PoE power, DC output power, and AC output power is greater than 160000 mW, the switch restarts.
+    For the S5735-S8P2X-IA200H1, when the sum of the PoE power, DC output power, and AC output power is greater than 200000 mW, the switch restarts.
+
+Example
+
+# Enable the 24 V AC output function on a switch.
+
+<HUAWEI> system-view
+[HUAWEI] set device ac-output 24v enable 
+Warning: After this command is excuted, the 24V AC output will be enabled. Continue? [Y/N]:y
+Warning: After the 24V AC output is enabled, the switch will reboot if the total power of PoE power, DC output power and AC output power exceed 150000mW. Continue? [Y/N]:y   
+
+set ddr isolation disable
+Function
+
+The set ddr isolation disable command disables the online memory isolation function of the device.
+
+The undo set ddr isolation disable command enables the online memory isolation function of the device.
+
+By default, the online memory isolation function of the device is enabled.
+
+Only the S5731-S, S5731S-S, S5731-H, S5731S-H, S5732-H, S6730-H, S6730-S, S6730S-S, and S6730S-H support this command.
+Format
+
+set ddr isolation disable
+
+undo set ddr isolation disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+When bit flip occurs in the memory of the device, the probability of device restart increases. In this case, you can run this command to enable the online memory isolation function of the device. When detecting bit flip in the memory, the device automatically performs memory isolation to ensure smooth data transmission.
+
+Bit flip refers to an instantaneous change in the level of a digital signal due to noise, interference, or other reasons during transmission. As a result, the value of the signal changes, which may cause data transmission errors or loss.
+Example
+# Disable the online memory isolation function of the device.
+
+<HUAWEI> system-view
+[HUAWEI] set ddr isolation disable
+
+set device fault-light
+Function
+
+The set device fault-light command sets the fault indicator status on a device.
+
+The undo set device fault-light command restores the default fault indicator status.
+
+By default, the fault indicator status of the device is not set. The fault indicator status is displayed based on the current device running status.
+Format
+
+set device fault-light { normal | under-repair [ keeptime time ] } [ slot slot-id ]
+
+undo set device fault-light [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+normal
+	
+
+Displays the fault indicator status based on the current device running status.
+	
+
+-
+
+under-repair
+	
+
+Configures the fault indicator to indicate that the device is faulty.
+	
+
+-
+
+keeptime time
+	
+
+Sets the time during which the fault indicator indicates that the device is faulty.
+	
+
+The value is an integer that ranges from 45 to 600, in seconds. The default value is 45.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If not slot ID is specified in a stack, this command sets the fault indicator status of the stack master.
+	
+
+The value range depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If a switch is faulty, run the set device fault-light command to set the mode indicators or system indicator to the faulty state so that O&M personnel can find the faulty switch onsite.
+
+    For the S500, S5735-S, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S5731-H, S5731S-H, S5732-H, S5731-S, S5731S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S
+
+    When the set device fault-light under-repair command is executed, the ID indicator is steady blue and turns off after it is steady blue for the time specified by keeptime time (the default time is 45s if this parameter is not specified). The set device fault-light normal command and the undo set device fault-light command have the same functions. That is, after either of the two commands is executed, the ID indicator turns off.
+
+    For the S5735-S-I
+
+    The switch has only one fault indicator, SYS indicator. When the set device fault-light under-repair command is executed, the SYS indicator blinks red fast and returns to the previous state after it blinks red fast for the time specified by keeptime time (the default time is 45s if this parameter is not specified). The set device fault-light normal and undo set device fault-light commands have the same functions. That is, after either of the two commands is executed, the SYS indicator returns to the previous state.
+
+    For other switches that support this command
+
+    When the set device fault-light under-repair command is executed, the SYS indicator and mode indicators (STAT, SPED, PoE, and STCK) blink red fast. After these indicators blink red fast for the time specified by keeptime time (the default time is 45s if this parameter is not specified), the SYS indicator returns to the previous state, and the STAT indicator is steady on.
+
+    The set device fault-light normal and undo set device fault-light commands have the same functions. That is, after either of the two commands is executed, the SYS indicator returns to the previous state, and the STAT indicator is steady on.
+
+    If slot slot-id is not specified in a stack, the configuration takes effect on indicators on the master switch.
+
+Example
+# Configure the fault indicator to indicate that the device is faulty.
+
+<HUAWEI> system-view
+[HUAWEI] set device fault-light under-repair
+
+set fan speed auto min-speed
+Function
+
+The set fan speed auto min-speed command configures the minimum fan speed in automatic fan speed adjustment mode.
+
+The undo set fan speed auto min-speed command restores the default minimum fan speed in automatic fan speed adjustment mode.
+
+By default, the minimum fan speed in automatic fan speed adjustment mode is not configured.
+
+The following switches do not support this command:
+
+    S2730S-S series
+    S5720-LI series: S5720-16X-PWH-LI-AC
+    S5735-L, S5735-L1, S5735S-L1 series: S5735-L12T4S-A, S5735-L24T4S-A, S5735-L24T4S-A1, S5735S-L24T4S-A1, S5735-L8T4S-QA1, S5735-L24T4X-QA1, and S5735-L24T4S-QA1
+    S5720I-SI series: S5720I-12X-SI-AC and S5720I-12X-PWH-SI-DC
+    S5735-S-I series
+    S5731-H series, S5731S-H series, S5731-S series, S5731S-S series, S5732-H series
+    S6730-H series, S6730S-H series, S6730-S series, S6730S-S series
+    S6735-S
+
+If one of the preceding switches can set up a stack with other switch models that support this command, this switch also supports this command so that this command can be executed and delivered in the stack.
+Format
+
+set fan speed auto min-speed value [ slot slot-id | all ]
+
+undo set fan speed auto min-speed [ slot slot-id | all ]
+Parameters
+Parameter 	Description 	Value
+
+value
+	
+
+Sets the percentage of the minimum fan speed. For example, if this parameter is set to 35, the minimum fan speed in automatic fan speed adjustment mode is 35% of the full fan speed.
+	
+
+The value is an integer that ranges from 1 to 100.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If this parameter is not specified, the minimum fan speed in automatic fan speed adjustment mode is configured for the fans on the master switch.
+	
+
+The value depends on the device configuration.
+
+all
+	
+
+Specifies all slots.
+	
+
+-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The fan speed affects the device temperature. When the device temperature is high, increase the fan speed to lower the device temperature. When the device temperature is low, reduce the fan speed to save energy. A proper fan speed ensures stable device operation. By default, fans run in automatic fan speed adjustment mode. In this mode, the system adjusts the fan speed when detecting that the device temperature increases or decreases. To control the fan speed in a timely manner, run the set fan speed auto min-speed command to configure the minimum fan speed in automatic speed adjustment mode.
+
+Precautions
+
+    If the automatically calculated fan speed is lower than the configured minimum speed, the configured minimum speed takes effect. If the automatically calculated fan speed is greater than the configured minimum speed, the calculated fan speed takes effect. To obtain the minimum fan speed of a device, view the Speed Rate Adjusted field in the display fan speed-adjust threshold minus command output.
+    To obtain the minimum fan speed in automatic fan speed adjustment mode on a device, view the Auto Min-speed field in the display fan command output.
+    The following assumes that the device can set up a stack with other device models and has the minimum fan speed in automatic fan speed adjustment mode configured before the stack is set up. After the stack is set up, if this device functions as the master switch, the configured minimum fan speed still takes effect. If this device functions as the standby or slave switch, the configured minimum fan speed does not take effect.
+    This configuration takes effect only when fan modules work in automatic speed adjustment mode. You can check the Mode field in the display fan command output to check the fan speed adjustment mode. If a fan module works at a fixed speed, run the fan speed mandatory command in the diagnostic view to configure the fan module to work in automatic speed adjustment mode.
+
+Example
+
+# Set the minimum fan speed in automatic fan speed adjustment mode to 20% of the full fan speed.
+
+<HUAWEI> system-view
+[HUAWEI] set fan speed auto min-speed 20 
+Info: The configuration is successful and takes effect only when the specified value is greater than the value calculated based on the intelligent fan speed adjustment policy. 
+
+set fan speed-adjust threshold minus
+Function
+
+The set fan speed-adjust threshold minus command adjusts the temperature thresholds for fan speed adjustment.
+
+The undo set fan speed-adjust threshold minus command restores the default temperature thresholds for fan speed adjustment.
+
+The default temperature thresholds on different devices are different. You can get to run the display fan speed-adjust threshold minus command.
+
+The following switches do not support this command:
+
+    S2730S-S series
+    S5720-LI series: S5720-16X-PWH-LI-AC
+    S5735-L, S5735-L1, S5735S-L1 series: S5735-L12T4S-A, S5735-L24T4S-A, S5735-L24T4S-A1, S5735S-L24T4S-A1, S5735-L8T4S-QA1, S5735-L24T4X-QA1, and S5735-L24T4S-QA1
+    S5720I-SI series: S5720I-12X-SI-AC and S5720I-12X-PWH-SI-DC
+    S5735-S-I series
+    S5731-H series, S5731S-H series, S5731-S series, S5731S-S series, S5732-H series
+    S6730-H series, S6730S-H series, S6730-S series, S6730S-S series
+    S6735-S
+
+If one of the preceding switches can set up a stack with other switch models that support this command, this switch also supports this command so that this command can be executed and delivered in the stack.
+Format
+
+set fan speed-adjust threshold minus threshold-value [ slot slot-id ]
+
+undo set fan speed-adjust threshold minus [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+threshold-value
+	
+
+Specifies the deduction to the temperature thresholds.
+	
+
+The value is an integer that ranges from 1 to 20.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+
+If this parameter is not specified, the thresholds in all slots are set.
+	
+
+The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The device uses fixed temperature thresholds to increase and decrease the fan speed by default. The fan speed increases when the device temperature exceeds the upper threshold and decreases when the device temperature falls below the lower threshold. If you want to keep the device working at a lower temperature, you can set deduction for the fixed temperature thresholds. The adjusted temperature threshold is lower than the default temperature threshold.
+
+Precautions
+
+    The new thresholds are the fixed temperature thresholds minus threshold-value. After the set fan speed-adjust threshold minus command is executed, the thresholds for increasing and lowering the fan speed decrease.
+
+    To view the fixed temperature thresholds, run the display fan speed-adjust threshold minus command.
+
+If a device uses intelligent fan control, this command reduces the temperature thresholds for starting and stopping the fans. Fans in intelligent heat dissipation mode can only start and stop rotating at a fixed speed that cannot be increased or reduced.
+You can run the display fan speed-adjust threshold minus command to check temperature thresholds for fan speed adjustment of fans in intelligent heat dissipation mode. Assume you view that the current temperature threshold of the fans is 40-50, in which 40°C is the threshold for stopping the fans, and 50°C is the threshold for starting the fans. When the current device temperature is 45°C, you need to determine whether fans will rotate according to the fan temperature change:
+
+    When the device temperature is increased to 45°C from a lower temperature (30°C for example), fans do not rotate because the device temperature does not reach the threshold for starting the fans.
+    When the device temperature is reduced to 45°C from a higher temperature (65°C for example), fans keep rotating because the device temperature does not fall below the threshold for stopping the fans.
+
+Example
+# Set the deduction to the temperature thresholds to 10.
+
+<HUAWEI> system-view
+[HUAWEI] set fan speed-adjust threshold minus 10
+Info: Succeeded in setting the fan speed-adjust threshold. 
+
+set fan speed mandatory
+Function
+
+The set fan speed mandatory command sets a fixed speed for fans on a device.
+
+The undo set fan speed mandatory command restores the automatic fan speed mode.
+
+By default, the automatic fan speed mode is used.
+Format
+
+set fan speed mandatory { minimal | middle | maximal | fixed40 | fixed50 | fixed60 | speed } [ slot slot-id ]
+
+undo set fan speed mandatory { minimal | middle | maximal | fixed40 | fixed50 | fixed60 | speed } [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+minimal
+	
+
+Sets the fan speed to the minimum speed of the device.
+	
+
+-
+
+middle
+	
+
+Sets the fan speed to 70% of the full speed.
+	
+
+-
+
+maximal
+	
+
+Sets the fan speed to the full speed.
+	
+
+-
+
+fixed40
+	
+
+Sets the fan speed to 40% of the full speed.
+	
+
+-
+
+fixed50
+	
+
+Sets the fan speed to 50% of the full speed.
+	
+
+-
+
+fixed60
+	
+
+Sets the fan speed to 60% of the full speed.
+	
+
+-
+
+speed
+	
+
+Specifies the percentage of the fan speed to the full speed.
+	
+
+The value is an integer from 20 to 100.
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The command for manually setting the fan speed is used only for fault locating. Generally, automatic fan speed adjustment is recommended.
+
+Only devices installed with variable-speed fans support this command. Such fans support fan speed adjustment at two or multiple levels. The system can display the matching parameters according to the type of the fan installed on the device, and you do not need to know how many speed levels the fan supports.
+
+Precautions
+
+In a stack, the set fan speed mandatory minimal command will set the fan speed of each member switch to the minimum fan speed.
+Example
+
+# Set the fan speed to 70% of the full speed.
+
+<HUAWEI> system-view
+[HUAWEI] set fan speed mandatory middle
+
+set flash threshold
+Function
+
+The set flash threshold command sets the alarm threshold for flash memory usage.
+
+The undo set flash threshold command restores the default alarm threshold for flash memory usage.
+
+By default, the alarm threshold for flash memory usage is 80.
+Format
+
+set flash threshold value
+
+undo set flash threshold value
+Parameters
+Parameter 	Description 	Value
+
+value
+	
+
+Sets the alarm threshold for flash memory usage.
+	
+
+The value is an integer that ranges from 1 to 99.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To ensure that the switch has sufficient flash memory, run the set flash threshold command to set the alarm threshold for flash memory usage. When flash memory of the switch is insufficient, the system prompts that flash memory is insufficient so that you can determine the flash memory usage.
+Example
+
+# Set the alarm threshold for flash memory usage on an MPU to 50%.
+
+<HUAWEI> system-view
+[HUAWEI] set flash threshold 50
+Info: Now the flash usage threshold is 50%. 
+
+set integrated-power
+Function
+
+The set integrated-power command configures a voltage threshold for the device.
+
+The undo set integrated-power command restores the default voltage threshold of the device.
+
+By default, the DC overvoltage threshold is 58.00 V, the DC undervoltage threshold is 50.00 V, the low-load voltage threshold is 49.00 V, and the 53 V DC output voltage threshold is 53.00 V.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+set integrated-power { 53v-dc output-voltage | dc-overvoltage | dc-undervoltage | low-load-voltage } threshold value
+
+undo set integrated-power { 53v-dc output-voltage | dc-overvoltage | dc-undervoltage | low-load-voltage } threshold
+Parameters
+Parameter 	Description 	Value
+
+53v-dc output-voltage
+	
+
+Configures a 53 V DC output voltage threshold.
+	
+
+-
+
+dc-overvoltage
+	
+
+Configures a DC overvoltage threshold.
+	
+
+-
+
+dc-undervoltage
+	
+
+Configures a DC undervoltage threshold.
+	
+
+-
+
+low-load-voltage
+	
+
+Configures a low-load voltage threshold.
+	
+
+-
+
+threshold value
+	
+
+Specifies a voltage threshold.
+	
+
+-
+
+value
+	
+
+Specifies the threshold value.
+	
+
+The value range is as follows:
+
+    53v-dc output-voltage: The value ranges from 53 to 56.4, in volts (V).
+    dc-overvoltage: The value ranges from 53 to 60, in volts (V).
+    dc-undervoltage: The value ranges from 35 to 57, in volts (V).
+    low-load-voltage: The value ranges from 35 to 51.49, in volts (V).
+
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to configure a voltage threshold.
+Example
+
+# Set the low-load voltage threshold to 39.11 V.
+
+<HUAWEI> system-view
+[HUAWEI] set integrated-power low-load-voltage threshold 39.11
+
+set memory-usage threshold
+Function
+
+The set memory-usage threshold command sets the memory usage threshold.
+
+The undo set memory-usage threshold command restores the default memory usage threshold.
+By default, the following describes the memory usage alarm threshold on the S1720GFR:
+
+    If the memory capacity on the device is lower than or equal to 256 MB, the memory usage alarm threshold is 85% and the memory usage alarm recovery threshold is 80%.
+
+    If the memory capacity on the device is larger than 256 MB and smaller than or equal to 512 MB, the memory usage alarm threshold is 90% and the memory usage alarm recovery threshold is 85%.
+
+    If the memory capacity on the device is higher than 512 MB, the memory usage alarm threshold is 95% and the memory usage alarm recovery threshold is 90%.
+
+The following describes the memory usage alarm threshold on other switch models:
+
+    If the memory capacity on the device is lower than or equal to 512 MB, the memory usage alarm threshold is 85% and the memory usage alarm recovery threshold is 80%.
+
+    If the memory capacity on the device is larger than 512 MB and smaller than or equal to 1.5 GB, the memory usage alarm threshold is 90% and the memory usage alarm recovery threshold is 85%.
+
+    If the memory capacity on the device is higher than 1.5 GB, the memory usage alarm threshold is 95% and the memory usage alarm recovery threshold is 90%.
+
+Format
+
+set memory-usage threshold threshold-value [ slot slot-id ]
+
+undo set memory-usage threshold [ threshold-value ] [ slot slot-id ]
+Parameters
+Parameter 	Description 	Value
+
+threshold-value
+	
+
+Specifies the memory usage threshold.
+	
+
+The value is an integer that ranges from 75 to 100.
+
+slot slot-id
+	
+
+Specifies the memory usage threshold of a specified slot ID.
+	
+
+The value depends on the device configuration.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+You can use the set memory-usage threshold command to set the memory usage threshold. When memory usage exceeds the threshold, the system logs the event and generates an alarm. By viewing log information, you can learn about memory usage.
+
+Precautions
+
+You are advised to use the default threshold. If the memory usage threshold is set too low, the system frequently generates alarms. If the memory usage threshold is set too high, you cannot learn about memory usage in a timely manner.
+Example
+
+# Set the memory usage threshold to 85%.
+
+<HUAWEI> system-view
+[HUAWEI] set memory-usage threshold 85
+
+set power protocol modbus
+Function
+
+The set power protocol modbus command configures the IP address and port number of a PC510 power supply for the switch to connect to.
+
+The undo set protocol modbus command deletes the configuration.
+
+By default, the IP address and port number of a PC510 power supply for the switch to connect to are not configured.
+
+This command is supported only by the S5735-L8P4X-IA1, S5735-L8T4X-IA1.
+Format
+
+set power protocol modbus [ ip-address ip-address-value ] [ tcp-port port-value ]
+
+undo set power protocol modbus
+Parameters
+Parameter 	Description 	Value
+
+ip-address ip-address-value
+	
+
+Specifies the IP address of a PC510 power supply.
+	
+
+The value is in dotted decimal notation. The default value is 192.168.18.88.
+
+tcp-port port-value
+	
+
+Specifies the port number of a PC510 power supply.
+	
+
+The value is an integer ranging from 0 to 65535. The default value is 502.
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+A PC510 power module provides multiple types of power outputs and can supply power to devices, such as switches and cameras, at the same time. To be powered by a PC510 power supply, the switch needs to set up a connection with the PC510 power supply using the Modbus TCP protocol. After connecting to a PC510 power supply, the switch can manage this power supply, for example, obtain its version information and restart it.
+
+You need to run this command on the switch to configure the IP address and port number of the PC510 power supply so that the switch can set up a connection with it.
+
+Precautions
+
+    After running this command, to ensure that the switch can set up a connection with the power supply successfully, you need to create a VLANIF interface on the switch, configure an IP address on the same subnet as the power supply for the VLANIF interface, and add the interface connecting the switch to the power supply to the VLAN of the VLANIF interface.
+    The IP address and port number of a PC510 power module are fixed at 192.168.18.88 and 502, respectively. Therefore, the IP address and port number configured using this command can only be 192.168.18.88 and 502.
+
+Example
+
+# Configure the IP address and port number of a PC510 power supply for the switch to connect to.
+
+<HUAWEI> system-view
+[HUAWEI] set power protocol modbus ip-address 192.168.18.88 tcp-port 502
+
+set root-key
+Function
+
+The set root-key command configures a root key for a switch.
+
+The undo set root-key command restores the default root key of a switch.
+
+By default, a switch uses the system default root key.
+Format
+
+set root-key [ auto ]
+
+undo set root-key
+Parameters
+Parameter 	Description 	Value
+
+auto
+	
+
+Automatically generates the root key of the device.
+	
+
+-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+A root key is located at the bottom of the key management infrastructure to protect confidentiality of upper-layer keys (such as key encryption key). Therefore, a root key is important to data security. A switch's root key is often stored in the system. If attackers illegally obtain the root key, encrypted data will become insecure. To improve data security and prevent attackers from obtaining encrypted packets, configure another root key on the switch. The configured root key will take effect after the switch restarts.
+
+If the device has high security requirements and its configuration file needs to be prevented from being used by other devices, run the set root-key auto command to automatically generate a root key for the device. You can run this command to automatically generate a root key only for an unconfigured device.
+
+Precautions
+
+    The root key can only be configured when the switch has no service configuration. If service configuration has been performed on the switch, an error message will be displayed when you configure the root key.
+
+    If you configure a password (not the administrator password) and key after configuring the root key, the password and key configuration will not be restored after the switch software version is changed to V200R009 or an earlier version.
+
+    After the root key is configured and the device is restarted, run the display root-key configuration command to check whether the configuration takes effect. After the configuration takes effect on the device, if you export the device's configuration file and apply it to other devices, other devices cannot work properly.
+    Do not run this command to set the root key to the weak password preset by running the load security weak-password-dictionary command.
+
+Example
+
+# Set the root key that meets the length requirements, for example, 98765432109876543210abc. Set this parameter based on the site requirements.
+
+<HUAWEI> set root-key
+Warning: A new root key can take effect only after the device is restarted. Continue? [Y/N]:y
+Please enter a new key of no more than 32 and no less than 20 characters:
+Please enter the new key again:
+Info: Succeed in setting next root-key on the master board.
+
+# Configure automatic root key generation.
+
+<HUAWEI> set root-key auto
+
+set rtc to power
+Function
+
+The set rtc to power command synchronizes the time of the power supply with the device time.
+
+Only the S5735-S8P2X-IA200H1 supports this command.
+Format
+
+set rtc to power
+
+undo set rtc to power
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run this command to synchronize the time of the power supply with the device time.
+Example
+
+# Synchronize the time of the power supply with the device time.
+
+<HUAWEI> system-view
+[HUAWEI] set rtc to power
+
+set service-mode
+Function
+
+The set service-mode command sets the working mode of the device to enhanced.
+
+The undo set service-mode command restores the working mode of the device to normal.
+
+By default, the working mode of the device is normal.
+
+This command is supported only by S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6730-H, S6730S-H, S6730-S, and S6730S-S.
+Format
+
+Command format on the S5732-H, S6730-S, S6730S-S, S6730S-H, and S6730-H:
+
+set service-mode { enhanced-bfd | enhanced-oam | enhanced-ptp }
+
+undo set service-mode { enhanced-bfd | enhanced-oam | enhanced-ptp }
+
+Command format on other switches:
+
+set service-mode enhanced
+
+undo set service-mode enhanced
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+enhanced
+	
+
+Sets the working mode of the device to enhanced.
+	
+
+-
+
+enhanced-bfd
+	
+
+Sets the BFD working mode of the device to enhanced.
+	
+
+-
+
+enhanced-oam
+	
+
+Sets the OAM working mode of the device to enhanced.
+	
+
+-
+
+enhanced-ptp
+	
+
+Sets the PTP working mode of the device to enhanced.
+	
+
+-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In normal mode, the interval for receiving BFD packets must be more than or equal to 100 ms. If the interval cannot meet requirements, run the set service-mode command to change the working mode of the switch to enhanced or enhanced-bfd mode so that the switch supports a minimum of 3 ms interval.
+
+To implement some OAM functions, you need to run the set service-mode command to change the working mode of the switch to enhanced or enhanced-oam mode. For more details, see the OAM description.
+
+To configure PTP, you need to run the set service-mode command to change the working mode of the switch to enhanced enhanced-ptp mode.
+
+Precautions
+
+    Running the set service-mode command will reduce the device forwarding performance. Therefore, confirm the action before you use the command.
+
+    If BFD has been enabled before this command is executed, disable BFD first.
+
+    Before changing the working mode from enhanced to normal, disable the PTP function.
+    On the S5732-H, S6730-S, S6730S-S, S6730S-H, and S6730-H, you can run the set service-mode command multiple times to set the working mode of BFD, PTP, and OAM to enhanced.
+
+Example
+# Set the working mode of the device to enhanced.
+
+<HUAWEI> system-view
+[HUAWEI] set service-mode enhanced
+Warning: This command will effect forward performance. Continue? [Y/N]:y
+
+slave restart
+Function
+
+Using the slave restart command, you can reload the system software of the standby device and then restart it.
+
+This function is supported only on member devices in a stack.
+Format
+
+slave restart
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If the standby switch is not working normally, you can reset it to restore its functions without affecting existing services.
+
+Precautions
+
+Due to the component upgrade of some device models, the devices whose first supported version is V200R021C10 cannot be downgraded. If the message "Error: The hardware version VER.B of slot %u does not support the configured system software package." (%u indicates the actual slot number) is displayed after the command is run, you can solve this problem by installing the patch that matches the version. For details about the first supported version of the device and matching patch version, see the device overview in the "Hardware Description".
+
+The command may interrupt services on the device. Therefore, exercise caution when using this command.
+Example
+
+# Restart the standby device.
+
+<HUAWEI> system-view
+[HUAWEI] slave restart
+
+slave switchover
+Function
+
+The slave switchover command performs an active/standby switchover.
+
+This function is supported only on member devices in a stack.
+Format
+
+slave switchover
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In a stack of multiple switches, you can manually perform an active/standby switchover on the master and standby switches during a software upgrade or system maintenance. After the active/standby switchover is complete, the original master switch restarts, becomes the new standby switch or a slave switch, and joins the stack, and the original standby switch becomes the new master switch.
+Prerequisites
+
+    The forcible active/standby switchover function has been enabled on devices.
+
+    The display switchover state command output shows that system has met requirements for an active/standby switchover. The requirements for an active/standby switchover are met only when the value of HA FSM State(master) is realtime or routine backup and the value of HA FSM State(slave) is receiving realtime or routine data. This indicates that data is consistent on the master and standby switches.
+
+Precautions
+
+    You can run the slave switchover command to perform an active/standby switchover only in a stack of multiple switches.
+    If an unregistered member switch exists in the stack, to prevent the stack from being split, do not run the slave switchover command to perform an active/standby switchover.
+    If the slave switchover command is executed when other commands are being executed, you need to execute the commands that have not taken effect on the new master switch again after the original standby switch becomes the new master switch.
+    Due to the component upgrade of some device models, some devices cannot be downgraded. If the message "Error: The hardware version VER.B of slot %u does not support the configured system software package." (%u indicates the actual slot number) is displayed after the command is run, you can solve this problem by installing the patch that matches the version. For details about the first supported version of the device and matching patch version, see the device overview in the "Hardware Description".
+
+Example
+
+# Perform an active/standby switchover.
+
+<HUAWEI> system-view
+[HUAWEI] slave switchover enable
+[HUAWEI] slave switchover
+Warning: This operation will switch the slave board to the master board. Continue? [Y/N]:y
+
+slave switchover { disable | enable }
+Function
+
+The slave switchover { disable | enable } command enables or disables forcible master/slave switchover.
+
+undo slave switchover disable command enables forcible master/slave switchover.
+
+By default, master/slave switchover is enabled.
+
+This function is supported only on member devices in a stack.
+Format
+
+slave switchover { disable | enable }
+
+undo slave switchover disable
+Parameters
+Parameter 	Description 	Value
+
+disable
+	
+
+Disables forcible master/slave switchover.
+	
+
+-
+
+enable
+	
+
+Enables forcible master/slave switchover.
+	
+
+-
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+The slave switchover command takes effect only after forcible master/slave switchover is enabled. If forcible master/slave switchover is disabled, the slave switchover command does not take effect.
+Example
+
+# Disable forcible master/slave switchover.
+
+<HUAWEI> system-view
+[HUAWEI] slave switchover disable
+
+system memory-usage monitor disable
+Function
+
+The system memory-usage monitor disable command disables the function of generating an alarm when the system memory usage reaches the threshold.
+
+The undo system memory-usage monitor disable command enables the function of generating an alarm when the system memory usage reaches the threshold.
+
+By default, the function of generating an alarm when the system memory usage reaches the threshold is enabled.
+Format
+
+system memory-usage monitor disable
+
+undo system memory-usage monitor disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+When the system memory is insufficient, services are abnormal. For example, configurations cannot be delivered or traffic cannot be forwarded. For the Linux operating system, when the system memory usage reaches 90%, the device reports an alarm indicating that the memory usage reaches the threshold by default.
+
+If the memory is sufficient and the memory insufficiency alarm does not need to be reported, you can run this command to disable the function of reporting an alarm when the system memory usage reaches the threshold.
+Example
+
+# Disable the function of generating an alarm when the system memory usage reaches the threshold.
+
+<HUAWEI> system-view
+[HUAWEI] system memory-usage monitor disable
+
+temperature threshold
+Function
+
+The temperature threshold command sets the temperature alarm thresholds.
+
+The undo temperature threshold command restores the default temperature alarm thresholds.
+
+By default, the lower temperature threshold is -40°C on the S5720I-SI and S5735-S-I, and -3°C on the S5731-H, S5732-H, S2730S-S, S5735-L-I, S5735-L1, S300, S5735-L, S5735S-L1, S500, S5735-S, S5736-S, and S6730-H, and 0°C on other switch models, and the upper temperature threshold varies according to hardware of various models, ranging from 44°C to 88°C.
+Format
+
+temperature threshold slot { slot-id | all } lower-limit min-temperature upper-limit max-temperature
+
+undo temperature threshold slot { slot-id | all }
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+Specifies a slot ID.
+	
+
+The value depends on the device configuration.
+
+all
+	
+
+Sets the temperature alarm threshold for all member switches in a stack.
+	
+
+-
+
+lower-limit min-temperature
+	
+
+Specifies the lower temperature alarm threshold.
+	
+
+The value is an integer that ranges from -40 to 88.
+
+min-temperature specifies the value of the temperature. The value of min-temperature varies according to device models. The minimum value of min-temperature is the default lower threshold.
+
+In a stack of multiple member switches, when all is specified in the temperature threshold command and the temperature alarm thresholds of all member switches are set, the min-temperature value is the largest value among the lower temperature alarm thresholds of the member switches.
+
+upper-limit max-temperature
+	
+
+Specifies the upper temperature alarm threshold.
+	
+
+The value is an integer that ranges from -40 to 88.
+
+max-temperature specifies the value of the temperature. The value of max-temperature varies according to device models. The maximum value of max-temperature is the default upper threshold.
+
+max-temperature must be at least 10 greater than min-temperature.
+
+In a stack of multiple member switches, when all is specified in the temperature threshold command and the temperature alarm thresholds of all member switches are set, the max-temperature value is the smallest value among the upper temperature alarm thresholds of the member switches.
+Views
+
+system view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+The device generates an alarm and records log information when the device temperature falls below the lower threshold or rises above the upper threshold.
+
+Precautions
+
+    If the configured threshold values are out of the allowed range, the configuration fails and the upper and lower thresholds are restored to the maximum values.
+    Configuration commands are generated in a configuration file regardless of whether the configured threshold values are default values. These commands can be cleared only when the undo temperature threshold command is executed.
+
+Example
+# Set the lower temperature alarm threshold to 20°C and upper temperature alarm threshold to 60°C.
+
+<HUAWEI> system-view
+[HUAWEI] temperature threshold slot all lower-limit 20 upper-limit 60
+
+transceiver diagnosis threshold rx-power
+Function
+
+The transceiver diagnosis threshold rx-power command sets the upper and lower thresholds for the receive optical power of the optical transceiver installed in an interface.
+
+The undo transceiver diagnosis threshold rx-power command restores the upper and lower thresholds to the default values for the receive optical power of the optical transceiver installed in an interface.
+
+By default, the optical power upper and lower thresholds vary according to optical module vendors.
+Format
+
+transceiver diagnosis threshold rx-power { default | low-alarm low-alarm high-alarm high-alarm }
+
+undo transceiver diagnosis threshold rx-power
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+default
+	
+
+Sets the upper and lower thresholds for the receive optical power of the optical transceiver installed in an interface to default values.
+	
+
+-
+
+high-alarm high-alarm
+	
+
+Sets the upper threshold for the receive optical power of the optical transceiver installed in an interface.
+	
+
+The value varies according to the optical module vendor.
+
+low-alarm low-alarm
+	
+
+Sets the lower threshold for the receive optical power of the optical transceiver installed in an interface.
+	
+
+The value varies according to the optical module vendor.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run the transceiver diagnosis threshold rx-power command to adjust the receive optical power of the optical transceiver.
+Example
+
+# Set the upper and lower thresholds for the receive optical power of the optical transceiver installed in GigabitEthernet 0/0/2 to default values.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/2
+[HUAWEI-GigabitEthernet0/0/2] transceiver diagnosis threshold rx-power default
+
+transceiver diagnosis threshold tx-power
+Function
+
+The transceiver diagnosis threshold tx-power command sets the upper and lower thresholds for the transmit optical power of the optical transceiver installed in an interface.
+
+The undo transceiver diagnosis threshold tx-power command restores the upper and lower thresholds for the transmit optical power of the optical transceiver installed in an interface to default values.
+
+By default, the optical power upper and lower thresholds vary according to optical module vendors.
+Format
+
+transceiver diagnosis threshold tx-power { default | low-alarm low-alarm high-alarm high-alarm }
+
+undo transceiver diagnosis threshold tx-power
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+default
+	
+
+Sets the upper and lower thresholds for the transmit optical power of the optical transceiver installed in an interface to default values.
+	
+
+-
+
+high-alarm high-alarm
+	
+
+Sets the upper threshold for the transmit optical power of the optical transceiver installed in an interface.
+	
+
+The value varies according to the optical module vendor.
+
+low-alarm low-alarm
+	
+
+Sets the lower threshold for the transmit optical power of the optical transceiver installed in an interface.
+	
+
+The value varies according to the optical module vendor.
+Views
+
+Interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+You can run the transceiver diagnosis threshold tx-power command to adjust the transmit optical power of the optical transceiver.
+Example
+
+# Set the upper and lower thresholds for the transmit optical power of the optical transceiver installed in GigabitEthernet 0/0/2 to default values.
+
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet 0/0/2
+[HUAWEI-GigabitEthernet0/0/2] transceiver diagnosis threshold tx-power default
+
+transceiver phony-alarm-disable
+Function
+
+The transceiver phony-alarm-disable command disables the alarm function for non-Huawei-certified switch optical modules.
+
+The undo transceiver phony-alarm-disable command enables the alarm function for non-Huawei-certified switch optical modules.
+
+By default, the alarm function is enabled for non-Huawei-certified switch optical modules.
+Format
+
+transceiver phony-alarm-disable
+
+undo transceiver phony-alarm-disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+2: Configuration level
+Usage Guidelines
+
+Non-Huawei-certified switch optical modules may fail to work normally. If non-Huawei-certified switch optical modules are used on devices produced since July 1, 2013 (January 1, 2016 for QSFP+ 40GE optical modules), the devices generate a large number of alarms to prompt users to replace these optical modules with Huawei-certified switch optical modules. However, vendor information of optical modules early delivered from Huawei may not be recorded. Therefore, non-Huawei-certified switch optical module alarms are generated. These optical modules can still be used to protect customer investment. In this case, you can disable the alarm function for non-Huawei-certified switch optical modules.
+Example
+
+# Disable the alarm function for non-Huawei-certified switch optical modules.
+
+<HUAWEI> system-view
+[HUAWEI] transceiver phony-alarm-disable
+Info:Transceiver-phony-alarm disable.
+
+# Enable the alarm function for non-Huawei-certified switch optical modules.
+
+<HUAWEI> system-view
+[HUAWEI] undo transceiver phony-alarm-disable
+Info:Transceiver-phony-alarm enable.
+
+wavelength-channel
+Function
+
+The wavelength-channel command sets the wavelength channel of a wavelength-tunable optical module.
+
+The undo wavelength-channel command restores the default wavelength channel of a wavelength-tunable optical module.
+
+The default wavelength channel of a wavelength-tunable optical module is channel 1.
+Format
+
+wavelength-channel channelnum
+
+undo wavelength-channel
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+channelnum
+	
+
+Specifies a wavelength channel number.
+	
+
+The value is an integer that ranges from 1 to 80.
+Views
+
+XGE interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+To adjust the wavelength of a wavelength-tunable optical module on an interface, run the wavelength-channel channelnum command on this interface. This command will add the wavelength-tunable optical module to a specified wavelength channel. Each wavelength channel has a fixed center wavelength and frequency. To view the mapping between the wavelength channel, center wavelength, and frequency, run the display wavelength-map command.
+
+You can also run the wavelength-channel frequency frequency-value and wavelength-channel wavelength wavelength-value commands to set the wavelength and frequency of a wavelength-tunable optical module.
+
+Precautions
+
+    When the wavelength-channel command configuration exists on the interface, after the interface has a wavelength-tunable optical module installed, this optical module will automatically adjust its wavelength to the configured wavelength. If a copper module is installed, the command configuration remains but does not take effect. If a non-wavelength-tunable optical module is installed, the command configuration will not take effect and the system displays an alarm.
+    Running the wavelength-channel command will open and close the laser, resulting in interface flapping.
+    The wavelength-channel channelnum, wavelength-channel frequency frequency-value, and wavelength-channel wavelength wavelength-value commands are mutually exclusive with the wavelength-channel trust sfp command.
+
+Example
+
+# Add a wavelength-tunable optical module to wavelength channel 20 on XGigabitEthernet0/0/2.
+
+<HUAWEI> system-view
+[HUAWEI] interface XGigabitEthernet 0/0/2
+[HUAWEI-XGigabitEthernet0/0/2] wavelength-channel 20
+
+wavelength-channel frequency
+Function
+
+The wavelength-channel frequency command sets the frequency of a wavelength-tunable optical module.
+
+The undo wavelength-channel frequency command restores the default frequency of a wavelength-tunable optical module.
+
+The default frequency of a wavelength-tunable optical module is the same as that of wavelength channel 1.
+Format
+
+wavelength-channel frequency frequency-value
+
+undo wavelength-channel frequency
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+frequency-value
+	
+
+Specifies a frequency.
+	
+
+The value is an integer ranging from 0 to 4294967295, in MHz.
+Views
+
+XGE interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When two interfaces installed with optical modules are connected through optical fibers, the wavelengths of the two optical modules must match, and so do their frequencies; otherwise, the interfaces cannot go Up or transmit traffic. When a wavelength-tunable optical module is connected to an optical module with a fixed wavelength and frequency, you need to change the wavelength and frequency of the wavelength-tunable optical module to match with those of its connected optical module, respectively.
+
+You can run the wavelength-channel frequency frequency-value command to set the frequency of a wavelength-tunable optical module and run the wavelength-channel wavelength wavelength-value command to set the wavelength of a wavelength-tunable optical module. You can also run the wavelength-channel channelnum command to set the wavelength channel of a wavelength-tunable optical module. This changes its wavelength and frequency at the same time. To view the mapping between the wavelength channel, wavelength, and frequency, run the display wavelength-map command.
+
+Precautions
+
+    When the wavelength-channel command configuration exists on the interface, after the interface has a wavelength-tunable optical module installed, this optical module will automatically adjust its wavelength to the configured wavelength. If a copper module is installed, the command configuration remains but does not take effect. If a non-wavelength-tunable optical module is installed, the command configuration will not take effect and the system displays an alarm.
+    Running the wavelength-channel command will open and close the laser, resulting in interface flapping.
+    The wavelength-channel channelnum, wavelength-channel frequency frequency-value, and wavelength-channel wavelength wavelength-value commands are mutually exclusive with the wavelength-channel trust sfp command.
+
+Example
+
+# Set the frequency of the wavelength-tunable optical module on XGigabitEthernet 0/0/2 to 192100000 MHz.
+
+<HUAWEI> system-view
+[HUAWEI] interface XGigabitEthernet 0/0/2
+[HUAWEI-XGigabitEthernet0/0/2] wavelength-channel frequency 192100000
+
+wavelength-channel wavelength
+Function
+
+The wavelength-channel wavelength command sets the wavelength of a wavelength-tunable optical module.
+
+The undo wavelength-channel wavelength command restores the default wavelength of a wavelength-tunable optical module.
+
+The default wavelength of a wavelength-tunable optical module is the same as that of wavelength channel 1.
+Format
+
+wavelength-channel wavelength wavelength-value
+
+undo wavelength-channel wavelength
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+wavelength-value
+	
+
+Specifies a wavelength.
+	
+
+The value is an integer ranging from 0 to 4294967295, in pm.
+Views
+
+XGE interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When two interfaces installed with optical modules are connected through optical fibers, the wavelengths of the two optical modules must match, and so do their frequencies; otherwise, the interfaces cannot go Up or transmit traffic. When a wavelength-tunable optical module is connected to an optical module with a fixed wavelength and frequency, you need to change the wavelength and frequency of the wavelength-tunable optical module to match with those of its connected optical module, respectively.
+
+You can run the wavelength-channel frequency frequency-value command to set the frequency of a wavelength-tunable optical module and run the wavelength-channel wavelength wavelength-value command to set the wavelength of a wavelength-tunable optical module. You can also run the wavelength-channel channelnum command to set the wavelength channel of a wavelength-tunable optical module. This changes its wavelength and frequency at the same time. To view the mapping between the wavelength channel, wavelength, and frequency, run the display wavelength-map command.
+
+Precautions
+
+    When the wavelength-channel command configuration exists on the interface, after the interface has a wavelength-tunable optical module installed, this optical module will automatically adjust its wavelength to the configured wavelength. If a copper module is installed, the command configuration remains but does not take effect. If a non-wavelength-tunable optical module is installed, the command configuration will not take effect and the system displays an alarm.
+    Running the wavelength-channel command will open and close the laser, resulting in interface flapping.
+    The wavelength-channel channelnum, wavelength-channel frequency frequency-value, and wavelength-channel wavelength wavelength-value commands are mutually exclusive with the wavelength-channel trust sfp command.
+
+Example
+
+# Set the wavelength of the wavelength-tunable optical module on XGigabitEthernet 0/0/2 to 1560606 pm.
+
+<HUAWEI> system-view
+[HUAWEI] interface XGigabitEthernet 0/0/2
+[HUAWEI-XGigabitEthernet0/0/2] wavelength-channel wavelength 1560606
+
+wavelength-channel trust sfp
+Function
+
+The wavelength-channel trust sfp command configures a device to trust the wavelength channel of an optical module.
+
+The undo wavelength-channel trust sfp command deletes the configuration.
+
+By default, a device does not trust the wavelength channel of an optical module.
+Format
+
+wavelength-channel trust sfp
+
+undo wavelength-channel trust sfp
+Parameters
+
+None
+Views
+
+XGE interface view, 25GE interface view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+When a wavelength-tunable optical module is installed on a device, the device forcibly sets the wavelength channel to the default value 1 or a value configured using the wavelength-channel channelnum command. This makes the wavelength channel on the local device be different from that of on the remote device. As a result, the two devices fail to communicate. In this case, you can run the wavelength-channel trust sfp command to configure the device to trust the wavelength channel of the optical module.
+
+Precautions
+
+The wavelength-channel channelnum, wavelength-channel frequency frequency-value, and wavelength-channel wavelength wavelength-value are mutually exclusive with the wavelength-channel trust sfp command. That is:
+
+    After the wavelength-channel channelnum, wavelength-channel frequency frequency-value, or wavelength-channel wavelength wavelength-value command is configured, the wavelength-channel trust sfp command cannot be configured.
+    After the wavelength-channel trust sfp command is configured, the wavelength-channel channelnum, wavelength-channel frequency frequency-value, or wavelength-channel wavelength wavelength-value command cannot be configured.
+
+Example
+
+# Configure the device to trust the wavelength channel of the optical module on XGigabitEthernet0/0/2.
+
+<HUAWEI> system-view
+[HUAWEI] interface XGigabitEthernet 0/0/2
+[HUAWEI-XGigabitEthernet0/0/2] wavelength-channel trust sfp
+

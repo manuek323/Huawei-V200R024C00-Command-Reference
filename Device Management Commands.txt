@@ -1,0 +1,17 @@
+Device Management Commands
+
+    Device Status Checking Commands
+    Hardware Configuration Commands
+    Stack Configuration Commands
+    Intelligent Simplified Campus Network Configuration Commands
+    SVF Configuration Commands
+    PoE Configuration Commands
+    Monitoring Interface Configuration Commands
+    OPS Configuration Commands
+    Energy-saving Configuration Commands
+    Information Center Configuration Commands
+    Fault Management Commands
+    SAID Configuration Commands
+    NTP Configuration Commands
+    PTP Configuration Commands
+    Clock Synchronization Commands
