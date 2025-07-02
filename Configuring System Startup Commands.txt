@@ -1,0 +1,2383 @@
+Configuring System Startup Commands
+
+    Command Support
+    check file-integrity
+    clear configuration interface
+    clear configuration this
+    clear inactive-configuration all
+    configuration backup local disable
+    configuration copy file to running
+    configuration copy startup to file
+    compare configuration
+    display changed-configuration time
+    display configuration recover-result
+    display current-configuration
+    display factory-configuration information
+    display factory-configuration reset-result
+    display pnp-button mode
+    display reboot-info
+    display saved-configuration
+    display schedule reboot
+    display startup
+    factory-configuration prohibit
+    pnp-button mode reset-system
+    pnp-button disable
+    reboot
+    reset factory-configuration
+    reset saved-configuration
+    reset reboot-info
+    save
+    schedule reboot
+    set factory-configuration operate-mode
+    set save-configuration
+    set save-configuration backup-to-server server
+    startup saved-configuration
+    startup system-software
+    startup patch
+
+Command Support
+
+Commands provided in this section and all the parameters in the commands are supported by all switch models (except the S5751-L, S5731-L, and S5731S-L), unless otherwise specified. For details, see specific commands.
+check file-integrity
+Function
+
+The check file-integrity command checks whether a file is consistent with the corresponding signature file.
+Format
+
+check file-integrity filename signature-filename
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+filename
+	
+
+Specifies the name of a file to be checked. The file must exist.
+	
+
+The value is a string of 4 to 64 case-insensitive characters without spaces. The file name extension can be .cc, .pat, .zip, .mod, or .7z.
+
+signature-filename
+	
+
+Specifies the name of the signature file corresponding to the file to be checked. The signature file must exist.
+	
+
+The value is a string of 5 to 64 case-insensitive characters without spaces. The file name extension must be .asc or .p7s.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+You can run this command to check whether a file is consistent with the corresponding signature file. If the check fails, the file cannot be used as the system software, patch file, web page file, or mod file.
+
+Signature files are released with each version. Each valid system software, patch file, web page file, or mod file has a corresponding signature file. You need to upload the signature file to the switch before using this command.
+Example
+
+# Check whether the system software is consistent with the corresponding signature file.
+
+<HUAWEI> system-view
+[HUAWEI] check file-integrity S5700-V200R024C00.cc S5700-V200R024C00.cc.asc
+
+clear configuration interface
+Function
+
+Using the clear configuration interface command, you can perform one-touch configuration clearance on an interface.
+Format
+
+clear configuration interface { interface-type-start interface-number-start [ to interface-type-end interface-number-end ] } &<1-10>
+Parameters
+Parameter 	Description 	Value
+
+interface-type-start interface-number-start [ to interface-type-end interface-number-end ]
+	
+
+Indicates the type and number of the interface where one-touch configuration clearance is performed.
+
+    interface-type-start specifies the type of the first interface.
+    interface-number-start specifies the number of the first interface.
+    interface-type-end specifies the type of the last interface.
+    interface-number-end specifies the number of the last interface.
+
+	
+
+At present, the tunnel and stack-port interfaces are not supported.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To configure an interface on a device for other use, original configurations on the interface need to be deleted one by one. If the interface has a large number of configurations, deleting these configurations one-by-one takes a long time and increases the maintenance workload. To reduce the maintenance workload and simplify the deletion operation, you can use this command to perform one-touch configuration clearance on an interface.
+
+You can also run the clear configuration this command in the system view to delete configurations on a specified interface.
+
+The one-touch configuration clearance function cannot delete the combo-port command on an interface.
+
+Configuration Impact
+
+After this command is run, all configurations on an interface will be cleared. The status of the interface is shutdown.
+
+Precautions
+
+The execution of this command takes a long time. To terminate the running command, press Ctrl+C.
+
+In general, after the clear configuration this command is run on an interface to clear the configuration, the default configuration is restored. If special configurations exist on the interface on which the clear configuration this command is run, the configuration may be displayed in the undo command format.
+Example
+
+# Perform one-touch configuration clearance on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] display this
+
+#
+interface GigabitEthernet0/0/1
+ port link-type hybrid
+ port hybrid pvid vlan 50
+#
+return
+
+[HUAWEI-GigabitEthernet0/0/1] quit
+
+[HUAWEI] clear configuration interface gigabitethernet 0/0/1
+
+Warning: All configurations of the interface will be cleared, and its state will
+ be shutdown. Continue? [Y/N] :y...
+Info: Total execute 2 command(s), 2 successful, 0 failed. 
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] display this
+
+#
+interface GigabitEthernet0/0/1
+ shutdown
+#
+return
+
+clear configuration this
+Function
+
+The clear configuration this command deletes configurations on an interface at a time to restore the default configurations.
+Format
+
+clear configuration this
+Parameters
+
+None
+Views
+
+Interface view (excluding tunnel interface view, stack-port interface view, and port group view)
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To configure an interface on a device for other use, original configurations on the interface need to be deleted one by one. If the interface has a large number of configurations, deleting these configurations one-by-one takes a long time and increases the maintenance workload. To reduce the maintenance workload and simplify the deletion operation, you can use this command to perform one-touch configuration clearance on an interface.
+
+You can also run the clear configuration interface interface-type interface-num command in the system view to delete configurations on a specified interface.
+
+Configuration Impact
+
+After you run the clear configuration this command, the system displays a message, asking you whether to delete the configurations on the specified interface. If you enter Y, all configurations on the specified interface are deleted and the interface status becomes shutdown.
+
+Running the clear configuration this command on an interface is similar to running undo commands on the interface in batches.
+
+Precautions
+
+The execution of this command takes a long time. To terminate the running command, press Ctrl+C.
+
+In general, after the clear configuration this command is run on an interface to clear the configuration, the default configuration is restored. If special configurations exist on the interface on which the clear configuration this command is run, the configuration may be displayed in the undo command format.
+
+As some commands correlate to each other, if you run the undo command to delete the configurations of a command, the configurations of the correlated command are also deleted. After the clear configuration this command is run on an interface, the statistics in the command output may be inconsistent with actual clearance results. Refer to the actual clearance results in real-world applications.
+Example
+
+# Perform one-touch configuration clearance on GigabitEthernet0/0/1.
+
+<HUAWEI> system-view
+
+[HUAWEI] interface gigabitethernet 0/0/1
+
+[HUAWEI-GigabitEthernet0/0/1] display this
+
+#
+interface GigabitEthernet0/0/1
+ description abc
+ port link-type access
+#
+return
+
+[HUAWEI-GigabitEthernet0/0/1] clear configuration this
+
+Warning: All configurations of the interface will be cleared, and its state will be shutdown. Continue? [Y/N] :y
+Info: Total 2 command(s) executed, 2 successful, 0 failed.
+
+[HUAWEI-GigabitEthernet0/0/1] display this
+
+#
+interface GigabitEthernet0/0/1
+ shutdown
+#
+return
+
+clear inactive-configuration all
+Function
+
+The clear inactive-configuration all command clears inactive configurations on the switch.
+
+This command can only clear inactive configurations on interfaces.
+Format
+
+clear inactive-configuration all
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If a card is removed, the original configurations on the card are saved on the switch. If the standby/slave switch leaves a stack, the configurations on the switch are saved on the master switch. These invalid configurations are called inactive or offline configurations. To view inactive configurations on the switch, run the display current-configuration inactive command.
+
+You can run the clear inactive-configuration all command to clear all the inactive configurations on the switch to increase available space.
+
+This command can be run by only one user at a time to clear inactive configurations on all interfaces on the device.
+
+Configurations cannot be recovered after clearing. Therefore, exercise caution when deciding to run this command. You are advised to run this command under the guidance of technical support personnel.
+Example
+
+# Clear inactive configurations on the switch.
+
+<HUAWEI> system-view
+[HUAWEI] clear inactive-configuration all
+Warning: All inactive configurations will be deleted and cannot be restored.
+Are you sure you want to continue?[Y/N]y
+The command will take a few minutes. Please wait.
+Info: There is no inactive configuration.
+
+configuration backup local disable
+Function
+
+The configuration backup local disable command disables the device from backing up the running configurations locally.
+
+The undo configuration backup local disable command enables the device to back up the running configurations locally.
+
+By default, the device is enabled to back up the running configurations locally.
+Format
+
+configuration backup local disable
+
+undo configuration backup local disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To automatically back up the current running configurations to the local storage after the device configurations are modified, run the undo configuration backup local disable command to enable automatic backup of the current running configurations. This function helps check historical records of configuration changes and facilitate fault location.
+
+Precautions
+
+    When the device is enabled to back up the current running configurations, the current running configurations are backed up 2 hours after the device configurations are modified. If saving or automatic saving operation is performed, conflicts may occur. The configuration backup will be triggered every 30 minutes until the backup succeeds.
+    If the CPU usage exceeds 60% during the configuration backup, the configuration backup will be triggered every 30 minutes until the backup succeeds.
+    Delivering a configuration command fails during the configuration backup.
+    If the current configurations are consistent with the configurations saved last time, the device does not repeatedly back up the current configurations to the local storage.
+
+Rules for backup file management:
+
+    The local storage path is $_backup/running_config/.
+    The format of the backup file name is yyyymmddhhmmss.sysname.zip, where yyyymmdd indicates the year, month, and day, hhmmss indicates the hour, minute, and second, and sysname indicates the host name of the device.
+    Backup files are aged based on the aging rules each time when the number of backup files exceeds 30, when the total space used by backup files exceeds 10 MB, or when the remaining storage space is less than 30 MB.
+    The backup file aging stops when the number of backup files is 5 or less.
+
+Rules for backup file aging:
+
+    A number and an aging priority are specified for a backup file based on the file generation time.
+
+    File number: The latest file generated is numbered 1, the file generated before the latest file is numbered 2, and so on. A larger number indicates an earlier generation time.
+
+    File aging priority: The file with a smaller file number has a higher priority. Files with a lower priority are aged first. Note that files with priority 0 are not aged. If a file has multiple priorities, refer to the highest priority.
+        Priority 0: files numbered from 1 to 5
+        Priority 1: files numbered from 6 to 10
+        Priority 2: the last generated files on each day in the past week
+        Priority 3: the last generated files in each month in the past 5 months
+        Priority 4: other backup files
+    Note for backup file aging:
+        The backup files are aged in time sequence based on the priority. A backup file generated earlier is aged first.
+
+Example
+
+# Disable the device from backing up the running configurations locally.
+
+<HUAWEI> system-view
+[HUAWEI] configuration backup local disable
+
+configuration copy file to running
+Function
+
+The configuration copy file to running command executes commands in a specified configuration file.
+Format
+
+configuration copy file file-name to running
+Parameters
+Parameter 	Description 	Value
+
+file-name
+	
+
+Specifies the name of a configuration file to be executed.
+	
+
+The value is a string of 4 to 160 characters in the [ drive ] [ path ] file-name format. The file name extension must be .cfg or .zip.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To execute an existing configuration file, run the configuration copy file to running command. All the commands in the specified configuration file are executed at one time.
+
+Precautions
+
+    Only one user can execute the configuration copy file to running command at one time.
+    Running this command does not clear the existing configuration.
+    If configuration restoration occurs or a batch backup operation is performed, the configuration copy file to running command ends.
+    If a command fails during the execution of the configuration copy file to running command, the system skips it and executes the next command.
+    If the configuration file to be executed contains a restart command, the device will restart when the restart command is executed. Therefore, exercise caution when executing the configuration file.
+    Do not change the configuration file manually and execute the configuration file. Otherwise, the device may not start normally.
+
+Example
+
+# Execute the commands in the huawei.cfg file.
+
+<HUAWEI> configuration copy file huawei.cfg to running
+Warning: This operation may take a long time, press CTRL+C to break. Continue?[Y/N]:y
+
+configuration copy startup to file
+Function
+
+The configuration copy startup to file command backs up the startup configuration file to a specified file.
+Format
+
+configuration copy startup to file file-name
+Parameters
+Parameter 	Description 	Value
+
+file-name
+	
+
+Specifies the name of a destination file.
+	
+
+The value is a string of 4 to 160 characters in the [ drive ] [ path ] file-name format. The file name extension must be .cfg or .zip. The extension of the destination file and the backup file must be the same.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To back up the startup configuration file, run the configuration copy startup to file command.
+
+Precautions
+
+If a file with the same name already exists, the system asks whether to replace the previous file. Press Y to replace the file or N not to do so.
+Example
+
+# Back up the startup configuration file to the huawei.cfg file.
+
+<HUAWEI> configuration copy startup to file huawei.cfg
+
+compare configuration
+Function
+
+The compare configuration compares whether the current configurations (including offline configurations) are identical with the next startup configuration file.
+Format
+
+compare configuration [ configuration-file ] [ current-line-number save-line-number ]
+Parameters
+Parameter 	Description 	Value
+
+configuration-file
+	
+
+Specifies the name of the configuration file to be compared with the current configurations.
+	
+
+The value is a string of 5 to 48 case-insensitive characters without spaces.
+
+current-line-number
+	
+
+Specifies the line number for comparison in the current configuration.
+	
+
+The value is an integer that ranges from 0 to 65535.
+
+save-line-number
+	
+
+Specifies the line number for comparison in the saved configuration.
+	
+
+The value is an integer that ranges from 0 to 65535.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+If current-line-number and save-line-number are not specified, the configuration files are compared from the first lines. The two parameters can be specified to skip the differences that are found and continue the comparison.
+
+The compare configuration command outputs display the current configuration file (including offline configurations) and the saved configuration file from the line that contains differences respectively. By default, the output difference information is restricted to 120 characters.
+
+    If the characters from differences to the end of the configuration file are less than 120, the system displays the output difference information till the end of the configuration file.
+    If the characters from differences to the end of the configuration file are more than 120, the system only displays 120 characters.
+
+Precautions
+
+    The execution of this command takes a long time. To terminate the running command, press Ctrl+C.
+
+    The configuration file name extension must be .cfg or .zip.
+
+    If configuration-file is not specified, the system compares whether the current configurations (including offline configurations) are identical with the next startup configuration file.
+
+    If configuration-file is specified, the system compares whether the current configurations (including offline configurations) are identical with the specified startup configuration file.
+
+Example
+
+# Compare whether the current configurations (including offline configurations) are identical with the next startup configuration file.
+
+<HUAWEI> compare configuration
+
+Info: The system is now comparing the configuration, please wait....
+Warning: The current configuration is not the same as the next startup 
+configuration file. There may be several differences, and the following are some 
+configurations beginning from the first: 
+====== Current configuration line 6 ======
+ vlan batch 1 to 2 10 to 11 15 70 to 71 91 to 92 100 111 230 240 901
+ vlan batch 911 1111
+#
+ l2protocol-tunnel vtp group-mac xxxx-xxxx-xxxx
+
+ ====== Configuration file line 6 ======
+ vlan batch 1 to 2 10 to 11 15 70 91 to 92 100 111 230 240 901
+ vlan batch 911 1111
+#
+ l2protocol-tunnel vtp group-mac xxxx-xxxx-xxxx  
+
+display changed-configuration time
+Function
+
+The display changed-configuration time command displays the time of the last configuration change.
+Format
+
+display changed-configuration time
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After changing the configuration of the device, you can run the display changed-configuration time command to view the time of the last configuration change.
+Example
+
+# Display the time of the last configuration change.
+
+<HUAWEI> display changed-configuration time
+
+display configuration recover-result
+Function
+
+The display configuration recover-result command displays the configuration recovery result.
+Format
+
+display configuration recover-result
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+You can use the display configuration recover-result command to view the information about the configuration recovery result and records of configuration recovery failures. The records include the command that fails the configuration recovery, the view in which the command resides, the line number of the command in the current startup configuration file, the reason why the command fails, and the execution time of the configuration recovery.
+
+This command displays a maximum of 256 records in time sequence. The latest record is displayed in the last. If the number of commands for configuration recovery exceeds 256, the device no longer records commands that fail the configuration recovery.
+
+Prerequisites
+
+The device has restarted and the configuration recovery is successful.
+Example
+
+# Display the configuration result.
+
+<HUAWEI> display configuration recover-result
+The current startup saved-configuration file is flash:/vrpcfg.zip.
+The number of failed commands is 2. 
+----------------------------------------------------------------------
+
+Command : ip address 10.85.1.1 255.255.255.0
+View    : Vlanif85
+Line    : 414
+Reason  : Failed to parse the command.
+Time    : 10:00:06  2012-07-25 UTC+08:00 DST
+
+Command : ip address 10.86.1.1 255.255.255.0
+View    : Vlanif86
+Line    : 417
+Reason  : Failed to parse the command.
+Time    : 10:00:06  2012-07-25 UTC+08:00 DST 
+
+----------------------------------------------------------------------
+
+Table 2-55 Description of the display configuration recover-result command output
+
+Item
+	
+
+Description
+
+Command
+	
+
+Command that fails the configuration recovery
+
+View
+	
+
+View in which the command resides
+
+Line
+	
+
+Line number of the command in the current startup configuration file
+
+Reason
+	
+
+Reason why the command fails
+
+Time
+	
+
+Execution time of the configuration recovery
+display current-configuration
+Function
+
+The display current-configuration command displays the currently running configuration.
+
+This command does not display parameters that use default settings.
+Format
+
+display current-configuration [ configuration [ configuration-type [ configuration-instance ] ] | interface [ interface-type [ interface-number ] ] ] [ feature feature-name ] [ filter filter-expression ]
+
+display current-configuration [ all | inactive ]
+
+display current-configuration configuration vpn-instance [ vpn-instance-name ] related
+
+Only the S5720I-SI, S5735-S, S500, S5735-S-I, S5735S-H, S5736-S, S5731-H, S5731-S, S5731S-H, S5731S-S, S5732-H, S6735-S, S6720S-S, S6730-H, S6730S-H, S6730-S, and S6730S-S support the display current-configuration configuration vpn-instance [ vpn-instance-name ] related command.
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+configuration
+	
+
+Displays all configuration information, except for the configuration on interfaces.
+	
+
+-
+
+configuration-type
+	
+
+Specifies information about the configuration that is a specified type, except for the configuration on interfaces.
+The configuration type depends on the existing configuration. For example:
+
+    system: system configuration
+    user-interface: user interface configuration
+    aaa: AAA configuration
+
+	
+
+-
+
+configuration-instance
+	
+
+Specifies information about the specified configuration instance, except for the configuration on interfaces.
+
+The configuration instance depends on the existing configuration.
+	
+
+The value is a string of 1 to 180 case-insensitive characters without spaces.
+
+interface [ interface-type [ interface-number ] ]
+	
+
+Specifies an interface type.
+The information on the interface depends on the existing configuration.
+
+    interface-type: specifies the type of an interface
+    interface-number: specifies the number of an interface
+
+	
+
+-
+
+feature feature-name
+	
+
+Specifies the configuration information about the specified feature.
+
+The configuration information about the feature depends on the existing configuration.
+	
+
+-
+
+filter filter-expression
+	
+
+Displays the configuration information that matches a regular expression.
+	
+
+The value is a string of 1 to 255 case-insensitive characters, spaces not supported. The matching starts from the first character of the command.
+
+For example, if snmp-agent is specified for filter-expression, only commands beginning with snmp-agent are filtered.
+
+all
+	
+
+Displays all the configuration information.
+	
+
+-
+
+inactive
+	
+
+Displays configurations about the cards that are not installed.
+
+When a card is not inserted, its configuration information is in the inactive status. The front of these configurations in the inactive state is marked with an asterisk (*).
+	
+
+-
+
+vpn-instance [ vpn-instance-name ]
+	
+
+Displays configurations of a VPN instance with a specified name.
+	
+
+The value must be an existing VPN instance name.
+
+related
+	
+
+Displays configurations of a specified module.
+	
+
+-
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+To check whether the configured parameters take effect, run the display current-configuration command. The parameters that do not take effect are not displayed.
+
+The command output is relevant to user configuration.
+
+You can use a regular expression to filter the command output. For the regular expression rules, see Filtering Output Information Based on the Regular Expression in "CLI Overview" in the S300, S500, S2700, S5700, and S6700 V200R024C00 Configuration Guide - Basic Configuration.
+
+If the configuration is in the offline state, the offline configuration is marked with * in the display current-configuration all and display current-configuration inactive command output.
+Example
+
+# Display all configurations that include vlan.
+
+<HUAWEI> display current-configuration | include vlan
+
+vlan batch 10 77 88               
+ port trunk allow-pass vlan 10                  
+
+# Display the FTP feature configuration.
+
+<HUAWEI> display current-configuration feature ftp 
+
+#
+FTP server enable
+#
+------------ END ------------ 
+
+display factory-configuration information
+Function
+
+The display factory-configuration information command displays whether the function of restoring the factory configuration by holding down the Reset button is enabled and the mode of restoring the factory configuration.
+
+Only the SS1720GW-E, S1720GWR-E, and S1720GFR-P support this command.
+Format
+
+display factory-configuration information
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before restoring the factory configuration by holding down the Reset button, you can run this command to check whether the function of restoring the factory configuration by holding down the Reset button is enabled and whether the mode of restoring the factory configuration is deleted or reserved.
+Example
+
+# Display whether the function of restoring the factory configuration by holding down the Reset button is enabled and the mode of restoring the factory configuration.
+
+<HUAWEI> display factory-configuration information
+Reset function status: enable
+Operate mode: deleted
+
+Table 2-56 Description of the display factory-configuration information command output
+
+Item
+	
+
+Description
+
+Reset function status
+	
+Whether the function of restoring the factory configuration after you hold down the Reset button is enabled.
+
+    enable: When you hold down the Reset button on a device, the device restarts with the factory configuration.
+    disable: When you hold down the Reset button on a device, the device restarts without the factory configuration.
+
+Operate mode
+	
+Mode of restoring the factory configuration.
+
+    deleted: The system deletes the previous configuration when restoring the factory configuration.
+    reserved: The system reserves the previous configuration when restoring the factory configuration.
+
+display factory-configuration reset-result
+Function
+
+The display factory-configuration reset-result command displays the latest factory configuration restoration result of a switch.
+Format
+
+display factory-configuration reset-result
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After the factory configuration of a switch is restored using the reset factory-configuration command, you can run the display factory-configuration reset-result command to check the factory configuration restoration result.
+Example
+
+# Display the latest factory configuration restoration result.
+
+<HUAWEI> display factory-configuration reset-result
+Slot   Time                         Type                                   Result
+_____________________________________________________________________________________          
+0      2017/10/11 15:55:11 [DST]   Startup saved-configuration file      Succeeded
+                                   Configuration in flash                Succeeded
+                                   Netconf db-configuration              Succeeded
+                                   Data file                             Succeeded
+
+Table 2-57 Description of the display factory-configuration reset-result command output
+
+Item
+	
+
+Description
+
+Slot
+	
+
+Stack ID.
+
+Time
+	
+
+Time for restoring the factory configuration.
+
+Type
+	
+
+Type of the configuration file that needs to be restored to the factory configuration.
+
+    Startup saved-configuration file: configurations in the configuration file
+    Configuration in flash: configurations in the flash, such as the stack configuration
+    Netconf db-configuration: database files of the NETCONF and NETCONF
+    Data file: data files in the file system
+
+Result
+	
+
+Result of restoring the factory configuration of the configuration file.
+
+    Succeeded: Factory configuration restoration succeeds.
+    Failed: Factory configuration restoration fails.
+
+display pnp-button mode
+Function
+
+The display pnp-button mode command displays the device behavior after the PNP button is pressed and held.
+Format
+
+display pnp-button mode
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+After running the pnp-button mode reset-system command to configure the device behavior after the PNP button is pressed and held, you can run the display pnp-button mode command to view the command configuration.
+Example
+
+# Display the device behavior after the PNP button is pressed and held.
+
+<HUAWEI> display pnp-button mode
+Pnp configuration mode: reset single switch.
+Pnp button enable: enable.
+
+Table 2-58 Description of the display pnp-button mode command output
+
+Item
+	
+
+Description
+
+Pnp configuration mode
+	
+
+PnP configuration mode:
+
+    reset system: The default settings of the stack will be restored and the stack will automatically restart.
+    reset single switch: The default settings of a specific stack member will be restored and the stack member will automatically restart.
+
+Pnp button enable
+	
+
+Whether the PNP button is available:
+
+    enable: The PNP button is available.
+    disable: The PNP button is unavailable.
+
+display reboot-info
+Function
+
+The display reboot-info command displays the device reset information.
+Format
+
+display reboot-info [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+    Specifies the slot ID if stacking is not configured.
+    Specifies the stack ID if stacking is configured.
+
+	
+
+The value is an integer. The value is 0 if stacking is not configured, and varies according to the stacking configuration if stacking is configured.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+You can use this command to check the type and time of a reset.
+This command displays reset information collected by the device, including the reset type and time. The following reset types may be displayed:
+
+    MANUAL: The device was restarted manually using the reboot command or the NMS.
+    POWER: The device restarted after being powered off (usually because users switch off the power supply).
+    SCHEDU: The device restarted at a scheduled time.
+    FSP: The device restarted due to a stack split or merge or an incorrect Mod-ID.
+    EXCEPTION: The device restarted due to an exception or a dead loop.
+    VRP: The device restarted due to an active/standby switchover or a fault on the VRP platform.
+    SOFTWARE: The device restarted due to a software fault which is traceable.
+    OS: The kernel was abnormal and initiated a reset.
+    WATCHDOG: The device restarted due to the hardware watchdog.
+    OTHER: Other causes.
+
+        A hardware component, such as the CPU, flash, or memory, has failed.
+
+        The device has overheated.
+
+        The switch was power recycled instantly, for example, when the power cable is in bad contact or when transient overvoltage and loss of voltage occurs. In this case, check whether the power cable is correctly connected to the switch.
+
+        The reboot was caused by other reasons that cannot be categorized into the preceding types. For example, the switch rebooted after joining a stack.
+
+Example
+
+# Display the device reset information.
+
+<HUAWEI> display reboot-info
+Slot ID   Times          Reboot Type          Reboot Time(DST)   
+===========================================================================
+0             1          POWER               2013/07/18 19:19:56 
+0             2          SCHEDU              2013/07/18 18:51:04 
+0             3          SOFTWARE            2013/07/18 18:41:22 
+0             4          EXCEPTION           2013/07/18 17:38:26 
+0             5          MANUAL              2013/07/18 17:31:14 
+0             6          MANUAL              2013/07/18 17:26:01 
+0             7          EXCEPTION           2013/07/18 17:03:28 
+===========================================================================
+Total   7
+
+Table 2-59 Description of the display reboot-info command output
+
+Item
+	
+
+Description
+
+Slot ID
+	
+
+Stack ID if the stacking function is enabled or the slot ID if the stacking function is not enabled.
+
+Times
+	
+
+Number of board resets.
+
+Reboot Type
+	
+
+Types of reset, including MANUAL, POWER, SCHEDU, FSP, EXCEPTION, VRP, SOFTWARE, OS, WATCHDOG, and OTHER.
+
+Reboot Time(DST)
+	
+
+Time when a board was reset.
+
+On devices that do not support RTC, the device synchronizes the system clock on the network after the NTP function is configured. During the synchronization, the system time when the device is delivered is displayed. If synchronization fails, the system time when the device is delivered is displayed.
+display saved-configuration
+Function
+
+The display saved-configuration command displays the configuration file to be used for the next startup.
+Format
+
+display saved-configuration [ last | time | configuration ]
+Parameters
+Parameter 	Description 	Value
+last 	Displays the system configurations saved last time. 	-
+time 	Displays the recent time when the configurations are saved manually or automatically. 	-
+configuration 	Displays the parameters of the automatic save function. 	-
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If the device has been started and is not working properly, run the display saved-configuration command to check the device startup configuration in the file specified by running the startup saved-configuration command.
+
+Run the display saved-configuration last command to check the system configurations saved last time in the configuration file loaded during the current startup.
+
+Run the display saved-configuration time command to check the last time when the system configurations are saved.
+
+Run the display saved-configuration configuration command to check the automatic save function parameters including the automatic save interval and CPU usage.
+
+The command output is relevant to user configuration.
+Example
+
+# Display the configuration file for the next startup.
+
+<HUAWEI> display saved-configuration
+
+#
+ sysname Switch
+...
+#
+ vlan batch 10 20
+#
+interface Vlanif10
+ ip address 192.168.1.3 255.255.255.0
+#
+interface Vlanif20
+ ip address 192.168.4.3 255.255.255.0
+...
+#
+interface GigabitEthernet0/0/1
+ port link-type trunk
+ port trunk allow-pass vlan 10
+#
+interface GigabitEthernet0/0/2
+ port link-type trunk
+ port trunk allow-pass vlan 20
+...
+#
+user-interface maximum-vty 15
+user-interface con 0
+user-interface vty 0 14
+ idle-timeout 0 0
+#
+return
+
+display schedule reboot
+Function
+
+The display schedule reboot command displays the configuration of the scheduled restart of the device.
+Format
+
+display schedule reboot
+Parameters
+
+None
+Views
+
+All views
+Default Level
+
+3: Management level
+Usage Guidelines
+
+After using the schedule reboot command to configure a scheduled restart, you can use this command to view the configuration of the scheduled restart.
+Example
+
+# Display the configuration of the scheduled restart of the device.
+
+<HUAWEI> display schedule reboot
+
+Info:System will reboot at 22:00:00 2013/09/17 (in 1 hours and 43 minutes).
+
+Table 2-60 Description of the display schedule reboot command output
+
+Item
+	
+
+Description
+
+System will reboot at
+	
+
+Specific restart time.
+
+in hours and minutes
+	
+
+Time span between the restart time and the current time.
+display startup
+Function
+
+The display startup command displays the system software and configuration files for the current and next startup.
+Format
+
+display startup [ slot slot-id ]
+
+Devices that do not support the stack function or do not have the stack function enabled do not support the slot slot-id parameters.
+Parameters
+Parameter 	Description 	Value
+slot slot-id 	
+
+Specifies a member device in a stack.
+	The value is an integer. The range of the integer is dependent on the specific device.
+Views
+
+All views
+Default Level
+
+1: Monitoring level
+Usage Guidelines
+
+Before upgrading or degrading a device, run this command to check whether the files for next startup have been loaded. If the files have been loaded, the device can be upgraded or degraded successfully after it is restarted. You can also run the command to view the system software and files for current startup.
+
+The display cli command-tree command output shows that the chassis parameter is registered on the device. Fixed devices do not support this parameter.
+Example
+
+# Display the names of system software for current and next startup.
+
+<HUAWEI> display startup
+
+MainBoard:
+  Configured startup system software:        flash:/basicsoftware.cc
+  Startup system software:                   flash:/basicsoftware.cc
+  Next startup system software:              flash:/basicsoftware.cc
+  Startup saved-configuration file:          flash:/vrpcfg.zip
+  Next startup saved-configuration file:     flash:/vrpcfg.zip
+  Startup paf file:                          NULL
+  Next startup paf file:                     NULL
+  Startup license file:                      NULL
+  Next startup license file:                 NULL
+  Startup patch package:                     NULL
+  Next startup patch package:                NULL 
+
+Table 2-61 Description of the display startup command output
+
+Item
+	
+
+Description
+
+Configured startup system software
+	
+
+System software that is configured for the current startup by running the startup system-software command before the system starts.
+
+Startup system software
+	
+
+System software that is used in the current startup.
+
+Next startup system software
+	
+
+System software that is configured for the next startup by running the startup system-software command.
+
+If no system software for the next startup is configured, the system software used in the current startup is displayed.
+
+Startup saved-configuration file
+	
+
+Configuration file that is used in the current startup.
+
+Next startup saved-configuration file
+	
+
+Configuration file that is configured for the next startup by running the startup saved-configuration command.
+
+If no configuration file for the next startup is configured, the configuration file used in the current startup is displayed.
+
+Startup paf file
+	
+
+PAF file that is used in the current startup.
+
+default indicates that no PAF file is specified or the PAF file does not take effect.
+
+NULL indicates that no PAF file exists on the device.
+
+Next startup paf file
+	
+
+PAF file that is configured for the next startup.
+
+If no PAF file is configured, default is displayed.
+
+NULL indicates that no PAF file exists on the device.
+
+Startup license file
+	
+
+License file that is used in the current startup.
+
+default indicates that no license file is specified or the license file does not take effect.
+
+NULL indicates that no license file exists on the device.
+
+Next startup license file
+	
+
+License file that is configured for the next startup.
+
+If no license file is configured, default is displayed.
+
+NULL indicates that no license file exists on the device.
+
+Startup patch package
+	
+
+Patch package file that is used in the current startup.
+
+NULL indicates that no patch package file is specified or the patch package file does not take effect.
+
+Next startup patch package
+	
+
+Patch package file that is configured for the next startup by running the startup patch command.
+
+If no patch package file is configured, NULL is displayed.
+factory-configuration prohibit
+Function
+
+The factory-configuration prohibit command disables the function of restoring the factory settings of a device by holding down reset.
+
+The undo factory-configuration prohibit command enables the function of restoring the factory settings of a device by holding down reset.
+
+By default, you can hold down reset to restore the factory configuration.
+
+Only SS1720GW-E, S1720GWR-E, and support this command.
+Format
+
+factory-configuration prohibit
+
+undo factory-configuration prohibit
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+If you hold down reset on a device for more than 5 seconds, the device restarts with the factory settings and all user-defined configurations are lost after the restart. To retain user-defined configurations after you hold down reset, run the factory-configuration prohibit command to disable this function.
+
+If you want to restore the factory settings of a device by holding down reset, run the undo factory-configuration prohibit command to enable this function.
+Example
+
+# Disable the function of restoring the factory configuration of a device by holding down reset.
+
+<HUAWEI> system-view
+[HUAWEI] factory-configuration prohibit
+
+pnp-button mode reset-system
+Function
+
+The pnp-button mode reset-system command configures all member switches in a stack to restore to the default settings and restart after the PNP button is pressed and held.
+
+The undo pnp-button mode reset-system command restores the default settings.
+
+By default, a switch in a stack restores to the default settings and automatically restarts after the PNP button is pressed and held on the switch.
+Format
+
+pnp-button mode reset-system
+
+undo pnp-button mode reset-system
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+To clear all service configurations and data files, press and hold the PNP button for more than 6 seconds to restore the default settings and automatically restart the device. By default, holding the PNP button on any device in a stack will restore the device to the default settings and automatically restart the device. To clear the service configurations and data files of the stack, run the pnp-button mode reset-system command to configure the device behavior after the PNP button is pressed and held.
+Example
+
+# Configure all member switches in a stack to restore to the default settings and automatically restart after the PNP button is pressed and held.
+
+<HUAWEI> system-view
+[HUAWEI] pnp-button mode reset-system
+
+pnp-button disable
+Function
+
+The pnp-button disable command disables the PNP button function of a device.
+
+The undo pnp-button disable command enables the PNP button function of a device.
+
+By default, the PNP button function is enabled on a device.
+Format
+
+pnp-button disable
+
+undo pnp-button disable
+Parameters
+
+None
+Views
+
+System view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+If you do not want anyone to use the PNP button to reset the device configuration or restart the device, run the pnp-button disable command to disable the PNP button function of the device.
+Example
+
+# Disable the PNP button function of the device.
+
+<HUAWEI> system-view
+[HUAWEI] pnp-button disable
+
+reboot
+Function
+
+The reboot command restarts the device.
+Format
+
+reboot [ fast | save diagnostic-information ]
+Parameters
+Parameter 	Description 	Value
+
+fast
+	
+
+Fast restarts the device. In fast restart mode, the configuration file is not saved.
+	
+
+-
+
+save diagnostic-information
+	
+
+Saves the diagnostic information before the restart.
+	
+
+-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+This command functions in the same way as a power recycle operation (power off and then restart the device). The command enables you to restart the device remotely.
+
+    If the configuration file for next startup (new configuration file) is the same as the configuration file saved on the device after the reboot command is run, the system will not ask you whether to save the configuration before the restart. If the configuration file for next startup (new configuration file) differs from the configuration file saved on the device, the system asks you whether to save the configuration before the restart, and unsaved configuration information will be lost after the restart.
+
+    When the reboot fast command is run, the system restart quickly without displaying any message and the configuration is lost.
+
+    After the reboot save diagnostic-information command is run, the system will save the diagnostic information to root directory of the storage device before restarting.
+
+Precautions
+
+    If you do not respond to the displayed message within the timeout period after running this command, the system will return to the user view and the device will not be restarted.
+
+    To avoid loss of diagnostic information after a restart, configure the device to save the diagnostic information before restarting.
+
+    This command interrupts services on the entire device. Therefore, do not use this command when the device is running properly.
+
+    Before restarting the device, ensure that the configuration file has been saved.
+    If you upgrade the system software to V200R009C00 or a later version and the configuration file contains WLAN configurations, the system displays a message indicating that the configuration file conflicts with the system software for next startup when the device restarts. The system software upgrade fails. If a conflict occurs, you need to use the eDesk tool to convert configurations in the configuration file, and specify the converted configuration file as the configuration file for next startup. If the configuration file is not converted, the configurations will be lost after the system is restarted and upgraded.
+    If multiple users run the reboot save diagnostic-information command at the same time, a message indicating that the command is locked by another user is displayed.
+    If a user runs the display diagnostic-information command when another user is running the reboot save diagnostic-information command, a message indicating that the command is locked by another user is displayed.
+    The S2730S-S, S5735-L-I, S5735-L1,S300, S5735-L, S5735S-L1, S5735-S, S500 support the stacking function since V200R019C10. S5735-L-I supports the stacking function since V200R021C00. If multiple switches set up a stack and the system software package for the next startup is earlier than V200R019C10, the stack will split after the reboot command is executed to restart any stack member. If the stacking function is enabled on a single switch, the system software package for the next startup is earlier than V200R019C10, and the stack slot renumber command is executed to change the stack ID of the switch to a non-zero value, then the stack configuration of the switch will be cleared and the slot-ID-related configuration cannot be restored after the reboot command is executed to restart the switch.
+    Due to the component upgrade of some device models, some devices cannot be downgraded. If the message "Error: The hardware version VER.B of slot %u does not support the configured system software package." (%u indicates the actual slot number) is displayed after the command is run, you can solve this problem by installing the patch that matches the version. For details about the first supported version of the device and matching patch version, see the device overview in the "Hardware Description".
+
+After converting configurations in the configuration file using the eDesk pro tool, restart the switch without saving the configurations. If the configurations are saved, the converted configuration file is invalid.
+Example
+
+# Restart the device.
+
+<HUAWEI> reboot
+Info: The system is now comparing the configuration, please wait........
+Warning: The configuration has been modified, and it will be saved to the next s
+tartup saved-configuration file flash:/204.cfg. Continue? [Y/N]:y              
+Info: If want to reboot with saving diagnostic information, input 'N' and then e
+xecute 'reboot save diagnostic-information'.                                    
+System will reboot! Continue?[Y/N]:y
+
+# Restart the device quickly.
+
+<HUAWEI> reboot fast
+Info: If want to reboot with saving diagnostic information, input 'N' and then execute 'reboot save diagnostic-information'.        
+System will reboot! Continue?[Y/N]:y
+
+reset factory-configuration
+Function
+
+The reset factory-configuration command restores the factory settings of the device.
+Format
+
+reset factory-configuration
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To clear all service configurations and data files, run the reset factory-configuration command to restore the factory settings.
+
+Precautions
+After you run the reset factory-configuration command, the system asks you whether to restart the device. After you enter y, the device restarts and clears the service configurations and data files on the device. The configurations and files to be cleared include:
+
+    Configurations in the configuration file
+    Configurations in the flash memory, such as the stackconfigurations.
+    Database files in NETCONF
+    Data files in the file system
+
+    The next-startup system software package, patch, module, and license file will not be deleted.
+    This command will not delete the protected directory and the $_default.cfg file in the protected directory.
+
+Exercise caution and use this command under the supervision of technical support personnel.
+Example
+
+# Restore the device to factory settings.
+
+Warning: The command will delete all the configurations and files (except the startup, patch, module, and license files) from the de
+vice. Continue? [Y/N]:y                                                                                                             
+Warning: The system will reboot after configurations and files are deleted. Continue? [Y/N]:y                                       
+
+reset saved-configuration
+Function
+
+The reset saved-configuration command clears the next startup configuration file and cancels the configuration file used for next startup.
+Format
+
+reset saved-configuration
+Parameters
+
+None
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+    If the configuration file on the device is incompatible with the upgraded software, run the reset saved-configuration command to clear the configuration file and run the startup saved-configuration command to specify a new configuration file.
+
+    If the device in use is applied to another scenario and the original configuration file of the device does not meet requirements in the scenario, run the reset saved-configuration command to clear the existing configuration file and restart the device to restore its factory configurations.
+
+Precautions
+
+    After you run the reset saved-configuration command, the next startup configuration file is cleared and the file is not used for next startup. If the current startup configuration file is the same as the next startup configuration file, the current startup configuration file is also cleared.
+    If you do not use the startup saved-configuration command to specify a new configuration file or do not save the configuration file after the file is not used for next startup, the device uses default factory configurations for startup.
+    If the current configuration file is empty, and the configuration file for the next startup is not empty, running the reset saved-configuration command clears the settings for the configuration file for the next startup.
+    If the configuration file for the next startup is empty, and the current configuration file is not empty, after the reset saved-configuration command is run, the system prompts an error and no settings are cleared.
+
+    Exercise caution when you run the reset saved-configuration command.
+    Running the reset saved-configuration command will clear the content in the configuration file used for the next device startup but not clear the database information on the device. In NETCONF mode, run the reset netconf db-configuration command to clear the configuration and database file to prevent the configuration delivery failures caused by residual database files.
+    After the reset netconf db-configuration or reset saved-configuration command is run, the assign trunk command configuration is cleared, that is, the default configuration is restored.
+
+Example
+
+# Clear the next startup configuration file in the storage device and cancel the configuration file used for next startup.
+
+<HUAWEI> reset saved-configuration
+
+Warning: The action will delete the saved configuration in the device.          
+The configuration will be erased to reconfigure. Continue? [Y/N]:y              
+Warning: Now clearing the configuration in the device.                          
+Info: Succeeded in clearing the configuration in the device. 
+
+reset reboot-info
+Function
+
+The reset reboot-info command resets the device reset information.
+Format
+
+reset reboot-info [ slot slot-id ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+slot slot-id
+	
+
+    Specifies the slot ID if stacking is not configured.
+    Specifies the stack ID if stacking is configured.
+
+	
+
+The value is 0 if stacking is not configured; the value ranges from 0 to 8 if stacking is configured.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+The device records information about every restart, including the number of restart events, restart type, and restart time. Run the display reboot-info command to view restart information. You can run the reset reboot-info command to clear restart information.
+Example
+
+# Reset the device reset information.
+
+<HUAWEI> reset reboot-info
+
+save
+Function
+
+The save command saves the configurations to the default directory.
+Format
+
+save [ all ] [ force ] [ configuration-file ]
+Parameters
+Parameter 	Description 	Value
+
+all
+	
+
+Saves all configurations to the next startup configuration file of the system.
+NOTE:
+
+All configurations are saved, including those of the boards that are not running, no matter whether all is specified.
+	
+
+-
+
+force
+	
+
+Forcibly saves configurations.
+	
+
+-
+
+configuration-file
+	
+
+Specifies the name of a configuration file.
+	
+
+The value is a string of case-insensitive characters. The absolute path length ranges from 5 to 64 characters.
+
+The value cannot contain spaces and the following characters: < > \ ? , : `. Left and right square brackets cannot be used in pairs. The forward slash (/) and period (.) cannot be used together.
+Views
+
+User view
+Default Level
+
+2: Configuration level
+Usage Guidelines
+
+Usage Scenario
+
+You can run commands to modify the current configuration of the device, but the modified configuration will be lost after the device restarts. To enable the new configuration to take effect after a restart, save the current configuration in the configuration file before restarting the device.
+
+When a series of configurations are complete and take effect, you must save the current configuration file to the storage device.
+
+    If the configuration-file parameter is not specified, the save [ all ] command saves the current configuration to the next startup configuration file in the storage device. The "Next startup saved-configuration file:" field displayed in the display startup command output indicates the next startup configuration file.
+    The save [ all ] configuration-file command saves the current configuration to the specified directory of the storage device. Generally, the command does not affect the current startup configuration file. Only if the configuration-file parameter is the same as the directory and name of the configuration file for the next startup, this command can be used as the same as the save command without the configuration-file parameter.
+
+    The save [ all ] force configuration-file command saves the current configurations to a file specified by the configuration-file parameter on a storage device without user confirmation.
+
+All configurations are saved, no matter whether all is specified.
+
+If you do not specify configuration-file when saving the configuration file for the first time, the system asks you whether to save the configuration file as vrpcfg.zip. The vrpcfg.zip file is the default system configuration file with empty configurations in initial state.
+
+Precautions
+
+    If the configuration file to be saved using this command has the same name with the existing configuration file, the existing configuration file is rewritten.
+    The configuration file name extension must be .zip or .cfg.
+        .cfg: The file is saved in plain text mode. After the file is specified as the configuration file, all commands in the file are recovered one by one during startup.
+        .zip: The .cfg file is compressed to a .zip file that occupies less space. After being specified as the configuration file, the .zip file is decompressed to the .cfg file and all commands in the .cfg file are recovered one by one during startup.
+
+    When the system is saving configuration files, other users are not allowed to perform configuration. When the current user is performing configuration, other users are not allowed to save configuration files.
+    When the controller delivers configurations, the configuration cannot be saved on the device side.
+    If you run the authentication-mode none command to change the authentication mode of the console port to none authentication, security risks exist. When you save the configuration file, the system displays a message indicating security risks.
+    If you run the undo authentication-mode command to change the authentication mode of the console port to none authentication, security risks exist. When you save the configuration file, the system displays a message indicating security risks.
+    During the execution of this command, if the system displays a message indicating that some configurations fail to be obtained, check the configuration file.
+
+Example
+
+# Save the current configuration to the default directory when the next startup configuration file is not specified.
+
+<HUAWEI> save
+The current configuration will be written to the device.
+Are you sure to continue?[Y/N]y
+Now saving the current configuration to the slot 0.
+Save the configuration successfully.
+
+# Save the current configuration to the next startup configuration file specified.
+
+<HUAWEI> save
+The current configuration will be written to flash:/vrpcfg.zip.
+Are you sure to continue?[Y/N]y
+Now saving the current configuration to the slot 0.
+Info: Save the configuration successfully.
+
+schedule reboot
+Function
+
+The schedule reboot command configures the scheduled restart of a device and sets the specific time when the device restarts or the delay time before the device restarts.
+
+The undo schedule reboot command disables the scheduled restart function.
+
+By default, the scheduled restart is disabled.
+Format
+
+schedule reboot { at time | delay interval [ force ] }
+
+undo schedule reboot
+Parameters
+Parameter 	Description 	Value
+
+at time
+	
+
+Specifies the device restart time.
+	
+
+The format of time is hh:mm YYYY/MM/DD. The restart time must be later than the current device time by less than 720 hours. YYYY/MM/DD indicates year, month, and date and is optional.
+
+    hh indicates hour and the value ranges from 0 to 23.
+    mm indicates minute and the value ranges from 0 to 59.
+    YYYY indicates year and the value ranges from 2000 to 2099.
+    MM indicates month and the value ranges from 1 to 12.
+    DD indicates date and the value ranges from 1 to 31.
+
+delay interval
+	
+
+Specifies the delay time before the device restarts.
+	
+
+The format of interval is hh:mm or mm. The delay time must be no more than 720 hours.
+
+    In hh:mm, hh indicates hour and the value ranges from 0 to 720 and mm indicates minute and the value ranges from 0 to 59.
+    mm indicates minute and the value ranges from 0 to 43200.
+
+force
+	
+
+Specifies forcible scheduled restart.
+	
+
+-
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+When upgrading or restarting the device, you can configure the device to restart at time when few services are running to minimize the impact on services.
+
+Precautions
+
+    If the schedule reboot at command is used to set a specific date (YYYY/MM/DD) and the date is a future date, the device restarts at the specified time. If no date is set, two situations occur: If the specified time is later than the current time, the device restarts at the specified time of the day. If the specified time is earlier than the current time, the device restarts at the set time next day.
+
+    Note that the gap between the specified date and current date must be shorter than or equal to 720 hours. If the scheduled restart has been configured, the latest configuration overrides the previous one.
+    Run the schedule reboot delay interval command to set the delay time before the device restarts. If the force parameter is not specified, the system compares the configuration file with the current configuration. If the current configuration is different from the configuration file, the system asks you whether to save the current configuration. After you complete the selection, the system prompts you to confirm the configured restart time. Enter Y or y to make the configured restart time take effect. If the force parameter is specified, the system does not display any message, and the restart time takes effect directly. The current configuration is not compared or saved.
+
+    The scheduled restart function becomes invalid when you use the clock datetime command to set the system time to over 10 minutes later than the restart time set by the schedule reboot command. If the time difference is equal to or less than ten minutes, the device immediately restarts and does not save the configuration.
+
+    This command restarts the device at the specified time, interrupting all services on the device. Therefore, do not use this command when the device is running properly.
+
+    Before restarting the device, ensure that the configuration file has been saved.
+
+Example
+
+# Configure the device to restart at 22:00.
+
+<HUAWEI> schedule reboot at 22:00
+
+Info: The system is now comparing the configuration, please wait. 
+Warning: The configuration has been modified, and it will be saved to the next startup saved-configuration file flash:/vrpcfg.zip. C
+ontinue? [Y/N]:y 
+Now saving the current configuration to the slot 0...
+Save the configuration successfully.
+Info: Reboot system at 22:00:00 2012/06/12 UTC-05:13(in 2 hours and 0 minutes)
+confirm?[Y/N]:y 
+
+set factory-configuration operate-mode
+Function
+
+The set factory-configuration operate-mode command determines whether to reserve or delete the existing configuration when restoring the factory configuration.
+
+The undo set factory-configuration operate-mode command enables the device to reserve the existing configuration when you restore the factory configuration.
+
+By default, the system reserves the previous configuration when restoring the factory configuration.
+
+Only SS1720GW-E, and S1720GWR-E support this command.
+Format
+
+set factory-configuration operate-mode { reserve-configuration | delete-configuration }
+
+undo set factory-configuration operate-mode
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+reserve-configuration
+	
+
+Reserves current configuration file after factory settings are restored.
+	
+
+-
+
+delete-configuration
+	
+
+Deletes current configuration file after factory settings are restored.
+	
+
+-
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Run the set factory-configuration operate-mode delete-configuration command to specify the operation as delete-configuration for restoring factory settings. This prevents user information leak when the device is lost.
+Example
+
+# Set the mode of restoring the factory configuration to delete.
+
+<HUAWEI> system-view
+[HUAWEI] set factory-configuration operate-mode delete-configuration
+Warning: It may delete your configuration file when executing factory configuration, continue?[Y/N]:y
+
+set save-configuration
+Function
+
+The set save-configuration command enables the function of saving system configurations periodically.
+
+The undo set save-configuration command disables the function of saving system configurations periodically.
+
+By default, the system does not periodically save configurations.
+Format
+
+set save-configuration [ interval interval | cpu-limit cpu-usage | delay delay-interval ] *
+
+undo set save-configuration [ interval | cpu-limit | delay ] *
+
+undo set save-configuration [ interval interval | cpu-limit cpu-usage | delay delay-interval ] *
+Parameters
+Parameter 	Description 	Value
+interval interval 	Specifies the interval for saving configurations. 	The value is an integer that ranges from 30 to 43200, in minutes. The default value is 30.
+cpu-limit cpu-usage 	
+
+Specifies the threshold of the CPU usage during the periodic save operation.
+	The value is an integer that ranges from 1 to 60. The default value is 50.
+delay delay-interval 	Specifies the delay in automatic backup after the configuration changes.
+NOTE:
+
+If a configuration change occurs within the configured delay time, the device restarts the timer.
+	The value is an integer that ranges from 1 to 60, in minutes. The default value is five minutes. The value of delay-interval must be less than the value of interval.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+After this command enables the function of saving system configurations periodically, the configuration file will not be lost if the device is powered off or restarts.
+
+If the set save-configuration command is not executed, the system does not enable the function of saving system configurations periodically.
+
+If the set save-configuration command is executed, the system compares the configuration files before saving configurations. If the configurations do not change, the system does not save the configurations.
+
+    You can specify interval interval to set the interval for periodically saving configurations. The system saves the current configurations only when the configurations have been changed and are not saved. The default interval is 0 seconds, indicating that the system does not save the configurations. After the automatic save function is enabled, the default interval is 30 minutes if interval is not specified.
+    If cpu-limit cpu-usage is specified, the automatic save function does not affect system performance. After the automatic save timer is triggered, the system cancels the current automatic save operation if the system CPU usage is detected to be higher than the upper limit. The default upper limit of the CPU usage is 50% for the automatic save function.
+    After delay delay-interval is specified, the system saves the changed configurations after the specified delay. The default value is 5 minutes.
+
+The undo set save-configuration command disables the automatic save function. The undo set save-configuration command with a parameter specified restores the default value of the parameter and the automatic save function still takes effect.
+
+Follow-up Procedure
+
+Run the display saved-configuration configuration command to check the configurations about the periodic save function.
+
+Precautions
+Before saving configurations, the system compares the configurations with those in the configuration file. Automatic saving of configurations is triggered in the following scenarios:
+
+    The configurations are inconsistent with those saved last time.
+    The configurations are the same as those saved last time, but changes have been made. For example, if a command is run and then its configurations are deleted, automatic saving of configurations will still be triggered although configurations are the same as those saved last time.
+
+After the automatic save function is enabled, the configurations are saved in the configuration file for the next startup. The content in the configuration file changes when the configuration changes. The system cancels the automatic save operation when:
+
+    Content is being written into the configuration file.
+    The configurations are being recovered.
+    The CPU usage is excessively high.
+
+Example
+
+# Set the automatic save interval to 60 minutes.
+
+<HUAWEI> system-view
+
+[HUAWEI] set save-configuration interval 60
+
+# Configure the system to save the new configuration 3 minutes after the configuration changes at an interval of 10 hours when the upper limit of the CPU usage is 60%.
+
+<HUAWEI> system-view
+
+[HUAWEI] set save-configuration interval 600 delay 3 cpu-limit 60
+
+set save-configuration backup-to-server server
+Function
+
+The set save-configuration backup-to-server server command specifies the server where the system periodically saves the configuration file.
+
+The undo set save-configuration backup-to-server server command cancels the server where the system periodically saves the configuration file.
+
+By default, the system does not periodically save configurations to the server.
+Format
+
+set save-configuration backup-to-server server server-ip [ vpn-instance vpn-instance-name ] transport-type { ftp | sftp } [ port port-number ] user user-name password password [ path path ]
+
+set save-configuration backup-to-server server server-ip [ vpn-instance vpn-instance-name ] transport-type tftp [ path path ]
+
+undo set save-configuration backup-to-server server [ server-ip [ vpn-instance vpn-instance-name ] ]
+Parameters
+
+Parameter
+	
+
+Description
+	
+
+Value
+
+server server-ip
+	
+
+Specifies the IP address of the server where the system periodically saves the configuration file.
+	
+
+-
+
+vpn-instance vpn-instance-name
+	
+
+Specifies the name of the VPN instance.
+	
+
+The value must be an existing VPN instance name.
+
+port port-number
+	
+
+Specifies the port number of a server.
+	
+
+The value is an integer ranging from 1 to 65535. By default, the port number of the FTP server is 21, and that of the SFTP server is 22.
+
+transport-type
+	
+
+Specifies the mode in which the configuration file is transmitted to the server.
+	
+
+The value can be ftp, sftp, or tftp. To ensure file transfer security, use the SFTP method.
+
+user user-name
+	
+
+Specifies the name of the user who saves the configuration file on the server.
+	
+
+The value is a string of 1 to 64 case-sensitive characters without spaces.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+
+password password
+	
+
+Specifies the password of the user who saves the configuration file on the server.
+	
+
+The value is a case-sensitive string without spaces. The value of a simple text password is a string of 1 to 16 characters. The value of a ciphertext password is a string of 24, 32 or 48 characters.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+
+path path
+	
+
+Specifies the relative save path on the server.
+
+If this parameter is not specified, the FTP, SFTP, or TFTP root path is enabled by default.
+	
+
+The value is a string of 1 to 64 case-sensitive characters without spaces.
+
+The path should use forward slashes.
+
+When double quotation marks are used around the string, spaces are allowed in the string.
+Views
+
+System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+Run this command to periodically save the configuration file to the server.
+
+Before periodically saving configurations, the system compares the configuration files. If the configurations do not change, the system does not periodically save them.
+
+Precautions
+
+If the specified path on the server does not exist, configuration files cannot be sent to the server. The system then sends an alarm message indicating the transmission failure to the NMS, and the transmission failure is recorded as a log message on the device.
+
+The user name and password must be the same as those used in FTP or SFTP login mode.
+
+    When you run this command to save configuration files to a server, the system supports only the binary transmission mode. Therefore, the server must support the binary transmission mode.
+    Before running this command, run the set save-configuration command to start the periodic configuration saving function. Otherwise, configuration files are not saved to the server.
+    FTP or TFTP is insecure. Therefore, configuring SFTP is recommended.
+    A server IP address can be bound to multiple VPN instances. To delete the configurations of a specified VPN instance, you must set vpn-instance-name. Otherwise, configurations irrelevant to the VPN instance will be deleted.
+    The configuration file saved by running this command is named in the format of yyyy-mm-dd.hh-mm-ss.sysname.zip, where yyyy indicates the year, the first mm indicates the month, dd indicates the day, hh indicates the hour, the second mm indicates the minute, ss indicates the second, and sysname indicates the host name, for example, 2022-07-02.17-23-17.HUAWEI.zip.
+
+Example
+
+# Specify the server to which the system periodically sends the configuration file, and set the transmission mode to SFTP.
+
+<HUAWEI> system-view
+[HUAWEI] set save-configuration backup-to-server server 10.1.1.1 transport-type sftp user admin1234 password Helloworld@6789
+
+# Specify the server to which the system periodically sends the configuration file, and set the transmission mode to SFTP, port number to 88, and save path to d:/sftp.
+
+<HUAWEI> system-view
+[HUAWEI] set save-configuration backup-to-server server 10.1.1.1 transport-type sftp port 88 user admin1234 password Helloworld@6789 path d:/sftp
+
+startup saved-configuration
+Function
+
+The startup saved-configuration command specifies the system configuration file for next startup.
+
+The undo startup saved-configuration command deletes the system configuration for next startup.
+Format
+
+startup saved-configuration configuration-file [ slot slot-id ]
+
+undo startup saved-configuration
+
+Devices that do not support the stack function or do not have the stack function enabled do not support the slot slot-id parameters.
+Parameters
+Parameter 	Description 	Value
+
+configuration-file
+	
+
+Specifies the name of a configuration file. Make sure that the file exists.
+	
+
+The value is a string of 5 to 64 case-insensitive characters without spaces. The file name extension can be .zip or .cfg.
+
+The file name must not contain %.
+
+slot slot-id
+	
+
+Specifies a member device in a stack.
+	
+
+The value is an integer. The range of the integer is dependent on the specific device.
+Views
+
+startup saved-configuration: User view
+
+undo startup saved-configuration: System view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+When the original configuration file cannot be used due to the software upgrade, run the startup saved-configuration command to specify another configuration file for next startup. The startup configuration file must be saved in the root directory of the storage device.
+
+Follow-up Procedure
+
+Run the reboot or the schedule reboot command to restart the device.
+
+Precautions
+
+    The configuration file specified for the next startup must exist.
+    The configuration file name extension must be .zip or .cfg.
+        A configuration file with the file name extension .cfg is a text file, and you can view the file content in the text file. After the file is specified as the configuration file for next startup, the system restores all commands in the file one by one during a startup.
+        A .cfg file is compressed to a .zip file that occupies less space. After being specified as the configuration file, the .zip file is decompressed to the .cfg file and the system restores all commands in the .cfg file one by one during startup.
+
+    If the EasyDeploy function is configured, run the undo startup saved-configuration command to clear the configuration file for next startup and delete all the configuration files in the storage device. When the device restarts, it finds no configuration file available and downloads a configuration file from the file server.
+
+    If the EasyDeploy function is not configured, run the undo startup saved-configuration command to clear the configuration file for next startup. After the command is run, the device uses empty configuration in next startup.
+    The display cli command-tree command output shows that the chassis parameter is registered on the device. Fixed devices do not support this parameter.
+    Do not change the configuration file manually and specify the configuration file for next startup. Otherwise, the device may not start normally.
+    Users at level 3 or higher can change the configuration file used for the next startup.
+    If the configuration file used for the next startup contains the authentication-mode none command that changes the authentication mode of the console port to none authentication, security risks exist. When you configure the configuration file used for the next startup, the system displays a message indicating security risks.
+    If the configuration file used for the next startup contains the undo authentication-mode command that changes the authentication mode of the console port to none authentication, security risks exist. When you configure the configuration file used for the next startup, the system displays a message indicating security risks.
+
+Example
+
+# Cancel the specified configuration file for next startup in the system view.
+
+<HUAWEI> system-view
+[HUAWEI] undo startup saved-configuration
+
+# Specify the system configuration file for the next startup.
+
+<HUAWEI> startup saved-configuration vrpcfg.cfg
+
+Info: Succeeded in setting the configuration for booting system.
+
+startup system-software
+Function
+
+The startup system-software command specifies the system software for next startup.
+Format
+
+startup system-software system-file [ all | slave-board | slot slot-id ]
+
+Devices that do not support the stack function or do not have the stack function enabled do not support the all, slave-board, or slot slot-id parameter.
+Parameters
+Parameter 	Description 	Value
+
+system-file
+	
+
+Specifies the name of the system software file.
+	
+
+The value is a string of 4 to 64 case-sensitive characters without spaces and %. It is in the format of [ drive-name ] [ file-name ]. If drive-name is not specified, the name of the default storage device is used.
+
+all
+	
+
+Specifies all member devices in a stack.
+	
+
+-
+
+slave-board
+	
+
+Specifies the system software for next startup on the slave switch.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies a member device in a stack.
+	
+
+The value is an integer. The range of the integer is dependent on the specific device.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+In system software upgrade or downgrade, run this command to specify the system software for next startup.
+
+Follow-up Procedure
+
+Run the reboot or the schedule reboot command to restart the device.
+
+Precautions
+
+    If the system software to be specified is V200R023C10 or an earlier version, you need to restore the default BootLoad password; otherwise, the downgrade fails. When the startup system-software command is run, the system displays a prompt and the current password is cleared only after the user confirms the operation.
+    The system software package must use .cc as the file name extension and be saved to the root directory of the storage device.
+    When the system software for next startup is configured using the startup system-software command, the system checks the system software integrity. If the digital signature of the system software is invalid, the configuration fails. Therefore, ensure the system software validity.
+    If the upgrade or downgrade cannot be performed between versions, the system displays a message, prompting you to perform operations as prompted.
+    The display cli command-tree command output shows that the chassis parameter is registered on the device. Fixed devices do not support this parameter.
+    During system software upgrade of fixed PoE switches, powered devices (PDs) will be powered off.
+    During the downgrade to an earlier version, the system checks whether the software package of the earlier version contains a complete signature file. If the software package does not contain a complete signature file, the system prompts you whether to continue the downgrade. After confirming that the software package is correct, the downgrade does not affect functions. However, you are advised to upgrade to a more secure version.
+    The root certificate of a newly delivered device is upgraded. When the device is downgraded from V200R024C00 or a later version to a version earlier than V200R024C00, the system displays a message indicating that the old root certificate will be used after the downgrade. In this case, the device automatically uses the old root certificate.
+
+The system file is authenticated when you configure the file name of the system software used in the next startup. Wait for a while.
+
+Table 2-62 lists the possible causes and troubleshooting methods for failures to load the system software package to the device.
+Table 2-62 Possible causes and troubleshooting methods for failures to load the system software package
+
+Failure Cause
+	
+
+Troubleshooting Method
+
+CRC check fails.
+	
+
+The system software package is damaged. Please upload again.
+	
+
+Upload the system software package again.
+
+Version check fails.
+	
+
+The %s only supports the system software package of %s and later versions.
+	
+
+Upload the system software package of the version supported by the device.
+
+Signature verification fails.
+	
+
+Software package verification failed. Please upload again.
+	
+
+Upload the system software package again.
+
+The system software package is corrupted.
+	
+
+The system software package is damaged. Please upload again.
+	
+
+Upload the system software package again.
+
+The system software package is not supported on the device.
+	
+
+The system software package does not match the device.
+	
+
+Upload the system software package that matches the device.
+
+The name of the system software package is incorrect.
+	
+
+The system software package does not exist.
+	
+
+Change the name of the system software package and upload the package again.
+
+The name of the system software package is too long.
+	
+
+The file name is too long.
+	
+
+Change the name of the system software package and upload the package again.
+
+Stacking is not supported.
+	
+
+The target version does not support CSS card stacking. Disable this stacking function and try later.
+	
+
+Disable the stacking function and upload the system software package again.
+
+The system software package does not match the MPU.
+	
+
+The system software package does not include the MPU software package.
+	
+
+Upload the system software package that matches the MPU.
+
+Failed to set the system software package.
+	
+
+Failed in setting the software for booting system.
+	
+
+Check whether the system software package matches the device type.
+
+The directory where the system software package is uploaded is incorrect.
+	
+
+The file flash:/%.cc doesn't exist in the main board. (Default directory is flash:/)
+	
+
+Upload the system software package to the root directory of the flash memory.
+
+The flash version does not support the system software package to be uploaded.
+	
+
+The flash chip version xxx does not support the new startup system software package. This file cannot be specified as the startup system software package.
+	
+
+Upload the system software package of the version supported by the flash.
+
+The PHY version does not support the system software package to be uploaded.
+	
+
+The PHY chip version xxx does not support the new startup system software package. This file cannot be specified as the startup system software package.
+	
+
+Upload the system software package of the version supported by the PHY.
+
+The LSW version does not support the system software package to be uploaded.
+	
+
+The LSW chip version xxx does not support the new startup system software package. This file cannot be specified as the startup system software package.
+	
+
+Upload the system software package of the version supported by the LSW.
+
+The hardware version VER.B does not support the new system software package.
+	
+
+The hardware VER.B does not support the startup software package. You need to configure the matching patch first.
+	
+
+Configure the matching patch first. For details, see the reference document or upgrade guide.
+Example
+
+# Specify the system software to be loaded for next startup.
+
+<HUAWEI> startup system-software basicsoft.cc
+
+startup patch
+Function
+
+The startup patch command specifies the patch file for next startup.
+Format
+
+startup patch patch-name [ slave-board | slot slot-id ]
+
+Devices that do not support the stack function or do not have the stack function enabled do not support the slave-board parameters.
+Parameters
+Parameter 	Description 	Value
+
+patch-name
+	
+
+Specifies the name of the patch file for next startup.
+	
+
+The value is a string of 5 to 64 case-insensitive characters without spaces. It is in the format of [ drive-name ] [ path ] [ file-name ]. If drive-name is not specified, the name of the default storage device is used.
+
+slave-board
+	
+
+Specifies the patch file for next startup on slave switch.
+	
+
+-
+
+slot slot-id
+	
+
+Specifies a member device in a stack.
+	
+
+The value is an integer. The range of the integer is dependent on the specific device.
+Views
+
+User view
+Default Level
+
+3: Management level
+Usage Guidelines
+
+Usage Scenario
+
+To make the patch file take effect after the device restarts, run this command to specify the patch file for next startup.
+
+Follow-up Procedure
+
+Run the reboot or the schedule reboot command to restart the device.
+
+Precautions
+
+    A patch file uses .pat as the file name extension and must be saved in the root directory.
+    If you use this command to specify another patch for next startup, the previous patch will be overridden.
+    After the patch file is specified for next startup, run the display patch-information command to view the patch file.
+        If the patch file for next startup is not empty, the device load the patch automatically after next startup.
+        If the patch file for next startup is empty, the device cannot load the patch after next startup.
+    After the device restarts, the system loads and runs the patch. If you do not want the system to load the patch file after startup, use either of the following methods to delete the patch file:
+        Run the patch delete all command to delete the current patch.
+        Run the reset patch-configure [ next-startup ] command to delete the patch file already loaded on the system after startup.
+    The display cli command-tree command output shows that the chassis parameter is registered on the device. Fixed devices do not support this parameter.
+    If the startup patch command has been run to specify the patch file for next startup and then the patch load filename all [ active | run ] command is run, the startup patch command does not take effect regardless of whether the specified patch file names are the same.
+
+Example
+
+# Specify the patch file for next startup.
+
+<HUAWEI> startup patch patch.pat............................................
+
+..................................
+
+Info: Succeeded in setting main board resource file for system.
+
